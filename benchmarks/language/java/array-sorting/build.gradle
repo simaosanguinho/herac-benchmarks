@@ -1,10 +1,10 @@
 plugins {
-    id("com.github.johnrengelman.shadow") version "6.1.0"
-    id("io.micronaut.application") version "1.2.0"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("io.micronaut.application") version "1.5.0"
 }
 
 version = "1.0"
-group = "com.tree_traversal"
+group = "com.array_sorting"
 
 repositories {
     mavenCentral()
@@ -15,7 +15,7 @@ micronaut {
     testRuntime("junit5")
     processing {
         incremental(true)
-        annotations("com.tree_traversal.*")
+        annotations("com.array_sorting.*")
     }
 }
 
@@ -29,7 +29,7 @@ dependencies {
 
 
 application {
-    mainClass.set("com.tree_traversal.EntryPoint")
+    mainClass.set("com.array_sorting.EntryPoint")
 }
 
 java {
