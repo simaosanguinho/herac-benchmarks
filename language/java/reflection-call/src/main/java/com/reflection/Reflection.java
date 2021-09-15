@@ -1,42 +1,24 @@
 package com.reflection;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import com.google.gson.JsonObject;
 
 public class Reflection {
 
-    public static void main(String[] args) throws Exception {
-        System.out.println("VMM boot time: " + (System.currentTimeMillis() - Long.parseLong(args[args.length - 1])));
-        HttpServer server = HttpServer.create(new InetSocketAddress(Integer.parseInt(args[0])), 0);
-        server.createContext("/", new MyHandler());
-        server.setExecutor(null); // creates a default executor
-        server.start();
-    }
-
-    static class MyHandler implements HttpHandler {
-
-        @Override
-        public void handle(HttpExchange t) throws IOException {
-            String response = "Success";
-            String className = t.getRequestURI().getQuery().split("=")[1];
-            
-            try {
-                Class.forName(className);
-            } catch (ClassNotFoundException e) {
-                response = "Failed";
-            }
-
-            t.sendResponseHeaders(200, response.length());
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
+    public static JsonObject main(JsonObject args){
+        String response = "Success";
+        String className = args.get("argument").getAsString();
+        System.out.println(className);
+        try {
+            Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            response = "Failed";
         }
+        JsonObject res = new JsonObject();
+        res.addProperty("response",response);
+        return res;
     }
+
+
 }
 
 class DummyClass {
