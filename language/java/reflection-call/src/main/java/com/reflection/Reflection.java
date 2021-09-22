@@ -1,25 +1,26 @@
 package com.reflection;
 
-import com.google.gson.JsonObject;
+import java.util.HashMap;
+import java.util.Map;
 
+@SuppressWarnings("unused")
 public class Reflection {
 
-    public static JsonObject main(JsonObject args){
+    public static Map<String, Object> main(Map<String, Object> args) {
         String response = "Success";
-        String className = args.get("argument").getAsString();
-        System.out.println(className);
+        String className = (String) args.get("argument");
         try {
             Class.forName(className);
         } catch (ClassNotFoundException e) {
             response = "Failed";
         }
-        JsonObject res = new JsonObject();
-        res.addProperty("response",response);
+        Map<String, Object> res = new HashMap<>();
+        res.put("response", response);
         return res;
     }
 
-
 }
 
+@SuppressWarnings("unused")
 class DummyClass {
 }
