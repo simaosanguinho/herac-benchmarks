@@ -1,42 +1,26 @@
 package com.reflection;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-
+@SuppressWarnings("unused")
 public class Reflection {
 
-    public static void main(String[] args) throws Exception {
-        HttpServer server = HttpServer.create(new InetSocketAddress(Integer.parseInt(args[0])), 0);
-        server.createContext("/", new MyHandler());
-        server.setExecutor(null); // creates a default executor
-        server.start();
-    }
-
-    static class MyHandler implements HttpHandler {
-
-        @Override
-        public void handle(HttpExchange t) throws IOException {
-            String response = "Success";
-            String className = t.getRequestURI().getQuery().split("=")[1];
-            
-            try {
-                Class.forName(className);
-            } catch (ClassNotFoundException e) {
-                response = "Failed";
-            }
-
-            t.sendResponseHeaders(200, response.length());
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
+    public static Map<String, Object> main(Map<String, Object> args) {
+        String response = "Success";
+        String className = (String) args.get("argument");
+        try {
+            Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            response = "Failed";
         }
+        Map<String, Object> res = new HashMap<>();
+        res.put("response", response);
+        return res;
     }
+
 }
 
+@SuppressWarnings("unused")
 class DummyClass {
 }
