@@ -8,4 +8,4 @@ cd "$DIR" || {
 }
 
 ./gradlew clean assemble
-echo BENCHMARK_PATH="$DIR"/build/libs/argo-java-array-sorting-1.0.jar
+echo BENCHMARK_PATH="$DIR"/build/libs/argo-java-thumbnail-1.0.jar

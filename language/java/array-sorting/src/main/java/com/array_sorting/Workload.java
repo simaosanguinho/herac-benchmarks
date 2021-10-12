@@ -4,25 +4,16 @@ import java.util.*;
 
 public class Workload {
 
-    private int[] generateArray(int number) {
+    private static int[] generateArray(int number) {
         Random random = new Random();
         int[] res = new int[number];
         for (int i = 0; i < number; i++) {
-            res[i] = random.nextInt(Integer.MAX_VALUE);
+            res[i] = random.nextInt(number);
         }
         return res;
     }
 
-    private boolean isSorted(int[] result) {
-        for (int i = 0; i < result.length - 1; i++) {
-            if (result[i] > result[i + 1]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean intersect(int number) {
+    public static int intersect(int number) {
         int[] nums1 = generateArray(number);
         int[] nums2 = generateArray(number);
 
@@ -45,7 +36,6 @@ public class Workload {
 
         res = new int[count];
         System.arraycopy(tmp, 0, res, 0, count);
-
-        return isSorted(res);
+        return Arrays.hashCode(res);
     }
 }

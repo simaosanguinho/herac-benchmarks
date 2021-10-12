@@ -4,7 +4,7 @@ Simple *Hello World* function.
 
 ### Language
 
-Written in **Python**.
+Written in **JavaScript**.
 
 ### Build tool
 

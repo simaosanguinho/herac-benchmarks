@@ -1,14 +1,14 @@
 ### Description
 
-The Java app with operation of merging two arrays into one sorted array as a workload.
+The script with operation of merging two arrays into one sorted array as a workload.
 
 ### Language
 
-Written in **Java**.
+Written in **JavaScript**.
 
 ### Build tool
 
-Built with **Gradle**.
+Without build tool.
 
 ### Functions
 

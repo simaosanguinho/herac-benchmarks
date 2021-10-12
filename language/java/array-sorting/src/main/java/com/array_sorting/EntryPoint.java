@@ -1,11 +1,14 @@
 package com.array_sorting;
 
-import io.micronaut.runtime.Micronaut;
+import java.util.HashMap;
+import java.util.Map;
 
+@SuppressWarnings("unused")
 public class EntryPoint {
 
-    public static void main(String[] args) {
-        ArgumentStorage.getServerArgumentStorage().parseArguments(args);
-        Micronaut.run(EntryPoint.class, args);
+    public static Map<String, Object> main(Map<String, Object> args) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("result", Workload.intersect((Integer) args.get("array_size")));
+        return result;
     }
 }

@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'com.array_sorting'
+group 'com.aes'
 version '1.0'
 
 repositories {
