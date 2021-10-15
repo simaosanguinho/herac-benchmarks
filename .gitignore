@@ -1,21 +1,37 @@
-# Results for CPP benchmarks.
-results/cpp/*
-!results/cpp/.gitkeep
-
 # Results for Java benchmarks.
-results/java/array-hashing/*
-!results/java/array-hashing/.gitkeep
+results/java/aes/*
+!results/java/aes/.gitkeep
 results/java/array-sorting/*
 !results/java/array-sorting/.gitkeep
+results/java/file-hashing/*
+!results/java/file-hashing/.gitkeep
 results/java/hello-world/*
 !results/java/hello-world/.gitkeep
-results/java/hello-world-micronaut/*
-!results/java/hello-world-micronaut/.gitkeep
 results/java/reflection-call/*
 !results/java/reflection-call/.gitkeep
-results/java/tree-traversal/*
-!results/java/tree-traversal/.gitkeep
+results/java/thumbnail/*
+!results/java/thumbnail/.gitkeep
 
-# Results for Python benchmarks
+# Results for JavaScript benchmarks.
+results/javascript/aes/*
+!results/javascript/aes/.gitkeep
+results/javascript/array-sorting/*
+!results/javascript/array-sorting/.gitkeep
+results/javascript/file-hashing/*
+!results/javascript/file-hashing/.gitkeep
+results/javascript/hello-world/*
+!results/javascript/hello-world/.gitkeep
+results/javascript/thumbnail/*
+!results/javascript/thumbnail/.gitkeep
+
+# Results for Python benchmarks.
+results/python/aes/*
+!results/python/aes/.gitkeep
+results/python/array-sorting/*
+!results/python/array-sorting/.gitkeep
+results/python/file-hashing/*
+!results/python/file-hashing/.gitkeep
 results/python/hello-world/*
-results/python/hello-world/.gitkeep
+!results/python/hello-world/.gitkeep
+results/python/thumbnail/*
+!results/python/thumbnail/.gitkeep
