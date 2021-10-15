@@ -15,7 +15,7 @@ information. Benchmarks are split into different folders, based on language:
     - [reflection-call](https://github.com/graalvm-argo/benchmarks/tree/main/language/java/reflection-call/README.md)
         - Simple **Java** app containing reflective call.
     - [thumbnail](https://github.com/graalvm-argo/benchmarks/tree/main/language/java/thumbnail/README.md)
-        - The Java app downloads image content, creates an image out of it, sends it to a remote storage, and returns
+        - The **Java** app downloads image content, creates an image out of it, sends it to a remote storage, and returns
           the image name back to the user.
 - Javascript:
     - [aes](https://github.com/graalvm-argo/benchmarks/tree/main/language/javascript/aes/README.md)
