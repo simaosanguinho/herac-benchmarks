@@ -12,7 +12,7 @@ import java.nio.file.Files;
 
 public class Workload {
 
-    private static final String CLIENT_IP = "https://httpbin.org/anything";
+    private static final String CLIENT_URL = "https://httpbin.org/anything";
     public static final String TMP_IMG = "img-tmp.jpg";
 
     private static final int WIDTH = 100;
@@ -40,7 +40,7 @@ public class Workload {
     }
 
     private static String buildCommand(String fileName) {
-        return String.format("curl --header Content-Type:image/jpeg --data @%s %s", fileName, CLIENT_IP);
+        return String.format("curl --header Content-Type:image/jpeg --data @%s %s", fileName, CLIENT_URL);
     }
 
     public static String thumbnail(String imgUrl) {

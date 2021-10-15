@@ -9,7 +9,7 @@ import requests
 from PIL import Image
 
 # Global variables.
-CLIENT_IP = "https://httpbin.org/anything"
+CLIENT_URL = "https://httpbin.org/anything"
 WIDTH = 100
 HEIGHT = 100
 
@@ -33,7 +33,7 @@ def thumbnail(img_url):
             img.save(img_filename, 'jpeg')
 
         with open(img_filename, 'rb') as img:
-            requests.post(CLIENT_IP, headers={'Content-Type': 'image/jpeg'}, data=img)
+            requests.post(CLIENT_URL, headers={'Content-Type': 'image/jpeg'}, data=img)
 
         os.remove(img_filename)
         return img_filename
