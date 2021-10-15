@@ -16,6 +16,6 @@ Without build tool.
 def file_hash(file_url):
     # Pull file via file url.
     file_content = pull(file_url)
-    # Hash file.
-    return hash(file_content)
+    # SHA1 and MD5 of file.
+    return sha1(file_content), md5(file_content)
 ```

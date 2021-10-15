@@ -18,6 +18,6 @@ def file_hash(file_url):
     file_content = pull(file_url)
     # Create tmp file.
     file = create_tmp_file(file_content)
-    # Hash file.
-    return hash(file)
+    # SHA1 and MD5 of file.
+    return sha1(file_content), md5(file_content)
 ```
