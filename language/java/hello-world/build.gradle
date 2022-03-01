@@ -13,9 +13,6 @@ repositories {
 shadowJar() {
     configurations = [project.configurations.compileClasspath]
     from sourceSets.main.output
-//    minimize{
-//        exclude "GuestLauncher*"
-//    }
 }
 
 dependencies {

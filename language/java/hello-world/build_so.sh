@@ -1,17 +1,13 @@
-./gradlew clean shadowJar assemble
+#!/bin/bash
 
-# Collect possible reflections
-$JAVA_HOME/bin/java -agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image \
-  -cp build/libs/hello-world-1.0-all.jar \
-  GuestLauncher com.hello_world.HelloWorld "{\"name\":\"Sutao\"}"
-> /dev/null 2>&1
+source ../../../../argo/lambda-manager/src/scripts/environment.sh
 
-$JAVA_HOME/bin/native-image --no-fallback -cp build/libs/hello-world-1.0-all.jar\
+cd build
+
+$JAVA_HOME/bin/native-image --no-fallback -cp libs/hello-world-1.0-all.jar\
   -DGraalVisorGuest=true \
-  -Dcom.oracle.svm.graalvisor.libraryPath=build/resources/main/com.oracle.svm.graalvisor.headers \
+  -Dcom.oracle.svm.graalvisor.libraryPath=resources/main/com.oracle.svm.graalvisor.headers \
   --initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
-  -H:ConfigurationFileDirectories="src/main/resources/META-INF/native-image" \
+  -H:ConfigurationFileDirectories=../ni-agent-config \
   -H:+ReportExceptionStackTraces\
   --shared -H:Name=libhelloworld
-
-#cp libhelloworld.so ../../../../argo/lambda-proxy/src/scripts/

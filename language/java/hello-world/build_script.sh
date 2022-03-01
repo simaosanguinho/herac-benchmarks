@@ -6,5 +6,5 @@ cd "$DIR" || {
   echo "Redirection failed!"
   exit 1
 }
-./gradlew clean assemble
+./gradlew clean shadowJar assemble
 echo BENCHMARK_PATH="$DIR"/build/libs/hello-world-1.0.jar
