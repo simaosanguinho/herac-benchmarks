@@ -1,3 +1,5 @@
+*.swp
+
 # Results for Java benchmarks.
 results/java/aes/*
 !results/java/aes/.gitkeep
