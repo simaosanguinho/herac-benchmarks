@@ -31,3 +31,7 @@ def thumbnail(img_url):
     # Return image name back to user.
     return img.name
 ```
+
+### Web server
+
+`python -m http.server 8000`
