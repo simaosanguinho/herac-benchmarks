@@ -31,8 +31,8 @@ def thumbnail(img_url):
             img = img.resize((WIDTH, HEIGHT))
             img.save(img_filename, 'png')
 
-#        with open(img_filename, 'rb') as img:
-#            requests.post(CLIENT_URL, headers={'Content-Type': 'image/jpeg'}, data=img)
+        with open(img_filename, 'rb') as img:
+            requests.post(CLIENT_URL, headers={'Content-Type': 'image/jpeg'}, data=img)
 
 #        os.remove(img_filename)
         return img_filename
@@ -43,6 +43,3 @@ def main(args):
         return {"result": thumbnail(args)}
     except Exception as e:
         return {"result": str(e)}
-   
-#if __name__ == "__main__":
-#    thumbnail('http://127.0.0.1:8000/snap.png')
