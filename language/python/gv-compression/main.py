@@ -20,5 +20,3 @@ def main(args):
         return {"result": compression(args)}
     except Exception as e:
         return {"result": str(e)}
-
-print(main("http://127.0.0.1:8000/file_example_MP4_480_1_5MG.mp4"))
