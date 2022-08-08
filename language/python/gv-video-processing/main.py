@@ -3,9 +3,7 @@ import os
 import stat
 import subprocess
 import shutil
-import tempfile
 import urllib.request
-import requests
 
 def call_ffmpeg(args):
     ret = subprocess.run([os.path.join("ffmpeg"), '-y'] + args,
