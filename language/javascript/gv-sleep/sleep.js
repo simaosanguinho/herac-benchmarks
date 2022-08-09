@@ -1,4 +1,4 @@
 const main = async function (args) {
-    jsHostAccess.sleep(parseInt(args));
+    polyHostAccess.sleep(parseInt(args));
     return { "result": "None" }; 
 };

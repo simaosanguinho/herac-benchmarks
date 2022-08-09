@@ -13,6 +13,6 @@ const main = async function (args) {
         random_numbers[i] = random(0, 100);
     }
     let template_args = "{ \"cur_time\": \"" + new Date().toLocaleString() + "\", \"username\" : \"" + username  + "\", \"random_numbers\": [" + random_numbers + "]}";
-    output.set("result", jsHostAccess.mustache(String.fromCharCode(...jsHostAccess.downloadBytes(url)), template_args));
+    output.set("result", polyHostAccess.mustache(String.fromCharCode(...polyHostAccess.downloadBytes(url)), template_args));
     return output;
 }
