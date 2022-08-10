@@ -1,0 +1,6 @@
+{
+  "value": {
+    "ffmpeg_url": "http://192.168.1.83:8000/ffmpeg",
+    "video_url": "http://192.168.1.83:8000/file_example_MP4_480_1_5MG.mp4"
+  }
+}

@@ -1,29 +1,39 @@
 package com.videoprocessing;
 
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Map;
-
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
 
-import java.util.HashMap;
+import com.google.gson.JsonObject;
 
 public class VideoProcessing {
-    
+
+    public static byte[] fromInputStream(InputStream is) throws Exception {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nRead;
+        byte[] data = new byte[16384];
+
+        while ((nRead = is.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+
+        return buffer.toByteArray();
+    }
+
     public static byte[] downloadBytes(String url) {
         try {
             URLConnection conn = new URL(url).openConnection();
             InputStream is = conn.getInputStream();
-            byte[] bytes = is.readAllBytes();
+            byte[] bytes = fromInputStream(is);
             is.close();
             return bytes;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -38,49 +48,47 @@ public class VideoProcessing {
           .setVideoResolution(640, 480) // at 640x480 resolution
           .setStrict(FFmpegBuilder.Strict.EXPERIMENTAL) // Allow FFmpeg to use experimental specs
           .done();
-        new FFmpegExecutor(new FFmpeg("./ffmpeg")).createJob(builder).run();
+        new FFmpegExecutor(new FFmpeg("/tmp/ffmpeg")).createJob(builder).run();
     }
 
-    
-    public static HashMap<String, Object> main(Map<String, Object> args) {
-        HashMap<String, Object> output = new HashMap<>();
-        
-        if (!new File("ffmpeg").exists()) {
-            File file = new File("ffmpeg");
+    public static JsonObject main(JsonObject args) {
+        JsonObject response = new JsonObject();
+
+        if (!new File("/tmp/ffmpeg").exists()) {
+            File file = new File("/tmp/ffmpeg");
             try (FileOutputStream stream = new FileOutputStream(file)) {
-                stream.write(downloadBytes((String)args.get("ffmpeg")));
+                stream.write(downloadBytes(args.getAsJsonPrimitive("ffmpeg_url").getAsString()));
                 file.setWritable(false);
                 file.setReadable(true);
                 file.setExecutable(true);
             } catch (Exception e) {
-                 output.put("output", e.getMessage());
+            	response.addProperty("output", e.getMessage());
                  e.printStackTrace();
-             } 
+             }
         }
-        
+
         try (FileOutputStream stream = new FileOutputStream("video.mp4")) {
-            stream.write(downloadBytes((String)args.get("video")));
+            stream.write(downloadBytes(args.getAsJsonPrimitive("video_url").getAsString()));
         } catch (Exception e) {
-             output.put("output", e.getMessage());
+        	response.addProperty("output", e.getMessage());
              e.printStackTrace();
          }
         
         try {
             ffmpeg("video.mp4");
         } catch (Exception e) {
-            output.put("output", e.getMessage());
+        	response.addProperty("output", e.getMessage());
             e.printStackTrace();
         }
-        
-        output.put("output", "video.mp4");
-        return output;
+
+        response.addProperty("video", "video.mp4");
+        return response;
     }
 
     public static void main(String[] args) {
-        HashMap<String, Object> output = new HashMap<>();
-        output.put("ffmpeg", "http://127.0.0.1:8000/ffmpeg");
-        output.put("video", "http://127.0.0.1:8000/file_example_MP4_480_1_5MG.mp4");
-        output = main(output);
-        System.out.println(output);
+        JsonObject response = new JsonObject();
+        response.addProperty("ffmpeg_url", "http://192.168.1.83:8000/ffmpeg");
+        response.addProperty("video_url", "http://192.168.1.83:8000/file_example_MP4_480_1_5MG.mp4");
+        System.out.println(main(response));
     }
 }
