@@ -16,12 +16,12 @@ shadowJar() {
 }
 
 dependencies {
-    implementation files('../../../../argo/graalvisor-lib/build/libs/graalvisor-1.0-guest.jar')
+    implementation files(System.getenv('ARGO_HOME') + '/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar')
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.1' 
 }
 
 processResources{
-    from(zipTree('../../../../argo/graalvisor-lib/build/libs/graalvisor-1.0-guest.jar')){
+    from(zipTree(System.getenv('ARGO_HOME') + '/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar')){
         include("com.oracle.svm.graalvisor.headers/")
     }
 }

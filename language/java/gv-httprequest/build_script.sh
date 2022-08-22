@@ -4,8 +4,13 @@ function DIR {
 	echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
+if [[ -z "${ARGO_HOME}" ]]; then
+	echo "ARGO_HOME is not defined. Existing..."
+	exit 1
+fi
+
 function build_graalvisor_app {
-	source ../../../../argo/lambda-manager/src/scripts/environment.sh
+	source $ARGO_HOME/lambda-manager/src/scripts/environment.sh
 	cd build
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
@@ -18,11 +23,6 @@ function build_graalvisor_app {
 		-H:+ReportExceptionStackTraces \
 		--shared \
 		-H:Name=libhttprequest
-}
-
-cd $(DIR) || {
-  echo "Redirection failed!"
-  exit 1
 }
 
 ./gradlew clean shadowJar assemble
