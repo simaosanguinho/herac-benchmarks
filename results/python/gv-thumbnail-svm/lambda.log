@@ -1,0 +1,102 @@
+Polyglot Lambda boot time: 16
+Function registered! time took: 0ms
+[To redirect Truffle log output to a file use one of the following options:
+* '--log.file=<path>' if the option is passed using a guest language launcher.
+* '-Dpolyglot.log.file=<path>' if the option is passed using the host Java launcher.
+* Configure logging using the polyglot embedding API.]
+[python::PythonContext] WARNING: could not determine Graal.Python's standard library path. You need to pass --python.StdLibHome if you want to use the standard library.
+[python::PythonContext] WARNING: could not determine Graal.Python's sys prefix path - you may need to pass --python.SysPrefix.
+[python::PythonContext] WARNING: could not determine Graal.Python's core path - you may need to pass --python.CoreHome.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's JNI library. You need to pass --python.JNILibrary if you want to run, for example, binary HPy extension modules.
+[To redirect Truffle log output to a file use one of the following options:
+* '--log.file=<path>' if the option is passed using a guest language launcher.
+* '-Dpolyglot.log.file=<path>' if the option is passed using the host Java launcher.
+* Configure logging using the polyglot embedding API.]
+[python::PythonContext] WARNING: could not determine Graal.Python's standard library path. You need to pass --python.StdLibHome if you want to use the standard library.
+[python::PythonContext] WARNING: could not determine Graal.Python's sys prefix path - you may need to pass --python.SysPrefix.
+[python::PythonContext] WARNING: could not determine Graal.Python's core path - you may need to pass --python.CoreHome.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's JNI library. You need to pass --python.JNILibrary if you want to run, for example, binary HPy extension modules.
+[To redirect Truffle log output to a file use one of the following options:
+* '--log.file=<path>' if the option is passed using a guest language launcher.
+* '-Dpolyglot.log.file=<path>' if the option is passed using the host Java launcher.
+* Configure logging using the polyglot embedding API.]
+[python::PythonContext] WARNING: could not determine Graal.Python's standard library path. You need to pass --python.StdLibHome if you want to use the standard library.
+[python::PythonContext] WARNING: could not determine Graal.Python's sys prefix path - you may need to pass --python.SysPrefix.
+[python::PythonContext] WARNING: could not determine Graal.Python's core path - you may need to pass --python.CoreHome.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's JNI library. You need to pass --python.JNILibrary if you want to run, for example, binary HPy extension modules.
+[To redirect Truffle log output to a file use one of the following options:
+* '--log.file=<path>' if the option is passed using a guest language launcher.
+* '-Dpolyglot.log.file=<path>' if the option is passed using the host Java launcher.
+* Configure logging using the polyglot embedding API.]
+[python::PythonContext] WARNING: could not determine Graal.Python's standard library path. You need to pass --python.StdLibHome if you want to use the standard library.
+[python::PythonContext] WARNING: could not determine Graal.Python's sys prefix path - you may need to pass --python.SysPrefix.
+[python::PythonContext] WARNING: could not determine Graal.Python's core path - you may need to pass --python.CoreHome.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's JNI library. You need to pass --python.JNILibrary if you want to run, for example, binary HPy extension modules.
+[To redirect Truffle log output to a file use one of the following options:
+* '--log.file=<path>' if the option is passed using a guest language launcher.
+* '-Dpolyglot.log.file=<path>' if the option is passed using the host Java launcher.
+* Configure logging using the polyglot embedding API.]
+[python::PythonContext] WARNING: could not determine Graal.Python's standard library path. You need to pass --python.StdLibHome if you want to use the standard library.
+[python::PythonContext] WARNING: could not determine Graal.Python's sys prefix path - you may need to pass --python.SysPrefix.
+[python::PythonContext] WARNING: could not determine Graal.Python's core path - you may need to pass --python.CoreHome.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's JNI library. You need to pass --python.JNILibrary if you want to run, for example, binary HPy extension modules.
+[To redirect Truffle log output to a file use one of the following options:
+* '--log.file=<path>' if the option is passed using a guest language launcher.
+* '-Dpolyglot.log.file=<path>' if the option is passed using the host Java launcher.
+* Configure logging using the polyglot embedding API.]
+[python::PythonContext] WARNING: could not determine Graal.Python's standard library path. You need to pass --python.StdLibHome if you want to use the standard library.
+[python::PythonContext] WARNING: could not determine Graal.Python's sys prefix path - you may need to pass --python.SysPrefix.
+[python::PythonContext] WARNING: could not determine Graal.Python's core path - you may need to pass --python.CoreHome.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's JNI library. You need to pass --python.JNILibrary if you want to run, for example, binary HPy extension modules.
+[To redirect Truffle log output to a file use one of the following options:
+* '--log.file=<path>' if the option is passed using a guest language launcher.
+* '-Dpolyglot.log.file=<path>' if the option is passed using the host Java launcher.
+* Configure logging using the polyglot embedding API.]
+[python::PythonContext] WARNING: could not determine Graal.Python's standard library path. You need to pass --python.StdLibHome if you want to use the standard library.
+[python::PythonContext] WARNING: could not determine Graal.Python's sys prefix path - you may need to pass --python.SysPrefix.
+[python::PythonContext] WARNING: could not determine Graal.Python's core path - you may need to pass --python.CoreHome.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's JNI library. You need to pass --python.JNILibrary if you want to run, for example, binary HPy extension modules.
+[To redirect Truffle log output to a file use one of the following options:
+* '--log.file=<path>' if the option is passed using a guest language launcher.
+* '-Dpolyglot.log.file=<path>' if the option is passed using the host Java launcher.
+* Configure logging using the polyglot embedding API.]
+[python::PythonContext] WARNING: could not determine Graal.Python's standard library path. You need to pass --python.StdLibHome if you want to use the standard library.
+[python::PythonContext] WARNING: could not determine Graal.Python's sys prefix path - you may need to pass --python.SysPrefix.
+[python::PythonContext] WARNING: could not determine Graal.Python's core path - you may need to pass --python.CoreHome.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's JNI library. You need to pass --python.JNILibrary if you want to run, for example, binary HPy extension modules.
+[To redirect Truffle log output to a file use one of the following options:
+* '--log.file=<path>' if the option is passed using a guest language launcher.
+* '-Dpolyglot.log.file=<path>' if the option is passed using the host Java launcher.
+* Configure logging using the polyglot embedding API.]
+[python::PythonContext] WARNING: could not determine Graal.Python's standard library path. You need to pass --python.StdLibHome if you want to use the standard library.
+[python::PythonContext] WARNING: could not determine Graal.Python's sys prefix path - you may need to pass --python.SysPrefix.
+[python::PythonContext] WARNING: could not determine Graal.Python's core path - you may need to pass --python.CoreHome.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's JNI library. You need to pass --python.JNILibrary if you want to run, for example, binary HPy extension modules.
+[To redirect Truffle log output to a file use one of the following options:
+* '--log.file=<path>' if the option is passed using a guest language launcher.
+* '-Dpolyglot.log.file=<path>' if the option is passed using the host Java launcher.
+* Configure logging using the polyglot embedding API.]
+[python::PythonContext] WARNING: could not determine Graal.Python's standard library path. You need to pass --python.StdLibHome if you want to use the standard library.
+[python::PythonContext] WARNING: could not determine Graal.Python's sys prefix path - you may need to pass --python.SysPrefix.
+[python::PythonContext] WARNING: could not determine Graal.Python's core path - you may need to pass --python.CoreHome.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's C API library path. You need to pass --python.CAPI if you want to use the C extension modules.
+[python::PythonContext] WARNING: could not determine Graal.Python's JNI library. You need to pass --python.JNILibrary if you want to run, for example, binary HPy extension modules.

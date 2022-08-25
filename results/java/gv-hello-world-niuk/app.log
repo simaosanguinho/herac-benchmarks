@@ -1,0 +1,50 @@
+{
+  "result" : "{\n  \"VM Context\" : \"Substrate VM\",\n  \"Log\" : \"Hello World\"\n}",
+  "process time (us)" : 802
+}
+Time taken: 10380 us
+{
+  "result" : "{\n  \"VM Context\" : \"Substrate VM\",\n  \"Log\" : \"Hello World\"\n}",
+  "process time (us)" : 346
+}
+Time taken: 8250 us
+{
+  "result" : "{\n  \"VM Context\" : \"Substrate VM\",\n  \"Log\" : \"Hello World\"\n}",
+  "process time (us)" : 396
+}
+Time taken: 8633 us
+{
+  "result" : "{\n  \"VM Context\" : \"Substrate VM\",\n  \"Log\" : \"Hello World\"\n}",
+  "process time (us)" : 408
+}
+Time taken: 8500 us
+{
+  "result" : "{\n  \"VM Context\" : \"Substrate VM\",\n  \"Log\" : \"Hello World\"\n}",
+  "process time (us)" : 402
+}
+Time taken: 8074 us
+{
+  "result" : "{\n  \"VM Context\" : \"Substrate VM\",\n  \"Log\" : \"Hello World\"\n}",
+  "process time (us)" : 325
+}
+Time taken: 7582 us
+{
+  "result" : "{\n  \"VM Context\" : \"Substrate VM\",\n  \"Log\" : \"Hello World\"\n}",
+  "process time (us)" : 348
+}
+Time taken: 8349 us
+{
+  "result" : "{\n  \"VM Context\" : \"Substrate VM\",\n  \"Log\" : \"Hello World\"\n}",
+  "process time (us)" : 339
+}
+Time taken: 7815 us
+{
+  "result" : "{\n  \"VM Context\" : \"Substrate VM\",\n  \"Log\" : \"Hello World\"\n}",
+  "process time (us)" : 349
+}
+Time taken: 7966 us
+{
+  "result" : "{\n  \"VM Context\" : \"Substrate VM\",\n  \"Log\" : \"Hello World\"\n}",
+  "process time (us)" : 347
+}
+Time taken: 7956 us

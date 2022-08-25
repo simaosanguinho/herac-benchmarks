@@ -1,0 +1,50 @@
+{
+  "result" : "{result: \"Hello world from js!\"}",
+  "process time (us)" : 61693
+}
+Time taken: 71479 us
+{
+  "result" : "{result: \"Hello world from js!\"}",
+  "process time (us)" : 19601
+}
+Time taken: 27204 us
+{
+  "result" : "{result: \"Hello world from js!\"}",
+  "process time (us)" : 17794
+}
+Time taken: 26526 us
+{
+  "result" : "{result: \"Hello world from js!\"}",
+  "process time (us)" : 17530
+}
+Time taken: 26326 us
+{
+  "result" : "{result: \"Hello world from js!\"}",
+  "process time (us)" : 18057
+}
+Time taken: 26231 us
+{
+  "result" : "{result: \"Hello world from js!\"}",
+  "process time (us)" : 18209
+}
+Time taken: 26312 us
+{
+  "result" : "{result: \"Hello world from js!\"}",
+  "process time (us)" : 18744
+}
+Time taken: 27044 us
+{
+  "result" : "{result: \"Hello world from js!\"}",
+  "process time (us)" : 17619
+}
+Time taken: 26056 us
+{
+  "result" : "{result: \"Hello world from js!\"}",
+  "process time (us)" : 18059
+}
+Time taken: 26216 us
+{
+  "result" : "{result: \"Hello world from js!\"}",
+  "process time (us)" : 17726
+}
+Time taken: 26203 us

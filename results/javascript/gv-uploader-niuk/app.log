@@ -1,0 +1,50 @@
+{
+  "result" : "Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://192.168.1.83:8000/snap.png\"}}",
+  "process time (us)" : 100758
+}
+Time taken: 109935 us
+{
+  "result" : "Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://192.168.1.83:8000/snap.png\"}}",
+  "process time (us)" : 58003
+}
+Time taken: 65467 us
+{
+  "result" : "Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://192.168.1.83:8000/snap.png\"}}",
+  "process time (us)" : 58755
+}
+Time taken: 65913 us
+{
+  "result" : "Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://192.168.1.83:8000/snap.png\"}}",
+  "process time (us)" : 58355
+}
+Time taken: 65182 us
+{
+  "result" : "Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://192.168.1.83:8000/snap.png\"}}",
+  "process time (us)" : 59798
+}
+Time taken: 66888 us
+{
+  "result" : "Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://192.168.1.83:8000/snap.png\"}}",
+  "process time (us)" : 57357
+}
+Time taken: 64824 us
+{
+  "result" : "Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://192.168.1.83:8000/snap.png\"}}",
+  "process time (us)" : 58182
+}
+Time taken: 65136 us
+{
+  "result" : "Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://192.168.1.83:8000/snap.png\"}}",
+  "process time (us)" : 58195
+}
+Time taken: 65421 us
+{
+  "result" : "Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://192.168.1.83:8000/snap.png\"}}",
+  "process time (us)" : 58119
+}
+Time taken: 65252 us
+{
+  "result" : "Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://192.168.1.83:8000/snap.png\"}}",
+  "process time (us)" : 57178
+}
+Time taken: 64002 us

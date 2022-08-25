@@ -1,0 +1,50 @@
+{
+  "result" : "{'result': 'Hello world from py!'}",
+  "process time (us)" : 348829
+}
+Time taken: 397912 us
+{
+  "result" : "{'result': 'Hello world from py!'}",
+  "process time (us)" : 349225
+}
+Time taken: 387114 us
+{
+  "result" : "{'result': 'Hello world from py!'}",
+  "process time (us)" : 342517
+}
+Time taken: 378009 us
+{
+  "result" : "{'result': 'Hello world from py!'}",
+  "process time (us)" : 344979
+}
+Time taken: 383597 us
+{
+  "result" : "{'result': 'Hello world from py!'}",
+  "process time (us)" : 338594
+}
+Time taken: 373707 us
+{
+  "result" : "{'result': 'Hello world from py!'}",
+  "process time (us)" : 350605
+}
+Time taken: 382480 us
+{
+  "result" : "{'result': 'Hello world from py!'}",
+  "process time (us)" : 335338
+}
+Time taken: 371262 us
+{
+  "result" : "{'result': 'Hello world from py!'}",
+  "process time (us)" : 348922
+}
+Time taken: 386719 us
+{
+  "result" : "{'result': 'Hello world from py!'}",
+  "process time (us)" : 441904
+}
+Time taken: 471225 us
+{
+  "result" : "{'result': 'Hello world from py!'}",
+  "process time (us)" : 484487
+}
+Time taken: 560871 us
