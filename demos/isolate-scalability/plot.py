@@ -25,7 +25,7 @@ width = .25
 fig, ax1 = plt.subplots()
 ax1.bar(x - width/2, avg_latency, width, label='Isolate Startup', hatch='o')
 ax1.set_xticks(x, isolates)
-ax1.set_ylabel('Time (us)')
+ax1.set_ylabel('Isolate startup time (us)')
 ax1.set_xlabel('Isolates in Graalvisor process')
 ax2 = ax1.twinx()
 ax2.bar(x + width/2, avg_memory, width, label='Isolate Footprint', color='red', hatch='x')

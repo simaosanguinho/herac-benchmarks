@@ -45,7 +45,7 @@ function get_request(get_url) {
 async function main(args) {
     try {
         let get_data = await get_request(args['url']);
-        let post_data = await post_request("http://192.168.1.83:8000", get_data);
+        let post_data = await post_request(args['url'], get_data);
         return { "result": post_data } 
     }
     catch(err) {
@@ -57,6 +57,6 @@ exports.main = main;
 
 /*
 (async function () {
-    console.log(await main({"url": "http://192.168.1.83:8000/snap.png"}));
+    console.log(await main({"url": "http://127.0.0.1:8000/snap.png"}));
 })();
 */

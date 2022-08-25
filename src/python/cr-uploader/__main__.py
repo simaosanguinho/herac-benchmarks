@@ -3,7 +3,7 @@ import requests
 
 def uploader(url):
     with urllib.request.urlopen(url) as response:
-        return requests.post("https://httpbin.org/anything", headers={'Content-Type': 'image/png'}, data=response.read())
+        return requests.post(url, headers={'Content-Type': 'image/png'}, data=response.read())
 
 def main(args):
     try:

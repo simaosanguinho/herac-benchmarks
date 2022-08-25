@@ -87,8 +87,8 @@ public class VideoProcessing {
 
     public static void main(String[] args) {
         JsonObject response = new JsonObject();
-        response.addProperty("ffmpeg_url", "http://192.168.1.83:8000/ffmpeg");
-        response.addProperty("video_url", "http://192.168.1.83:8000/file_example_MP4_480_1_5MG.mp4");
+        response.addProperty("ffmpeg_url", "http://127.0.0.1:8000/ffmpeg");
+        response.addProperty("video_url", "http://127.0.0.1:8000/file_example_MP4_480_1_5MG.mp4");
         System.out.println(main(response));
     }
 }
