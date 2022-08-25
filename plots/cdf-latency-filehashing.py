@@ -20,12 +20,22 @@ x_gv = np.sort(gv)
   
 y_cr = np.arange(len(cr)) / float(len(cr))
 y_gv = np.arange(len(gv)) / float(len(gv))
-  
-plt.plot(x_cr, y_cr, marker='o', label='OpenWisk Java Runtime')
+
+fig = plt.figure()
+plt.plot(x_cr, y_cr, marker='o', label='OpenWisk JVM')
 plt.plot(x_gv, y_gv, marker='x', label='Graalvisor')
 plt.ylim(ymin=0, ymax=1)
 plt.xlim(xmin=0)
 plt.ylabel('Cumulative Distribution Function')
 plt.xlabel('Request Latency (us)')
 plt.legend()
+
+# ../results/java/gv-file-hashing-niuk/lambda.rss
+# ../results/java/cr-file-hashing/lambda.rss
+y = [179380, 223460 ]
+ax1 = fig.add_axes([0.55, 0.3, 0.3, 0.4])
+ax1.set_ylabel('Memory Footprint (KBs)')
+ax1.bar(['GV Unikernel', 'JVM VM'], y, width = .4)
+
+
 plt.savefig("cdf-latency-filehashing.pdf")
