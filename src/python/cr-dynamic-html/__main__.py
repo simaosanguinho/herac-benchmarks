@@ -1,13 +1,13 @@
-import urllib.request
+import requests
 from datetime import datetime
 from random import sample
 import pystache
 
 def dynamic_html(url, username, nsize):
-    with urllib.request.urlopen(url) as response:
-        template_args = { 'cur_time': str(datetime.now()), 'username' : username, 'random_numbers': sample(range(0, 1000), int(nsize)) }
-        template = response.read().decode('utf-8')
-        return pystache.render(template, template_args)
+    response = requests.get(url)
+    template_args = { 'cur_time': str(datetime.now()), 'username' : username, 'random_numbers': sample(range(0, 1000), int(nsize)) }
+    template = response.text
+    return pystache.render(template, template_args)
 
 def main(args):
     try:

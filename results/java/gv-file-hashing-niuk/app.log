@@ -1,50 +1,50 @@
 {
   "result" : "{\n  \"hash\" : \"1A01B09A7AAC9B8F5A9AA8B2054FAC75\"\n}",
-  "process time (us)" : 2189
+  "process time (us)" : 6437
 }
-Time taken: 10696 us
+Time taken: 13909 us
 {
   "result" : "{\n  \"hash\" : \"1A01B09A7AAC9B8F5A9AA8B2054FAC75\"\n}",
-  "process time (us)" : 1664
+  "process time (us)" : 2468
 }
-Time taken: 8884 us
+Time taken: 8533 us
 {
   "result" : "{\n  \"hash\" : \"1A01B09A7AAC9B8F5A9AA8B2054FAC75\"\n}",
-  "process time (us)" : 2005
+  "process time (us)" : 3256
 }
-Time taken: 9223 us
+Time taken: 9424 us
 {
   "result" : "{\n  \"hash\" : \"1A01B09A7AAC9B8F5A9AA8B2054FAC75\"\n}",
-  "process time (us)" : 1635
+  "process time (us)" : 2371
 }
-Time taken: 8933 us
+Time taken: 8352 us
 {
   "result" : "{\n  \"hash\" : \"1A01B09A7AAC9B8F5A9AA8B2054FAC75\"\n}",
-  "process time (us)" : 1710
+  "process time (us)" : 2515
 }
-Time taken: 9033 us
+Time taken: 8187 us
 {
   "result" : "{\n  \"hash\" : \"1A01B09A7AAC9B8F5A9AA8B2054FAC75\"\n}",
-  "process time (us)" : 1870
+  "process time (us)" : 3093
 }
-Time taken: 9774 us
+Time taken: 8872 us
 {
   "result" : "{\n  \"hash\" : \"1A01B09A7AAC9B8F5A9AA8B2054FAC75\"\n}",
-  "process time (us)" : 1993
+  "process time (us)" : 2348
 }
-Time taken: 9483 us
+Time taken: 8575 us
 {
   "result" : "{\n  \"hash\" : \"1A01B09A7AAC9B8F5A9AA8B2054FAC75\"\n}",
-  "process time (us)" : 2016
+  "process time (us)" : 2310
 }
-Time taken: 10464 us
+Time taken: 8424 us
 {
   "result" : "{\n  \"hash\" : \"1A01B09A7AAC9B8F5A9AA8B2054FAC75\"\n}",
-  "process time (us)" : 2202
+  "process time (us)" : 2377
 }
-Time taken: 11602 us
+Time taken: 8250 us
 {
   "result" : "{\n  \"hash\" : \"1A01B09A7AAC9B8F5A9AA8B2054FAC75\"\n}",
-  "process time (us)" : 2471
+  "process time (us)" : 2504
 }
-Time taken: 11493 us
+Time taken: 8237 us

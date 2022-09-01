@@ -1,50 +1,50 @@
 {
   "result" : "{'result': 'Hello world from py!'}",
-  "process time (us)" : 348829
+  "process time (us)" : 361241
 }
-Time taken: 397912 us
+Time taken: 373950 us
 {
   "result" : "{'result': 'Hello world from py!'}",
-  "process time (us)" : 349225
+  "process time (us)" : 247
 }
-Time taken: 387114 us
+Time taken: 6186 us
 {
   "result" : "{'result': 'Hello world from py!'}",
-  "process time (us)" : 342517
+  "process time (us)" : 242
 }
-Time taken: 378009 us
+Time taken: 6674 us
 {
   "result" : "{'result': 'Hello world from py!'}",
-  "process time (us)" : 344979
+  "process time (us)" : 254
 }
-Time taken: 383597 us
+Time taken: 5879 us
 {
   "result" : "{'result': 'Hello world from py!'}",
-  "process time (us)" : 338594
+  "process time (us)" : 192
 }
-Time taken: 373707 us
+Time taken: 5933 us
 {
   "result" : "{'result': 'Hello world from py!'}",
-  "process time (us)" : 350605
+  "process time (us)" : 280
 }
-Time taken: 382480 us
+Time taken: 6503 us
 {
   "result" : "{'result': 'Hello world from py!'}",
-  "process time (us)" : 335338
+  "process time (us)" : 205
 }
-Time taken: 371262 us
+Time taken: 5711 us
 {
   "result" : "{'result': 'Hello world from py!'}",
-  "process time (us)" : 348922
+  "process time (us)" : 190
 }
-Time taken: 386719 us
+Time taken: 5386 us
 {
   "result" : "{'result': 'Hello world from py!'}",
-  "process time (us)" : 441904
+  "process time (us)" : 200
 }
-Time taken: 471225 us
+Time taken: 5774 us
 {
   "result" : "{'result': 'Hello world from py!'}",
-  "process time (us)" : 484487
+  "process time (us)" : 175
 }
-Time taken: 560871 us
+Time taken: 5618 us

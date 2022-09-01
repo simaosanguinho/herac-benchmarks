@@ -14,7 +14,16 @@ benchmark_labels = [
     "python/sleep",
     "javascript/sleep",
     "java/file-hashing",
-    "javascript/dynamic-html" ]
+    "javascript/dynamic-html",
+    "python/dynamic-html",
+    "python/thumbnail",
+    "javascript/uploader",
+    "java/httprequest",
+    "java/video-processing",
+    "python/uploader",
+    "python/compression",
+    "python/video-processing",
+    "javascript/thumbnail" ]
 
 gv_benchmark_path = [
     "java/gv-hello-world-niuk",
@@ -24,7 +33,16 @@ gv_benchmark_path = [
     "python/gv-sleep-niuk",
     "javascript/gv-sleep-niuk",
     "java/gv-file-hashing-niuk",
-    "javascript/gv-dynamic-html-niuk" ]
+    "javascript/gv-dynamic-html-niuk",
+    "python/gv-dynamic-html-niuk",
+    "python/gv-thumbnail-niuk",
+    "javascript/gv-uploader-niuk",
+    "java/gv-httprequest-niuk",
+    "java/gv-video-processing-niuk",
+    "python/gv-uploader-niuk",
+    "python/gv-compression-niuk",
+    "python/gv-video-processing-niuk",
+    "javascript/gv-thumbnail-niuk" ]
 
 cr_benchmark_path = [
     "java/cr-hello-world",
@@ -34,7 +52,16 @@ cr_benchmark_path = [
     "python/cr-sleep", 
     "javascript/cr-sleep",
     "java/cr-file-hashing",
-    "javascript/cr-dynamic-html" ]
+    "javascript/cr-dynamic-html",
+    "python/cr-dynamic-html",
+    "python/cr-thumbnail",
+    "javascript/cr-uploader",
+    "java/cr-httprequest",
+    "java/cr-video-processing",
+    "python/cr-uploader",
+    "python/cr-compression",
+    "python/cr-video-processing",
+    "javascript/cr-thumbnail" ]
 
 gv_benchmark_avg_latency = {}
 cr_benchmark_avg_latency = {}
@@ -62,7 +89,9 @@ ax.bar(x - width/2, gv_benchmark_avg_latency.values(), width, label='Graalvisor'
 ax.bar(x + width/2, cr_benchmark_avg_latency.values(), width, label='OpenWisk')
 
 ax.set_ylabel('Time (us)')
+ax.set_yscale('log')
 ax.set_xticks(x, benchmark_labels)
 ax.legend()
+plt.xticks(rotation = 45)
 plt.savefig("plot-latency.pdf")
 plt.show()

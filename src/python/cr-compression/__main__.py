@@ -4,15 +4,16 @@ import stat
 import subprocess
 import shutil
 import tempfile
-import urllib.request
+import requests
 
 def compression(url):
     dir_path = os.path.basename(url)
     file_path = os.path.join(dir_path, os.path.basename(url))
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
-    with urllib.request.urlopen(url) as response, open(file_path, 'wb') as ofile:
-        shutil.copyfileobj(response, ofile)
+    with open(file_path, 'wb') as ofile:
+        response = requests.get(url)
+        ofile.write(response.content)
     return shutil.make_archive(dir_path, 'zip', dir_path)
 
 def main(args):

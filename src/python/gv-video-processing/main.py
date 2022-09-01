@@ -1,12 +1,10 @@
-import datetime
 import os
 import stat
 import subprocess
-import shutil
-import urllib.request
+import requests
 
 def call_ffmpeg(args):
-    ret = subprocess.run([os.path.join("ffmpeg"), '-y'] + args,
+    ret = subprocess.run(["./ffmpeg", '-y'] + args,
             stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE, 
             stderr=subprocess.STDOUT
@@ -36,12 +34,14 @@ def set_ffmpeg_executable():
 
 def videoprocessing(ffmpeg_url, video_url):
     if not os.path.exists("ffmpeg"):
-        with urllib.request.urlopen(ffmpeg_url) as response, open("ffmpeg", 'wb') as ofile:
-            shutil.copyfileobj(response, ofile)
+        with open("ffmpeg", 'wb') as ofile:
+            response = requests.get(ffmpeg_url)
+            ofile.write(response.content)
         set_ffmpeg_executable()
 
-    with urllib.request.urlopen(video_url) as response, open("video.mp4", 'wb') as ofile:
-        shutil.copyfileobj(response, ofile)
+    with open("video.mp4", 'wb') as ofile:
+        response = requests.get(video_url)
+        ofile.write(response.content)
 
     return to_gif("video.mp4", "1")
 
@@ -51,3 +51,5 @@ def main(args):
         return {"result": videoprocessing(ffmpeg_url, video_url)}
     except Exception as e:
         return {"result": str(e)}
+
+#print(main("http://194.210.228.197:8000/ffmpeg;http://194.210.228.197:8000/video.mp4"))

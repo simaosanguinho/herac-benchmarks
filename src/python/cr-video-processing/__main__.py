@@ -1,9 +1,7 @@
-import datetime
 import os
 import stat
 import subprocess
-import shutil
-import urllib.request
+import requests
 
 def call_ffmpeg(args):
     ret = subprocess.run([os.path.join("/tmp", "ffmpeg"), '-y'] + args,
@@ -36,12 +34,14 @@ def set_ffmpeg_executable():
 
 def videoprocessing(ffmpeg_url, video_url):
     if not os.path.exists("/tmp/ffmpeg"):
-        with urllib.request.urlopen(ffmpeg_url) as response, open("/tmp/ffmpeg", 'wb') as ofile:
-            shutil.copyfileobj(response, ofile)
+        with open("/tmp/ffmpeg", 'wb') as ofile:
+            response = requests.get(ffmpeg_url)
+            ofile.write(response.content)
         set_ffmpeg_executable()
 
-    with urllib.request.urlopen(video_url) as response, open("video.mp4", 'wb') as ofile:
-        shutil.copyfileobj(response, ofile)
+    with open("video.mp4", 'wb') as ofile:
+        response = requests.get(video_url)
+        ofile.write(response.content)
 
     return to_gif("video.mp4", "1")
 
