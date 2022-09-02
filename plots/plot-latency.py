@@ -7,31 +7,31 @@ import numpy as np
 results_home = "/home/rbruno/git/graalvm-argo-benchmarks/results"
 
 benchmark_labels = [
-    "java/hello-world",
-    "python/hello-world",
-    "javascript/hello-world",
-    "java/sleep",
-    "python/sleep",
-    "javascript/sleep",
-    "java/file-hashing",
-    "javascript/dynamic-html",
-    "python/dynamic-html",
-    "python/thumbnail",
-    "javascript/uploader",
-    "java/httprequest",
-    "java/video-processing",
-    "python/uploader",
-    "python/compression",
-    "python/video-processing",
-    "javascript/thumbnail" ]
+    "jv/hello-world",
+    "py/hello-world",
+    "js/hello-world",
+#    "java/sleep",
+#    "python/sleep",
+#    "javascript/sleep",
+    "jv/file-hashing",
+    "js/dynamic-html",
+    "py/dynamic-html",
+    "py/thumbnail",
+    "js/uploader",
+    "jv/httprequest",
+    "jv/video-proc",
+    "py/uploader",
+    "py/compression",
+    "py/video-proc",
+    "jv/thumbnail" ]
 
 gv_benchmark_path = [
     "java/gv-hello-world-niuk",
     "python/gv-hello-world-niuk",
     "javascript/gv-hello-world-niuk",
-    "java/gv-sleep-niuk",
-    "python/gv-sleep-niuk",
-    "javascript/gv-sleep-niuk",
+#    "java/gv-sleep-niuk",
+#    "python/gv-sleep-niuk",
+#    "javascript/gv-sleep-niuk",
     "java/gv-file-hashing-niuk",
     "javascript/gv-dynamic-html-niuk",
     "python/gv-dynamic-html-niuk",
@@ -48,9 +48,9 @@ cr_benchmark_path = [
     "java/cr-hello-world",
     "python/cr-hello-world",
     "javascript/cr-hello-world",
-    "java/cr-sleep",
-    "python/cr-sleep", 
-    "javascript/cr-sleep",
+#    "java/cr-sleep",
+#    "python/cr-sleep", 
+#    "javascript/cr-sleep",
     "java/cr-file-hashing",
     "javascript/cr-dynamic-html",
     "python/cr-dynamic-html",
@@ -67,19 +67,20 @@ gv_benchmark_avg_latency = {}
 cr_benchmark_avg_latency = {}
 
 def read_benchmark_latency(path, values):
-    benchmark_latency = []
-    with open('../results/' + path + '/app.log') as file:
-        for line in file:
-            if 'Time taken:' in line:
-                benchmark_latency.append(int(line.split()[2]))
-    last_five_elements = benchmark_latency[-5:]
-    values[path] = int(sum(last_five_elements) / len(last_five_elements))
+    try:
+        benchmark_latency = []
+        with open('../results/' + path + '/app.log') as file:
+            for line in file:
+                if 'Time taken:' in line:
+                    benchmark_latency.append(int(line.split()[2]))
+        last_five_elements = benchmark_latency[-5:]
+        values[path] = int(sum(last_five_elements) / len(last_five_elements))
+    except Exception as e:
+        print("Error processing " + path + ":")
+        raise e
 
 for path in gv_benchmark_path: read_benchmark_latency(path, gv_benchmark_avg_latency)
 for path in cr_benchmark_path: read_benchmark_latency(path, cr_benchmark_avg_latency)
-
-print(gv_benchmark_avg_latency)
-print(cr_benchmark_avg_latency)
 
 x = np.arange(len(benchmark_labels))
 width = 0.25

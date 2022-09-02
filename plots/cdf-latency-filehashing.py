@@ -37,5 +37,5 @@ ax1 = fig.add_axes([0.55, 0.3, 0.3, 0.4])
 ax1.set_ylabel('Memory Footprint (KBs)')
 ax1.bar(['GV Unikernel', 'JVM VM'], y, width = .4)
 
-
+plt.show()
 plt.savefig("cdf-latency-filehashing.pdf")
