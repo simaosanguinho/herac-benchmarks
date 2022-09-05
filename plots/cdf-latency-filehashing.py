@@ -12,8 +12,8 @@ def read_benchmark_latency(path):
     return benchmark_latency
 
 
-cr = read_benchmark_latency('../results/java/cr-file-hashing/app.log')
-gv = read_benchmark_latency('../results/java/gv-file-hashing-niuk/app.log')
+cr = read_benchmark_latency('../results/java/cr-file-hashing-test-10-1-2048/app.log')
+gv = read_benchmark_latency('../results/java/gv-file-hashing-niuk-test-10-1-2048/app.log')
 
 x_cr = np.sort(cr)
 x_gv = np.sort(gv)

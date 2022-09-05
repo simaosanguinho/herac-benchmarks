@@ -26,42 +26,42 @@ benchmark_labels = [
     "jv/thumbnail" ]
 
 gv_benchmark_path = [
-    "java/gv-hello-world-niuk",
-    "python/gv-hello-world-niuk",
-    "javascript/gv-hello-world-niuk",
-#    "java/gv-sleep-niuk",
-#    "python/gv-sleep-niuk",
-#    "javascript/gv-sleep-niuk",
-    "java/gv-file-hashing-niuk",
-    "javascript/gv-dynamic-html-niuk",
-    "python/gv-dynamic-html-niuk",
-    "python/gv-thumbnail-niuk",
-    "javascript/gv-uploader-niuk",
-    "java/gv-httprequest-niuk",
-    "java/gv-video-processing-niuk",
-    "python/gv-uploader-niuk",
-    "python/gv-compression-niuk",
-    "python/gv-video-processing-niuk",
-    "javascript/gv-thumbnail-niuk" ]
+    "java/gv-hello-world-niuk-test-10-1-2048",
+    "python/gv-hello-world-niuk-test-10-1-2048",
+    "javascript/gv-hello-world-niuk-test-10-1-2048",
+#    "java/gv-sleep-niuk-test-10-1-2048",
+#    "python/gv-sleep-niuk-test-10-1-2048",
+#    "javascript/gv-sleep-niuk-test-10-1-2048",
+    "java/gv-file-hashing-niuk-test-10-1-2048",
+    "javascript/gv-dynamic-html-niuk-test-10-1-2048",
+    "python/gv-dynamic-html-niuk-test-10-1-2048",
+    "python/gv-thumbnail-niuk-test-10-1-2048",
+    "javascript/gv-uploader-niuk-test-10-1-2048",
+    "java/gv-httprequest-niuk-test-10-1-2048",
+    "java/gv-video-processing-niuk-test-10-1-2048",
+    "python/gv-uploader-niuk-test-10-1-2048",
+    "python/gv-compression-niuk-test-10-1-2048",
+    "python/gv-video-processing-niuk-test-10-1-2048",
+    "javascript/gv-thumbnail-niuk-test-10-1-2048" ]
 
 cr_benchmark_path = [
-    "java/cr-hello-world",
-    "python/cr-hello-world",
-    "javascript/cr-hello-world",
-#    "java/cr-sleep",
-#    "python/cr-sleep", 
-#    "javascript/cr-sleep",
-    "java/cr-file-hashing",
-    "javascript/cr-dynamic-html",
-    "python/cr-dynamic-html",
-    "python/cr-thumbnail",
-    "javascript/cr-uploader",
-    "java/cr-httprequest",
-    "java/cr-video-processing",
-    "python/cr-uploader",
-    "python/cr-compression",
-    "python/cr-video-processing",
-    "javascript/cr-thumbnail" ]
+    "java/cr-hello-world-test-10-1-2048",
+    "python/cr-hello-world-test-10-1-2048",
+    "javascript/cr-hello-world-test-10-1-2048",
+#    "java/cr-sleep-test-10-1-2048",
+#    "python/cr-sleep-test-10-1-2048", 
+#    "javascript/cr-sleep-test-10-1-2048",
+    "java/cr-file-hashing-test-10-1-2048",
+    "javascript/cr-dynamic-html-test-10-1-2048",
+    "python/cr-dynamic-html-test-10-1-2048",
+    "python/cr-thumbnail-test-10-1-2048",
+    "javascript/cr-uploader-test-10-1-2048",
+    "java/cr-httprequest-test-10-1-2048",
+    "java/cr-video-processing-test-10-1-2048",
+    "python/cr-uploader-test-10-1-2048",
+    "python/cr-compression-test-10-1-2048",
+    "python/cr-video-processing-test-10-1-2048",
+    "javascript/cr-thumbnail-test-10-1-2048" ]
 
 gv_benchmark_avg_latency = {}
 cr_benchmark_avg_latency = {}
@@ -94,5 +94,5 @@ ax.set_yscale('log')
 ax.set_xticks(x, benchmark_labels)
 ax.legend()
 plt.xticks(rotation = 45)
-plt.savefig("plot-latency.pdf")
+plt.savefig("warm-latency.pdf")
 plt.show()
