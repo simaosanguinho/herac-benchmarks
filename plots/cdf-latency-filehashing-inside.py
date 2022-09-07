@@ -30,12 +30,14 @@ plt.ylabel('Cumulative Distribution Function')
 plt.xlabel('Request Latency (us)')
 plt.legend()
 
+# ../results/java/gv-file-hashing-svm/lambda.rss
 # ../results/java/gv-file-hashing-niuk/lambda.rss
+# Taken by hand by running docker run and curling.
 # ../results/java/cr-file-hashing/lambda.rss
-y = [179380, 223460 ]
+y = [71836, 179380, 46872, 223460 ]
 ax1 = fig.add_axes([0.55, 0.3, 0.3, 0.4])
 ax1.set_ylabel('Memory Footprint (KBs)')
-ax1.bar(['GV Unikernel', 'JVM VM'], y, width = .4)
+ax1.bar(['GV', 'GV VM', 'JVM', 'JVM VM'], y, width = .4)
 
 plt.show()
 plt.savefig("cdf-latency-filehashing.pdf")
