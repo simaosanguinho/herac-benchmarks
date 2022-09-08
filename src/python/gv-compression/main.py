@@ -22,4 +22,4 @@ def main(args):
     except Exception as e:
         return {"result": str(e)}
 
-print(main("http://194.210.228.197:8000/video.mp4"))
+#print(main("http://194.210.228.197:8000/video.mp4"))
