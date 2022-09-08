@@ -30,13 +30,13 @@ axes[0].set_ylabel('Cumulative Distribution Function')
 axes[0].set_xlabel('Request Latency (us)')
 axes[0].legend()
 
-# ../results/java/gv-file-hashing-svm/lambda.rss
+# ../results/java/gv-file-hashing-svm/lambda.rss (with and without js+py)
 # ../results/java/gv-file-hashing-niuk/lambda.rss
 # Taken by hand by running docker run and curling.
 # ../results/java/cr-file-hashing/lambda.rss
-y = [71836, 179380, 46872, 223460 ]
+y = [34724, 71836, 179380, 46872, 223460 ]
 axes[1].set_ylabel('Memory Footprint (KBs)')
-axes[1].bar(['GV', 'GV\n(microVM)', 'JVM', 'JVM\n(microVM)'], y, width = .4)
+axes[1].bar(['GV-JV', 'GV', 'GV\n(microVM)', 'JVM', 'JVM\n(microVM)'], y, width = .4)
 
 fig.tight_layout()
 #plt.show()
