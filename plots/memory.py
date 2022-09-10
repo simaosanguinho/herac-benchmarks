@@ -35,13 +35,13 @@ gv_benchmark_path = [
 #    "javascript/gv-sleep-niuk-benchmark-10-1-2048",
     "java/gv-file-hashing-niuk-benchmark-8-1-2048",
     "javascript/gv-dynamic-html-niuk-benchmark-8-1-2048",
-    "python/gv-dynamic-html-niuk-benchmark-4-1-2048",
-    "python/gv-thumbnail-niuk-benchmark-4-1-2048",
+    "python/gv-dynamic-html-niuk-benchmark-8-1-2048",
+    "python/gv-thumbnail-niuk-benchmark-8-1-2048",
     "javascript/gv-uploader-niuk-benchmark-8-1-2048",
     "java/gv-httprequest-niuk-benchmark-8-1-2048",
     "java/gv-video-processing-niuk-benchmark-2-1-2048",
-    "python/gv-uploader-niuk-benchmark-4-1-2048",
-    "python/gv-compression-niuk-benchmark-2-1-2048",
+    "python/gv-uploader-niuk-benchmark-8-1-2048",
+    "python/gv-compression-niuk-benchmark-4-1-2048",
     "python/gv-video-processing-niuk-benchmark-4-1-2048",
     "javascript/gv-thumbnail-niuk-benchmark-4-1-2048" 
 ]
@@ -55,8 +55,8 @@ cr_benchmark_path = [
 #    "javascript/cr-sleep-benchmark-10-1-2048",
     "java/cr-file-hashing-benchmark-1-1-256",
     "javascript/cr-dynamic-html-benchmark-1-1-256",
-    "python/cr-dynamic-html-benchmark-1-1-512",
-    "python/cr-thumbnail-benchmark-1-1-512",
+    "python/cr-dynamic-html-benchmark-1-1-256",
+    "python/cr-thumbnail-benchmark-1-1-256",
     "javascript/cr-uploader-benchmark-1-1-256",
     "java/cr-httprequest-benchmark-1-1-256",
     "java/cr-video-processing-benchmark-1-1-1024",
@@ -128,5 +128,7 @@ ax.set_ylim(ymin=0.0001)
 ax.set_xticks(x, benchmark_labels)
 ax.legend()
 plt.xticks(rotation = 45)
+fig.set_figwidth(10)
+fig.set_figheight(5)
 plt.savefig("memory.pdf", bbox_inches='tight')
 plt.show()
