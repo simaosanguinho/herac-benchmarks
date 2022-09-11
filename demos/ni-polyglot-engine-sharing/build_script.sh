@@ -18,6 +18,4 @@ function build_app {
 
 ./gradlew clean shadowJar assemble
 
-$JAVA_HOME/bin/java -cp build/libs/demo-polyglot-engine-sharing-1.0-all.jar com.demo_polyglot.DemoPolyglot python ../../src/python/gv-thumbnail/main.py http://localhost:8000/snap.png
-
-#build_app
+build_app
