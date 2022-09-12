@@ -104,9 +104,9 @@ for path in gv_benchmark_path: read_benchmark_rss(path, gv_benchmark_rss)
 for path in cr_benchmark_path: read_benchmark_rss(path, cr_benchmark_rss)
 
 for path in cr_benchmark_tput:
-    cr_benchmark_eff[path] = cr_benchmark_tput[path] / cr_benchmark_rss[path]
+    cr_benchmark_eff[path] = cr_benchmark_tput[path] / cr_benchmark_rss[path] * 1024
 for path in gv_benchmark_tput:
-    gv_benchmark_eff[path] = gv_benchmark_tput[path] / gv_benchmark_rss[path]
+    gv_benchmark_eff[path] = gv_benchmark_tput[path] / gv_benchmark_rss[path] * 1024
 
 print(gv_benchmark_tput)
 print(cr_benchmark_tput)
@@ -122,13 +122,13 @@ fig, ax = plt.subplots()
 ax.bar(x - width/2, gv_benchmark_eff.values(), width, label='Graalvisor')
 ax.bar(x + width/2, cr_benchmark_eff.values(), width, label='OpenWisk')
 
-ax.set_ylabel('Throughput/Memory (Ops/Second/MB)')
+ax.set_ylabel('Tput/Mem (Ops/Second/GB)')
 ax.set_yscale('log')
-ax.set_ylim(ymin=0.0001)
+ax.set_ylim(ymin=0.1)
 ax.set_xticks(x, benchmark_labels)
 ax.legend()
 plt.xticks(rotation = 45)
 fig.set_figwidth(10)
-fig.set_figheight(5)
+fig.set_figheight(3)
 plt.savefig("memory.pdf", bbox_inches='tight')
 plt.show()
