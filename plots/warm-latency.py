@@ -13,15 +13,15 @@ benchmark_labels = [
 #    "java/sleep",
 #    "python/sleep",
 #    "javascript/sleep",
-    "jv/fhashing",
-    "js/dy-html",
-    "py/dy-html",
+    "jv/hashing",
+    "js/html",
+    "py/html",
     "py/thumbnail",
     "js/uploader",
     "jv/rest",
     "jv/video",
     "py/uploader",
-    "py/compression",
+    "py/compress",
     "py/video",
     "jv/thumbnail"
 ]
@@ -85,20 +85,32 @@ def read_benchmark_latency(path, values):
 for path in gv_benchmark_path: read_benchmark_latency(path, gv_benchmark_avg_latency)
 for path in cr_benchmark_path: read_benchmark_latency(path, cr_benchmark_avg_latency)
 
+print("########## Latency# ##########")
+for key in gv_benchmark_avg_latency:
+    print("{benchmark}: {value} ms".format(benchmark=key, value=gv_benchmark_avg_latency[key]))
+for key in cr_benchmark_avg_latency:
+    print("{benchmark}: {value} ms".format(benchmark=key, value=cr_benchmark_avg_latency[key]))
+
+print("########## Latency Over. #####")
+for i in range(len(benchmark_labels)):
+    print("{benchmark}: {value} latency overhead w/ cr".format(benchmark=benchmark_labels[i], value=cr_benchmark_avg_latency[cr_benchmark_path[i]]/gv_benchmark_avg_latency[gv_benchmark_path[i]]))
+
 
 x = np.arange(len(benchmark_labels))
 width = 0.25
 
 fig, ax = plt.subplots()
-ax.bar(x - width/2, gv_benchmark_avg_latency.values(), width, label='Graalvisor')
-ax.bar(x + width/2, cr_benchmark_avg_latency.values(), width, label='OpenWisk')
+ax.bar(x - width/2, gv_benchmark_avg_latency.values(), width, hatch='//', label='Graalvisor', alpha=0.75 )
+ax.bar(x + width/2, cr_benchmark_avg_latency.values(), width, hatch='..', label='OpenWisk', alpha=0.75)
 
 ax.set_ylabel('Time (ms)')
 ax.set_yscale('log')
 ax.set_ylim(ymin=1)
 ax.set_xticks(x, benchmark_labels)
 ax.legend()
-plt.xticks(rotation = 45)
+ax.set_axisbelow(True)
+plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
+plt.xticks(rotation = 35)
 fig.set_figwidth(10)
 fig.set_figheight(3)
 plt.savefig("warm-latency.pdf", bbox_inches='tight')

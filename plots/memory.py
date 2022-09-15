@@ -13,9 +13,9 @@ benchmark_labels = [
 #    "java/sleep",
 #    "python/sleep",
 #    "javascript/sleep",
-    "jv/fhashing",
-    "js/dy-html",
-    "py/dy-html",
+    "jv/hashing",
+    "js/html",
+    "py/html",
     "py/thumbnail",
     "js/uploader",
     "jv/rest",
@@ -108,26 +108,43 @@ for path in cr_benchmark_tput:
 for path in gv_benchmark_tput:
     gv_benchmark_eff[path] = gv_benchmark_tput[path] / gv_benchmark_rss[path] * 1024
 
-print(gv_benchmark_tput)
-print(cr_benchmark_tput)
-print(gv_benchmark_rss)
-print(cr_benchmark_rss)
-print(gv_benchmark_eff)
-print(cr_benchmark_eff)
+print("########## Throughput ##########")
+for key in gv_benchmark_tput:
+    print("{benchmark}: {value} ops/s".format(benchmark=key, value=gv_benchmark_tput[key]))
+for key in cr_benchmark_tput:
+    print("{benchmark}: {value} ops/s".format(benchmark=key, value=cr_benchmark_tput[key]))
+
+print("########## Memory ##############")
+for key in gv_benchmark_tput:
+    print("{benchmark}: {value} KBs".format(benchmark=key, value=gv_benchmark_rss[key]))
+for key in cr_benchmark_tput:
+    print("{benchmark}: {value} KBs".format(benchmark=key, value=cr_benchmark_rss[key]))
+
+print("########## Efficiency ##########")
+for key in gv_benchmark_eff:
+    print("{benchmark}: {value} ops/sec/GB".format(benchmark=key, value=gv_benchmark_eff[key]))
+for key in cr_benchmark_eff:
+    print("{benchmark}: {value} ops/sec/GB".format(benchmark=key, value=cr_benchmark_eff[key]))
+
+print("########## Efficiency Imp. #####")
+for i in range(len(benchmark_labels)):
+    print("{benchmark}: {value} efficiency improvement w/ gv".format(benchmark=benchmark_labels[i], value=gv_benchmark_eff[gv_benchmark_path[i]]/cr_benchmark_eff[cr_benchmark_path[i]]))
 
 x = np.arange(len(benchmark_labels))
 width = 0.25
 
 fig, ax = plt.subplots()
-ax.bar(x - width/2, gv_benchmark_eff.values(), width, label='Graalvisor')
-ax.bar(x + width/2, cr_benchmark_eff.values(), width, label='OpenWisk')
+ax.bar(x - width/2, gv_benchmark_eff.values(), width, hatch='//', label='Graalvisor', alpha=0.75)
+ax.bar(x + width/2, cr_benchmark_eff.values(), width, hatch='..', label='OpenWisk', alpha=0.75)
 
 ax.set_ylabel('Tput/Mem (Ops/Second/GB)')
 ax.set_yscale('log')
 ax.set_ylim(ymin=0.1)
 ax.set_xticks(x, benchmark_labels)
 ax.legend()
-plt.xticks(rotation = 45)
+ax.set_axisbelow(True)
+plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
+plt.xticks(rotation = 35)
 fig.set_figwidth(10)
 fig.set_figheight(3)
 plt.savefig("memory.pdf", bbox_inches='tight')
