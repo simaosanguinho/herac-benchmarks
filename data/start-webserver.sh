@@ -11,4 +11,8 @@ then
     rm ffmpeg-release-amd64-static.tar.xz
 fi
 
+if [ ! -f tensorflow_inception_graph.pb ];
+then
+    wget https://github.com/martinwicke/tensorflow-tutorial/raw/master/tensorflow_inception_graph.pb
+fi
 python -m http.server 8000
