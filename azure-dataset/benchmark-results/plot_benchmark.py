@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -6,12 +8,20 @@ gv = np.loadtxt("gv_footprint.txt")
 cr = np.loadtxt("cr_footprint.txt")
 ph = np.loadtxt("ph_footprint.txt")
 
-plt.plot(gv, linestyle = "dotted", label = "GV")
-plt.plot(cr, linestyle = "dotted", label = "CR")
-plt.plot(ph, linestyle = "dotted", label = "PH")
+fig, axis = plt.subplots()
+fig.set_figwidth(5)
+fig.set_figheight(3)
+plt.plot(gv, linestyle = "solid", label = "Graalvisor")
+plt.plot(cr, linestyle = "dashed", label = "OpenWhisk")
+plt.plot(ph, linestyle = "dotted", label = "Photons")
 plt.legend()
 plt.xlabel("Time (s)")
 plt.ylabel("Memory (MB)")
+plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
+plt.legend(ncol=3, loc='upper center')
+axis.set_ylim(ymax=20000)
+fig.tight_layout()
+plt.savefig("azure-footprint.pdf")
 plt.show()
 
 
@@ -59,15 +69,22 @@ y_cr = np.arange(len(cr)) / float(len(cr))
 y_gv = np.arange(len(gv)) / float(len(gv))
 y_ph = np.arange(len(ph)) / float(len(ph))
 
-plt.plot(x_cr, y_cr, label='CR')
-plt.plot(x_gv, y_gv, label='GV')
-plt.plot(x_ph, y_ph, label='PH')
+fig, axis = plt.subplots()
+fig.set_figwidth(5)
+fig.set_figheight(3)
+plt.plot(x_gv, y_gv, linestyle="solid", label='Graalvisor')
+plt.plot(x_cr, y_cr, linestyle="dashed",  label='OpenWhisk')
+plt.plot(x_ph, y_ph, linestyle="dotted", label='Photons')
 plt.ylim(ymin=0, ymax=1)
-plt.xlim(xmin=0)
+plt.xlim(xmin=0, xmax=10000)
 plt.ylabel('Cumulative Distribution Function')
-plt.xlabel('Average Request Latency (ms)')
-plt.legend()
+plt.xlabel('Latency (ms)')
+plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
+plt.legend(ncol=1, loc='lower right')
+fig.tight_layout()
+plt.savefig("azure-latency.pdf")
 plt.show()
+
 
 
 # Make CDF plot for max
