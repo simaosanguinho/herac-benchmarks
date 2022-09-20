@@ -24,7 +24,8 @@ benchmark_labels = [
     "py/compress",
     "py/video",
     "jv/thumbnail",
-    "jv/classify"
+    "jv/classify",
+#    "py/mst"
 ]
 
 gv_benchmark_path = [
@@ -45,7 +46,8 @@ gv_benchmark_path = [
     "python/gv-compression-niuk-test-100-1-2048",
     "python/gv-video-processing-niuk-test-50-1-2048",
     "javascript/gv-thumbnail-niuk-test-100-1-2048",
-    "java/gv-classify-niuk-test-50-1-2048"
+    "java/gv-classify-niuk-test-50-1-2048",
+#    "python/gv-mst-niuk-test-100-1-2048"
 ]
 
 cr_benchmark_path = [
@@ -66,7 +68,8 @@ cr_benchmark_path = [
     "python/cr-compression-test-100-1-2048",
     "python/cr-video-processing-test-50-1-2048",
     "javascript/cr-thumbnail-test-100-1-2048",
-    "java/cr-classify-test-50-1-2048"
+    "java/cr-classify-test-50-1-2048",
+#    "python/cr-mst-test-100-1-2048"
 ]
 
 gv_benchmark_avg_latency = {}
