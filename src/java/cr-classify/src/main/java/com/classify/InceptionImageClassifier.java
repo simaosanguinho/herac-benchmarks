@@ -63,7 +63,7 @@ public class InceptionImageClassifier implements AutoCloseable {
         return predict_image(image, 224, 224);
     }
 
-    public String predict_image(BufferedImage image, int imgWidth, int imgHeight){
+    public String predict_image(BufferedImage image, int imgWidth, int imgHeight) {
         int argmax = 0;
 
         image = resizeImage(image, imgWidth, imgHeight);
@@ -76,7 +76,6 @@ public class InceptionImageClassifier implements AutoCloseable {
                              .fetch("output").run().get(0).expect(Float.class)) {
             final long[] rshape = result.shape();
             if (result.numDimensions() != 2 || rshape[0] != 1) {
-                graph.close();
                 imageTensor.close();
                 throw new RuntimeException(
                         String.format(
@@ -94,12 +93,10 @@ public class InceptionImageClassifier implements AutoCloseable {
                 }
             }
         } catch(Exception e) {
-            graph.close();
             imageTensor.close();
             e.printStackTrace();
         }
 
-        graph.close();
         imageTensor.close();
 
         if(argmax < labels.size()) {

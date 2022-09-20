@@ -28,6 +28,8 @@ axes[0].set_ylim(ymin=0, ymax=1)
 axes[0].set_xlim(xmin=0)
 axes[0].set_ylabel('Cumulative Distribution Function')
 axes[0].set_xlabel('Request Latency (us)')
+axes[0].set_axisbelow(True)
+axes[0].grid(axis = 'y', linestyle = '--', linewidth = 0.25)
 axes[0].legend()
 
 # ../results/java/gv-file-hashing-svm/lambda.rss (with and without js+py)
@@ -37,6 +39,8 @@ axes[0].legend()
 y = [34724, 71836, 179380, 46872, 223460 ]
 axes[1].set_ylabel('Memory Footprint (KBs)')
 axes[1].bar(['GV-JV', 'GV', 'GV\n(microVM)', 'JVM', 'JVM\n(microVM)'], y, width = .4)
+axes[1].set_axisbelow(True)
+axes[1].grid(axis = 'y', linestyle = '--', linewidth = 0.25)
 
 fig.tight_layout()
 #plt.show()

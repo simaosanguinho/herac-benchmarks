@@ -10,19 +10,27 @@ import org.graalvm.word.WordFactory;
 
 public class IsolateScalabilityTest {
 
+    @CEntryPoint
+    private static long execute(@CEntryPoint.IsolateThreadContext IsolateThread context, long startTime) {
+           long finishTime = System.nanoTime();
+           return (finishTime - startTime) / 1000;
+    }
+
     public static void main(String[] args) throws Exception {
         int target = Integer.parseInt(args[0]);
-        Isolates.CreateIsolateParameters.Builder builder = new Isolates.CreateIsolateParameters.Builder();
-        builder.auxiliaryImageReservedSpaceSize(WordFactory.zero());
-        builder.reservedAddressSpaceSize(WordFactory.unsigned(8388608));
-        Isolates.CreateIsolateParameters parameters = builder.build();
+        long total = 0;
+//        Isolates.CreateIsolateParameters.Builder builder = new Isolates.CreateIsolateParameters.Builder();
+//        builder.auxiliaryImageReservedSpaceSize(WordFactory.zero());
+//        builder.reservedAddressSpaceSize(WordFactory.unsigned(8388608));
+//        Isolates.CreateIsolateParameters parameters = builder.build();
+        Isolates.CreateIsolateParameters parameters = Isolates.CreateIsolateParameters.getDefault();
 
-        long start = System.nanoTime();
         for (int i = 0; i < target; i++) {
-            Isolates.createIsolate(parameters);
+            long startTime = System.nanoTime();
+            IsolateThread it = Isolates.createIsolate(parameters);
+            total += execute(it, startTime);
         }
-        long finish = System.nanoTime();
 
-        System.out.println(String.format("Creating %s threads took %s us!", target, ((finish - start) / 1000)));
+        System.out.println(String.format("Creating %s threads took %s us!", target, (total / target)));
     }
 }

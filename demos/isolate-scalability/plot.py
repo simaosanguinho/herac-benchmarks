@@ -11,7 +11,6 @@ avg_memory = []
 
 for isolate in isolates:
   latency = np.loadtxt('latency-' + str(isolate) + '.dat', delimiter='\n')
-  latency = latency / isolate
   avg_latency.append(np.average(latency))
   memory = np.loadtxt('memory-' + str(isolate) + '.dat', delimiter='\n')
   memory = memory / isolate
@@ -30,5 +29,9 @@ ax1.set_xlabel('Isolates in Graalvisor process')
 ax2 = ax1.twinx()
 ax2.bar(x + width/2, avg_memory, width, label='Isolate Footprint', color='red', hatch='x')
 ax2.set_ylabel('Memory Footprint (KB)')
+ax1.set_axisbelow(True)
+ax2.set_axisbelow(True)
+ax1.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
+
 fig.legend(loc="upper right", bbox_to_anchor=(.82,.875))
 plt.savefig("isolate-scalability.pdf")

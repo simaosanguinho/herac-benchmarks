@@ -29,7 +29,7 @@ for i in range(5, 9):
     ax1.get_children()[i].set_hatch("..")
 
 legends = [
-    matplotlib.patches.Patch(hatch="//", label="Baremetal Runtimes", alpha=0.75),
+    matplotlib.patches.Patch(hatch="//", label="Bare-metal Runtimes", alpha=0.75),
     matplotlib.patches.Patch(hatch="..", label="microVM Runtimes", alpha=0.75),
 ]
 

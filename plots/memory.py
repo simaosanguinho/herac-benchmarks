@@ -23,7 +23,8 @@ benchmark_labels = [
     "py/uploader",
     "py/compress",
     "py/video",
-    "jv/thumbnail" 
+    "jv/thumbnail",
+    "jv/classify"
 ]
 
 gv_benchmark_path = [
@@ -43,7 +44,8 @@ gv_benchmark_path = [
     "python/gv-uploader-niuk-benchmark-8-1-2048",
     "python/gv-compression-niuk-benchmark-4-1-2048",
     "python/gv-video-processing-niuk-benchmark-4-1-2048",
-    "javascript/gv-thumbnail-niuk-benchmark-4-1-2048" 
+    "javascript/gv-thumbnail-niuk-benchmark-4-1-2048",
+    "java/gv-classify-niuk-benchmark-1-1-2048",
 ]
 
 cr_benchmark_path = [
@@ -63,7 +65,8 @@ cr_benchmark_path = [
     "python/cr-uploader-benchmark-1-1-256",
     "python/cr-compression-benchmark-1-1-256",
     "python/cr-video-processing-benchmark-1-1-512",
-    "javascript/cr-thumbnail-benchmark-1-1-512"
+    "javascript/cr-thumbnail-benchmark-1-1-512",
+    "java/cr-classify-benchmark-1-1-1024",
 ]
 
 # Throughput in ops/s.

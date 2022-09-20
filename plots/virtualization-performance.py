@@ -30,7 +30,7 @@ plt.annotate('JVM', xy=(x[3] + 15, y[3] - 2.5))
 plt.annotate('Firecracker', xy=(x[4] + 20, y[4] - 50))
 plt.annotate("Docker", xy=(x[5] - 35, y[5] + 20))
 #plt.annotate("Qemu", xy=(x[6] - 25, y[6]), xytext=(x[6] - 110, y[6]), arrowprops={"arrowstyle":"->", "color":"gray"})
-plt.annotate("Qemu", xy=(x[6] + 15, y[6] + 20))
+plt.annotate("QEMU", xy=(x[6] + 15, y[6] + 20))
 
 #plt.fill_betweenx([0, 200], [0, 0], [100, 200])
 #plt.fill_between([100, 200], [1, 1], [1000, 1000])
