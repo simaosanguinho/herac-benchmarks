@@ -4,7 +4,7 @@ import matplotlib
 from matplotlib import pyplot as plt
 
 # Isolate, CPython, V8, JVM, Firacracker, Docker, Qemu
-x =    [0.5, 8.72, 36.56, 38.32, 63.54, 46.95, 118.54] # Memory
+x =    [1, 8.72, 36.56, 38.32, 63.54, 46.95, 118.54] # Memory
 y =    [0.47, 13.1, 40.8, 26.9, 166.7, 257.1, 241.7] # Latency
 
 matplotlib.rcParams.update({'font.size': 16})
