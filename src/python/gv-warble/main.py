@@ -16,4 +16,4 @@ def main(args):
     except Exception as e:
         return {"result": str(e)}
 
-print(main("['-v', '{PRINT(\"test\")}']"))
+# print(main("['-v', '{PRINT(\"test\")}']"))
