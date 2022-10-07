@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for language in language/*
+for language in ../src/language/*
 do
 	for benchmark in $language/*
 	do
