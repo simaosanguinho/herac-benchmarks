@@ -33,18 +33,31 @@ def plot(suite, log_files):
     pyplot_all(data, output_all)
 
 
-def pyplot_one(data, output_file):
-    pass
+def pyplot_one(y, output_file):
+    plt.clf()
+
+    n = len(y)
+    x = range(1, n+1)
+    print(x)
+    print(y)
+    
+    plt.title(output_file)
+    plt.ylabel("t (s)")
+    plt.tick_params(bottom=False)
+    plt.xticks(rotation=30, ha='center')
+
+    plt.bar(x, y)
+
+    plt.savefig(output_file)
+    
 
 def pyplot_all(data, output_file):
+    plt.clf()
+
     labels = data.keys()
     avg_times = list(map(lambda l: mean(data[l]), labels))
     std_dev = list(map(lambda l: np.std(data[l]), labels))
     n = len(labels)
-
-    print(labels)
-    print(avg_times)
-    print(std_dev)
 
     SMALL_SIZE = 12
     MEDIUM_SIZE = 15
@@ -62,7 +75,7 @@ def pyplot_all(data, output_file):
     plt.figure(figsize=(10,14))
 
     plt.title(suite)
-    plt.ylabel("t (ns)")
+    plt.ylabel("t (s)")
     plt.tick_params(bottom=False)
     plt.xticks(rotation=30, ha='center')
 
