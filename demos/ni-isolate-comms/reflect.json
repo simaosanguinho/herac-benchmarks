@@ -1,0 +1,4 @@
+[
+  { "name": "com.demo_ni_isolate_comms.DemoIsolateComms", "allPublicFields": true },
+  { "name": "com.demo_ni_isolate_comms.DemoIsolateComms", "allPublicMethods": true }
+]
