@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ $# -eq 0 ]; then
+    echo "usage $0 iter_count"
+    exit 1
+fi
+
 set -xe;
 
 source=test_malloc

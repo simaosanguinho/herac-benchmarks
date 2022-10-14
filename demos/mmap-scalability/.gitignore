@@ -1,3 +1,6 @@
+plots/
+*.log
+
 ### C
 # Prerequisites
 *.d

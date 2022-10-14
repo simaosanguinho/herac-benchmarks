@@ -38,8 +38,6 @@ def pyplot_one(y, output_file):
 
     n = len(y)
     x = range(1, n+1)
-    print(x)
-    print(y)
     
     plt.title(output_file)
     plt.ylabel("t (s)")
@@ -107,6 +105,12 @@ def sanity_check(suite, data):
 
 
 if __name__ == '__main__':
+
+    try:
+        import shutil
+        shutil.rmtree('plots')
+    except FileNotFoundError:
+        pass
 
     def discover_log_files(suite):
         if os.path.isdir(suite) and suite != 'plots':
