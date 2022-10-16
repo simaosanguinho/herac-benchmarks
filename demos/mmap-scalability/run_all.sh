@@ -8,10 +8,9 @@ fi
 set -e;
 
 for d in */ ; do
-    if [ $d == "plots/" ]; then
-        continue
-    fi
     pushd $d
-    ./run.sh $@
+    if [ ! -f .testignore ]; then
+        ./run.sh $@
+    fi
     popd
 done

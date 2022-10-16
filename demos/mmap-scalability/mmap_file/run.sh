@@ -2,12 +2,12 @@
 
 set -xe;
 
-source=test_malloc
+source=test_mmap_file
 tests=(
-    malloc_no_init_bench
-    malloc_init_bench
-    malloc_no_init_no_free_bench
-    malloc_init_no_free_bench
+    mmap_no_init_bench
+    mmap_init_bench
+    mmap_no_init_no_unmap_bench
+    mmap_init_no_unmap_bench
 )
 
 gcc $source.c ../utils/*.c -o $source.out -Wall -Wextra
