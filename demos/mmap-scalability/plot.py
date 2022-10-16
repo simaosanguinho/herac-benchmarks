@@ -109,6 +109,8 @@ if __name__ == '__main__':
     try:
         import shutil
         shutil.rmtree('plots')
+        pathlib.Path('plots').mkdir()
+        pathlib.Path('plots/.testignore').touch()
     except FileNotFoundError:
         pass
 
