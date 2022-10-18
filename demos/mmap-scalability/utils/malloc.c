@@ -21,7 +21,21 @@ test_malloc_t find_malloc_t(test_malloc_t test_functions[], int n, const char* t
     return test;
 }
 
-double malloc_init_step(size_t length)
+void malloc_bench_harness(test_malloc_t func, int n, int length)
+{
+    double accum = 0;
+
+    for (int i = 0; i < n; i++) {
+        double t = func.function(length); 
+        printf("%.9lf\n", t);
+        accum += t;
+    }
+
+    double avg = accum / n;
+    UTIL_LOGF("avg: %.9lf", avg);
+}
+
+double malloc_init(size_t length)
 {
     UTIL_CLOCK_INIT
 
@@ -37,21 +51,7 @@ double malloc_init_step(size_t length)
     return UTIL_CLOCK_DELTA;
 }
 
-void malloc_init_bench(int n, size_t length)
-{
-    double accum = 0;
-
-    for (int i = 0; i < n; i++) {
-        double t = malloc_init_step(length); 
-        printf("%.9lf\n", t);
-        accum += t; 
-    }
-
-    double avg = accum / n;
-    UTIL_LOGF("avg: %.9lf", avg);
-}
-
-double malloc_no_init_step(size_t length)
+double malloc_no_init(size_t length)
 {
     UTIL_CLOCK_INIT
 
@@ -64,21 +64,7 @@ double malloc_no_init_step(size_t length)
     return nanos(start, stop);
 }
 
-void malloc_no_init_bench(int n, size_t length) 
-{
-    double accum = 0;
-
-    for (int i = 0; i < n; i++) {
-        double t = malloc_no_init_step(length); 
-        printf("%.9lf\n", t);
-        accum += t; 
-    }
-
-    double avg = accum / n;
-    UTIL_LOGF("avg: %.9lf", avg);
-}
-
-double malloc_init_no_free_step(size_t length) 
+double malloc_init_no_free(size_t length) 
 {
     UTIL_CLOCK_INIT
     
@@ -93,21 +79,7 @@ double malloc_init_no_free_step(size_t length)
     return nanos(start, stop);
 }
 
-void malloc_init_no_free_bench(int n, size_t length) 
-{
-    double accum = 0;
-
-    for (int i = 0; i < n; i++) {
-        double t = malloc_init_no_free_step(length); 
-        printf("%.9lf\n", t);
-        accum += t; 
-    }
-
-    double avg = accum / n;
-    UTIL_LOGF("avg: %.9lf", avg);
-}
-
-double malloc_no_init_no_free_step(size_t length) 
+double malloc_no_init_no_free(size_t length) 
 {
     UTIL_CLOCK_INIT
     
@@ -117,18 +89,4 @@ double malloc_no_init_no_free_step(size_t length)
     UTIL_CLOCK_STOP;
 
     return nanos(start, stop);
-}
-
-void malloc_no_init_no_free_bench(int n, size_t length) 
-{
-    double accum = 0;
-
-    for (int i = 0; i < n; i++) {
-        double t = malloc_no_init_no_free_step(length); 
-        printf("%.9lf\n", t);
-        accum += t;
-    }
-
-    double avg = accum / n;
-    UTIL_LOGF("avg: %.9lf", avg);
 }

@@ -10,6 +10,7 @@ set -e;
 for d in */ ; do
     pushd $d
     if [ ! -f .testignore ]; then
+        find -type f -name '*.log' -delete
         ./run.sh $@
     fi
     popd

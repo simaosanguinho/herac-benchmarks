@@ -6,10 +6,10 @@ int main(int argc, char** argv)
     assert_that(argc >= 3, "expected test_case_name and iter_count");
 
     test_malloc_t test_functions[] = {
-        { malloc_no_init_bench, "malloc_no_init_bench" },
-        { malloc_init_bench, "malloc_init_bench" },
-        { malloc_no_init_no_free_bench, "malloc_no_init_no_free_bench" },
-        { malloc_init_no_free_bench, "malloc_init_no_free_bench" },
+        { malloc_no_init, "malloc_no_init" },
+        { malloc_init, "malloc_init" },
+        { malloc_no_init_no_free, "malloc_no_init_no_free" },
+        { malloc_init_no_free, "malloc_init_no_free" },
     };
 
     test_malloc_t test = find_malloc_t(test_functions, sizeof(test_functions) / sizeof(test_functions[0]), argv[1]);
@@ -21,7 +21,7 @@ int main(int argc, char** argv)
     }
 
     UTIL_LOGF("config: %s , n=%d , size=%d", test.name, n, size);
-    test.function(n, size);
+    malloc_bench_harness(test, n, size);
 
     return 0;
 }
