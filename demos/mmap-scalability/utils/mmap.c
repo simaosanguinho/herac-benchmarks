@@ -23,7 +23,7 @@ test_mmap_t find_mmap_t(test_mmap_t test_functions[], int n, const char* test_na
 
 double mmap_init_step(size_t length, int prot, int flags, int fd, off_t offset) 
 {
-    struct timespec start, stop;
+    UTIL_CLOCK_INIT
     
     UTIL_CLOCK_START
         void *mem = mmap(NULL, length, prot, flags, fd, offset);
@@ -34,7 +34,7 @@ double mmap_init_step(size_t length, int prot, int flags, int fd, off_t offset)
     UTIL_CLOCK_STOP
     munmap(mem, length);
 
-    return nanos(start, stop);
+    return UTIL_CLOCK_DELTA;
 }
 
 void mmap_init_bench(int n, size_t length, int prot, int flags, int fd, off_t offset)
@@ -53,7 +53,7 @@ void mmap_init_bench(int n, size_t length, int prot, int flags, int fd, off_t of
 
 double mmap_no_init_step(size_t length, int prot, int flags, int fd, off_t offset)
 {
-    struct timespec start, stop;
+    UTIL_CLOCK_INIT
     
     UTIL_CLOCK_START
         void *mem = mmap(NULL, length, prot, flags, fd, offset);
@@ -61,7 +61,7 @@ double mmap_no_init_step(size_t length, int prot, int flags, int fd, off_t offse
     UTIL_CLOCK_STOP
     munmap(mem, length);
 
-    return nanos(start, stop);
+    return UTIL_CLOCK_DELTA;
 }
 
 void mmap_no_init_bench(int n, size_t length, int prot, int flags, int fd, off_t offset)
@@ -80,7 +80,7 @@ void mmap_no_init_bench(int n, size_t length, int prot, int flags, int fd, off_t
 
 double mmap_init_no_unmap_step(size_t length, int prot, int flags, int fd, off_t offset)
 {
-    struct timespec start, stop;
+    UTIL_CLOCK_INIT
     
     UTIL_CLOCK_START
         void *mem = mmap(NULL, length, prot, flags, fd, offset);
@@ -90,7 +90,7 @@ double mmap_init_no_unmap_step(size_t length, int prot, int flags, int fd, off_t
         }
     UTIL_CLOCK_STOP
 
-    return nanos(start, stop);
+    return UTIL_CLOCK_DELTA;
 }
 
 void mmap_init_no_unmap_bench(int n, size_t length, int prot, int flags, int fd, off_t offset)
@@ -109,14 +109,14 @@ void mmap_init_no_unmap_bench(int n, size_t length, int prot, int flags, int fd,
 
 double mmap_no_init_no_unmap_step(size_t length, int prot, int flags, int fd, off_t offset)
 {
-    struct timespec start, stop;
+    UTIL_CLOCK_INIT
     
     UTIL_CLOCK_START
         void *mem = mmap(NULL, length, prot, flags, fd, offset);
         assert_that(mem != MAP_FAILED, "mmap failed");
     UTIL_CLOCK_STOP
 
-    return nanos(start, stop);
+    return UTIL_CLOCK_DELTA;
 }
 
 void mmap_no_init_no_unmap_bench(int n, size_t length, int prot, int flags, int fd, off_t offset)

@@ -115,8 +115,11 @@ if __name__ == '__main__':
         pass
 
     def discover_log_files(suite):
-        if os.path.isdir(suite) and suite != 'plots':
-            for filename in os.listdir(suite):
+        if os.path.isdir(suite):
+            ls = os.listdir(suite);
+            if '.testignore' in ls:
+                return
+            for filename in ls:
                 if filename.endswith(".log"):
                     if not suite in data:
                         data[suite] = []

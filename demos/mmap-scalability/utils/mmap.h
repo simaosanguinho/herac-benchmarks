@@ -2,6 +2,7 @@
 #define __UTILS__MMAP_H
 
 #include <stdlib.h>
+#include <sys/types.h>
 
 typedef struct {
     void (*function)(int n, size_t length, int prot, int flags, int fd, off_t offset);

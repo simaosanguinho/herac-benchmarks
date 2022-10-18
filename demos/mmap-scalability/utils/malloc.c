@@ -23,8 +23,8 @@ test_malloc_t find_malloc_t(test_malloc_t test_functions[], int n, const char* t
 
 double malloc_init_step(size_t length)
 {
-    struct timespec start, stop;
-    
+    UTIL_CLOCK_INIT
+
     UTIL_CLOCK_START
         void *mem = malloc(length);
         assert_that(mem != NULL, "malloc failed");
@@ -34,7 +34,7 @@ double malloc_init_step(size_t length)
     UTIL_CLOCK_STOP
     free(mem);
 
-    return nanos(start, stop);
+    return UTIL_CLOCK_DELTA;
 }
 
 void malloc_init_bench(int n, size_t length)
@@ -53,8 +53,8 @@ void malloc_init_bench(int n, size_t length)
 
 double malloc_no_init_step(size_t length)
 {
-    struct timespec start, stop;
-    
+    UTIL_CLOCK_INIT
+
     UTIL_CLOCK_START
         void *mem = malloc(length);
         assert_that(mem != NULL, "malloc failed");
@@ -80,7 +80,7 @@ void malloc_no_init_bench(int n, size_t length)
 
 double malloc_init_no_free_step(size_t length) 
 {
-    struct timespec start, stop;
+    UTIL_CLOCK_INIT
     
     UTIL_CLOCK_START
         void *mem = malloc(length);
@@ -109,7 +109,7 @@ void malloc_init_no_free_bench(int n, size_t length)
 
 double malloc_no_init_no_free_step(size_t length) 
 {
-    struct timespec start, stop;
+    UTIL_CLOCK_INIT
     
     UTIL_CLOCK_START
         void *mem = malloc(length);
