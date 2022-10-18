@@ -28,6 +28,7 @@ void malloc_bench_harness(test_malloc_t func, int n, int length)
     for (int i = 0; i < n; i++) {
         double t = func.function(length); 
         printf("%.9lf\n", t);
+        fflush(stdout);
         accum += t;
     }
 

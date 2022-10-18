@@ -28,6 +28,7 @@ void mmap_bench_harness(test_mmap_t func, int n, size_t length, int prot, int fl
     for (int i = 0; i < n; i++) {
         double t = func.function(length, prot, flags, fd, offset); 
         printf("%.9lf\n", t);
+        fflush(stdout);
         accum += t;
     }
 
