@@ -7,4 +7,4 @@ tests=(
     mmap_init_no_unmap_bench
 )
 
-source ../compile_run.sh test_mmap_anon $@
+source ../compile_run.sh test_mmap_file_shared $@

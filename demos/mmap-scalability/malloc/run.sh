@@ -1,8 +1,5 @@
 #!/bin/bash
 
-set -xe;
-
-source=test_malloc
 tests=(
     malloc_no_init_bench
     malloc_init_bench
@@ -10,7 +7,4 @@ tests=(
     malloc_init_no_free_bench
 )
 
-gcc $source.c ../utils/*.c -o $source.out -Wall -Wextra
-for test in "${tests[@]}"; do
-    ./$source.out $test $@ > $test.log;
-done
+source ../compile_run.sh test_malloc $@

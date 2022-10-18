@@ -2,11 +2,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-void assert_that(int v, const char* msg) {
+int assert_that(int v, const char* msg) {
     if (!v) {
         perror(msg);
         exit(EXIT_FAILURE);
     }
+    return v;
 }
 
 double nanos(struct timespec start, struct timespec stop)

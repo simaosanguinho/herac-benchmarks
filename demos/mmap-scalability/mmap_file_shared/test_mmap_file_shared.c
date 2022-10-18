@@ -17,13 +17,17 @@ int main(int argc, char** argv)
     test_mmap_t test = find_mmap_t(test_functions, sizeof(test_functions) / sizeof(test_functions[0]), argv[1]);
 
     int n = atoi(argv[2]);
-    int size = ALLOC_SIZE;  
+    int size = ALLOC_SIZE;
     if (argc > 3) {
         size = atoi(argv[3]);
     }
 
     UTIL_LOGF("config: %s , n=%d , size=%d", test.name, n, size);
-    test.function(n, size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+    
+    int fd = create_temp_file("/tmp/bench_test_mmap_file.bin", ALLOC_SIZE);
+    void *addr = mmap(NULL, ALLOC_SIZE, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, fd, 0);
+    test.function(n, size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, fd, 0);
+    munmap(addr, ALLOC_SIZE);
 
     return 0;
 }

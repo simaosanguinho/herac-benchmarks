@@ -20,8 +20,7 @@ int main(int argc, char** argv)
         size = atoi(argv[3]);
     }
 
-    printf("config: %s , n=%d , size=%d\n", test.name, n, size);
-    
+    UTIL_LOGF("config: %s , n=%d , size=%d", test.name, n, size);
     test.function(n, size);
 
     return 0;

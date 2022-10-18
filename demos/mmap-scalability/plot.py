@@ -95,7 +95,8 @@ def read_log_file(log_file):
     try:
         with open(log_file, 'r') as f:
             lines = f.readlines()
-            return [float(f) for f in lines[1:-1]]
+            lines_to_parse = list(filter(lambda line: line and line[0] != '[', lines))
+            return [float(f) for f in lines_to_parse]
     except IOError as e:
         print(e)
 

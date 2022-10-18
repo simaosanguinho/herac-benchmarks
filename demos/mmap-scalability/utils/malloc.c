@@ -25,13 +25,13 @@ double malloc_init_step(size_t length)
 {
     UTIL_CLOCK_INIT
 
-    UTIL_CLOCK_START
+    UTIL_CLOCK_START;
         void *mem = malloc(length);
         assert_that(mem != NULL, "malloc failed");
         for(size_t i = 0; i < length; i++) {
             ((char *)mem)[i] = 0;
         }
-    UTIL_CLOCK_STOP
+    UTIL_CLOCK_STOP;
     free(mem);
 
     return UTIL_CLOCK_DELTA;
@@ -48,17 +48,17 @@ void malloc_init_bench(int n, size_t length)
     }
 
     double avg = accum / n;
-    printf("avg: %.9lf\n", avg);
+    UTIL_LOGF("avg: %.9lf", avg);
 }
 
 double malloc_no_init_step(size_t length)
 {
     UTIL_CLOCK_INIT
 
-    UTIL_CLOCK_START
+    UTIL_CLOCK_START;
         void *mem = malloc(length);
         assert_that(mem != NULL, "malloc failed");
-    UTIL_CLOCK_STOP
+    UTIL_CLOCK_STOP;
     free(mem);
 
     return nanos(start, stop);
@@ -75,20 +75,20 @@ void malloc_no_init_bench(int n, size_t length)
     }
 
     double avg = accum / n;
-    printf("avg: %.9lf\n", avg);
+    UTIL_LOGF("avg: %.9lf", avg);
 }
 
 double malloc_init_no_free_step(size_t length) 
 {
     UTIL_CLOCK_INIT
     
-    UTIL_CLOCK_START
+    UTIL_CLOCK_START;
         void *mem = malloc(length);
         assert_that(mem != NULL, "malloc failed");
         for(size_t i = 0; i < length; i++) {
             ((char *)mem)[i] = 0;
         }
-    UTIL_CLOCK_STOP
+    UTIL_CLOCK_STOP;
 
     return nanos(start, stop);
 }
@@ -104,17 +104,17 @@ void malloc_init_no_free_bench(int n, size_t length)
     }
 
     double avg = accum / n;
-    printf("avg: %.9lf\n", avg);
+    UTIL_LOGF("avg: %.9lf", avg);
 }
 
 double malloc_no_init_no_free_step(size_t length) 
 {
     UTIL_CLOCK_INIT
     
-    UTIL_CLOCK_START
+    UTIL_CLOCK_START;
         void *mem = malloc(length);
         assert_that(mem != NULL, "malloc failed");
-    UTIL_CLOCK_STOP
+    UTIL_CLOCK_STOP;
 
     return nanos(start, stop);
 }
@@ -130,5 +130,5 @@ void malloc_no_init_no_free_bench(int n, size_t length)
     }
 
     double avg = accum / n;
-    printf("avg: %.9lf\n", avg);
+    UTIL_LOGF("avg: %.9lf", avg);
 }
