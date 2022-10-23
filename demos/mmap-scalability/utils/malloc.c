@@ -91,3 +91,44 @@ double malloc_no_init_no_free(size_t length)
 
     return nanos(start, stop);
 }
+
+void write_chunk(void* addr, size_t size) 
+{
+    for (size_t i = 0; i < size; i += 16) {
+        *((char *)(addr + i)) = (char)i;
+    }
+}
+
+void alloc_chunks(void *chunks[], int n)
+{
+    srand(time(NULL));
+
+    unsigned long alloc_size = 0;
+    for (int i = 0; i < n; i++) {
+        chunks[i] = malloc(CHUNK_SIZE);
+        assert_that(chunks[i] != NULL, "map chunk failed");
+        write_chunk(chunks[i], CHUNK_SIZE);
+        alloc_size += CHUNK_SIZE;
+    }
+
+    UTIL_LOGF("allocated %d chunks, size %ld", n, alloc_size);
+}
+
+void make_fragments(void *chunks[], int n, int fragment_count)
+{
+    int step = n / fragment_count;
+    for (int i = 0; i < fragment_count; i += step) {
+        free(chunks[i]);
+        chunks[i] = NULL;
+    }
+}
+
+void free_chunks(void *chunks[], int n)
+{
+    for (int i = 0; i < n; i++) {
+        if (chunks[i] != NULL) {
+            free(chunks[i]);
+        }
+    }
+    free(chunks);
+}
