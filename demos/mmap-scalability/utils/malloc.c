@@ -125,9 +125,14 @@ void make_fragments(void *chunks[], int n, int fragment_count)
 
 void free_chunks(void *chunks[], int n)
 {
+    if (chunks == NULL) {
+        return;
+    }
+
     for (int i = 0; i < n; i++) {
         if (chunks[i] != NULL) {
             free(chunks[i]);
+            chunks[i] = NULL;
         }
     }
     free(chunks);

@@ -10,6 +10,8 @@
 #define BILLION     1000000000L
 #define ALLOC_SIZE  (1024 * 1024)
 
+#define UNUSED(arg) ((void)arg);
+
 #define UTIL_CLOCK_INIT  struct timespec start, stop;
 #define UTIL_CLOCK_START assert_that(clock_gettime(CLOCK_MONOTONIC, &start) != -1, "clock_gettime start")
 #define UTIL_CLOCK_STOP  assert_that(clock_gettime(CLOCK_MONOTONIC, &stop) != -1, "clock_gettime stop")

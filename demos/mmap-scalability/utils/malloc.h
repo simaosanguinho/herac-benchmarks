@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#define CHUNK_SIZE 10*1024*1024
+#define CHUNK_SIZE (10*1024*1024)
 
 typedef struct {
     double (*function)(size_t length);

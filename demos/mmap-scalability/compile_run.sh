@@ -1,10 +1,10 @@
 #!/bin/bash
 
-set -xe;
 rm *.out
+set -xe;
 
 source=$1
-gcc $source.c ../utils/*.c -o $source.out -Wall -Wextra
+gcc $source.c ../utils/*.c -g -o $source.out -Wall -Wextra
 
 shift
 
