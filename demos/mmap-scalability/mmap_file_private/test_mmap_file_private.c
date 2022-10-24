@@ -24,8 +24,8 @@ int main(int argc, char** argv)
 
     UTIL_LOGF("config: %s , n=%d , size=%d", test.name, n, size);
     
-    int fd = create_temp_file("/tmp/bench_test_mmap_file.bin", ALLOC_SIZE);
-    mmap_bench_harness(test, n, size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, fd, 0);
+    int fd = create_temp_file("/tmp/bench_test_mmap_file.bin", size);
+    mmap_bench_harness(test, n, NULL, size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, fd, 0);
 
     return 0;
 }

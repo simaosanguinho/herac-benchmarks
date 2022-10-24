@@ -21,12 +21,12 @@ test_mmap_t find_mmap_t(test_mmap_t test_functions[], int n, const char* test_na
     return test;
 }
 
-void mmap_bench_harness(test_mmap_t func, int n, size_t length, int prot, int flags, int fd, off_t offset)
+void mmap_bench_harness(test_mmap_t func, int n, void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 {
     double accum = 0;
 
     for (int i = 0; i < n; i++) {
-        double t = func.function(length, prot, flags, fd, offset); 
+        double t = func.function(addr, length, prot, flags, fd, offset); 
         printf("%.9lf\n", t);
         fflush(stdout);
         accum += t;
@@ -36,12 +36,12 @@ void mmap_bench_harness(test_mmap_t func, int n, size_t length, int prot, int fl
     UTIL_LOGF("avg: %.9lf", avg);
 }
 
-double mmap_init(size_t length, int prot, int flags, int fd, off_t offset) 
+double mmap_init(void *addr, size_t length, int prot, int flags, int fd, off_t offset) 
 {
     UTIL_CLOCK_INIT
     
     UTIL_CLOCK_START;
-        void *mem = mmap(NULL, length, prot, flags, fd, offset);
+        void *mem = mmap(addr, length, prot, flags, fd, offset);
         assert_that(mem != MAP_FAILED, "mmap failed");
         for(size_t i = 0; i < length; i++) {
             ((char *)mem)[i] = 0;
@@ -52,12 +52,12 @@ double mmap_init(size_t length, int prot, int flags, int fd, off_t offset)
     return UTIL_CLOCK_DELTA;
 }
 
-double mmap_no_init(size_t length, int prot, int flags, int fd, off_t offset)
+double mmap_no_init(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 {
     UTIL_CLOCK_INIT
     
     UTIL_CLOCK_START;
-        void *mem = mmap(NULL, length, prot, flags, fd, offset);
+        void *mem = mmap(addr, length, prot, flags, fd, offset);
         assert_that(mem != MAP_FAILED, "mmap failed");
     UTIL_CLOCK_STOP;
     munmap(mem, length);
@@ -65,12 +65,12 @@ double mmap_no_init(size_t length, int prot, int flags, int fd, off_t offset)
     return UTIL_CLOCK_DELTA;
 }
 
-double mmap_init_no_unmap(size_t length, int prot, int flags, int fd, off_t offset)
+double mmap_init_no_unmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 {
     UTIL_CLOCK_INIT
     
     UTIL_CLOCK_START;
-        void *mem = mmap(NULL, length, prot, flags, fd, offset);
+        void *mem = mmap(addr, length, prot, flags, fd, offset);
         assert_that(mem != MAP_FAILED, "mmap failed");
         for(size_t i = 0; i < length; i++) {
             ((char *)mem)[i] = 0;
@@ -80,12 +80,12 @@ double mmap_init_no_unmap(size_t length, int prot, int flags, int fd, off_t offs
     return UTIL_CLOCK_DELTA;
 }
 
-double mmap_no_init_no_unmap(size_t length, int prot, int flags, int fd, off_t offset)
+double mmap_no_init_no_unmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)
 {
     UTIL_CLOCK_INIT
     
     UTIL_CLOCK_START;
-        void *mem = mmap(NULL, length, prot, flags, fd, offset);
+        void *mem = mmap(addr, length, prot, flags, fd, offset);
         assert_that(mem != MAP_FAILED, "mmap failed");
     UTIL_CLOCK_STOP;
 
