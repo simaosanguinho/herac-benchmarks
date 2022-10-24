@@ -1,4 +1,8 @@
 [
   { "name": "com.demo_ni_isolate_comms.DemoIsolateComms", "allPublicFields": true },
-  { "name": "com.demo_ni_isolate_comms.DemoIsolateComms", "allPublicMethods": true }
+  { "name": "com.demo_ni_isolate_comms.DemoIsolateComms", "allPublicMethods": true },
+  { "name": "com.demo_ni_isolate_comms.DemoClient", "allPublicFields": true },
+  { "name": "com.demo_ni_isolate_comms.DemoClient", "allPublicMethods": true },
+  { "name": "com.demo_ni_isolate_comms.DemoServer", "allPublicFields": true },
+  { "name": "com.demo_ni_isolate_comms.DemoServer", "allPublicMethods": true }
 ]

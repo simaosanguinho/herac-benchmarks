@@ -1,6 +1,6 @@
 package com.demo_ni_isolate_comms;
 
-import java.nio.CharBuffer;
+import java.util.Arrays;
 
 public final class DemoSettings {
 
@@ -15,11 +15,12 @@ public final class DemoSettings {
 
 
     public final int PORT = 12345;
-    public final int WARMUP_RUNS = 10;
-    public final int RUNS = 10000;
-    public final int MESSAGE_SIZE = 100;
-    public final String MESSAGE = CharBuffer.allocate(MESSAGE_SIZE).toString().replace('\0', 'x');
+    public final int MESSAGE_SIZE = 1024;
+    public final byte[] MESSAGE_BYTES = new byte[MESSAGE_SIZE];
+    public final String MESSAGE;
 
     private DemoSettings() {
+        Arrays.fill(MESSAGE_BYTES, (byte)'x');
+        MESSAGE = new String(MESSAGE_BYTES);
     }
 }

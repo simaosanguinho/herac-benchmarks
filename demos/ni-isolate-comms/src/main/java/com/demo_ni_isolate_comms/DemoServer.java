@@ -8,17 +8,19 @@ import java.net.Socket;
 
 public class DemoServer {
 
-    public void run() {
+    public void networkCommsTest(int runs, int warmupRuns) {
         DemoSettings settings = DemoSettings.get();
         try (ServerSocket serverSocket = new ServerSocket(settings.PORT)) {
             DemoLog.log(String.format("%s started on port %d, waiting for client...", this.getClass().getName(), settings.PORT));
             Socket client = serverSocket.accept();
             try (BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {
                 try {
-                    DemoLog.log("[server]: receiving");
-                    String received = in.readLine();
-                    DemoLog.log("[server]: received");
-                    assert received != null;
+                    for (int i = 0; i < runs; i++) {
+                        DemoLog.log("[server]: receiving #" + i);
+                        String received = in.readLine();
+                        DemoLog.log("[server]: received #" + i);
+                        assert received != null;
+                    }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -27,5 +29,5 @@ public class DemoServer {
             throw new RuntimeException(e);
         }
     }
-    
+
 }

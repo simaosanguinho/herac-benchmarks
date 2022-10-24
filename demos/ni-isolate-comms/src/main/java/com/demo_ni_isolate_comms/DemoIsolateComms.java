@@ -1,25 +1,47 @@
 package com.demo_ni_isolate_comms;
 
+import java.lang.reflect.Method;
+
 public class DemoIsolateComms {
-    public static void main(String[] args) {
-        if (args.length == 0) {
+    public static void main(String[] args) throws Exception {
+        Object receiver = null;
+        Method testMethod = null;
+        String testName;
+        int runs = 1000;
+        int warmupRuns = 0;
+
+        for (int i = 0; i < args.length; i += 2) {
+            switch (args[i]) {
+                case "--client":
+                    receiver = new DemoClient();
+                    testName = args[i+1];
+                    testMethod = DemoClient.class.getMethod(testName, int.class, int.class);
+                    continue;
+                case "--server":
+                    receiver = new DemoServer();
+                    testName = args[i+1];
+                    testMethod = DemoServer.class.getMethod(testName, int.class, int.class);
+                    continue;
+                case "--runs":
+                    runs = Integer.parseInt(args[i+1]);
+                    continue;
+                case "--warmup":
+                    warmupRuns = Integer.parseInt(args[i+1]);
+                    continue;
+                default:
+                    usageError();
+            }
+        }
+
+        if (receiver == null || testMethod == null) {
             usageError();
         }
 
-        switch (args[0]) {
-            case "--client":
-                new DemoClient().run();
-                break;
-            case "--server":
-                new DemoServer().run();
-                break;
-            default:
-                break;
-        }
+        testMethod.invoke(receiver, runs, warmupRuns);
     }
 
     private static void usageError() {
-        System.err.println("usage: ./bench (--server | --client)");
+        System.err.println("usage: ./bench (--server | --client) test_case_name [--runs num_runs] [--warmup warmup_runs]");
         System.exit(1);
     }
 }
