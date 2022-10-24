@@ -1,8 +1,10 @@
 #!/bin/bash
 
-if [ ! -f build/demoisolatecomms ]
-then
-	echo "build files missing, rebuilding"
+if [ ! -f build/libs/demo-ni-isolate-comms-1.0-all.jar ]; then
+	echo "demoisolatecomms JAR missing, rebuilding"
+	./build.sh
+elif [ ! -f build/demoisolatecomms ]; then
+	echo "demoisolatecomms native image missing, rebuilding"
 	./build.sh
 fi
 
@@ -23,12 +25,18 @@ if [ $# -ge 1 ]; then
 fi
 
 tests=(
-	networkCommsTest
+	network128B
+	network256B
+	network512B
+	network1KB
+	network1MB
+	network10MB
+	network100MB
 )
 
 set -e;
 
-for test in $tests; do
+for test in "${tests[@]}"; do
 	mkdir -p $store_dir/$test
 
 	echo "Running $test on JVM with $runs iterations"
