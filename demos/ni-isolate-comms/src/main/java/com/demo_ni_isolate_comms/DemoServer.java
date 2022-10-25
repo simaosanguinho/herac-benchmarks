@@ -1,62 +1,49 @@
 package com.demo_ni_isolate_comms;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class DemoServer {
+public class DemoServer extends DemoAbstractTest {
 
     public static int PORT = 12345;
 
-    public void network128B(int runs, int warmupRuns) {
-        networkCommsTest(runs, warmupRuns);
-    }
-
-    public void network256B(int runs, int warmupRuns) {
-        networkCommsTest(runs, warmupRuns);
-    }
-
-    public void network512B(int runs, int warmupRuns) {
-        networkCommsTest(runs, warmupRuns);
-    }
-
-    public void network1KB(int runs, int warmupRuns) {
-        networkCommsTest(runs, warmupRuns);
-    }
-
-    public void network1MB(int runs, int warmupRuns) {
-        networkCommsTest(runs, warmupRuns);
-    }
-
-    public void network10MB(int runs, int warmupRuns) {
-        networkCommsTest(runs, warmupRuns);
-    }
-
-    public void network100MB(int runs, int warmupRuns) {
-        networkCommsTest(runs, warmupRuns);
-    }
-
-    private void networkCommsTest(int runs, int warmupRuns) {
+    protected void networkCommsTest(int size, int bufSize, int runs, int warmupRuns) {
+        DemoLog.log(String.format("[server]: starting on localhost:%d...", DemoServer.PORT));    
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            DemoLog.log(String.format("%s started on port %d, waiting for client...", this.getClass().getName(), PORT));
-            Socket client = serverSocket.accept();
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {
-                try {
-                    for (int i = 0; i < runs; i++) {
-                        DemoLog.log("[server]: receiving #" + i);
-                        String received = in.readLine();
-                        DemoLog.log("[server]: received #" + i);
-                        assert received != null;
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+            if (warmupRuns > 0) {
+                DemoLog.log(String.format("[server]: warming up with %d runs...", warmupRuns));
+                networkCommsTestRecvData(serverSocket, size, bufSize, true, warmupRuns);
+                DemoLog.log("[server]: warmup complete");
             }
+
+            networkCommsTestRecvData(serverSocket, size, bufSize, false, runs);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private void networkCommsTestRecvData(ServerSocket serverSocket, int size, int bufSize, boolean isWarmup, int runs) throws IOException {
+        DemoLog.log(String.format("[server]: waiting for client...", PORT));
+        Socket client = serverSocket.accept();
+        try (InputStream in = new BufferedInputStream(client.getInputStream(), bufSize == 0 ? size : bufSize)) {
+            try {
+                for (int i = 0; i < runs; i++) {
+                    if (!isWarmup) {
+                        DemoLog.log("[server]: receiving #" + i);
+                    }
+                    byte[] received = in.readNBytes(size);
+                    if (!isWarmup) {
+                        DemoLog.log("[server]: received #" + i);
+                    }
+                    assert received != null;
+                    assert received.length == size;
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }

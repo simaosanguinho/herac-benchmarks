@@ -16,22 +16,28 @@ mkdir -p $store_dir
 echo $JAVA_HOME
 
 runs=1000
-warmup=0
+warmup=1000000
+bufsize=8192
 if [ $# -ge 1 ]; then
-	runs=$1
+	warmup=$1
 	if [ $# -ge 2 ]; then
-		warmup=$2
+		runs=$2
+		if [ $# -ge 3 ]; then
+			bufsize=$3
+		fi
 	fi
 fi
 
 tests=(
+	network32B
+	network64B
 	network128B
 	network256B
-	network512B
-	network1KB
-	network1MB
-	network10MB
-	network100MB
+	# network512B
+	# network1KB
+	# network10KB
+	# network100KB
+	# network1MB
 )
 
 set -e;
@@ -43,14 +49,14 @@ for test in "${tests[@]}"; do
 
 	$JAVA_HOME/bin/java \
 		-jar libs/demo-ni-isolate-comms-1.0-all.jar \
-		--server $test --runs $runs --warmup $warmup \
+		--server $test --runs $runs --warmup $warmup --bufsize $bufsize \
 		| tee $store_dir/$test/jvm_server.log &
 
 	sleep 1
 
 	$JAVA_HOME/bin/java \
 		-jar libs/demo-ni-isolate-comms-1.0-all.jar \
-		--client $test --runs $runs --warmup $warmup \
+		--client $test --runs $runs --warmup $warmup --bufsize $bufsize \
 		| tee $store_dir/$test/jvm_client.log &
 
 	wait
@@ -58,13 +64,13 @@ for test in "${tests[@]}"; do
 	echo "Running $test on SVM with $runs iterations"
 
 	./demoisolatecomms \
-		--server $test --runs $runs --warmup $warmup \
+		--server $test --runs $runs --warmup $warmup --bufsize $bufsize \
 		| tee $store_dir/$test/svm_server.log &
 
 	sleep 1
 
 	./demoisolatecomms \
-		--client $test --runs $runs --warmup $warmup \
+		--client $test --runs $runs --warmup $warmup --bufsize $bufsize \
 		| tee $store_dir/$test/svm_client.log &
 
 	wait

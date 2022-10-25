@@ -6,27 +6,31 @@ public class DemoIsolateComms {
     public static void main(String[] args) throws Exception {
         Object receiver = null;
         Method testMethod = null;
-        String testName;
+        String testName = null;
         int runs = 1000;
-        int warmupRuns = 0;
+        int warmupRuns = 1;
+        int bufSize = 8192;
 
         for (int i = 0; i < args.length; i += 2) {
             switch (args[i]) {
                 case "--client":
                     receiver = new DemoClient();
                     testName = args[i+1];
-                    testMethod = DemoClient.class.getMethod(testName, int.class, int.class);
+                    testMethod = DemoClient.class.getMethod(testName, int.class, int.class, int.class);
                     continue;
                 case "--server":
                     receiver = new DemoServer();
                     testName = args[i+1];
-                    testMethod = DemoServer.class.getMethod(testName, int.class, int.class);
+                    testMethod = DemoServer.class.getMethod(testName, int.class, int.class, int.class);
                     continue;
                 case "--runs":
                     runs = Integer.parseInt(args[i+1]);
                     continue;
                 case "--warmup":
                     warmupRuns = Integer.parseInt(args[i+1]);
+                    continue;
+                case "--bufsize":
+                    bufSize = Integer.parseInt(args[i+1]);
                     continue;
                 default:
                     usageError();
@@ -37,7 +41,8 @@ public class DemoIsolateComms {
             usageError();
         }
 
-        testMethod.invoke(receiver, runs, warmupRuns);
+        DemoLog.log(String.format("[harness]: invoking %s , warmup=%d, runs=%d, bufsize=%d", testName, warmupRuns, runs, bufSize));
+        testMethod.invoke(receiver, bufSize, runs, warmupRuns);
     }
 
     private static void usageError() {
