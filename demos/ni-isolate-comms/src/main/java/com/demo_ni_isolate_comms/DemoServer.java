@@ -1,6 +1,7 @@
 package com.demo_ni_isolate_comms;
 
 import java.io.BufferedInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -28,6 +29,7 @@ public class DemoServer extends DemoAbstractTest {
     private void networkCommsTestRecvData(ServerSocket serverSocket, int size, int bufSize, boolean isWarmup, int runs) throws IOException {
         DemoLog.log(String.format("[server]: waiting for client...", PORT));
         Socket client = serverSocket.accept();
+        client.setTcpNoDelay(true);
         try (InputStream in = new BufferedInputStream(client.getInputStream(), bufSize == 0 ? size : bufSize)) {
             try {
                 for (int i = 0; i < runs; i++) {

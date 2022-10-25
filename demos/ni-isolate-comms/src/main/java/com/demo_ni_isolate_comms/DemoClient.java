@@ -21,6 +21,7 @@ public class DemoClient extends DemoAbstractTest {
     private void networkCommsTestSendData(boolean isWarmup, int size, int bufSize, int runs) {
         DemoLog.log(String.format("[client]: connecting to localhost:%d...", DemoServer.PORT));    
         try (Socket socket = new Socket("localhost", DemoServer.PORT)) {
+            socket.setTcpNoDelay(true);
             try (OutputStream out = new BufferedOutputStream(socket.getOutputStream(), bufSize == 0 ? size : bufSize)) {
                 byte[] bytes = new byte[size];
                 Arrays.fill(bytes, (byte)'x');

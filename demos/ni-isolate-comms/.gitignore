@@ -5,6 +5,7 @@ build/
 bin/
 target/
 out/
+plots/
 .idea
 *.iml
 *.ipr

@@ -29,15 +29,15 @@ if [ $# -ge 1 ]; then
 fi
 
 tests=(
-	network32B
-	network64B
-	network128B
-	network256B
-	# network512B
-	# network1KB
-	# network10KB
-	# network100KB
-	# network1MB
+	net1_32B
+	net2_64B
+	net3_128B
+	net4_256B
+	net5_512B
+	net6_1KB
+	# net7_10KB
+	# net8_100KB
+	# net9_1MB
 )
 
 set -e;
