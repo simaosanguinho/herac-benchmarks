@@ -17,10 +17,10 @@ function build_app {
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
 		-H:ReflectionConfigurationFiles=../reflect.json \
-		-cp libs/demo-ni-isolate-comms-1.0-all.jar\
+		-cp libs/demo-ni-comms-1.0-all.jar\
 		-H:+ReportExceptionStackTraces \
-		-H:Name=demoisolatecomms \
-            com.demo_ni_isolate_comms.DemoIsolateComms
+		-H:Name=democomms \
+            com.demo_ni_comms.DemoComms
 }
 
 ./gradlew clean shadowJar assemble

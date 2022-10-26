@@ -1,8 +1,8 @@
-package com.demo_ni_isolate_comms;
+package com.demo_ni_comms;
 
 import java.lang.reflect.Method;
 
-public class DemoIsolateComms {
+public class DemoComms {
     public static void main(String[] args) throws Exception {
         Object receiver = null;
         Method testMethod = null;

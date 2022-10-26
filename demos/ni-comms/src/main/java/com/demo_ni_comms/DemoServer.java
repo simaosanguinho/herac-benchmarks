@@ -1,4 +1,4 @@
-package com.demo_ni_isolate_comms;
+package com.demo_ni_comms;
 
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;

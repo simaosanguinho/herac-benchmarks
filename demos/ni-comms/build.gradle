@@ -3,7 +3,7 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
-group 'com.demo_ni_isolate_comms'
+group 'com.demo_ni_comms'
 version '1.0'
 
 repositories {
@@ -22,7 +22,7 @@ dependencies {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'com.demo_ni_isolate_comms.DemoIsolateComms',
+                'Main-Class': 'com.demo_ni_comms.DemoComms',
                 'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
         )
     }

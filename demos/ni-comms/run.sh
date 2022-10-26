@@ -1,10 +1,10 @@
 #!/bin/bash
 
-if [ ! -f build/libs/demo-ni-isolate-comms-1.0-all.jar ]; then
-	echo "demoisolatecomms JAR missing, rebuilding"
+if [ ! -f build/libs/demo-ni-comms-1.0-all.jar ]; then
+	echo "democomms JAR missing, rebuilding"
 	./build.sh
-elif [ ! -f build/demoisolatecomms ]; then
-	echo "demoisolatecomms native image missing, rebuilding"
+elif [ ! -f build/democomms ]; then
+	echo "democomms native image missing, rebuilding"
 	./build.sh
 fi
 
@@ -48,14 +48,14 @@ for test in "${tests[@]}"; do
 	echo "Running $test on JVM with $runs iterations"
 
 	$JAVA_HOME/bin/java \
-		-jar libs/demo-ni-isolate-comms-1.0-all.jar \
+		-jar libs/demo-ni-comms-1.0-all.jar \
 		--server $test --runs $runs --warmup $warmup --bufsize $bufsize \
 		| tee $store_dir/$test/jvm_server.log &
 
 	sleep 1
 
 	$JAVA_HOME/bin/java \
-		-jar libs/demo-ni-isolate-comms-1.0-all.jar \
+		-jar libs/demo-ni-comms-1.0-all.jar \
 		--client $test --runs $runs --warmup $warmup --bufsize $bufsize \
 		| tee $store_dir/$test/jvm_client.log &
 
@@ -63,13 +63,13 @@ for test in "${tests[@]}"; do
 
 	echo "Running $test on SVM with $runs iterations"
 
-	./demoisolatecomms \
+	./democomms \
 		--server $test --runs $runs --warmup $warmup --bufsize $bufsize \
 		| tee $store_dir/$test/svm_server.log &
 
 	sleep 1
 
-	./demoisolatecomms \
+	./democomms \
 		--client $test --runs $runs --warmup $warmup --bufsize $bufsize \
 		| tee $store_dir/$test/svm_client.log &
 
