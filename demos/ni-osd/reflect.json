@@ -1,0 +1,6 @@
+[
+  { "name": "com.demo_ni_osd.DemoOSD", "allPublicFields": true },
+  { "name": "com.demo_ni_osd.DemoOSD", "allPublicMethods": true },
+  { "name": "com.demo_ni_osd.DemoTest", "allPublicFields": true },
+  { "name": "com.demo_ni_osd.DemoTest", "allPublicMethods": true }
+]
