@@ -57,9 +57,11 @@ def plot(title, data, plot_output_path):
         svm_means.append(round(data[label][1][0]/1000, 1))
 
     fig, ax = plt.subplots()
+    fig.set_size_inches(20, 10.5)
+    fig.set_dpi(100)
 
     x = np.arange(len(labels))
-    width = 0.35  # the width of the bars
+    width = 0.5  # the width of the bars
     rects1 = ax.bar(x - width/2, jvm_means, width, label='JVM')
     rects2 = ax.bar(x + width/2, svm_means, width, label='SVM')
 
@@ -77,6 +79,7 @@ def plot(title, data, plot_output_path):
     save_path = os.path.join(plot_output_path, 'plot.png')
     print("saving plot to", save_path)
     plt.savefig(save_path)
+    plt.close(fig)
 
 def plot_one(title, data, plot_output_path, tag):
     y = [t[1] - t[0] for t in data][::1000]
@@ -97,6 +100,7 @@ def plot_one(title, data, plot_output_path, tag):
     save_path = os.path.join(plot_output_path, f'plot_{tag}_all.png')
     print("saving plot to", save_path)
     plt.savefig(save_path)
+    plt.close(fig)
 
 
 def plot_dir(dir):

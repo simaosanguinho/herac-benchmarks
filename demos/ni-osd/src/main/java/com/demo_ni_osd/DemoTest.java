@@ -6,12 +6,36 @@ import com.google.gson.GsonBuilder;
 
 public class DemoTest {
 
-    public void serSmall4(int runs, int warmupRuns) {
-        ser(() -> new DemoObject.Small4(), runs, warmupRuns);
+    public void serRString64(int runs, int warmupRuns) {
+        ser(() -> new DemoObjects.RString64(), runs, warmupRuns);
     }
 
-    public void serSmall8(int runs, int warmupRuns) {
-        ser(() -> new DemoObject.Small8(), runs, warmupRuns);
+    public void serRString128(int runs, int warmupRuns) {
+        ser(() -> new DemoObjects.RString128(), runs, warmupRuns);
+    }
+
+    public void serRInt4(int runs, int warmupRuns) {
+        ser(() -> new DemoObjects.RInt4(), runs, warmupRuns);
+    }
+
+    public void serRInt8(int runs, int warmupRuns) {
+        ser(() -> new DemoObjects.RInt8(), runs, warmupRuns);
+    }
+
+    public void serAList4(int runs, int warmupRuns) {
+        ser(() -> new DemoObjects.AList4(), runs, warmupRuns);
+    }
+
+    public void serAList8(int runs, int warmupRuns) {
+        ser(() -> new DemoObjects.AList8(), runs, warmupRuns);
+    }
+
+    public void serHMap4(int runs, int warmupRuns) {
+        ser(() -> new DemoObjects.HMap4(), runs, warmupRuns);
+    }
+
+    public void serHMap8(int runs, int warmupRuns) {
+        ser(() -> new DemoObjects.HMap8(), runs, warmupRuns);
     }
 
     private void ser(Supplier<Object> objectSupplier, int runs, int warmupRuns) {
@@ -34,28 +58,56 @@ public class DemoTest {
     }
 
 
-    public void deserSmall4(int runs, int warmupRuns) {
-        deser(() -> new DemoObject.Small4(), runs, warmupRuns);
+    public void deserRString64(int runs, int warmupRuns) {
+        deser(() -> new DemoObjects.RString64(), runs, warmupRuns);
     }
 
-    public void deserSmall8(int runs, int warmupRuns) {
-        deser(() -> new DemoObject.Small8(), runs, warmupRuns);
+    public void deserRString128(int runs, int warmupRuns) {
+        deser(() -> new DemoObjects.RString128(), runs, warmupRuns);
+    }
+
+    public void deserRInt4(int runs, int warmupRuns) {
+        deser(() -> new DemoObjects.RInt4(), runs, warmupRuns);
+    }
+
+    public void deserRInt8(int runs, int warmupRuns) {
+        deser(() -> new DemoObjects.RInt8(), runs, warmupRuns);
+    }
+
+    public void deserAList4(int runs, int warmupRuns) {
+        deser(() -> new DemoObjects.AList4(), runs, warmupRuns);
+    }
+
+    public void deserAList8(int runs, int warmupRuns) {
+        deser(() -> new DemoObjects.AList8(), runs, warmupRuns);
+    }
+
+    public void deserHMap4(int runs, int warmupRuns) {
+        deser(() -> new DemoObjects.HMap4(), runs, warmupRuns);
+    }
+
+    public void deserHMap8(int runs, int warmupRuns) {
+        deser(() -> new DemoObjects.HMap8(), runs, warmupRuns);
     }
 
     private void deser(Supplier<Object> objectSupplier, int runs, int warmupRuns) {
         DemoLog.log("[deserializer]: processing object of type " + objectSupplier.get().getClass().getName());
 
         Gson gson = new GsonBuilder().create();
-        Object o = objectSupplier.get();
-        Class<?> clazz = o.getClass();
-        String json = gson.toJson(o);
 
         for (int i = 0; i < warmupRuns; i++) {
+            Object o = objectSupplier.get();
+            Class<?> clazz = o.getClass();
+            String json = gson.toJson(o);
             Object deserialized = gson.fromJson(json, clazz);
             assert deserialized.getClass().equals(clazz);
+            DemoLog.log("[deserializer]: warmup #" + deserialized);
         }
         
         for (int i = 0; i < runs; i++) {
+            Object o = objectSupplier.get();
+            Class<?> clazz = o.getClass();
+            String json = gson.toJson(o);
             DemoLog.log("[deserializer]: deserializing #" + i);
             Object deserialized = gson.fromJson(json, clazz);
             DemoLog.log("[deserializer]: deserialized #" + i);

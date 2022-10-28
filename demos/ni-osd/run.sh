@@ -34,10 +34,22 @@ store_dir=../logs/$timestamp
 mkdir -p $store_dir
 
 tests=(
-	serSmall4
-	serSmall8
-	deserSmall4
-	deserSmall8
+	serRInt4
+	serRInt8
+	serRString64
+	serRString128
+	serAList4
+	serAList8
+	serHMap4
+	serHMap8
+	deserRInt4
+	deserRInt8
+	deserRString64
+	deserRString128
+	deserAList4
+	deserAList8
+	deserHMap4
+	deserHMap8
 )
 
 set -e;
