@@ -46,14 +46,14 @@ public class DemoTest {
         for (int i = 0; i < warmupRuns; i++) {
             Object o = objectSupplier.get();
             String json = gson.toJson(o);
-            DemoLog.log("[serializer]: warmup #" + i + " : " + json);
+            DemoLog.log("[serializer]: warmup #" + i + " : " + json.length());
         }
         
         for (int i = 0; i < runs; i++) {
             Object o = objectSupplier.get();
             DemoLog.log("[serializer]: serializing #" + i);
             String json = gson.toJson(o);
-            DemoLog.log("[serializer]: serialized #" + i + " : " + json);
+            DemoLog.log("[serializer]: serialized #" + i + " : " + json.length());
         }
     }
 

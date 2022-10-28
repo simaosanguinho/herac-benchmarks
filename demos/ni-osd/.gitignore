@@ -5,7 +5,6 @@ build/
 bin/
 target/
 out/
-plots/
 .env
 .idea
 *.iml
@@ -16,4 +15,7 @@ plots/
 .classpath
 .factorypath
 
+logs
+plots
 logs/
+plots/
