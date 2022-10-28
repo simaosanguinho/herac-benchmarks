@@ -60,17 +60,17 @@ def plot(title, data, plot_output_path):
     jvm_means = []
     svm_means = []
     for label in labels:
-        jvm_means.append(round(data[label][0][0]/1000000, 2))
-        svm_means.append(round(data[label][1][0]/1000000, 2))
+        jvm_means.append(round(data[label][0][0]/1000, 0))
+        svm_means.append(round(data[label][1][0]/1000, 0))
 
     fig, ax = plt.subplots()
 
     x = np.arange(len(labels))
-    width = 0.35  # the width of the bars
+    width = 0.45  # the width of the bars
     rects1 = ax.bar(x - width/2, jvm_means, width, label='JVM')
     rects2 = ax.bar(x + width/2, svm_means, width, label='SVM')
 
-    ax.set_ylabel('t (ms)')
+    ax.set_ylabel('t (us)')
     ax.set_title(title)
     ax.set_xticks(x, labels)
     ax.legend()

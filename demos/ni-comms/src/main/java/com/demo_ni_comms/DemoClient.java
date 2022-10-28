@@ -25,18 +25,17 @@ public class DemoClient extends DemoAbstractTest {
             try (OutputStream out = new BufferedOutputStream(socket.getOutputStream(), bufSize == 0 ? size : bufSize)) {
                 byte[] bytes = new byte[size];
                 Arrays.fill(bytes, (byte)'x');
-                try {
+
+                if (isWarmup) {
                     for (int i = 0; i < runs; i++) {
-                        if (!isWarmup) {
-                            DemoLog.log("[client]: sending #" + i);
-                        }
                         out.write(bytes);
-                        if (!isWarmup) {
-                            DemoLog.log("[client]: sent #" + i);
-                        }
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                } else {
+                    for (int i = 0; i < runs; i++) {
+                        DemoLog.log("[client]: sending #" + i);
+                        out.write(bytes);
+                        DemoLog.log("[client]: sent #" + i);
+                    }
                 }
             }
         } catch (IOException e) {

@@ -17,21 +17,21 @@ public class DemoComms {
                     receiver = new DemoClient();
                     testName = args[i+1];
                     testMethod = DemoClient.class.getMethod(testName, int.class, int.class, int.class);
-                    continue;
+                    break;
                 case "--server":
                     receiver = new DemoServer();
                     testName = args[i+1];
                     testMethod = DemoServer.class.getMethod(testName, int.class, int.class, int.class);
-                    continue;
+                    break;
                 case "--runs":
                     runs = Integer.parseInt(args[i+1]);
-                    continue;
+                    break;
                 case "--warmup":
                     warmupRuns = Integer.parseInt(args[i+1]);
-                    continue;
+                    break;
                 case "--bufsize":
                     bufSize = Integer.parseInt(args[i+1]);
-                    continue;
+                    break;
                 default:
                     usageError();
             }

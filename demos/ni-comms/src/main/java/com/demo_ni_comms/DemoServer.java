@@ -1,7 +1,6 @@
 package com.demo_ni_comms;
 
 import java.io.BufferedInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -32,17 +31,20 @@ public class DemoServer extends DemoAbstractTest {
         client.setTcpNoDelay(true);
         try (InputStream in = new BufferedInputStream(client.getInputStream(), bufSize == 0 ? size : bufSize)) {
             try {
-                for (int i = 0; i < runs; i++) {
-                    if (!isWarmup) {
-                        DemoLog.log("[server]: receiving #" + i);
+                byte[] received = null;
+                if (isWarmup) {
+                    for (int i = 0; i < runs; i++) {
+                        received = in.readNBytes(size);
                     }
-                    byte[] received = in.readNBytes(size);
-                    if (!isWarmup) {
+                } else {
+                    for (int i = 0; i < runs; i++) {
+                        DemoLog.log("[server]: receiving #" + i);
+                        received = in.readNBytes(size);
                         DemoLog.log("[server]: received #" + i);
                     }
-                    assert received != null;
-                    assert received.length == size;
                 }
+                assert received != null;
+                assert received.length == size;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
