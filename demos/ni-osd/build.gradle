@@ -17,13 +17,14 @@ shadowJar() {
 
 dependencies {
     implementation 'org.graalvm.sdk:graal-sdk:22.2.0'
+    implementation 'com.google.code.gson:gson:2.10'
 }
 
 jar {
     manifest {
         attributes(
-                'Main-Class': 'com.demo_ni_osd.DemoOSD',
-                'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
+            'Main-Class': 'com.demo_ni_osd.DemoOSD',
+            'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
         )
     }
 }

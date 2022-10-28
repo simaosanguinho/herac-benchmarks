@@ -1,22 +1,26 @@
 package com.demo_ni_osd;
 
+import java.util.Random;
+
 public class DemoObject {
 
+    public static final Random rng = new Random();
+
     public static class Small4 {
-        public int field1 = 1;
-        public int field2 = 2;
-        public int field3 = 3;
-        public int field4 = 4;
+        public int field1 = rng.nextInt();
+        public int field2 = rng.nextInt();
+        public int field3 = rng.nextInt();
+        public int field4 = rng.nextInt();
     }
 
     public static class Small8 {
-        public int field1 = 1;
-        public int field2 = 2;
-        public int field3 = 3;
-        public int field4 = 4;
-        public int field5 = 5;
-        public int field6 = 6;
-        public int field7 = 7;
-        public int field8 = 8;
+        public int field1 = rng.nextInt();
+        public int field2 = rng.nextInt();
+        public int field3 = rng.nextInt();
+        public int field4 = rng.nextInt();
+        public int field5 = rng.nextInt();
+        public int field6 = rng.nextInt();
+        public int field7 = rng.nextInt();
+        public int field8 = rng.nextInt();
     }
 }
