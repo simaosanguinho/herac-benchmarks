@@ -57,7 +57,6 @@ for test in "${tests[@]}"; do
 
 	$JAVA_HOME/bin/java \
 		-ea \
-		-XX:CompileThreshold=1000 \
 		-jar libs/demo-ni-comms-1.0-all.jar \
 		--server $test --runs $runs --warmup $warmup --bufsize $bufsize \
 		> $store_dir/$test/jvm_server.log 2>&1 &
@@ -66,7 +65,6 @@ for test in "${tests[@]}"; do
 
 	$JAVA_HOME/bin/java \
 		-ea \
-		-XX:CompileThreshold=1000 \
 		-jar libs/demo-ni-comms-1.0-all.jar \
 		--client $test --runs $runs --warmup $warmup --bufsize $bufsize \
 		> $store_dir/$test/jvm_client.log 2>&1 &

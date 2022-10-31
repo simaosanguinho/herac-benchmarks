@@ -61,7 +61,6 @@ for test in "${tests[@]}"; do
 
 	$JAVA_HOME/bin/java \
 		-ea \
-		-XX:CompileThreshold=1000 \
 		-jar libs/demo-ni-osd-1.0-all.jar \
 		$test --runs $runs --warmup $warmup \
 		> $store_dir/$test/jvm.log 2>&1 &

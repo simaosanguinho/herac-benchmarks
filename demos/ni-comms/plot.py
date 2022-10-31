@@ -14,7 +14,7 @@ timestamp_regex = re.compile(r'^\[(?P<ts>[0-9]+)\]')
 def mkd(path):
     try:
         pathlib.Path(path).mkdir()
-    except FileNotFoundError:
+    except FileExistsError:
         pass
 
 def extract_timestamp(line):
@@ -85,9 +85,33 @@ def plot(title, data, plot_output_path):
     print("saving plot to", save_path)
     plt.savefig(save_path)
 
+def plot_one(title, data, plot_output_path, tag):
+    y = [t[1] - t[0] for t in data][::1000]
+    labels = range(1, len(y) + 1)
+
+    fig, ax = plt.subplots()
+
+    x = np.arange(len(labels))
+    width = 0.2  # the width of the bars
+    rects1 = ax.bar(x - width/2, y, width)
+
+    ax.set_ylabel('t (us)')    
+    ax.set_title(f'{title}_{tag}')
+
+    fig.tight_layout()
+
+    mkd(plot_output_path)
+    save_path = os.path.join(plot_output_path, f'plot_{tag}.png')
+    print("saving plot to", save_path)
+    plt.savefig(save_path)
+    plt.close(fig)
+
 
 def plot_dir(dir):
     print('processing: ' + dir)
+    dir_basename = os.path.basename(os.path.normpath(dir))
+    plot_output_path = os.path.join('plots', dir_basename)
+
     data = {}
     for test_dir in os.listdir(dir):
         test_dir_path = os.path.join(dir, test_dir)
@@ -96,12 +120,14 @@ def plot_dir(dir):
         jvm_server_log = read_log_file(os.path.join(test_dir_path, 'jvm_server.log'))
         svm_client_log = read_log_file(os.path.join(test_dir_path, 'svm_client.log'))
         svm_server_log = read_log_file(os.path.join(test_dir_path, 'svm_server.log'))
+        plot_one(dir_basename, jvm_client_log, plot_output_path, f'{test_dir}_jvm_client')
+        plot_one(dir_basename, jvm_server_log, plot_output_path, f'{test_dir}_jvm_server')
+        plot_one(dir_basename, svm_client_log, plot_output_path, f'{test_dir}_svm_client')
+        plot_one(dir_basename, svm_server_log, plot_output_path, f'{test_dir}_svm_server')
         jvm_mean = extract_mean(jvm_client_log, jvm_server_log)
         svm_mean = extract_mean(svm_client_log, svm_server_log)
         data[test_dir] = (jvm_mean, svm_mean)
 
-    dir_basename = os.path.basename(os.path.normpath(dir))
-    plot_output_path = os.path.join('plots', dir_basename)
     plot(dir_basename, data, plot_output_path)
 
 if __name__ == "__main__":

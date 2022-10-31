@@ -97,7 +97,7 @@ def plot_one(title, data, plot_output_path, tag):
     fig.tight_layout()
 
     mkd(plot_output_path)
-    save_path = os.path.join(plot_output_path, f'plot_{tag}_all.png')
+    save_path = os.path.join(plot_output_path, f'plot_{tag}.png')
     print("saving plot to", save_path)
     plt.savefig(save_path)
     plt.close(fig)
