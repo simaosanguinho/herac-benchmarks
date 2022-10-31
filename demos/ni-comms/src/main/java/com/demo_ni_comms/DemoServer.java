@@ -24,10 +24,8 @@ public class DemoServer extends DemoAbstractTest {
                 for (int i = 0; i < warmupRuns + runs; i++) {
                     tcpCommsTestRecvData(in, i, size);
                 }
-
                 printResults(warmupRuns, runs);
             }
-            
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

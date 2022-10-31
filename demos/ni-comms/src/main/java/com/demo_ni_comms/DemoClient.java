@@ -15,20 +15,18 @@ public class DemoClient extends DemoAbstractTest {
         start = new long[runs + warmupRuns];
         stop = new long[runs + warmupRuns];
 
+        byte[] bytes = new byte[size];
+        Arrays.fill(bytes, (byte)'x');
+
         DemoLog.log(String.format("[client]: connecting to localhost:%d...", DemoServer.PORT));    
         try (Socket socket = new Socket("localhost", DemoServer.PORT)) {
             // socket.setTcpNoDelay(true);
             try (OutputStream out = new BufferedOutputStream(socket.getOutputStream(), bufSize == 0 ? size : bufSize)) {
-                byte[] bytes = new byte[size];
-                Arrays.fill(bytes, (byte)'x');
-
                 for (int i = 0; i < runs + warmupRuns; i++) {
                     tcpCommsTestSendData(out, bytes, i, size);
                 }
-
                 printResults(warmupRuns, runs);
             }
-            
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
