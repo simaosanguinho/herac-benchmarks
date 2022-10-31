@@ -16,7 +16,7 @@ echo "GRAALVM_HOME=$GRAALVM_HOME"
 
 runs=1000
 warmup=1000000
-bufsize=8192
+bufsize=0
 timestamp=$(date +%s)
 if [ $# -ge 1 ]; then
 	warmup=$1
