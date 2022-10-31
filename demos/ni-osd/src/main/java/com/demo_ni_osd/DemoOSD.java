@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 public class DemoOSD {
     public static void main(String[] args) throws Exception {
-        Object receiver = new DemoTest();
+        DemoTest receiver = new DemoTest();
         Method testMethod = null;
         String testName = null;
         int runs = 1000;
@@ -35,6 +35,7 @@ public class DemoOSD {
 
         DemoLog.log(String.format("[harness]: invoking %s , warmup=%d, runs=%d", testName, warmupRuns, runs));
         testMethod.invoke(receiver, runs, warmupRuns);
+        receiver.printResults(warmupRuns, runs);
     }
 
     private static void usageError() {

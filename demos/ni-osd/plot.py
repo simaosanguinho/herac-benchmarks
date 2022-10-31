@@ -28,7 +28,7 @@ def read_log_file(path):
         with open(path, 'r') as f:
             contents = f.readlines()
 
-        matches = ['serializing #', 'serialized #', 'deserializing #', 'deserialized #']
+        matches = ['start #', 'stop #']
         times = []
         time = []
         for line in contents:
@@ -57,7 +57,7 @@ def plot(title, data, plot_output_path):
         svm_means.append(round(data[label][1][0]/1000, 1))
 
     fig, ax = plt.subplots()
-    fig.set_size_inches(20, 10.5)
+    fig.set_size_inches(20, 6)
     fig.set_dpi(100)
 
     x = np.arange(len(labels))
