@@ -3,7 +3,11 @@ package com.demo_ni_comms;
 public class DemoLog {
 
     public static void log(String msg) {
-        System.out.printf("[%d]: %s\n", System.nanoTime(), msg);
+        log(System.currentTimeMillis(), msg);
+    }
+
+    public static void log(long time, String msg) {
+        System.out.printf("[%d]: %s\n", time, msg);
     }
     
 }

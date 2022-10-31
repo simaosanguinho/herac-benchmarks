@@ -37,15 +37,24 @@ store_dir=../logs/$timestamp
 mkdir -p $store_dir
 
 tests=(
-	net1_32B
-	net2_64B
-	net3_128B
-	net4_256B
-	net5_512B
-	net6_1KB
-	# net7_10KB
-	# net8_100KB
-	# net9_1MB
+	tcp1_32B
+	tcp2_64B
+	tcp3_128B
+	tcp4_256B
+	tcp5_512B
+	tcp6_1KB
+	tcp7_32KB
+	# tcp8_256KB
+	# tcp9_512KB
+	# udp1_32B
+	# udp2_64B
+	# udp3_128B
+	# udp4_256B
+	# udp5_512B
+	# udp6_1KB
+	# udp7_32KB
+	# udp8_256KB
+	# udp9_512KB
 )
 
 set -e;
