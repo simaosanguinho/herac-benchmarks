@@ -24,6 +24,7 @@ public class DemoClient extends DemoAbstractTest {
             try (OutputStream out = new BufferedOutputStream(socket.getOutputStream(), bufSize == 0 ? size : bufSize)) {
                 for (int i = 0; i < runs + warmupRuns; i++) {
                     tcpCommsTestSendData(out, bytes, i, size);
+                    
                 }
                 printResults(warmupRuns, runs);
             }

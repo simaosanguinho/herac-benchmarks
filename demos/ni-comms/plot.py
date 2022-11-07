@@ -52,7 +52,7 @@ def total_travel_time(client_times, server_times):
 
 def cutoff(times):
     n = len(times)
-    cutoff = int(n / 50)
+    cutoff = int(n / 10)
     return sorted(times)[cutoff:-cutoff]
 
 def extract_mean(client_log, server_log):
@@ -102,7 +102,7 @@ def plot_one(title, data, plot_output_path, tag):
     # print(title, tag, data[:10])
     # print(title, tag, data[-10:])
 
-    y = data[::250]
+    y = cutoff(data)[::250]
     labels = range(1, len(y) + 1)
 
     fig, ax = plt.subplots()
@@ -136,10 +136,10 @@ def plot_dir(dir):
         jvm_server_log = read_log_file(os.path.join(test_dir_path, 'jvm_server.log'))
         svm_client_log = read_log_file(os.path.join(test_dir_path, 'svm_client.log'))
         svm_server_log = read_log_file(os.path.join(test_dir_path, 'svm_server.log'))
-        # plot_one(dir_basename, subtract_times(jvm_client_log), plot_output_path, f'{test_dir}_jvm_client')
-        # plot_one(dir_basename, subtract_times(jvm_server_log), plot_output_path, f'{test_dir}_jvm_server')
-        # plot_one(dir_basename, subtract_times(svm_client_log), plot_output_path, f'{test_dir}_svm_client')
-        # plot_one(dir_basename, subtract_times(svm_server_log), plot_output_path, f'{test_dir}_svm_server')
+        plot_one(dir_basename, subtract_times(jvm_client_log), plot_output_path, f'{test_dir}_jvm_send')
+        plot_one(dir_basename, subtract_times(jvm_server_log), plot_output_path, f'{test_dir}_jvm_recv')
+        plot_one(dir_basename, subtract_times(svm_client_log), plot_output_path, f'{test_dir}_svm_send')
+        plot_one(dir_basename, subtract_times(svm_server_log), plot_output_path, f'{test_dir}_svm_recv')
         plot_one(dir_basename, total_travel_time(jvm_client_log, jvm_server_log), plot_output_path, f'{test_dir}_jvm_total')
         plot_one(dir_basename, total_travel_time(svm_client_log, svm_server_log), plot_output_path, f'{test_dir}_svm_total')
         jvm_mean = extract_mean(jvm_client_log, jvm_server_log)
