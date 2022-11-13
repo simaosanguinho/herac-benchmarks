@@ -37,7 +37,8 @@ store_dir=../logs/$timestamp
 mkdir -p $store_dir
 
 tests=(
-	openSocket
+	# openSocket
+	httpGet
 	# tcp1_32B
 	# tcp2_64B
 	# tcp3_128B
@@ -70,23 +71,23 @@ set -e;
 for test in "${tests[@]}"; do
 	mkdir -p $store_dir/$test
 
-	# echo "Running $test on JVM with $warmup warmup runs and $runs iterations"
+	echo "Running $test on JVM with $warmup warmup runs and $runs iterations"
 
-	# $JAVA_HOME/bin/java \
-	# 	-ea \
-	# 	-jar libs/demo-ni-comms-1.0-all.jar \
-	# 	--server $test --runs $runs --warmup $warmup --bufsize $bufsize \
-	# 	> $store_dir/$test/jvm_server.log 2>&1 &
+	$JAVA_HOME/bin/java \
+		-ea \
+		-jar libs/demo-ni-comms-1.0-all.jar \
+		--server $test --runs $runs --warmup $warmup --bufsize $bufsize \
+		> $store_dir/$test/jvm_server.log 2>&1 &
 
-	# sleep 1
+	sleep 1
 
-	# $JAVA_HOME/bin/java \
-	# 	-ea \
-	# 	-jar libs/demo-ni-comms-1.0-all.jar \
-	# 	--client $test --runs $runs --warmup $warmup --bufsize $bufsize \
-	# 	> $store_dir/$test/jvm_client.log 2>&1 &
+	$JAVA_HOME/bin/java \
+		-ea \
+		-jar libs/demo-ni-comms-1.0-all.jar \
+		--client $test --runs $runs --warmup $warmup --bufsize $bufsize \
+		> $store_dir/$test/jvm_client.log 2>&1 &
 
-	# wait
+	wait
 
 	echo "Running $test on SVM with $warmup warmup runs and $runs iterations"
 

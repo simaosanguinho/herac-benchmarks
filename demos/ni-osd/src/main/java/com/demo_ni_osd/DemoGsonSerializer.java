@@ -1,5 +1,7 @@
 package com.demo_ni_osd;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -14,5 +16,4 @@ public class DemoGsonSerializer implements DemoSerializer {
     public Object deserialize(String json, Class<?> clazz) {
         return gson.fromJson(json, clazz);
     }
-
 }

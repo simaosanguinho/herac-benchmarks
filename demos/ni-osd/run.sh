@@ -77,19 +77,19 @@ set -e;
 for test in "${tests[@]}"; do
 	mkdir -p $store_dir/$test
 
-	# echo "Running $test on JVM with $warmup warmup runs and $runs iterations"
+	echo "Running $test on JVM with $warmup warmup runs and $runs iterations"
 
-	# $JAVA_HOME/bin/java \
-	# 	-ea \
-	# 	-Xmx16g \
-	# 	-jar libs/demo-ni-osd-1.0-all.jar \
-	# 	$test --runs $runs --warmup $warmup \
-	# 	> $store_dir/$test/"$test"_jvm.log 2>&1 &
+	$JAVA_HOME/bin/java \
+		-ea \
+		-Xmx16g \
+		-jar libs/demo-ni-osd-1.0-all.jar \
+		$test --runs $runs --warmup $warmup \
+		> $store_dir/$test/"$test"_jvm.log 2>&1 &
 
-	# 	# -XX:+PrintCompilation \
-	# 	# -verbose:gc \
+		# -XX:+PrintCompilation \
+		# -verbose:gc \
 		
-	# wait
+	wait
 
 	echo "Running $test on SVM with $warmup warmup runs and $runs iterations"
 

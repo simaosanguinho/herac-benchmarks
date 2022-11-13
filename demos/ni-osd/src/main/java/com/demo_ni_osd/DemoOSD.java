@@ -6,7 +6,8 @@ public class DemoOSD {
     public static void main(String[] args) throws Exception {
         
         // DemoSerializer json = new DemoGsonSerializer();
-        DemoSerializer json = new DemoJacksonSerializer();
+        // DemoSerializer json = new DemoJacksonSerializer();
+        DemoSerializer json = new DemoKryoSerializer();
 
         DemoTest receiver = new DemoTest(json);
         Method testMethod = null;

@@ -9,6 +9,8 @@ public abstract class DemoAbstractTest {
 
     public abstract void openSocket(int bufSize, int runs, int warmupRuns);
 
+    public abstract void httpGet(int bufSize, int runs, int warmupRuns);
+
     public void tcp1_32B(int bufSize, int runs, int warmupRuns) {
         tcpCommsTest(32, bufSize, runs, warmupRuns);
     }

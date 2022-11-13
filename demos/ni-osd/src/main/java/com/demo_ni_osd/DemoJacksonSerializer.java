@@ -1,5 +1,7 @@
 package com.demo_ni_osd;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,5 +26,4 @@ public class DemoJacksonSerializer implements DemoSerializer {
             return null;
         }
     }
-
 }
