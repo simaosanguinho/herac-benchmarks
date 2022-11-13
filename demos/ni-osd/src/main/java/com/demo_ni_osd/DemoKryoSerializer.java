@@ -22,13 +22,6 @@ public class DemoKryoSerializer implements DemoSerializer {
         }
         kryo.register(ArrayList.class);
         kryo.register(HashMap.class);
-
-        try {
-            this.in = new FileInputStream("/tmp/file.dat");
-            this.out = new FileOutputStream("/tmp/file.dat");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public String serialize(Object o) {
