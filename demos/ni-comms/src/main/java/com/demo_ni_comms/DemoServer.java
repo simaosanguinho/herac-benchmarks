@@ -12,6 +12,31 @@ public class DemoServer extends DemoAbstractTest {
 
     public static int PORT = 12345;
 
+    public void openSocket(int bufSize, int runs, int warmupRuns) {
+        start = new long[runs + warmupRuns];
+        stop = new long[runs + warmupRuns];
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            for (int i = 0; i < runs + warmupRuns; i++) {
+                openSocketImpl(serverSocket, i);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        printResults(warmupRuns, runs);
+    }
+
+    private void openSocketImpl(ServerSocket server, int i) {
+        try {
+            start[i] = System.nanoTime();
+            Socket client = server.accept();
+            stop[i] = System.nanoTime();
+            // client.setTcpNoDelay(true);
+            // int n = client.getInputStream().read();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     protected void tcpCommsTest(int size, int bufSize, int runs, int warmupRuns) {
         start = new long[runs + warmupRuns];
         stop = new long[runs + warmupRuns];

@@ -9,8 +9,6 @@ import statistics
 import numpy as np
 from matplotlib import pyplot as plt
 
-timestamp_regex = re.compile(r'^\[(?P<ts>[0-9]+)\]')
-
 def mkd(path):
     try:
         pathlib.Path(path).mkdir()
@@ -18,34 +16,24 @@ def mkd(path):
         pass
 
 def extract_timestamp(line):
-    m = timestamp_regex.match(line)
-    if m is None:
-        raise Exception("failed to parse timestamp from line `" + line + "`")
-    return int(m.group("ts"))
+    return int(line)
 
 def read_log_file(path):
     try:
         with open(path, 'r') as f:
             contents = f.readlines()
-
-        matches = ['start #', 'stop #']
         times = []
-        time = []
         for line in contents:
-            if not any(map(lambda m: m in line, matches)):
+            if line.startswith('['):
                 continue
             t = extract_timestamp(line)
-            time.append(t)
-            if len(time) == 2:
-                times.append(time)
-                time = []
+            times.append(t)
         return times
     except IOError as e:
         print(e)
         sys.exit(1)
 
-def extract_mean(log):
-    times = [t[1] - t[0] for t in log]
+def extract_mean(times):
     return [statistics.mean(times), np.std(np.array(times))]
 
 def plot(title, data, plot_output_path):
@@ -82,7 +70,7 @@ def plot(title, data, plot_output_path):
     plt.close(fig)
 
 def plot_one(title, data, plot_output_path, tag):
-    y = [t[1] - t[0] for t in data][::1000]
+    y = data[::1000]
     labels = range(1, len(y) + 1)
 
     fig, ax = plt.subplots()

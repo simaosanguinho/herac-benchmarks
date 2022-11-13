@@ -17,4 +17,9 @@ plots/
 .classpath
 .factorypath
 
+logs
+plots
 logs/
+plots/
+csv/
+profiles/

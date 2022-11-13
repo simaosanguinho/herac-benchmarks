@@ -18,14 +18,33 @@ then
 fi
 
 function build_app {
+	mkdir -p profiles
 	cd build
-	$GRAALVM_HOME/bin/native-image \
-		--no-fallback \
-		-H:ReflectionConfigurationFiles=../reflect.json \
-		-cp libs/demo-ni-comms-1.0-all.jar\
-		-H:+ReportExceptionStackTraces \
-		-H:Name=democomms \
-            com.demo_ni_comms.DemoComms
+	client_profiles_path=../profiles/client_profiles.iprof
+	server_profiles_path=../profiles/server_profiles.iprof
+	test -f $client_profiles_path && test -f $server_profiles_path
+	profiles_exist=$?
+	if [ $profiles_exist -eq 0 ]; then
+		echo 'Profiles found, generating image with profiles'
+		$GRAALVM_HOME/bin/native-image \
+			--no-fallback \
+			-H:ReflectionConfigurationFiles=../reflect.json \
+			-cp libs/demo-ni-comms-1.0-all.jar\
+			-H:+ReportExceptionStackTraces \
+			-H:Name=democomms \
+			--pgo=$client_profiles_path,$server_profiles_path \
+				com.demo_ni_comms.DemoComms
+	else
+		echo 'Profiles missing and will be generated in this run, RE-RUN FOR RESULTS WITH PGO!!!'
+		$GRAALVM_HOME/bin/native-image \
+			--no-fallback \
+			-H:ReflectionConfigurationFiles=../reflect.json \
+			-cp libs/demo-ni-comms-1.0-all.jar\
+			-H:+ReportExceptionStackTraces \
+			-H:Name=democomms \
+			--pgo-instrument \
+				com.demo_ni_comms.DemoComms
+	fi
 }
 
 ./gradlew clean shadowJar assemble

@@ -4,7 +4,11 @@ import java.lang.reflect.Method;
 
 public class DemoOSD {
     public static void main(String[] args) throws Exception {
-        DemoTest receiver = new DemoTest();
+        
+        // DemoSerializer json = new DemoGsonSerializer();
+        DemoSerializer json = new DemoJacksonSerializer();
+
+        DemoTest receiver = new DemoTest(json);
         Method testMethod = null;
         String testName = null;
         int runs = 1000;

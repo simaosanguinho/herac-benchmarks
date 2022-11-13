@@ -11,6 +11,30 @@ import java.util.Arrays;
 
 public class DemoClient extends DemoAbstractTest {
 
+    public void openSocket(int bufSize, int runs, int warmupRuns) {
+        start = new long[runs + warmupRuns];
+        stop = new long[runs + warmupRuns];
+        try {
+            for (int i = 0; i < runs + warmupRuns; i++) {
+                openSocketImpl(i);
+                Thread.sleep(1);
+            }
+        } catch (InterruptedException e) {
+            // nop
+        }
+        printResults(warmupRuns, runs);
+    }
+
+    private void openSocketImpl(int i) {
+        start[i] = System.nanoTime();
+        try (Socket socket = new Socket("localhost", DemoServer.PORT)) {
+            stop[i] = System.nanoTime();
+            // socket.getOutputStream().write(0);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     protected void tcpCommsTest(int size, int bufSize, int runs, int warmupRuns) {
         start = new long[runs + warmupRuns];
         stop = new long[runs + warmupRuns];
@@ -24,13 +48,12 @@ public class DemoClient extends DemoAbstractTest {
             try (OutputStream out = new BufferedOutputStream(socket.getOutputStream(), bufSize == 0 ? size : bufSize)) {
                 for (int i = 0; i < runs + warmupRuns; i++) {
                     tcpCommsTestSendData(out, bytes, i, size);
-                    
                 }
-                printResults(warmupRuns, runs);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        printResults(warmupRuns, runs);
     }
 
     private void tcpCommsTestSendData(OutputStream out, byte[] bytes, int i, int size) throws IOException {
@@ -51,12 +74,11 @@ public class DemoClient extends DemoAbstractTest {
             for (int i = 0; i < runs + warmupRuns; i++) {
                 udpCommsTestRecvData(socket, datagram, i);
             }
-
-            printResults(warmupRuns, runs);
-        
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        printResults(warmupRuns, runs);
     }
 
     private void udpCommsTestRecvData(DatagramSocket socket, DatagramPacket datagram, int i) throws IOException {

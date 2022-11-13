@@ -37,13 +37,14 @@ store_dir=../logs/$timestamp
 mkdir -p $store_dir
 
 tests=(
-	tcp1_32B
-	tcp2_64B
-	tcp3_128B
-	tcp4_256B
-	tcp5_512B
-	tcp6_1KB
-	tcp7_32KB
+	openSocket
+	# tcp1_32B
+	# tcp2_64B
+	# tcp3_128B
+	# tcp4_256B
+	# tcp5_512B
+	# tcp6_1KB
+	# tcp7_32KB
 	# tcp8_256KB
 	# tcp9_512KB
 	# udp1_32B
@@ -57,40 +58,65 @@ tests=(
 	# udp9_512KB
 )
 
+trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
+
+client_profiles_path=../profiles/client_profiles.iprof
+server_profiles_path=../profiles/server_profiles.iprof
+test -f $client_profiles_path && test -f $server_profiles_path
+profiles_exist=$?
+
 set -e;
 
 for test in "${tests[@]}"; do
 	mkdir -p $store_dir/$test
 
-	echo "Running $test on JVM with $warmup warmup runs and $runs iterations"
+	# echo "Running $test on JVM with $warmup warmup runs and $runs iterations"
 
-	$JAVA_HOME/bin/java \
-		-ea \
-		-jar libs/demo-ni-comms-1.0-all.jar \
-		--server $test --runs $runs --warmup $warmup --bufsize $bufsize \
-		> $store_dir/$test/jvm_server.log 2>&1 &
+	# $JAVA_HOME/bin/java \
+	# 	-ea \
+	# 	-jar libs/demo-ni-comms-1.0-all.jar \
+	# 	--server $test --runs $runs --warmup $warmup --bufsize $bufsize \
+	# 	> $store_dir/$test/jvm_server.log 2>&1 &
 
-	sleep 1
+	# sleep 1
 
-	$JAVA_HOME/bin/java \
-		-ea \
-		-jar libs/demo-ni-comms-1.0-all.jar \
-		--client $test --runs $runs --warmup $warmup --bufsize $bufsize \
-		> $store_dir/$test/jvm_client.log 2>&1 &
+	# $JAVA_HOME/bin/java \
+	# 	-ea \
+	# 	-jar libs/demo-ni-comms-1.0-all.jar \
+	# 	--client $test --runs $runs --warmup $warmup --bufsize $bufsize \
+	# 	> $store_dir/$test/jvm_client.log 2>&1 &
 
-	wait
+	# wait
 
 	echo "Running $test on SVM with $warmup warmup runs and $runs iterations"
 
-	./democomms \
-		--server $test --runs $runs --warmup $warmup --bufsize $bufsize \
-		> $store_dir/$test/svm_server.log 2>&1 &
+	if [ $profiles_exist -eq 0 ]; then
+		echo "Using profiles from previous runs..."
 
-	sleep 1
+		./democomms \
+			--server $test --runs $runs --warmup $warmup --bufsize $bufsize \
+			> $store_dir/$test/svm_server.log 2>&1 &
 
-	./democomms \
-		--client $test --runs $runs --warmup $warmup --bufsize $bufsize \
-		> $store_dir/$test/svm_client.log 2>&1 &
+		sleep 1
+
+		./democomms \
+			--client $test --runs $runs --warmup $warmup --bufsize $bufsize \
+			> $store_dir/$test/svm_client.log 2>&1 &
+	else
+		echo "Generating profiles in this run... RE-RUN FOR RESULTS WITH PGO!!!"
+		
+		./democomms \
+			-XX:ProfilesDumpFile=$client_profiles_path \
+			--server $test --runs $runs --warmup $warmup --bufsize $bufsize \
+			> $store_dir/$test/svm_server.log 2>&1 &
+
+		sleep 1
+
+		./democomms \
+			-XX:ProfilesDumpFile=$server_profiles_path \
+			--client $test --runs $runs --warmup $warmup --bufsize $bufsize \
+			> $store_dir/$test/svm_client.log 2>&1 &
+	fi
 
 	wait
 done

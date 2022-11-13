@@ -13,6 +13,6 @@ rm -rf ./logs/ ./plots/
 ####
 
 ./build.sh
-./run.sh 1000000 100000 osd
+./run.sh 10000 10000 osd
 ./plot.py ./logs/osd
 # ./save_plots.sh

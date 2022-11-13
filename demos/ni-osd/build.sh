@@ -18,14 +18,30 @@ then
 fi
 
 function build_app {
+	mkdir profiles
 	cd build
-	$GRAALVM_HOME/bin/native-image \
-		--no-fallback \
-		-H:ReflectionConfigurationFiles=../reflect.json \
-		-cp libs/demo-ni-osd-1.0-all.jar\
-		-H:+ReportExceptionStackTraces \
-		-H:Name=demoosd \
-            com.demo_ni_osd.DemoOSD
+	profiles_path=../profiles/profiles.iprof
+	if [ -f $profiles_path ]; then
+		echo 'Profiles found, generating image with profiles'
+		$GRAALVM_HOME/bin/native-image \
+			--no-fallback \
+			-H:ReflectionConfigurationFiles=../reflect.json \
+			-cp libs/demo-ni-osd-1.0-all.jar\
+			-H:+ReportExceptionStackTraces \
+			-H:Name=demoosd \
+			--pgo=$profiles_path \
+				com.demo_ni_osd.DemoOSD
+	else
+		echo 'Profiles missing and will be generated in this run, RE-RUN FOR RESULTS WITH PGO!!!'
+		$GRAALVM_HOME/bin/native-image \
+			--no-fallback \
+			-H:ReflectionConfigurationFiles=../reflect.json \
+			-cp libs/demo-ni-osd-1.0-all.jar\
+			-H:+ReportExceptionStackTraces \
+			-H:Name=demoosd \
+			--pgo-instrument \
+				com.demo_ni_osd.DemoOSD
+	fi
 }
 
 ./gradlew clean shadowJar assemble

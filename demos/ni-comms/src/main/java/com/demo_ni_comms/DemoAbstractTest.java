@@ -7,6 +7,8 @@ public abstract class DemoAbstractTest {
 
     protected abstract void printResults(int warmupRuns, int runs);
 
+    public abstract void openSocket(int bufSize, int runs, int warmupRuns);
+
     public void tcp1_32B(int bufSize, int runs, int warmupRuns) {
         tcpCommsTest(32, bufSize, runs, warmupRuns);
     }
