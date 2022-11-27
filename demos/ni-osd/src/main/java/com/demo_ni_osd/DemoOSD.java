@@ -7,7 +7,9 @@ public class DemoOSD {
         
         // DemoSerializer json = new DemoGsonSerializer();
         // DemoSerializer json = new DemoJacksonSerializer();
-        DemoSerializer json = new DemoKryoSerializer();
+        DemoSerializer json = new DemoDsljsonSerializer();
+        // DemoSerializer json = new DemoJsoniterSerializer();
+        // DemoSerializer json = new DemoKryoSerializer();
 
         DemoTest receiver = new DemoTest(json);
         Method testMethod = null;

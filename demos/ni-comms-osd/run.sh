@@ -37,9 +37,9 @@ store_dir=../logs/$timestamp
 mkdir -p $store_dir
 
 tests=(
-	gson
+	# gson
 	jackson
-	kryo
+	# kryo
 )
 
 trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT

@@ -38,16 +38,18 @@ mkdir -p $store_dir
 
 tests=(
 	# openSocket
-	httpGet
-	# tcp1_32B
-	# tcp2_64B
-	# tcp3_128B
-	# tcp4_256B
-	# tcp5_512B
-	# tcp6_1KB
-	# tcp7_32KB
-	# tcp8_256KB
-	# tcp9_512KB
+	# openSSLSocket
+	# httpGet
+	tcp1_32B
+	tcp2_64B
+	tcp3_128B
+	tcp4_256B
+	tcp5_512B
+	tcp6_1KB
+	tcp7_10KB
+	tcp7_32KB
+	tcp8_256KB
+	tcp9_512KB
 	# udp1_32B
 	# udp2_64B
 	# udp3_128B

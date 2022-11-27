@@ -1,5 +1,7 @@
 package com.demo_ni_osd;
 
+import com.dslplatform.json.CompiledJson;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +18,7 @@ public class DemoObjects {
         return new String(bytes);
     }
 
+	@CompiledJson
     public static class BigObj {
         public RInt8         field2     = new RInt8();
         public RString128    field5     = new RString128();
@@ -25,6 +28,7 @@ public class DemoObjects {
         public BigObj() { }
     }
 
+	@CompiledJson
     public static class RInt4 {
         public int field1 = rng.nextInt();
         public int field2 = rng.nextInt();
@@ -34,6 +38,7 @@ public class DemoObjects {
         public RInt4() { }
     }
 
+	@CompiledJson
     public static class RInt8 {
         public int field1 = rng.nextInt();
         public int field2 = rng.nextInt();
@@ -47,6 +52,7 @@ public class DemoObjects {
         public RInt8() { }
     }
 
+	@CompiledJson
     public static class RInt32 {
         public int field01 = rng.nextInt();
         public int field02 = rng.nextInt();
@@ -84,24 +90,28 @@ public class DemoObjects {
         public RInt32() { }
     }
 
+	@CompiledJson
     public static class RString64 {
         public String field1 = randomStr(64);
 
         public RString64() { }
     }
 
+	@CompiledJson
     public static class RString128 {
         public String field1 = randomStr(128);
 
         public RString128() { }
     }
 
+	@CompiledJson
     public static class RString256 {
         public String field1 = randomStr(256);
 
         public RString256() { }
     }
 
+	@CompiledJson
     public static class AList4 {
         public List<RInt4> field = new ArrayList<>(4);
 
@@ -112,6 +122,7 @@ public class DemoObjects {
         }
     }
 
+	@CompiledJson
     public static class AList8 {
         public List<RInt8> field = new ArrayList<>(8);
 
@@ -122,6 +133,7 @@ public class DemoObjects {
         }
     }
 
+	@CompiledJson
     public static class AList32 {
         public List<RInt32> field = new ArrayList<>(32);
 
@@ -132,6 +144,7 @@ public class DemoObjects {
         }
     }
 
+	@CompiledJson
     public static class AList64 {
         public List<RInt32> field = new ArrayList<>(64);
 
@@ -142,6 +155,7 @@ public class DemoObjects {
         }
     }
 
+	@CompiledJson
     public static class HMap4 {
         public Map<String, RInt4> field = new HashMap<>(4);
 
@@ -152,6 +166,7 @@ public class DemoObjects {
         }
     }
 
+	@CompiledJson
     public static class HMap8 {
         public Map<String, RInt4> field = new HashMap<>(8);
 
@@ -162,6 +177,7 @@ public class DemoObjects {
         }
     }
 
+	@CompiledJson
     public static class HMap32 {
         public Map<String, RInt4> field = new HashMap<>(32);
 
@@ -172,6 +188,7 @@ public class DemoObjects {
         }
     }
 
+	@CompiledJson
     public static class HMap64 {
         public Map<String, RInt4> field = new HashMap<>(64);
 

@@ -15,10 +15,34 @@ shadowJar() {
     from sourceSets.main.output
 }
 
+ext {
+    jacksonVersion = '2.13.4'
+    dslJsonVersion = '1.9.9'
+    johnzonVersion = '1.2.19'
+    jmhVersion = '1.35'
+}
+
 dependencies {
     implementation 'org.graalvm.sdk:graal-sdk:22.2.0'
-    implementation 'com.google.code.gson:gson:2.10'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
+    
+    // Jackson
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${jacksonVersion}"
+    implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-afterburner', version: "${jacksonVersion}"
+    implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-blackbird', version: "${jacksonVersion}"
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: "${jacksonVersion}"
+    
+    // GSON
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.10'
+
+    // DSL-json
+    implementation group: 'com.dslplatform', name: 'dsl-json-java8', version: "${dslJsonVersion}"
+    annotationProcessor group: 'com.dslplatform', name: 'dsl-json-java8', version: "${dslJsonVersion}"
+    
+    // jsoniter
+    implementation group: 'com.jsoniter', name: 'jsoniter', version: '0.9.23'
+    implementation group: 'org.javassist', name: 'javassist', version: '3.29.2-GA'
+    
+    // Kryo
     implementation 'com.esotericsoftware:kryo:5.3.0'
 }
 

@@ -30,6 +30,10 @@ public class DemoServer extends DemoAbstractTest {
         printResults(warmupRuns, runs);
     }
 
+    public void openSSLSocket(int bufSize, int runs, int warmupRuns) {
+        // nop
+    }
+
     private void openSocketImpl(ServerSocket server, int i) {
         try {
             start[i] = System.nanoTime();

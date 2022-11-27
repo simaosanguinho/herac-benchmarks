@@ -9,6 +9,8 @@ public abstract class DemoAbstractTest {
 
     public abstract void openSocket(int bufSize, int runs, int warmupRuns);
 
+    public abstract void openSSLSocket(int bufSize, int runs, int warmupRuns);
+
     public abstract void httpGet(int bufSize, int runs, int warmupRuns);
 
     public void tcp1_32B(int bufSize, int runs, int warmupRuns) {
@@ -33,6 +35,10 @@ public abstract class DemoAbstractTest {
 
     public void tcp6_1KB(int bufSize, int runs, int warmupRuns) {
         tcpCommsTest(1024, bufSize, runs, warmupRuns);
+    }
+
+    public void tcp7_10KB(int bufSize, int runs, int warmupRuns) {
+        tcpCommsTest(10*1024, bufSize, runs, warmupRuns);
     }
 
     public void tcp7_32KB(int bufSize, int runs, int warmupRuns) {
