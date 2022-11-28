@@ -46,7 +46,7 @@ tests=(
 	tcp4_256B
 	tcp5_512B
 	tcp6_1KB
-	tcp7_10KB
+	tcp7_16KB
 	tcp7_32KB
 	tcp8_256KB
 	tcp9_512KB

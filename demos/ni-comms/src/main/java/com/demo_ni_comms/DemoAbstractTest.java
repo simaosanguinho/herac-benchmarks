@@ -37,8 +37,8 @@ public abstract class DemoAbstractTest {
         tcpCommsTest(1024, bufSize, runs, warmupRuns);
     }
 
-    public void tcp7_10KB(int bufSize, int runs, int warmupRuns) {
-        tcpCommsTest(10*1024, bufSize, runs, warmupRuns);
+    public void tcp7_16KB(int bufSize, int runs, int warmupRuns) {
+        tcpCommsTest(16*1024, bufSize, runs, warmupRuns);
     }
 
     public void tcp7_32KB(int bufSize, int runs, int warmupRuns) {
