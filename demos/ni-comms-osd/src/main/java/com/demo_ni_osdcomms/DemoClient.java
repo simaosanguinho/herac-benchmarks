@@ -63,15 +63,11 @@ public class DemoClient extends DemoAbstractTest {
     }
 
     private void serializeImpl(int i) {
-        // System.out.println("pre  serialize: " + results[i]);
         results[i] = json.serialize(toSerialize[i]);
-        // System.out.println("post serialize: " + results[i]);
     }
 
     private void deserializeImpl(int i) {
-        // System.out.println("pre  deserialize: " + results[i]);
         results[i] = json.deserialize(toDeserialize[i].toString(), toSerialize[i].getClass());
-        // System.out.println("post deserialize: " + results[i]);
     }
 
     private void httpImpl(int i) throws Exception {
@@ -80,17 +76,14 @@ public class DemoClient extends DemoAbstractTest {
             .followRedirects(HttpClient.Redirect.NORMAL)
             .connectTimeout(Duration.ofSeconds(1))
             .build();
+
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:8080"))
-            // .uri(URI.create("http://localhost:12345"))
-            // .uri(URI.create("http://www.cafeaulait.org/books/jnp3/postquery.phtml"))
+            .uri(URI.create("http://localhost:12345"))
             .timeout(Duration.ofSeconds(1))
-            // .POST(HttpRequest.BodyPublishers.ofString(results[i].toString()))
-            .GET()
+            .POST(HttpRequest.BodyPublishers.ofString(results[i].toString()))
             .build();
         HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
         results[i] = response.body();
-        // System.out.println(response.body());
     }
 
     protected void printResults(int warmupRuns, int runs) {

@@ -39,8 +39,6 @@ public class DemoServer extends DemoAbstractTest {
             start[i] = System.nanoTime();
             Socket client = server.accept();
             stop[i] = System.nanoTime();
-            // client.setTcpNoDelay(true);
-            // int n = client.getInputStream().read();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -60,32 +58,30 @@ public class DemoServer extends DemoAbstractTest {
     }
 
     private void httpGetImpl(ServerSocket server, int i) {
-        // try {
-        //     String response = 
-        //         "HTTP/1.1 200 OK\r\n" +
-        //         "Content-Length: 88\r\n" +
-        //         "Content-Type: text/html\r\n" +
-        //         "\r\n" +
-        //         "<html>\r\n" +
-        //         "<body>\r\n" +
-        //         "<h1>Hello, World!</h1>\r\n" +
-        //         "</body>\r\n" +
-        //         "</html>\r\n"
-        //         ;
-        //     start[i] = System.nanoTime();
-        //     Socket client = server.accept();
-        //     System.err.println("Accepted");
-        //     client.getInputStream().readAllBytes();
-        //     try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))) {
-        //         w.write(response);
-        //         w.flush();
-        //     }
-        //     stop[i] = System.nanoTime();
-        //     // client.setTcpNoDelay(true);
-        //     // int n = client.getInputStream().read();
-        // } catch (IOException e) {
-        //     throw new RuntimeException(e);
-        // }
+        try {
+            String response = 
+                "HTTP/1.1 200 OK\r\n" +
+                "Content-Length: 88\r\n" +
+                "Content-Type: text/html\r\n" +
+                "\r\n" +
+                "<html>\r\n" +
+                "<body>\r\n" +
+                "<h1>Hello, World!</h1>\r\n" +
+                "</body>\r\n" +
+                "</html>\r\n"
+                ;
+            start[i] = System.nanoTime();
+            Socket client = server.accept();
+            System.err.println("Accepted");
+            client.getInputStream().readAllBytes();
+            try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))) {
+                w.write(response);
+                w.flush();
+            }
+            stop[i] = System.nanoTime();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected void tcpCommsTest(int size, int bufSize, int runs, int warmupRuns) {
@@ -95,7 +91,6 @@ public class DemoServer extends DemoAbstractTest {
         DemoLog.log(String.format("[server]: starting on localhost:%d...", DemoServer.PORT));    
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             Socket client = serverSocket.accept();
-            // client.setTcpNoDelay(true);
             try (InputStream in = new BufferedInputStream(client.getInputStream(), bufSize == 0 ? size : bufSize)) {
                 for (int i = 0; i < warmupRuns + runs; i++) {
                     tcpCommsTestRecvData(in, i, size);

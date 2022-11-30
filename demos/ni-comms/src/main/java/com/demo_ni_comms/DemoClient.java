@@ -40,7 +40,6 @@ public class DemoClient extends DemoAbstractTest {
         start[i] = System.nanoTime();
         try (Socket socket = new Socket("localhost", DemoServer.PORT)) {
             stop[i] = System.nanoTime();
-            // socket.getOutputStream().write(0);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -117,7 +116,7 @@ public class DemoClient extends DemoAbstractTest {
         try {
             start[i] = System.nanoTime();
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080"))
+                .uri(URI.create("http://localhost:12345"))
                 .timeout(Duration.ofSeconds(5))
                 .GET()
                 .build();
@@ -137,7 +136,6 @@ public class DemoClient extends DemoAbstractTest {
 
         DemoLog.log(String.format("[client]: connecting to localhost:%d...", DemoServer.PORT));    
         try (Socket socket = new Socket("localhost", DemoServer.PORT)) {
-            // socket.setTcpNoDelay(true);
             try (OutputStream out = new BufferedOutputStream(socket.getOutputStream(), bufSize == 0 ? size : bufSize)) {
                 for (int i = 0; i < runs + warmupRuns; i++) {
                     tcpCommsTestSendData(out, bytes, i, size);

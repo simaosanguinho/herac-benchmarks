@@ -47,23 +47,23 @@ public class DemoServer extends DemoAbstractTest {
     }
 
     private void recv(Supplier<Object> objectSupplier, int runs, int warmupRuns) {
-        // DemoLog.log("[serializer]: processing object of type " + objectSupplier.get().getClass().getName());
+        DemoLog.log("[serializer]: processing object of type " + objectSupplier.get().getClass().getName());
 
-        // prepareTest(objectSupplier, warmupRuns, runs);
-        // Class<?> clazz = objectSupplier.get().getClass();
+        prepareTest(objectSupplier, warmupRuns, runs);
+        Class<?> clazz = objectSupplier.get().getClass();
 
-        // try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-        //     for (int i = 0; i < runs + warmupRuns; i++) {
-        //         try (Socket client = serverSocket.accept()) {
-        //             recvImpl(client, i, clazz);
-        //         }
-        //     }
-        // } catch (Exception e) {
-        //     throw new RuntimeException(e);
-        // }
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            for (int i = 0; i < runs + warmupRuns; i++) {
+                try (Socket client = serverSocket.accept()) {
+                    recvImpl(client, i, clazz);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-        // consumeResults();
-        // printResults(warmupRuns, runs);
+        consumeResults();
+        printResults(warmupRuns, runs);
     }
 
     private void recvImpl(Socket client, int i, Class<?> clazz) throws Exception {
