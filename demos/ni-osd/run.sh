@@ -85,10 +85,6 @@ for test in "${tests[@]}"; do
 		-jar libs/demo-ni-osd-1.0-all.jar \
 		$test --runs $runs --warmup $warmup \
 		> $store_dir/$test/"$test"_jvm.log 2>&1 &
-
-		# -XX:+PrintCompilation \
-		# -verbose:gc \
-		
 	wait
 
 	echo "Running $test on SVM with $warmup warmup runs and $runs iterations"
