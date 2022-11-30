@@ -4,6 +4,8 @@ This demo measures the TCP communication and serialization overhead of two VMs r
 
 ## Running the demo
 
+Please run all scripts from the current directory where this README file is located.
+
 Before running the demo, please make sure to set the following environment variables:
 ```sh
 JAVA_HOME=/path/to/java/home/
