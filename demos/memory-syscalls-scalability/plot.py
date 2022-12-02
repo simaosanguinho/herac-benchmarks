@@ -117,7 +117,8 @@ if __name__ == '__main__':
 
     def discover_log_files(suite):
         if os.path.isdir(suite):
-            ls = os.listdir(suite);
+            suite = suite.rstrip("/")
+            ls = os.listdir(suite)
             if '.testignore' in ls:
                 return
             for filename in ls:
