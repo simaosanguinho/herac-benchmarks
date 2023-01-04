@@ -190,7 +190,19 @@ function isolate_latency {
     # TODO - we need to properly determine the rss of an isolate!
     echo "8" >> $RESULTS_DIR/rss-isolate.dat
     $VBENCH_HOME/target/isolate-benchmark $ITERS >> $RESULTS_DIR/latency-isolate.dat
+}
 
+function gv_isolate_latency {
+    # Building gv host
+    cd gv-host
+    ./build_script.sh
+    cd -
+    # Building gv guest
+    cd gv-guest
+    ./build_script.sh
+    cd -
+    # Call host and pass guest as an argument
+    gv-host/build/graalvisorhost $ITERS gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark
 }
 
 mvn package
@@ -200,6 +212,7 @@ vm_rss qemu
 vm_latency qemu
 docker_rss_latency
 isolate_latency
+gv_isolate_latency
 hotspot_rss_latency
 nativeimage_rss_latency
 node_rss_latency

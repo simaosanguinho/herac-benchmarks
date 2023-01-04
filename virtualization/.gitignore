@@ -8,3 +8,4 @@ target/
 *.png
 build/
 .vscode
+/.gradle/
