@@ -187,8 +187,11 @@ function nativeimage_rss_latency {
 function isolate_latency {
     $GRAALVM_HOME/bin/native-image -H:+SpawnIsolates -cp $JAR IsolateBenchmark target/isolate-benchmark
     rm -f $RESULTS_DIR/*-isolate.dat
-    echo "1048576" >> $RESULTS_DIR/rss-isolate.dat # Note, this value comes from isolate-scalability.
     $VBENCH_HOME/target/isolate-benchmark $ITERS >> $RESULTS_DIR/latency-isolate.dat
+}
+
+function isolate_rss {
+    echo "1048576" >> $RESULTS_DIR/rss-isolate.dat # Note, this value comes from isolate-scalability.
 }
 
 function gv_isolate_latency {
@@ -213,6 +216,7 @@ vm_rss qemu
 vm_latency qemu
 docker_rss_latency
 isolate_latency
+isolate_rss
 gv_isolate_latency
 hotspot_rss_latency
 nativeimage_rss_latency
