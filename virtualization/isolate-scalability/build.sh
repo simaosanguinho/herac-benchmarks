@@ -7,11 +7,12 @@ fi
 
 export GRAAL_JAR=/home/$USER/.m2/repository/org/graalvm/sdk/graal-sdk/21.2.0/graal-sdk-21.2.0.jar
 
+	#-g \
 $JAVA_HOME/bin/javac -cp $GRAAL_JAR:. IsolateScalabilityTest.java
 $JAVA_HOME/bin/native-image \
 	-H:ReservedAuxiliaryImageBytes=0 \
 	-H:AlignedHeapChunkSize=65536 \
-	-H:+UseCompressedReferences \
+	-H:-UseCompressedReferences \
 	-R:MaxHeapSize=16k \
 	-R:MinHeapSize=16k \
 	-cp $GRAAL_JAR:. IsolateScalabilityTest

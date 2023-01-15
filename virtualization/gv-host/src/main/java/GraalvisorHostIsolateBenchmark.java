@@ -1,23 +1,49 @@
+import org.graalvm.nativeimage.StackValue;
+import org.graalvm.nativeimage.c.function.CFunction;
+import org.graalvm.nativeimage.c.type.CIntPointer;
+
 import com.oracle.svm.graalvisor.api.GraalVisorAPI;
 import com.oracle.svm.graalvisor.types.GuestIsolateThread;
 
 public class GraalvisorHostIsolateBenchmark {
 
-	public static void executeInNewIsolate(int requests, String imgpath, String funname) throws Exception {
-		for (int i = 0; i < requests; i++) {
-			long startTime = System.nanoTime();
-			try (GraalVisorAPI gvapi = new GraalVisorAPI(imgpath)) {
-				GuestIsolateThread guestThread = gvapi.createIsolate();
-				String res = gvapi.invokeFunction(guestThread, funname, String.format("{ \"time\": %s }" , System.nanoTime()));
-				gvapi.tearDownIsolate(guestThread);
-			}
+    @CFunction
+    public static native int fork();
+
+    @CFunction
+    public static native int waitpid(int pid, CIntPointer stat_loc, int options);
+
+	public static void executeInNewIsolate(String imgpath, String funname) throws Exception {
+		try (GraalVisorAPI gvapi = new GraalVisorAPI(imgpath)) {
+			GuestIsolateThread guestThread = gvapi.createIsolate();
+			gvapi.invokeFunction(guestThread, funname, String.format("{ \"time\": %s }" , System.nanoTime()));
+			gvapi.tearDownIsolate(guestThread);
 		}
 	}
 
+    public static void executeInNewProcess(String imgpath, String funname) throws Exception {
+        int pid = fork();
+		if (pid == 0) {
+			executeInNewIsolate(imgpath, funname);
+			System.exit(0);
+		} else {
+			CIntPointer statusptr = StackValue.get(CIntPointer.class);
+			waitpid(pid, statusptr, 0);
+		}
+    }
+
 	public static void main(String[] args) throws Exception {
-		int requests = Integer.parseInt(args[0]);
-		String imgpath = args[1];
-		String funname = args[2];
-		executeInNewIsolate(requests, imgpath, funname);
+		boolean shouldfork = Boolean.parseBoolean(args[0]);
+		int requests = Integer.parseInt(args[1]);
+		String imgpath = args[2];
+		String funname = args[3];
+
+		for (int i = 0; i < requests; i++) {
+			if (shouldfork) {
+				executeInNewProcess(imgpath, funname);
+			} else {
+				executeInNewIsolate(imgpath, funname);
+			}
+		}
 	}
 }

@@ -187,8 +187,7 @@ function nativeimage_rss_latency {
 function isolate_latency {
     $GRAALVM_HOME/bin/native-image -H:+SpawnIsolates -cp $JAR IsolateBenchmark target/isolate-benchmark
     rm -f $RESULTS_DIR/*-isolate.dat
-    # TODO - we need to properly determine the rss of an isolate!
-    echo "8" >> $RESULTS_DIR/rss-isolate.dat
+    echo "1048576" >> $RESULTS_DIR/rss-isolate.dat # Note, this value comes from isolate-scalability.
     $VBENCH_HOME/target/isolate-benchmark $ITERS >> $RESULTS_DIR/latency-isolate.dat
 }
 
@@ -196,13 +195,15 @@ function gv_isolate_latency {
     # Building gv host
     cd gv-host
     ./build_script.sh
-    cd -
+    cd - &> /dev/null
     # Building gv guest
     cd gv-guest
     ./build_script.sh
-    cd -
+    cd - &> /dev/null
     # Call host and pass guest as an argument
-    gv-host/build/graalvisorhost $ITERS gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark
+    rm -f $RESULTS_DIR/*-gv-*.dat
+    gv-host/build/graalvisorhost false $ITERS gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark >> $RESULTS_DIR/latency-gv-isolate.dat
+    gv-host/build/graalvisorhost true  $ITERS gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark >> $RESULTS_DIR/latency-gv-fork.dat
 }
 
 mvn package
