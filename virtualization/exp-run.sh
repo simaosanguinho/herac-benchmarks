@@ -191,7 +191,7 @@ function isolate_latency {
 }
 
 function isolate_rss {
-    echo "1048576" >> $RESULTS_DIR/rss-isolate.dat # Note, this value comes from isolate-scalability.
+    echo "1024" > $RESULTS_DIR/rss-isolate.dat # Note, this value comes from isolate-scalability.
 }
 
 function gv_isolate_latency {

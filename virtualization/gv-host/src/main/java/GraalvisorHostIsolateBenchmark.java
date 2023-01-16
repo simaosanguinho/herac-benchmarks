@@ -13,18 +13,18 @@ public class GraalvisorHostIsolateBenchmark {
     @CFunction
     public static native int waitpid(int pid, CIntPointer stat_loc, int options);
 
-    public static void executeInNewIsolate(String imgpath, String funname) throws Exception {
+    public static void executeInNewIsolate(String imgpath, String funname, long startTime) throws Exception {
         try (GraalVisorAPI gvapi = new GraalVisorAPI(imgpath)) {
             GuestIsolateThread guestThread = gvapi.createIsolate();
-            gvapi.invokeFunction(guestThread, funname, String.format("{ \"time\": %s }" , System.nanoTime()));
+            gvapi.invokeFunction(guestThread, funname, String.format("{ \"time\": %s }" , startTime));
             gvapi.tearDownIsolate(guestThread);
         }
     }
 
-    public static void executeInNewProcess(String imgpath, String funname) throws Exception {
+    public static void executeInNewProcess(String imgpath, String funname, long startTime) throws Exception {
         int pid = fork();
         if (pid == 0) {
-            executeInNewIsolate(imgpath, funname);
+            executeInNewIsolate(imgpath, funname, startTime);
             System.exit(0);
         } else {
             CIntPointer statusptr = StackValue.get(CIntPointer.class);
@@ -39,10 +39,11 @@ public class GraalvisorHostIsolateBenchmark {
         String funname = args[3];
 
         for (int i = 0; i < requests; i++) {
+            long startTime = System.nanoTime();
             if (shouldfork) {
-                executeInNewProcess(imgpath, funname);
+                executeInNewProcess(imgpath, funname, startTime);
             } else {
-                executeInNewIsolate(imgpath, funname);
+                executeInNewIsolate(imgpath, funname, startTime);
             }
         }
     }
