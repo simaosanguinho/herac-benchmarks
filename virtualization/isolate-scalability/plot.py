@@ -3,16 +3,16 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-isolates = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
+isolates = [1, 2, 4, 8, 16, 32]
 x = np.arange(len(isolates))
 print(x)
 avg_latency = [] 
 avg_memory = [] 
 
 for isolate in isolates:
-  latency = np.loadtxt('latency-' + str(isolate) + '.dat', delimiter='\n')
+  latency = np.loadtxt('results/latency-' + str(isolate) + '.dat', delimiter='\n')
   avg_latency.append(np.average(latency))
-  memory = np.loadtxt('memory-' + str(isolate) + '.dat', delimiter='\n')
+  memory = np.loadtxt('results/memory-' + str(isolate) + '.dat', delimiter='\n')
   memory = memory / isolate
   avg_memory.append(np.average(memory))
 
@@ -33,5 +33,6 @@ ax1.set_axisbelow(True)
 ax2.set_axisbelow(True)
 ax1.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
 
-fig.legend(loc="upper right", bbox_to_anchor=(.82,.875))
+fig.legend(loc="upper right", bbox_to_anchor=(.82,.95))
+plt.tight_layout()
 plt.savefig("isolate-scalability.pdf")
