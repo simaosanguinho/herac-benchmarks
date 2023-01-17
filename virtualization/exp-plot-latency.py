@@ -18,8 +18,8 @@ def load_data(path, label):
     print('File not found:' + path)
 
 load_data('results/latency-isolate.dat',    'NI Isolate')
-load_data('results/latency-gv-isolate.dat', 'GV Isolate')
-load_data('results/latency-gv-fork.dat',    'GV Fork')
+load_data('results/latency-gv-isolate.dat', 'GV Sandbox')
+load_data('results/latency-gv-fork.dat',    'GV Sandbox (forked)')
 load_data('results/latency-ni.dat',         'Native Image')
 load_data('results/latency-python.dat',     'CPython')
 load_data('results/latency-node.dat',       'NodeJS')

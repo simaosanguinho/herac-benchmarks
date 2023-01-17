@@ -194,7 +194,11 @@ function isolate_rss {
     echo "1024" > $RESULTS_DIR/rss-isolate.dat # Note, this value comes from isolate-scalability.
 }
 
-function gv_isolate_latency {
+function gv_rss {
+    echo "3444" > $RESULTS_DIR/rss-gv.dat # Note, this value comes from gv-scalability.
+}
+
+function gv_latency {
     # Building gv host
     cd gv-host
     ./build_script.sh
