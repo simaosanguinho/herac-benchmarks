@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-isolates = [1, 2, 4, 8, 16, 32]
+isolates = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
 x = np.arange(len(isolates))
 print(x)
 avg_latency = [] 
