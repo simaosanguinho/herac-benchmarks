@@ -1,7 +1,3 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import org.graalvm.nativeimage.StackValue;
@@ -22,21 +18,19 @@ public class GraalvisorHostIsolateScalability {
     public static ArrayList<Integer> pids = new ArrayList<>();
     public static ArrayList<Thread> threads = new ArrayList<>();
 
-    public static void executeInNewIsolate(String imgpath, String funname, long startTime) throws Exception {
-        try (GraalVisorAPI gvapi = new GraalVisorAPI(imgpath)) { // TODO - the next step is to load this before.
-            GuestIsolateThread guestThread = gvapi.createIsolate();
-            gvapi.invokeFunction(guestThread, funname, String.format("{ \"time\": %s }" , startTime));
-            Thread.sleep(10*1000); // Allow time for memory measurement.
-            gvapi.tearDownIsolate(guestThread);
-        }
+    public static void executeInNewIsolate(GraalVisorAPI gvapi, String imgpath, String funname, long startTime) throws Exception {
+        GuestIsolateThread guestThread = gvapi.createIsolate();
+        gvapi.invokeFunction(guestThread, funname, String.format("{ \"time\": %s }" , startTime));
+        Thread.sleep(10*1000); // Allow time for memory measurement.
+        gvapi.tearDownIsolate(guestThread);
     }
 
     public static void executeInNewThread(String imgpath, String funname, long startTime) throws Exception {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    executeInNewIsolate(imgpath, funname, startTime);
+                try (GraalVisorAPI gvapi = new GraalVisorAPI(imgpath)) {
+                    executeInNewIsolate(gvapi, imgpath, funname, startTime);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -46,26 +40,28 @@ public class GraalvisorHostIsolateScalability {
         t.start();
     }
 
-    public static void executeInNewProcess(String imgpath, String funname, long startTime) throws Exception {
+    public static void executeInNewProcess(GraalVisorAPI gvapi, String imgpath, String funname, long startTime) throws Exception {
         int pid = fork();
         if (pid == 0) {
-            executeInNewIsolate(imgpath, funname, startTime);
+            executeInNewIsolate(gvapi, imgpath, funname, startTime);
             System.exit(0);
         } else {
             pids.add(pid);
         }
     }
 
+    // TODO - have results without pre-loading the app?
     public static void main(String[] args) throws Exception {
-        boolean shouldfork = Boolean.parseBoolean(args[0]);
+        boolean shouldfork = args[0].equals("process") ? true : false;
         int requests = Integer.parseInt(args[1]);
         String imgpath = args[2];
         String funname = args[3];
+        GraalVisorAPI gvapi = shouldfork ? new GraalVisorAPI(imgpath) : null;
 
         for (int i = 0; i < requests; i++) {
             long startTime = System.nanoTime();
             if (shouldfork) {
-                executeInNewProcess(imgpath, funname, startTime);
+                executeInNewProcess(gvapi, imgpath, funname, startTime);
             } else {
                 executeInNewThread(imgpath, funname, startTime);
             }
@@ -75,9 +71,11 @@ public class GraalvisorHostIsolateScalability {
         Thread.sleep(1); // Allow all processes/threads to reach their sleep.
 
         long rssKB = MemoryUtils.getRSSKb(ProcessHandle.current().pid());
+        long pssKB = MemoryUtils.getPSSKb(ProcessHandle.current().pid());
         if (shouldfork) {
             for (Integer pid : pids) {
                 rssKB += MemoryUtils.getRSSKb(pid);
+                pssKB += MemoryUtils.getPSSKb(pid);
             }
             for (Integer pid : pids) {
                 CIntPointer statusptr = StackValue.get(CIntPointer.class);
@@ -88,6 +86,6 @@ public class GraalvisorHostIsolateScalability {
                 t.join();
             }
         }
-        System.out.println(String.format("Memory utilization (RSS) = %s KBs", rssKB));
+        System.out.println(String.format("Memory utilization RSS / PSS = %s / %s KBs", rssKB, pssKB));
     }
 }
