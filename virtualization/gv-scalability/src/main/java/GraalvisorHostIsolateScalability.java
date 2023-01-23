@@ -43,6 +43,7 @@ public class GraalvisorHostIsolateScalability {
     public static void executeInNewProcess(GraalVisorAPI gvapi, String imgpath, String funname, long startTime) throws Exception {
         int pid = fork();
         if (pid == 0) {
+            gvapi = gvapi == null ? new GraalVisorAPI(imgpath) : gvapi;
             executeInNewIsolate(gvapi, imgpath, funname, startTime);
             System.exit(0);
         } else {
@@ -50,13 +51,15 @@ public class GraalvisorHostIsolateScalability {
         }
     }
 
-    // TODO - have results without pre-loading the app?
     public static void main(String[] args) throws Exception {
         boolean shouldfork = args[0].equals("process") ? true : false;
-        int requests = Integer.parseInt(args[1]);
-        String imgpath = args[2];
-        String funname = args[3];
-        GraalVisorAPI gvapi = shouldfork ? new GraalVisorAPI(imgpath) : null;
+        boolean shouldforkpreload = Boolean.parseBoolean(args[1]);
+        int requests = Integer.parseInt(args[2]);
+        String imgpath = args[3];
+        String funname = args[4];
+
+        // Pleloading makes the parent already has the shared library in memory before forking.
+        GraalVisorAPI gvapi = shouldfork ? shouldforkpreload? new GraalVisorAPI(imgpath) : null : null;
 
         for (int i = 0; i < requests; i++) {
             long startTime = System.nanoTime();

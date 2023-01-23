@@ -10,7 +10,7 @@ do
 		for attempt in 1 2 3 4 5
 		do
 			echo "Running $mode with $isolates attempt $attempt..."
-			build/graalvisorhost $mode $isolates ../gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark &> results/run-$mode-$isolates-$attempt.log
+			build/graalvisorhost $mode true $isolates ../gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark &> results/run-$mode-$isolates-$attempt.log
 			echo "Running $mode with $isolates attempt $attempt... done!"
 			if ! grep -q SubstrateSegfaultHandler "results/run-$mode-$isolates-$attempt.log"; then
 				cat results/run-$mode-$isolates-$attempt.log | grep -v "Memory" >> results/latency-$mode-$isolates.dat
