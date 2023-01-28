@@ -13,18 +13,31 @@ public class GraalvisorHostIsolateBenchmark {
     @CFunction
     public static native int waitpid(int pid, CIntPointer stat_loc, int options);
 
-    public static void executeInNewIsolate(String imgpath, String funname, long startTime) throws Exception {
-        try (GraalVisorAPI gvapi = new GraalVisorAPI(imgpath)) {
-            GuestIsolateThread guestThread = gvapi.createIsolate();
-            gvapi.invokeFunction(guestThread, funname, String.format("{ \"time\": %s }" , startTime));
-            gvapi.tearDownIsolate(guestThread);
-        }
+    public static void executeInNewIsolate(GraalVisorAPI gvapi, String imgpath, String funname, long startTime) throws Exception {
+        GuestIsolateThread guestThread = gvapi.createIsolate();
+        gvapi.invokeFunction(guestThread, funname, String.format("{ \"time\": %s }" , startTime));
+        gvapi.tearDownIsolate(guestThread);
     }
 
-    public static void executeInNewProcess(String imgpath, String funname, long startTime) throws Exception {
+    public static void executeInNewThread(String imgpath, String funname, long startTime) throws Exception {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try (GraalVisorAPI gvapi = new GraalVisorAPI(imgpath)) {
+                    executeInNewIsolate(gvapi, imgpath, funname, startTime);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        t.start();
+        t.join();
+    }
+
+    public static void executeInNewProcess(GraalVisorAPI gvapi, String imgpath, String funname, long startTime) throws Exception {
         int pid = fork();
         if (pid == 0) {
-            executeInNewIsolate(imgpath, funname, startTime);
+            executeInNewIsolate(gvapi, imgpath, funname, startTime);
             System.exit(0);
         } else {
             CIntPointer statusptr = StackValue.get(CIntPointer.class);
@@ -38,12 +51,13 @@ public class GraalvisorHostIsolateBenchmark {
         String imgpath = args[2];
         String funname = args[3];
 
+        GraalVisorAPI gvapi = shouldfork ? new GraalVisorAPI(imgpath) : null;
         for (int i = 0; i < requests; i++) {
             long startTime = System.nanoTime();
             if (shouldfork) {
-                executeInNewProcess(imgpath, funname, startTime);
+                executeInNewProcess(gvapi, imgpath, funname, startTime);
             } else {
-                executeInNewIsolate(imgpath, funname, startTime);
+                executeInNewThread(imgpath, funname, startTime);
             }
         }
     }
