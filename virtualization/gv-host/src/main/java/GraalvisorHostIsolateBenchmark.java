@@ -13,10 +13,12 @@ public class GraalvisorHostIsolateBenchmark {
     @CFunction
     public static native int waitpid(int pid, CIntPointer stat_loc, int options);
 
-    public static void executeInNewIsolate(GraalVisorAPI gvapi, String imgpath, String funname, long startTime) throws Exception {
+    public static void executeInNewIsolate(GraalVisorAPI gvapi, boolean shouldteardown, String imgpath, String funname, long startTime) throws Exception {
         GuestIsolateThread guestThread = gvapi.createIsolate();
         gvapi.invokeFunction(guestThread, funname, String.format("{ \"time\": %s }" , startTime));
-        gvapi.tearDownIsolate(guestThread);
+        if (shouldteardown) {
+            gvapi.tearDownIsolate(guestThread);
+        }
     }
 
     public static void executeInNewThread(String imgpath, String funname, long startTime) throws Exception {
@@ -24,7 +26,7 @@ public class GraalvisorHostIsolateBenchmark {
             @Override
             public void run() {
                 try (GraalVisorAPI gvapi = new GraalVisorAPI(imgpath)) {
-                    executeInNewIsolate(gvapi, imgpath, funname, startTime);
+                    executeInNewIsolate(gvapi, true, imgpath, funname, startTime);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -37,7 +39,7 @@ public class GraalvisorHostIsolateBenchmark {
     public static void executeInNewProcess(GraalVisorAPI gvapi, String imgpath, String funname, long startTime) throws Exception {
         int pid = fork();
         if (pid == 0) {
-            executeInNewIsolate(gvapi, imgpath, funname, startTime);
+            executeInNewIsolate(gvapi, false, imgpath, funname, startTime);
             System.exit(0);
         } else {
             CIntPointer statusptr = StackValue.get(CIntPointer.class);
