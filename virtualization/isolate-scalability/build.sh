@@ -1,18 +1,21 @@
 #!/bin/bash
 
-if [ -z "$JAVA_HOME" ]
-then
-        echo "JAVA_HOME is not set. Recommended JVM: graalvm-ee-java11-22.1.0"
+if [[ -z "${ARGO_HOME}" ]]; then
+	echo "ARGO_HOME is not defined. Existing..."
+	exit 1
 fi
 
-export GRAAL_JAR=/home/$USER/.m2/repository/org/graalvm/sdk/graal-sdk/21.2.0/graal-sdk-21.2.0.jar
-
-	#-g \
-$JAVA_HOME/bin/javac -cp $GRAAL_JAR:. IsolateScalabilityTest.java
+./gradlew clean shadowJar assemble
+source $ARGO_HOME/lambda-manager/src/scripts/environment.sh
+cd build
 $JAVA_HOME/bin/native-image \
 	-H:ReservedAuxiliaryImageBytes=0 \
 	-H:AlignedHeapChunkSize=65536 \
 	-H:-UseCompressedReferences \
 	-R:MaxHeapSize=16k \
 	-R:MinHeapSize=16k \
-	-cp $GRAAL_JAR:. IsolateScalabilityTest
+	-cp libs/virtualization-benchmarks-1.0-all.jar \
+	IsolateScalabilityTest \
+	isolate-scalability
+
+

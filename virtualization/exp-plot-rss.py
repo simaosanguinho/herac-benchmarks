@@ -17,7 +17,9 @@ def load_data(path, label):
   except FileNotFoundError:
     print('File not found:' + path)
 
-load_data('results/rss-isolate.dat',     'Isolate')
+load_data('results/rss-isolate.dat',     'NI Isolate')
+load_data('results/rss-gv-isolate.dat',  'GV Sandbox')
+load_data('results/rss-gv-fork.dat',     'GV Sandbox (forked)')
 load_data('results/rss-ni.dat',          'Native Image')
 load_data('results/rss-python.dat',      'CPython')
 load_data('results/rss-node.dat',        'NodeJS')

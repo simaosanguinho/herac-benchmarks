@@ -12,14 +12,14 @@ def load_data(path, label):
     with open(path, 'r') as f:
       data_ms = [float(line.rstrip()) for line in f]
       bench_avg.append(statistics.mean(data_ms))
-      bench_std.append(statistics.stdev(data_ms))
+      bench_std.append(statistics.stdev(data_ms) if len(data_ms) > 1 else 0)
       bench_lbl.append(label)
   except FileNotFoundError:
     print('File not found:' + path)
 
 load_data('results/latency-isolate.dat',    'NI Isolate')
-load_data('results/latency-gv-isolate.dat', 'GV Isolate')
-load_data('results/latency-gv-fork.dat',    'GV Fork')
+load_data('results/latency-gv-isolate-median.dat', 'GV Sandbox')
+load_data('results/latency-gv-fork-median.dat',    'GV Sandbox (forked)')
 load_data('results/latency-ni.dat',         'Native Image')
 load_data('results/latency-python.dat',     'CPython')
 load_data('results/latency-node.dat',       'NodeJS')

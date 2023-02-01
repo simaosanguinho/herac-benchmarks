@@ -191,10 +191,15 @@ function isolate_latency {
 }
 
 function isolate_rss {
-    echo "1048576" >> $RESULTS_DIR/rss-isolate.dat # Note, this value comes from isolate-scalability.
+    echo "1024" > $RESULTS_DIR/rss-isolate.dat # Note, this value comes from isolate-scalability.
 }
 
-function gv_isolate_latency {
+function gv_rss {
+    echo "1549" > $RESULTS_DIR/rss-gv-fork.dat # Note, this value comes from gv-scalability.
+    echo "1549" > $RESULTS_DIR/rss-gv-isolate.dat # Note, this value comes from gv-scalability.
+}
+
+function gv_latency {
     # Building gv host
     cd gv-host
     ./build_script.sh
@@ -204,9 +209,11 @@ function gv_isolate_latency {
     ./build_script.sh
     cd - &> /dev/null
     # Call host and pass guest as an argument
-    rm -f $RESULTS_DIR/*-gv-*.dat
-    gv-host/build/graalvisorhost false $ITERS gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark >> $RESULTS_DIR/latency-gv-isolate.dat
-    gv-host/build/graalvisorhost true  $ITERS gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark >> $RESULTS_DIR/latency-gv-fork.dat
+    ITERS=100
+    gv-host/build/graalvisorhost false $ITERS gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark > $RESULTS_DIR/latency-gv-isolate.dat
+    gv-host/build/graalvisorhost true  $ITERS gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark > $RESULTS_DIR/latency-gv-fork.dat
+    cat $RESULTS_DIR/latency-gv-fork.dat    | tail -n 25 | sort -n | tail -n $(($ITERS / 2)) | head -n 1 > $RESULTS_DIR/latency-gv-fork-median.dat # Median value.
+    cat $RESULTS_DIR/latency-gv-isolate.dat | tail -n 25 | sort -n | tail -n $(($ITERS / 2)) | head -n 1 > $RESULTS_DIR/latency-gv-isolate-median.dat # Median value.
 }
 
 mvn package
@@ -217,7 +224,8 @@ vm_latency qemu
 docker_rss_latency
 isolate_latency
 isolate_rss
-gv_isolate_latency
+gv_latency
+gv_rss
 hotspot_rss_latency
 nativeimage_rss_latency
 node_rss_latency
