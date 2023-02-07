@@ -4,13 +4,6 @@ function DIR {
 	echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
-if [[ -z "${ARGO_HOME}" ]]; then
-	echo "ARGO_HOME is not defined. Existing..."
-	exit 1
-fi
-
-source $ARGO_HOME/lambda-manager/src/scripts/environment.sh
-
 function run_agent {
 	rm -rf config-dir
 	$JAVA_HOME/bin/java \

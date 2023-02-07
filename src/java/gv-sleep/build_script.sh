@@ -4,13 +4,7 @@ function DIR {
 	echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
-if [[ -z "${ARGO_HOME}" ]]; then
-	echo "ARGO_HOME is not defined. Existing..."
-	exit 1
-fi
-
 function build_graalvisor_app {
-	source $ARGO_HOME/lambda-manager/src/scripts/environment.sh
 	cd build
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
