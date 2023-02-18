@@ -20,7 +20,7 @@ public class SharedMemoryChannel {
                 (new File(path)).toPath(),
                 StandardOpenOption.READ,
                 StandardOpenOption.WRITE,
-                StandardOpenOption.CREATE );
+                StandardOpenOption.CREATE);
         buffer = channel.map(MapMode.READ_WRITE, 0, 4096).asCharBuffer();
 
     }
@@ -32,7 +32,7 @@ public class SharedMemoryChannel {
     public void writeString(String s) throws InterruptedException {
         buffer.clear();
         while(buffer.get(0) != readyToWrite) {
-            Thread.sleep(1);
+            Thread.sleep(0, 100);
         }
         buffer.put(readyToWrite); // Advance the first char.
 
@@ -44,7 +44,7 @@ public class SharedMemoryChannel {
     public String readString() throws InterruptedException {
         buffer.clear();
         while(buffer.get(0) != readyToRead) {
-            Thread.sleep(1);
+            Thread.sleep(0, 100);
         }
         buffer.get(); // Advance the first char.
 
