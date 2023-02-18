@@ -3,7 +3,7 @@
 # Cache sudo access.
 sudo -l &> /dev/null
 
-rm -r results-cgroup/
+rm -r results-cgroup/ &> /dev/null
 mkdir results-cgroup/
 
 for c in 1 2 4 8 16 32
