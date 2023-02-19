@@ -4,10 +4,8 @@ public class SharedMemoryServer {
 
     public static void main(String[] args) throws Exception {
         String s = "Hello Client!";
-        SharedMemoryChannel c2s = new SharedMemoryChannel("/tmp/shared-client-2-server");
-        SharedMemoryChannel s2c = new SharedMemoryChannel("/tmp/shared-server-2-client");
-
-        s2c.initializeForWriting();
+        ReceiveOnlySharedMemoryChannel c2s = new ReceiveOnlySharedMemoryChannel("/tmp/shared-client-2-server");
+        SendOnlySharedMemoryChannel s2c = new SendOnlySharedMemoryChannel("/tmp/shared-server-2-client");
 
         for (int i = 0; i < 10; i++) {
             System.out.println("Sending to client: " + s);
