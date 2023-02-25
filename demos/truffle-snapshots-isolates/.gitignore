@@ -1,0 +1,4 @@
+*.class
+js
+js.build_artifacts.txt
+cache.image
