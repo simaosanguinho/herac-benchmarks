@@ -80,6 +80,9 @@ then
 	PID=$(ps aux | grep firecracker | grep testtap.socket | awk '{print $2}')
 	echo "Adding $PID to cgroup $CGROUP"
 	echo $PID | sudo tee -a /sys/fs/cgroup/$CGROUP/cgroup.procs
+	echo "Setting $PID to core 0"
+	sudo taskset -cp 0 $PID
+
 fi
 
 # Setting a sandbox if not already set.
