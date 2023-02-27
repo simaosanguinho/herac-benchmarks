@@ -115,5 +115,5 @@ wait
 # Copy output to app's privde result dir.
 RESULT_DIR=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$backend-$SANDBOX-$mode-$workload-$CPU-$MEM
 mkdir -p $RESULT_DIR
-cp $tmpdir/{lambda.*,app.log} $RESULT_DIR
+cp $tmpdir/{lambda.*,ab.log,app.log} $RESULT_DIR
 echo "Check logs: $RESULT_DIR/lambda.log"
