@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function DIR {
-	echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+    echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
 GV_BENCHMARKS="$GV_BENCHMARKS gv_java_hw"                 # 256 MB
@@ -83,7 +83,7 @@ function memory {
 
         }
 
-	function memory_gv_javascript {
+    function memory_gv_javascript {
             echo "100000 100000" | sudo tee -a /sys/fs/cgroup/$CGROUP/cpu.max # 1 core
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw benchmark 8 1 2048
 
@@ -222,7 +222,7 @@ function startup_latency {
             $FIRECRACKER_CONTAINERD_HOME/demo/firecracker-ctr.sh run --snapshotter devmapper --runtime aws.firecracker --tty --net-host $img vm1 &
             sleep 10
             $FIRECRACKER_CONTAINERD_HOME/demo/firecracker-ctr.sh task kill -a vm1
-            wait 
+            wait
             for i in $(seq 1 10);
             do
                 echo "Starting $img at $(($(date +%s%N)/1000000)) ms"
