@@ -28,24 +28,24 @@ benchmark_labels = [
 ]
 
 gv_benchmark_path = [
-    "java/gv-hello-world-niuk-benchmark-8-1-2048",
+    "java/gv-hello-world-niuk-isolate-benchmark-8-1-2048",
     "python/gv-hello-world-niuk-benchmark-8-1-2048",
     "javascript/gv-hello-world-niuk-benchmark-8-1-2048",
 #    "java/gv-sleep-niuk-benchmark-10-1-2048",
 #    "python/gv-sleep-niuk-benchmark-10-1-2048",
 #    "javascript/gv-sleep-niuk-benchmark-10-1-2048",
-    "java/gv-file-hashing-niuk-benchmark-8-1-2048",
+    "java/gv-file-hashing-niuk-isolate-benchmark-8-1-2048",
     "javascript/gv-dynamic-html-niuk-benchmark-8-1-2048",
     "python/gv-dynamic-html-niuk-benchmark-8-1-2048",
     "python/gv-thumbnail-niuk-benchmark-8-1-2048",
     "javascript/gv-uploader-niuk-benchmark-8-1-2048",
-    "java/gv-httprequest-niuk-benchmark-8-1-2048",
-    "java/gv-video-processing-niuk-benchmark-2-1-2048",
+    "java/gv-httprequest-niuk-isolate-benchmark-8-1-2048",
+    "java/gv-video-processing-niuk-isolate-benchmark-2-1-2048",
     "python/gv-uploader-niuk-benchmark-8-1-2048",
     "python/gv-compression-niuk-benchmark-4-1-2048",
     "python/gv-video-processing-niuk-benchmark-4-1-2048",
     "javascript/gv-thumbnail-niuk-benchmark-4-1-2048",
-    "java/gv-classify-niuk-benchmark-1-1-2048",
+    "java/gv-classify-niuk-isolate-benchmark-1-1-2048",
 ]
 
 cr_benchmark_path = [
@@ -150,5 +150,5 @@ plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
 plt.xticks(rotation = 35)
 fig.set_figwidth(10)
 fig.set_figheight(3)
-plt.savefig("memory.pdf", bbox_inches='tight')
+plt.savefig("efficiency.pdf", bbox_inches='tight')
 plt.show()
