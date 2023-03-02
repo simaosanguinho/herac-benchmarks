@@ -35,11 +35,12 @@ if [ "$#" -ge 6 ]; then
 	MEM=$6
 fi
 
-echo "Running environment=$backend; app=$app; mode=$mode; workload=$workload; cpu=$CPU; mem=$MEM"
-
 function benchmark {
-	ab -p $APP_POST -T application/json -c $workload -n $((workload * 100))  http://$ip:8080/ &> $tmpdir/ab.log
-	ab -p $APP_POST -T application/json -c $workload -n $((workload * 100))  http://$ip:8080/ &> $tmpdir/ab.log # Specially important for truffle warmup.
+	if [ -z "$WMULTIPLIER" ]; then
+		WMULTIPLIER=1000
+	fi
+	ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$ip:8080/ &> $tmpdir/ab.log
+	ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$ip:8080/ &> $tmpdir/ab.log # Specially important for truffle warmup.
 }
 
 function test {
@@ -82,7 +83,24 @@ then
 	PID=$(ps aux | grep firecracker | grep testtap.socket | awk '{print $2}')
 	echo "Adding $PID to cgroup $CGROUP"
 	echo $PID | sudo tee -a /sys/fs/cgroup/$CGROUP/cgroup.procs
+	echo "Setting $PID to core 0"
+	sudo taskset -cp 0 $PID
+
 fi
+
+# Setting a sandbox if not already set.
+if [ -z "$SANDBOX" ]
+then
+	if [[ $app == *"_java_"* ]]; then
+		export SANDBOX=isolate
+		#export SANDBOX=runtime
+		#export SANDBOX=process
+	else
+		export SANDBOX=context
+	fi
+fi
+
+echo "Running environment=$backend; sandbox=$SANDBOX; app=$app; mode=$mode; workload=$workload; cpu=$CPU; mem=$MEM"
 
 # Load function into runtime.
 $app
@@ -101,7 +119,7 @@ fi
 wait
 
 # Copy output to app's privde result dir.
-RESULT_DIR=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$backend-$mode-$workload-$CPU-$MEM
+RESULT_DIR=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$backend-$SANDBOX-$mode-$workload-$CPU-$MEM
 mkdir -p $RESULT_DIR
-cp $tmpdir/lambda.* $tmpdir/*.log $RESULT_DIR
+cp $tmpdir/{lambda.*,ab.log,app.log} $RESULT_DIR
 echo "Check logs: $RESULT_DIR/lambda.log"
