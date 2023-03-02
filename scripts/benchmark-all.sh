@@ -184,14 +184,14 @@ function memory {
     export CGROUP="experiments"
 
     # Create cgroup.
-    #sudo mkdir /sys/fs/cgroup/experiments/
+    sudo mkdir /sys/fs/cgroup/$CGROUP
 
     memory_gv
 
     memory_cr
 
     # To remove cgroup.
-    #sudo rmdir /sys/fs/cgroup/Example
+    sudo rmdir /sys/fs/cgroup/$CGROUP
 
     # Clear variable.
     unset CGROUP
