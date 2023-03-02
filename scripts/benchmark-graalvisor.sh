@@ -36,8 +36,11 @@ if [ "$#" -ge 6 ]; then
 fi
 
 function benchmark {
-	ab -p $APP_POST -T application/json -c $workload -n $((workload * 100))  http://$ip:8080/ &> $tmpdir/ab.log
-	ab -p $APP_POST -T application/json -c $workload -n $((workload * 100))  http://$ip:8080/ &> $tmpdir/ab.log # Specially important for truffle warmup.
+	if [ -z "$WMULTIPLIER" ]; then
+		WMULTIPLIER=1000
+	fi
+	ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$ip:8080/ &> $tmpdir/ab.log
+	ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$ip:8080/ &> $tmpdir/ab.log # Specially important for truffle warmup.
 }
 
 function test {

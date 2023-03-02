@@ -73,14 +73,18 @@ function memory {
             echo "100000 100000" | sudo tee -a /sys/fs/cgroup/$CGROUP/cpu.max # 1 core
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 8 1 2048
 
+            # These benchmarks take a long time so we are setting the workload to 10*concurrency.
+            export WMULTIPLIER=10
+
             echo "100000 100000" | sudo tee -a /sys/fs/cgroup/$CGROUP/cpu.max # 1 core
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 2 1 2048
 
-           echo "100000 100000" | sudo tee -a /sys/fs/cgroup/$CGROUP/cpu.max # 1 core
+            echo "100000 100000" | sudo tee -a /sys/fs/cgroup/$CGROUP/cpu.max # 1 core
             # Note: there is a bug in gv, it can't run 2 parallel calls to classify.
             # Since the workload is throughput intensive, having a second one would keep the same throughput so it is fine...
-           $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1 1 2048
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1 1 2048
 
+            unset WMULTIPLIER
         }
 
     function memory_gv_javascript {
