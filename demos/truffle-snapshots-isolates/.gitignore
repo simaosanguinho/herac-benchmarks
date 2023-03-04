@@ -1,4 +1,3 @@
 *.class
-js
-js.build_artifacts.txt
-cache.image
+*.build_artifacts.txt
+*.image
