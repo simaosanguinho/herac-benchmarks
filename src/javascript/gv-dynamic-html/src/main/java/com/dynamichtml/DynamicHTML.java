@@ -71,13 +71,20 @@ public class DynamicHTML extends PolyglotHostAccess {
     }
 
     public static HashMap<String, Object> main(Map<String, Object> args) {
-        HashMap<String, Object> output = new HashMap<>();        
-        output.put("output", getEngine(language, source, entrypoint).invoke("http://192.168.12.57:8000/template.html;rbruno;10"));
+        HashMap<String, Object> output = new HashMap<>();
+        String url = (String) args.get("url");
+        String username = (String) args.get("username");
+        String nsize = (String) args.get("nsize");
+        DynamicHTMLEngine engine = getEngine(language, source, entrypoint);
+        output.put("output", engine.invoke(String.format("%s;%s;%s", url, username, nsize)));
         return output;
     }
 
     public static void main(String[] args) {
         HashMap<String, Object> output = new HashMap<>();
+        output.put("url", "http://192.168.12.57:8000/template.html");
+        output.put("username", "rbruno");
+        output.put("nsize", "10");
         output = main(output);
         System.out.println(output);
     }
