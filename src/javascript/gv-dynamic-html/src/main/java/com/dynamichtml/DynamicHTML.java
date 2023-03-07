@@ -21,21 +21,21 @@ import java.util.HashMap;
 
 public class DynamicHTML extends PolyglotHostAccess {
 
-	private static DynamicHTMLEngine engine;
-	private static String language;
+    private static DynamicHTMLEngine engine;
+    private static String language;
     private static String source;
     private static String entrypoint;
 
     static {
-    	try {
-        	language = System.getProperty("com.oracle.svm.graalvisor.polyglotengine.language");
-			source = Files.readString(Paths.get(System.getProperty("com.oracle.svm.graalvisor.polyglotengine.source")));
-	    	entrypoint = System.getProperty("com.oracle.svm.graalvisor.polyglotengine.entrypoint");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        try {
+            language = System.getProperty("com.oracle.svm.graalvisor.polyglotengine.language");
+            source = Files.readString(Paths.get(System.getProperty("com.oracle.svm.graalvisor.polyglotengine.source")));
+            entrypoint = System.getProperty("com.oracle.svm.graalvisor.polyglotengine.entrypoint");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    
+
     // Note: Replacement for nodejs mustache package.
     @HostAccess.Export
     public String mustache(String template, String arguments) {
@@ -50,24 +50,24 @@ public class DynamicHTML extends PolyglotHostAccess {
             return null;
         }
     }
-    
-    
+
+
     static class DynamicHTMLEngine extends PolyglotEngine {
 
-    	public DynamicHTMLEngine(String language, String source, String entrypoint) {
-    		super(language, source, entrypoint);
-    	}
-    	
-    	public void addBindings(String language, Context context) {
-        	context.getBindings(language).putMember("polyHostAccess", new DynamicHTML());
+        public DynamicHTMLEngine(String language, String source, String entrypoint) {
+            super(language, source, entrypoint);
+        }
+
+        public void addBindings(String language, Context context) {
+            context.getBindings(language).putMember("polyHostAccess", new DynamicHTML());
         }
     }
-    
+
     private static DynamicHTMLEngine getEngine(String language, String source, String entrypoint) {
-    	if (engine == null) {
-    		engine = new DynamicHTMLEngine(language, source, entrypoint);
-    	}
-    	return engine;
+        if (engine == null) {
+            engine = new DynamicHTMLEngine(language, source, entrypoint);
+        }
+        return engine;
     }
 
     public static HashMap<String, Object> main(Map<String, Object> args) {
