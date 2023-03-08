@@ -1,0 +1,50 @@
+#!/bin/bash
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+function run_hotspot {
+        $JAVA_HOME/bin/java \
+		-Dcom.oracle.svm.graalvisor.polyglotengine.language=js \
+		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
+		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/javascript/main.js \
+                -cp build/libs/thumbnail-1.0-all.jar \
+                com.thumbnail.Thumbnail
+}
+
+function build_ni {
+	cd build
+	$JAVA_HOME/bin/native-image \
+		--no-fallback \
+		--enable-url-protocols=http \
+		-cp libs/thumbnail-1.0-all.jar \
+		-DGraalVisorGuest=true \
+		-Dcom.oracle.svm.graalvisor.libraryPath=resources/main/com.oracle.svm.graalvisor.headers \
+		-Dcom.oracle.svm.graalvisor.polyglotengine.language=js \
+		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
+		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/javascript/main.js \
+		--initialize-at-build-time=com.thumbnail.Thumbnail \
+		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
+		-H:ConfigurationFileDirectories=../ni-agent-config \
+		--language:js \
+		-H:+ReportExceptionStackTraces \
+		$NI_BIN_OPTS \
+		-H:Name=libthumbnail
+}
+
+function build_ni_standalone {
+	NI_BIN_OPTS="com.thumbnail.Thumbnail"
+	build_ni
+}
+
+function build_ni_sharedlibrary {
+	NI_BIN_OPTS="--shared"
+	build_ni
+}
+
+./gradlew clean shadowJar assemble
+
+#run_hotspot
+#build_ni_standalone
+build_ni_sharedlibrary
+
+echo BENCHMARK_PATH=$DIR/build/libs/thumbnail-1.0.jar

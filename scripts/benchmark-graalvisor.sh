@@ -91,7 +91,7 @@ fi
 # Setting a sandbox if not already set.
 if [ -z "$SANDBOX" ]
 then
-	if [[ $app == *"_java_"* ]]; then
+	if [[ $app == *"_java_"* || $app == "gv_javascript_dynamichtml" || $app == "gv_javascript_thumbnail" ]]; then
 		export SANDBOX=isolate
 		#export SANDBOX=runtime
 		#export SANDBOX=process
