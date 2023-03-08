@@ -16,7 +16,7 @@ shadowJar() {
 }
 
 dependencies {
-    implementation files('/home/rbruno/git/graalvm-argo/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar')
+    implementation files(System.getenv('ARGO_HOME') + '/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar')
     implementation 'org.graalvm.sdk:graal-sdk:22.1.0'
     implementation(files('jvips/JVips.jar'))
 }
