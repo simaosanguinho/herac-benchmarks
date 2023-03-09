@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import os
+import results
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -43,47 +43,41 @@ process_benchmark_path = [
 ]
 
 # Throughput in ops/s.
-isolate_benchmark_tput = {}
-runtime_benchmark_tput = {}
-process_benchmark_tput = {}
+isolate_tput_avg = {}
+isolate_tput_std = {}
+runtime_tput_avg = {}
+runtime_tput_std = {}
+process_tput_avg = {}
+process_tput_std = {}
 
-def read_benchmark_throughput(path, values):
-    try:
-        with open('../results/' + path + '/ab.log') as file:
-            for line in file:
-                if 'Requests per second:' in line:
-                    values[path] = float(line.split()[3])
-    except Exception as e:
-        print("Error processing " + path + ":")
-        raise e
+for path in isolate_benchmark_path:
+    isolate_tput_avg[path] = results.process_result(path)["tput_avg"]
+    isolate_tput_std[path] = results.process_result(path)["tput_std"]
+for path in runtime_benchmark_path:
+    runtime_tput_avg[path] = results.process_result(path)["tput_avg"]
+    runtime_tput_std[path] = results.process_result(path)["tput_std"]
+for path in process_benchmark_path:
+    process_tput_avg[path] = results.process_result(path)["tput_avg"]
+    process_tput_std[path] = results.process_result(path)["tput_std"]
 
-for path in isolate_benchmark_path: read_benchmark_throughput(path, isolate_benchmark_tput)
-for path in runtime_benchmark_path: read_benchmark_throughput(path, runtime_benchmark_tput)
-for path in process_benchmark_path: read_benchmark_throughput(path, process_benchmark_tput)
-
-# Normalization to isolate step.
-for path in process_benchmark_tput:
-    process_benchmark_tput[path] = process_benchmark_tput[path] / isolate_benchmark_tput[path.replace("-process-", "-isolate-")]
-for path in runtime_benchmark_tput:
-    runtime_benchmark_tput[path] = runtime_benchmark_tput[path] / isolate_benchmark_tput[path.replace("-runtime-", "-isolate-")]
-for path in isolate_benchmark_tput:
-    isolate_benchmark_tput[path] = 1
-
-print("########## Throughput ##########")
-for key in isolate_benchmark_tput:
-    print("{benchmark}: {value} ops/s".format(benchmark=key, value=isolate_benchmark_tput[key]))
-for key in runtime_benchmark_tput:
-    print("{benchmark}: {value} ops/s".format(benchmark=key, value=runtime_benchmark_tput[key]))
-for key in process_benchmark_tput:
-    print("{benchmark}: {value} ops/s".format(benchmark=key, value=process_benchmark_tput[key]))
+# Normalization to isolate.
+for path in process_benchmark_path:
+    process_tput_avg[path] = process_tput_avg[path] / isolate_tput_avg[path.replace("-process-", "-isolate-")]
+    process_tput_std[path] = process_tput_std[path] / isolate_tput_avg[path.replace("-process-", "-isolate-")]
+for path in runtime_benchmark_path:
+    runtime_tput_avg[path] = runtime_tput_avg[path] / isolate_tput_avg[path.replace("-runtime-", "-isolate-")]
+    runtime_tput_std[path] = runtime_tput_std[path] / isolate_tput_avg[path.replace("-runtime-", "-isolate-")]
+for path in isolate_benchmark_path:
+    isolate_tput_std[path] = isolate_tput_std[path] / isolate_tput_avg[path]
+    isolate_tput_avg[path] = 1
 
 x = np.arange(len(benchmark_labels))
 width = 0.15
 
 fig, ax = plt.subplots()
-ax.bar(x - width, isolate_benchmark_tput.values(), width, hatch='//', label='Isolate', alpha=0.75)
-ax.bar(x        , runtime_benchmark_tput.values(), width, hatch='..', label='Runtime', alpha=0.75)
-ax.bar(x + width, process_benchmark_tput.values(), width, hatch='.', label='Process', alpha=0.75)
+ax.bar(x - width, isolate_tput_avg.values(), yerr=isolate_tput_std.values(), width=width, hatch='//', label='Isolate', alpha=0.75)
+ax.bar(x        , runtime_tput_avg.values(), yerr=runtime_tput_std.values(), width=width, hatch='..', label='Runtime', alpha=0.75)
+ax.bar(x + width, process_tput_avg.values(), yerr=process_tput_std.values(), width=width, hatch='.', label='Process', alpha=0.75)
 
 ax.set_ylabel('Tput norm. to Isolate')
 ax.set_xticks(x, benchmark_labels)
