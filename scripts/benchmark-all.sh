@@ -28,17 +28,17 @@ GV_BENCHMARKS="$GV_BENCHMARKS gv_javascript_uploader"     # 256 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_javascript_uploader"     # 256 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_java_httprequest"        # 256 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_java_httprequest"        # 256 MB
-GV_BENCHMARKS="$GV_BENCHMARKS gv_java_videoprocessing"    # 1024 MB, note reduce benchmark to 10*workload
+GV_BENCHMARKS="$GV_BENCHMARKS gv_java_videoprocessing"    # 1024 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_java_videoprocessing"    # 1024 MB, note reduce benchmark to 10*workload
 GV_BENCHMARKS="$GV_BENCHMARKS gv_python_uploader"         # 256 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_python_uploader"         # 256 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_python_compression"      # 512 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_python_compression"      # 256 MB
-GV_BENCHMARKS="$GV_BENCHMARKS gv_python_videoprocessing"  # 512 MB, note reduce benchmark to 10*workload
+GV_BENCHMARKS="$GV_BENCHMARKS gv_python_videoprocessing"  # 512 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_python_videoprocessing"  # 512 MB, note reduce benchmark to 10*workload
 GV_BENCHMARKS="$GV_BENCHMARKS gv_javascript_thumbnail"    # 512 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_javascript_thumbnail"    # 512 MB
-GV_BENCHMARKS="$GV_BENCHMARKS gv_java_classify"           # 1024 MB, note reduce benchmark to 50*workload
+GV_BENCHMARKS="$GV_BENCHMARKS gv_java_classify"           # 1024 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_java_classify"           # 1024 MB, note reduce benchmark to 50*workload
 GV_BENCHMARKS="$GV_BENCHMARKS gv_python_mst"              # 512 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_python_mst"              # 512 MB
@@ -74,7 +74,7 @@ function memory {
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 8 1 2048
 
             # These benchmarks take a long time so we are setting the workload to 10*concurrency.
-            export WMULTIPLIER=10
+            export WMULTIPLIER=5
 
             echo "100000 100000" | sudo tee -a /sys/fs/cgroup/$CGROUP/cpu.max # 1 core
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 2 1 2048

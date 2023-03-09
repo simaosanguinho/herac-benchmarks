@@ -37,10 +37,15 @@ fi
 
 function benchmark {
 	if [ -z "$WMULTIPLIER" ]; then
-		WMULTIPLIER=1000
+		WMULTIPLIER=100
 	fi
-	ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$ip:8080/ &> $tmpdir/ab.log
-	ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$ip:8080/ &> $tmpdir/ab.log # Specially important for truffle warmup.
+
+	ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$ip:8080/ &> $tmpdir/ab.log
+	rm $tmpdir/ab.log
+	for i in $(seq 1 3)
+	do
+		ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$ip:8080/ &>> $tmpdir/ab.log
+	done
 }
 
 function test {
@@ -127,5 +132,5 @@ wait
 # Copy output to app's privde result dir.
 RESULT_DIR=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$backend-$SANDBOX-$mode-$workload-$CPU-$MEM
 mkdir -p $RESULT_DIR
-cp $tmpdir/{lambda.*,ab.log,app.log} $RESULT_DIR
+cp $tmpdir/{lambda.*,ab.log,app.log} $RESULT_DIR &> /dev/null
 echo "Check logs: $RESULT_DIR/lambda.log"

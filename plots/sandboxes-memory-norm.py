@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import os
+import results
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -42,50 +42,42 @@ process_benchmark_path = [
     "java/gv-classify-niuk-process-benchmark-1-1-2048",
 ]
 
-# RSS in KBs.
-isolate_benchmark_rss = {}
-runtime_benchmark_rss = {}
-process_benchmark_rss = {}
+# Memory footprint in GBs.
+isolate_mem_avg = {}
+isolate_mem_std = {}
+runtime_mem_avg = {}
+runtime_mem_std = {}
+process_mem_avg = {}
+process_mem_std = {}
 
-def read_benchmark_rss(path, values):
-    try:
-        benchmark_rss = []
-        with open('../results/' + path + '/lambda.rss') as file:
-            for line in file:
-                benchmark_rss.append(int(line))
-        last_five_elements = benchmark_rss[-5:]
-        values[path] = int(sum(last_five_elements) / len(last_five_elements) / 1000)
-    except Exception as e:
-        print("Error processing " + path + ":")
-        raise e
+for path in isolate_benchmark_path:
+    isolate_mem_avg[path] = results.process_result(path)["mem_avg"]
+    isolate_mem_std[path] = results.process_result(path)["mem_std"]
+for path in runtime_benchmark_path:
+    runtime_mem_avg[path] = results.process_result(path)["mem_avg"]
+    runtime_mem_std[path] = results.process_result(path)["mem_std"]
+for path in process_benchmark_path:
+    process_mem_avg[path] = results.process_result(path)["mem_avg"]
+    process_mem_std[path] = results.process_result(path)["mem_std"]
 
-for path in isolate_benchmark_path: read_benchmark_rss(path, isolate_benchmark_rss)
-for path in runtime_benchmark_path: read_benchmark_rss(path, runtime_benchmark_rss)
-for path in process_benchmark_path: read_benchmark_rss(path, process_benchmark_rss)
-
-# Normalization to isolate step.
-for path in process_benchmark_rss:
-    process_benchmark_rss[path] = process_benchmark_rss[path] / isolate_benchmark_rss[path.replace("-process-", "-isolate-")]
-for path in runtime_benchmark_rss:
-    runtime_benchmark_rss[path] = runtime_benchmark_rss[path] / isolate_benchmark_rss[path.replace("-runtime-", "-isolate-")]
-for path in isolate_benchmark_rss:
-    isolate_benchmark_rss[path] = 1
-
-print("########## Memory ##############")
-for key in isolate_benchmark_rss:
-    print("{benchmark}: {value} KBs".format(benchmark=key, value=isolate_benchmark_rss[key]))
-for key in runtime_benchmark_rss:
-    print("{benchmark}: {value} KBs".format(benchmark=key, value=runtime_benchmark_rss[key]))
-for key in process_benchmark_rss:
-    print("{benchmark}: {value} KBs".format(benchmark=key, value=process_benchmark_rss[key]))
+# Normalization to isolate.
+for path in process_benchmark_path:
+    process_mem_avg[path] = process_mem_avg[path] / isolate_mem_avg[path.replace("-process-", "-isolate-")]
+    process_mem_std[path] = process_mem_std[path] / isolate_mem_avg[path.replace("-process-", "-isolate-")]
+for path in runtime_benchmark_path:
+    runtime_mem_avg[path] = runtime_mem_avg[path] / isolate_mem_avg[path.replace("-runtime-", "-isolate-")]
+    runtime_mem_std[path] = runtime_mem_std[path] / isolate_mem_avg[path.replace("-runtime-", "-isolate-")]
+for path in isolate_benchmark_path:
+    isolate_mem_std[path] = isolate_mem_std[path] / isolate_mem_avg[path]
+    isolate_mem_avg[path] = 1
 
 x = np.arange(len(benchmark_labels))
 width = 0.15
 
 fig, ax = plt.subplots()
-ax.bar(x - width, isolate_benchmark_rss.values(), width, hatch='//', label='Isolate', alpha=0.75)
-ax.bar(x        , runtime_benchmark_rss.values(), width, hatch='..', label='Runtime', alpha=0.75)
-ax.bar(x + width, process_benchmark_rss.values(), width, hatch='.',  label='Process', alpha=0.75)
+ax.bar(x - width, isolate_mem_avg.values(), yerr=isolate_mem_std.values(), width=width, hatch='//', label='Isolate', alpha=0.75)
+ax.bar(x        , runtime_mem_avg.values(), yerr=runtime_mem_std.values(), width=width, hatch='..', label='Runtime', alpha=0.75)
+ax.bar(x + width, process_mem_avg.values(), yerr=process_mem_std.values(), width=width, hatch='.', label='Process', alpha=0.75)
 
 ax.set_ylabel('Memory norm. to Isolate')
 ax.set_xticks(x, benchmark_labels)
