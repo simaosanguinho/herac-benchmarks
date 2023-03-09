@@ -64,6 +64,10 @@ function stop_niuk {
 	sudo bash $MANAGER_HOME/src/scripts/remove_taps.sh testtap
 }
 
+function stop_container {
+	docker kill gcontainer
+}
+
 function stop_baremetal {
 	pid=`sudo cat $tmpdir/lambda.pid`
 	sudo kill $pid
@@ -113,6 +117,11 @@ function start_jvm {
 	wait
 }
 
+function setup_polyglot_container {
+	mkdir $tmpdir &> /dev/null
+	sudo ls $tmpdir &> /dev/null
+}
+
 function setup_polyglot_svm {
 	mkdir $tmpdir &> /dev/null
 	sudo ls $tmpdir &> /dev/null
@@ -123,6 +132,10 @@ function setup_polyglot_niuk {
 	mkdir $tmpdir &> /dev/null
 	sudo ls $tmpdir &> /dev/null
 	cp $GRAALVISOR_HOME/polyglot-proxy.img $tmpdir
+}
+
+function start_polyglot_container {
+	docker run --rm --name=gcontainer --network host -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="8080" -e JAVA_HOME="/jvm" graalvisor:latest
 }
 
 function start_polyglot_svm {

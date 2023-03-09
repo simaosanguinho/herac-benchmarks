@@ -63,6 +63,10 @@ if [ "$backend" == "jvm" ]; then
 	ip=127.0.0.1
 	# TODO - jvm does not support so apps (Java built as Native Library). We should instead send a Jar.
 	start_polyglot_jvm &> $tmpdir/lambda.log &
+elif [ "$backend" == "container" ]; then
+	ip=127.0.0.1
+	setup_polyglot_container
+	start_polyglot_container &> $tmpdir/lambda.log &
 elif [ "$backend" == "svm" ]; then
 	ip=127.0.0.1
 	setup_polyglot_svm
@@ -111,6 +115,8 @@ $mode | tee -a $tmpdir/app.log
 # Teardown environment.
 if [ "$backend" == "jvm" ]; then
 	stop_baremetal &>> $tmpdir/lambda.log
+elif [ "$backend" == "container" ]; then
+	stop_container &>> $tmpdir/lambda.log
 elif [ "$backend" == "svm" ]; then
 	stop_baremetal &>> $tmpdir/lambda.log
 elif [ "$backend" == "niuk" ]; then
