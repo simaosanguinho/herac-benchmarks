@@ -16,8 +16,8 @@ curl --unix-socket $VM_SOCKET -i \
 
 curl --unix-socket $VM_SOCKET -i \
     -X PUT "http://localhost/snapshot/create" \
-    -d "{ 
-        \"snapshot_type\": \"Full\", 
+    -d "{
+        \"snapshot_type\": \"Full\",
         \"snapshot_path\": \"$VM_SNAP_FILE\",
         \"mem_file_path\": \"$VM_SNAP_MEM\"
     }"

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-    echo "Please privide a directory path to use for the vm."
+    echo "Please a free IP 172.16.0.[2,255]. The IP will be used to create a firecracker directory and tap."
     exit 0
 fi
 
