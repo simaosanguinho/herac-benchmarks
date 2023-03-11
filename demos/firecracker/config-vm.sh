@@ -19,23 +19,17 @@ VM_SOCKET=$VM_DIR/firecracker.socket
 # Tap that will be created on the host to communicate with the VM.
 VM_TAP=tap$VM_IP
 
-# Default network device used in the host (important to setup iptables).
-HOST_DEV=$(ip route | grep default | awk '{print $5}')
-
 # Default network device used in the VM.
 VM_DEV=eth0
 
 # MAC address generated for the VM.
 VM_MAC=$(printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)))
 
-# IP address of the host in the VM network (172.16.0.0/24).
-VM_GW=172.16.0.1
+# IP address of the host in the VM network (172.17.0.0/24). We are using the docker network.
+VM_GW=172.17.0.1
 
 # Network mask of the VM network (long version).
 VM_MK_LONG=255.255.255.0
-
-# Network mask of the VM network (short version).
-VM_MK_SHORT=24
 
 # Kernel image used in the VM.
 KERNEL=$DIR/hello-vmlinux.bin
@@ -51,17 +45,14 @@ cp $DIR/hello-rootfs.ext4 $ROOTFS
 VM_MEM=64
 VM_CPU=1
 
-# Create VM tap.
-sudo ip tuntap add dev $VM_TAP mode tap user $USER
+# Create a new tap for the vm.
+sudo ip tuntap add dev "$VM_TAP" mode tap
 
-# Set IP and network mask to vm tap.
-sudo ip addr add $VM_GW/$VM_MK_SHORT dev $VM_TAP
+# We are using the docker bridge. Just adding the tap to the bridge.
+sudo brctl addif docker0 $VM_TAP
 
-# Enable tap.
-sudo ip link set $VM_TAP up
-
-# Update iptables to forward from host default device to the vm tap.
-sudo iptables -A FORWARD -i $VM_TAP -o $HOST_DEV -j ACCEPT
+# Enabling the vm tap.
+sudo ip link set dev "$VM_TAP" up
 
 # Configures kernel its arguments.
 curl --unix-socket $VM_SOCKET \

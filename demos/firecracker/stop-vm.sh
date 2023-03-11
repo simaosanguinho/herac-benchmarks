@@ -17,7 +17,5 @@ kill $(fuser $VM_SOCKET  2>&1 | awk '{print $2}')
 # Remove the file.
 rm $VM_SOCKET
 
-# Cleanup network setup.
-sudo iptables -D FORWARD -i $HOST_TAP -o $HOST_DEV -j ACCEPT
+# Remove vm tap.
 sudo ip link delete $HOST_TAP
-
