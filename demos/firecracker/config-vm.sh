@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Inspired by: https://gruchalski.com/posts/2021-02-13-launching-alpine-linux-on-firecracker-like-a-boss/
+# Inspired by: https://betterprogramming.pub/getting-started-with-firecracker-a88495d656d9
+
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 if [ -z "$1" ]; then
