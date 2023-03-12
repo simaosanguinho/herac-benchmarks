@@ -1,12 +1,14 @@
 #!/bin/bash
 
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
 if [ -z "$1" ]; then
     echo "Please a free IP 172.16.0.[2,255]. The IP will be used to create a firecracker directory and tap."
     exit 0
 fi
 
 VM_IP=$1
-VM_DIR=$1
+VM_DIR=$DIR/$VM_IP
 VM_SOCKET=$VM_DIR/firecracker.socket
 HOST_TAP=tap$VM_IP
 HOST_DEV=$(ip route | grep default | awk '{print $5}')
