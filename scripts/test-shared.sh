@@ -16,13 +16,24 @@ function next_ip(){
     echo "$NEXT_IP"
 }
 
+
+# Preparing global paths.
 if [[ -z "${ARGO_HOME}" ]]; then
         echo "ARGO_HOME is not defined. Existing..."
         exit 1
 else
-    source $ARGO_HOME/lambda-manager/src/scripts/environment.sh
+    MANAGER_HOME=$ARGO_HOME/lambda-manager
+    CRUNTIME_HOME=$ARGO_HOME/lambda-manager/src/scripts/cruntime
+    NIUK_HOME=$ARGO_HOME/niuk
+    GRAALVISOR_HOME=$ARGO_HOME/graalvisor
+    RES_HOME=$ARGO_HOME/resources
+fi
+if [[ -z "${JAVA_HOME}" ]]; then
+        echo "JAVA_HOME is not defined. Existing..."
+        exit 1
 fi
 
+BENCHMARKS_HOME=$(DIR)/..
 tmpdir=/tmp/test-proxy
 mkdir $tmpdir &> /dev/null
 
@@ -125,13 +136,13 @@ function setup_polyglot_container {
 function setup_polyglot_svm {
 	mkdir $tmpdir &> /dev/null
 	sudo ls $tmpdir &> /dev/null
-	cp $GRAALVISOR_HOME/polyglot-proxy $tmpdir/app
+	cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy $tmpdir/app
 }
 
 function setup_polyglot_niuk {
 	mkdir $tmpdir &> /dev/null
 	sudo ls $tmpdir &> /dev/null
-	cp $GRAALVISOR_HOME/polyglot-proxy.img $tmpdir
+	cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy.img $tmpdir
 }
 
 function start_polyglot_container {

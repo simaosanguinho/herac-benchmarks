@@ -226,7 +226,13 @@ function startup_latency {
     }
 
     function startup_latency_cr {
-        FIRECRACKER_CONTAINERD_HOME=/home/$USER/git/firecracker-containerd
+        if [[ -z "${FIRECRACKER_CONTAINERD_HOME}" ]]; then
+            echo "FIRECRACKER_CONTAINERD_HOME is not defined."
+            echo "Run export FIRECRACKER_CONTAINERD_HOME=/home/$USER/git/firecracker-containerd ?"
+            echo "Exiting..."
+            exit 1
+        fi
+
         JS_IMG="docker.io/rfbpb/action-nodejs-v14:latest"
         PY_IMG="docker.io/rfbpb/action-python-v3.7:latest"
         JV_IMG="docker.io/rfbpb/java8action:latest"
