@@ -83,7 +83,7 @@ elif [ "$backend" == "niuk" ]; then
 fi
 
 # Let graalvisor start.
-sleep 1 
+wait_port $ip 8080
 
 # Adding firecracker to cgroup.
 if [ ! -z "$CGROUP" ]

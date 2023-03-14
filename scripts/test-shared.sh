@@ -16,6 +16,11 @@ function next_ip(){
     echo "$NEXT_IP"
 }
 
+function wait_port {
+    host=$1
+    port=$2
+    while ! nc -z $host $port; do echo "Waiting for $host:$port"; sleep 0.1; done
+}
 
 # Preparing global paths.
 if [[ -z "${ARGO_HOME}" ]]; then
@@ -104,8 +109,7 @@ function start_niuk {
 function start_polyglot_niuk {
 	proxy_args="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
 	start_niuk &
-	# Let niuk boot...
-	sleep .250
+	wait_port $ip 8080
 	log_rss $(sudo ps aux | grep firecracker | grep testtap.socket | awk '{print $2}') $tmpdir/lambda.rss &
         wait
 }

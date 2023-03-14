@@ -64,7 +64,7 @@ sudo bash $MANAGER_HOME/src/scripts/create_taps.sh $TAP $ip
 sudo $CRUNTIME_HOME/start-vm -ip $ip/$smask -gw $gateway -tap $TAP -id $VMID -img $IMG -mem $MEM -cpu $CPU
 
 # Just let the VM boot...
-sleep 5
+wait_port $ip 8080
 
 # Adding firecracker to cgroup.
 if [ ! -z "$CGROUP" ]

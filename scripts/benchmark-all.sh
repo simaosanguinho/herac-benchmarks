@@ -241,14 +241,14 @@ function startup_latency {
         for img in $JS_IMG $PY_IMG $JV_IMG;
         do
             $FIRECRACKER_CONTAINERD_HOME/demo/firecracker-ctr.sh run --snapshotter devmapper --runtime aws.firecracker --tty --net-host $img vm1 &
-            sleep 10
+            wait_port $ip 8080
             $FIRECRACKER_CONTAINERD_HOME/demo/firecracker-ctr.sh task kill -a vm1
             wait
             for i in $(seq 1 10);
             do
                 echo "Starting $img at $(($(date +%s%N)/1000000)) ms"
                 $FIRECRACKER_CONTAINERD_HOME/demo/firecracker-ctr.sh task start vm1 &
-                sleep 5
+                wait_port $ip 8080
                 $FIRECRACKER_CONTAINERD_HOME/demo/firecracker-ctr.sh task kill -a vm1
                 wait
             done
