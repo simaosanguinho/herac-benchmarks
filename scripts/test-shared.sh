@@ -16,13 +16,29 @@ function next_ip(){
     echo "$NEXT_IP"
 }
 
+function wait_port {
+    host=$1
+    port=$2
+    while ! nc -z $host $port; do echo "Waiting for $host:$port"; sleep 0.1; done
+}
+
+# Preparing global paths.
 if [[ -z "${ARGO_HOME}" ]]; then
         echo "ARGO_HOME is not defined. Existing..."
         exit 1
 else
-    source $ARGO_HOME/lambda-manager/src/scripts/environment.sh
+    MANAGER_HOME=$ARGO_HOME/lambda-manager
+    CRUNTIME_HOME=$ARGO_HOME/lambda-manager/src/scripts/cruntime
+    NIUK_HOME=$ARGO_HOME/niuk
+    GRAALVISOR_HOME=$ARGO_HOME/graalvisor
+    RES_HOME=$ARGO_HOME/resources
+fi
+if [[ -z "${JAVA_HOME}" ]]; then
+        echo "JAVA_HOME is not defined. Existing..."
+        exit 1
 fi
 
+BENCHMARKS_HOME=$(DIR)/..
 tmpdir=/tmp/test-proxy
 mkdir $tmpdir &> /dev/null
 
@@ -93,8 +109,7 @@ function start_niuk {
 function start_polyglot_niuk {
 	proxy_args="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
 	start_niuk &
-	# Let niuk boot...
-	sleep .250
+	wait_port $ip 8080
 	log_rss $(sudo ps aux | grep firecracker | grep testtap.socket | awk '{print $2}') $tmpdir/lambda.rss &
         wait
 }
@@ -125,13 +140,13 @@ function setup_polyglot_container {
 function setup_polyglot_svm {
 	mkdir $tmpdir &> /dev/null
 	sudo ls $tmpdir &> /dev/null
-	cp $GRAALVISOR_HOME/polyglot-proxy $tmpdir/app
+	cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy $tmpdir/app
 }
 
 function setup_polyglot_niuk {
 	mkdir $tmpdir &> /dev/null
 	sudo ls $tmpdir &> /dev/null
-	cp $GRAALVISOR_HOME/polyglot-proxy.img $tmpdir
+	cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy.img $tmpdir
 }
 
 function start_polyglot_container {
