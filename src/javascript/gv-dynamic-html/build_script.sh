@@ -41,6 +41,18 @@ function build_ni_sharedlibrary {
 	build_ni
 }
 
+if [ -z "$ARGO_HOME" ]
+then
+        echo "Please set ARGO_HOME first. It should point to a checkout of github.com/graalvm/argo."
+        exit 1
+fi
+
+if [ -z "$JAVA_HOME" ]
+then
+        echo "Please set JAVA_HOME first. It should be a GraalVM with native-image available."
+        exit 1
+if
+
 ./gradlew clean shadowJar assemble
 
 #run_hotspot
