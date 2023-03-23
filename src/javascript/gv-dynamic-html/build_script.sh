@@ -51,7 +51,7 @@ if [ -z "$JAVA_HOME" ]
 then
         echo "Please set JAVA_HOME first. It should be a GraalVM with native-image available."
         exit 1
-if
+fi
 
 ./gradlew clean shadowJar assemble
 
