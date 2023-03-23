@@ -3,13 +3,13 @@ package com.dynamichtml;
 import java.util.Map;
 
 import com.oracle.svm.graalvisor.utils.JsonUtils;
-import com.oracle.svm.graalvisor.utils.PolyglotHostAccess;
+import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
+import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 
 import com.github.mustachejava.DefaultMustacheFactory;
-import com.oracle.svm.graalvisor.guestapi.PolyglotEngine;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -54,18 +54,14 @@ public class DynamicHTML extends PolyglotHostAccess {
 
     static class DynamicHTMLEngine extends PolyglotEngine {
 
-        public DynamicHTMLEngine(String language, String source, String entrypoint) {
-            super(language, source, entrypoint);
-        }
-
         public void addBindings(String language, Context context) {
             context.getBindings(language).putMember("polyHostAccess", new DynamicHTML());
         }
     }
 
-    private static DynamicHTMLEngine getEngine(String language, String source, String entrypoint) {
+    private static DynamicHTMLEngine getEngine() {
         if (engine == null) {
-            engine = new DynamicHTMLEngine(language, source, entrypoint);
+            engine = new DynamicHTMLEngine();
         }
         return engine;
     }
@@ -75,8 +71,8 @@ public class DynamicHTML extends PolyglotHostAccess {
         String url = (String) args.get("url");
         String username = (String) args.get("username");
         String nsize = (String) args.get("nsize");
-        DynamicHTMLEngine engine = getEngine(language, source, entrypoint);
-        output.put("output", engine.invoke(String.format("%s;%s;%s", url, username, nsize)));
+        DynamicHTMLEngine engine = getEngine();
+        output.put("output", engine.invoke(language, source, entrypoint, String.format("%s;%s;%s", url, username, nsize)));
         return output;
     }
 

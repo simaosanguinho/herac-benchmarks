@@ -2,12 +2,11 @@ package com.thumbnail;
 
 import java.util.Map;
 
-import com.oracle.svm.graalvisor.utils.PolyglotHostAccess;
-
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 
-import com.oracle.svm.graalvisor.guestapi.PolyglotEngine;
+import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
+import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
 
 import com.criteo.vips.VipsImage;
 import com.criteo.vips.enums.VipsImageFormat;
@@ -53,26 +52,22 @@ public class Thumbnail extends PolyglotHostAccess {
 
     static class ThumbnailEngine extends PolyglotEngine {
 
-        public ThumbnailEngine(String language, String source, String entrypoint) {
-            super(language, source, entrypoint);
-        }
-
         public void addBindings(String language, Context context) {
             context.getBindings(language).putMember("polyHostAccess", new Thumbnail());
         }
     }
 
-    private static ThumbnailEngine getEngine(String language, String source, String entrypoint) {
+    private static ThumbnailEngine getEngine() {
         if (engine == null) {
-            engine = new ThumbnailEngine(language, source, entrypoint);
+            engine = new ThumbnailEngine();
         }
         return engine;
     }
 
     public static HashMap<String, Object> main(Map<String, Object> args) {
         HashMap<String, Object> output = new HashMap<>();
-        ThumbnailEngine engine = getEngine(language, source, entrypoint);
-        output.put("output", engine.invoke((String) args.get("url")));
+        ThumbnailEngine engine = getEngine();
+        output.put("output", engine.invoke(language, source, entrypoint, (String) args.get("url")));
         return output;
     }
 
