@@ -8,10 +8,10 @@ function set_cgroup {
     quota=$1
     period=$2
     if [ -d "/sys/fs/cgroup/unified" ]; then
-        echo "$period" | sudo tee /sys/fs/cgroup/cpu/$CGROUP/cpu.cfs_period_us
-        echo "$quota"  | sudo tee /sys/fs/cgroup/cpu/$CGROUP/cpu.cfs_quota_us
+        echo "$period" | sudo tee /sys/fs/cgroup/cpu/$CGROUP/cpu.cfs_period_us &> /dev/null
+        echo "$quota"  | sudo tee /sys/fs/cgroup/cpu/$CGROUP/cpu.cfs_quota_us  &> /dev/null
     else
-        echo "$quota $period" | sudo tee -a /sys/fs/cgroup/$CGROUP/cpu.max
+        echo "$quota $period" | sudo tee -a /sys/fs/cgroup/$CGROUP/cpu.max &> /dev/null
     fi
 }
 
@@ -74,75 +74,58 @@ function memory {
     # Run graalvisor with 1 to 8 concurrent requests -> measure tput and RSS
     function memory_gv {
 
-        function memory_gv_java {
-            set_cgroup 100000 100000 # 1 core
-            $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 8 1 2048
-
-            set_cgroup 100000 100000 # 1 core
-            $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 8 1 2048
-
-            set_cgroup 100000 100000 # 1 core
-            $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 8 1 2048
-
-            # These benchmarks take a long time so we are setting the workload to 10*concurrency.
-            export WMULTIPLIER=5
-
-            set_cgroup 100000 100000 # 1 core
-            $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 2 1 2048
-
-            set_cgroup 100000 100000 # 1 core
-            # Note: there is a bug in gv, it can't run 2 parallel calls to classify.
-            # Since the workload is throughput intensive, having a second one would keep the same throughput so it is fine...
-            $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1 1 2048
-
-            unset WMULTIPLIER
+         function memory_gv_java_single {
+            export WMULTIPLIER=2000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 1 1 2048; unset WMULTIPLIER
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 1 1 2048;
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 1 1 2048
+            export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 1 1 2048; unset WMULTIPLIER
+            export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1 1 2048; unset WMULTIPLIER
         }
 
-    function memory_gv_javascript {
-            set_cgroup 100000 100000 # 1 core
-            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw benchmark 8 1 2048
+        function memory_gv_java {
+            export WMULTIPLIER=500; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 8 1 2048; unset WMULTIPLIER
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 8 1 2048
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 8 1 2048
+            export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 2 1 2048; unset WMULTIPLIER
+            # Note: there is a bug in gv, it can't run 2 parallel calls to classify.
+            # Since the workload is throughput intensive, having a second one would keep the same throughput so it is fine...
+            export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1 1 2048; unset WMULTIPLIER
+        }
 
-            set_cgroup 100000 100000 # 1 core
+        function memory_gv_javascript {
+            #$(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw benchmark 8 1 2048 # TODO - need to be ported
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_dynamichtml benchmark 8 1 2048
-
-            set_cgroup 100000 100000 # 1 core
-            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader benchmark 8 1 2048
-
-            set_cgroup 100000 100000 # 1 core
+            #$(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader benchmark 8 1 2048 # TODO - need to be ported
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_thumbnail benchmark 4 1 2048
         }
 
         function memory_gv_python {
-            set_cgroup 100000 100000 # 1 core
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_hw benchmark 8 1 2048
-
-            set_cgroup 100000 100000 # 1 core
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_dynamichtml benchmark 8 1 2048
-
-            set_cgroup 100000 100000 # 1 core
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_thumbnail benchmark 8 1 2048
-
-            set_cgroup 100000 100000 # 1 core
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_uploader benchmark 8 1 2048
-
-            set_cgroup 100000 100000 # 1 core
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_compression benchmark 4 1 2048
-
-            set_cgroup 100000 100000 # 1 core
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_videoprocessing benchmark 4 1 2048
-
-            set_cgroup 100000 100000 # 1 core
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_mst benchmark 4 1 2048
         }
 
+        # All gv benchmarks run on a single core.
+        set_cgroup 100000 100000 # 1 core
         for sandbox in "isolate" "runtime" "process"
         do
             export SANDBOX=$sandbox
+            memory_gv_java_single
             memory_gv_java
             unset SANDBOX
         done
-        memory_gv_javascript
-        memory_gv_python
+        for sandbox in "context" "runtime" "process"
+        do
+            export SANDBOX=$sandbox
+            memory_gv_javascript
+            #memory_gv_python # TODO - need to be imported!
+            unset SANDBOX
+        done
+
     }
 
     # Run custom runtime with 1 to 8 concurrent requests

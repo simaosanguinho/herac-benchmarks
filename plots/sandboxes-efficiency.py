@@ -4,8 +4,6 @@ import results
 import matplotlib.pyplot as plt
 import numpy as np
 
-results_home = "/home/rbruno/git/graalvm-argo-benchmarks/results"
-
 benchmark_labels = [
     "jv/hw",
 #    "java/sleep",
