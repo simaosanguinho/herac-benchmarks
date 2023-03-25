@@ -1,0 +1,146 @@
+This is ApacheBench, Version 2.3 <$Revision: 1879490 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 192.168.16.182 (be patient)
+Completed 100 requests
+Completed 200 requests
+Finished 256 requests
+
+
+Server Software:        
+Server Hostname:        192.168.16.182
+Server Port:            8080
+
+Document Path:          /
+Document Length:        72 bytes
+
+Concurrency Level:      1
+Time taken for tests:   0.206 seconds
+Complete requests:      256
+Failed requests:        2
+   (Connect: 0, Receive: 0, Length: 2, Exceptions: 0)
+Total transferred:      42754 bytes
+Total body sent:        62464
+HTML transferred:       18434 bytes
+Requests per second:    1241.53 [#/sec] (mean)
+Time per request:       0.805 [ms] (mean)
+Time per request:       0.805 [ms] (mean, across all concurrent requests)
+Transfer rate:          202.49 [Kbytes/sec] received
+                        295.83 kb/s sent
+                        498.32 kb/s total
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.0      0       0
+Processing:     1    1   1.2      1      19
+Waiting:        0    1   0.4      1       7
+Total:          1    1   1.2      1      19
+
+Percentage of the requests served within a certain time (ms)
+  50%      1
+  66%      1
+  75%      1
+  80%      1
+  90%      1
+  95%      1
+  98%      1
+  99%      2
+ 100%     19 (longest request)
+This is ApacheBench, Version 2.3 <$Revision: 1879490 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 192.168.16.182 (be patient)
+Completed 100 requests
+Completed 200 requests
+Finished 256 requests
+
+
+Server Software:        
+Server Hostname:        192.168.16.182
+Server Port:            8080
+
+Document Path:          /
+Document Length:        72 bytes
+
+Concurrency Level:      1
+Time taken for tests:   0.230 seconds
+Complete requests:      256
+Failed requests:        2
+   (Connect: 0, Receive: 0, Length: 2, Exceptions: 0)
+Total transferred:      42755 bytes
+Total body sent:        62464
+HTML transferred:       18435 bytes
+Requests per second:    1114.62 [#/sec] (mean)
+Time per request:       0.897 [ms] (mean)
+Time per request:       0.897 [ms] (mean, across all concurrent requests)
+Transfer rate:          181.79 [Kbytes/sec] received
+                        265.59 kb/s sent
+                        447.38 kb/s total
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   1.0      0      17
+Processing:     1    1   0.8      1      14
+Waiting:        1    1   0.8      1      14
+Total:          1    1   1.4      1      18
+
+Percentage of the requests served within a certain time (ms)
+  50%      1
+  66%      1
+  75%      1
+  80%      1
+  90%      1
+  95%      1
+  98%      1
+  99%      1
+ 100%     18 (longest request)
+This is ApacheBench, Version 2.3 <$Revision: 1879490 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 192.168.16.182 (be patient)
+Completed 100 requests
+Completed 200 requests
+Finished 256 requests
+
+
+Server Software:        
+Server Hostname:        192.168.16.182
+Server Port:            8080
+
+Document Path:          /
+Document Length:        72 bytes
+
+Concurrency Level:      1
+Time taken for tests:   0.181 seconds
+Complete requests:      256
+Failed requests:        0
+Total transferred:      42752 bytes
+Total body sent:        62464
+HTML transferred:       18432 bytes
+Requests per second:    1411.65 [#/sec] (mean)
+Time per request:       0.708 [ms] (mean)
+Time per request:       0.708 [ms] (mean, across all concurrent requests)
+Transfer rate:          230.22 [Kbytes/sec] received
+                        336.37 kb/s sent
+                        566.59 kb/s total
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.4      0       6
+Processing:     0    1   0.7      1      11
+Waiting:        0    1   0.7      1      11
+Total:          1    1   0.8      1      11
+
+Percentage of the requests served within a certain time (ms)
+  50%      1
+  66%      1
+  75%      1
+  80%      1
+  90%      1
+  95%      1
+  98%      1
+  99%      6
+ 100%     11 (longest request)

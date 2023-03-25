@@ -37,7 +37,7 @@ fi
 
 function benchmark {
 	if [ -z "$WMULTIPLIER" ]; then
-		WMULTIPLIER=100
+		WMULTIPLIER=256
 	fi
 
 	ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$ip:8080/ &> $tmpdir/ab.log

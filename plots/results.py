@@ -22,7 +22,9 @@ def read_benchmark_memory(path):
         with open('../results/' + path + '/lambda.rss') as file:
             for line in file:
                 mem.append(int(line))
-        mem = np.array(mem[-5:])
+        if len(mem) < 7:
+            print("Warning, not enough memory data points from {path}".format(path=path))
+        mem = np.array(mem[-6:-1])
         # Convertion from KBs to MBs and to GBs.
         mem = mem / 1024 / 1024
     except Exception as e:
