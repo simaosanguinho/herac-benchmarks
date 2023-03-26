@@ -74,9 +74,9 @@ function cr_python_thumbnail {
 
 function gv_javascript_thumbnail {
 	APP_LANG=java
-	APP_NAME=gv-thumbnail
+	APP_NAME=gv-js-thumbnail
 	APP_MAIN=com.thumbnail.Thumbnail
-	APP_SO=$BENCHMARKS_HOME/src/javascript/$APP_NAME/build/libthumbnail.so
+	APP_SO=$BENCHMARKS_HOME/src/javascript/gv-thumbnail/build/libthumbnail.so
 	curl -s -X POST $ip:8080/register?name=thumbnail\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
 	echo '{"name":"thumbnail","async":"false","arguments":"{\"url\":\"http://'$IP':8000/snap.png\"}"}' > $APP_POST
 }
@@ -269,9 +269,9 @@ function cr_python_mst {
 
 function gv_javascript_dynamichtml {
 	APP_LANG=java
-	APP_NAME=gv-dynamic-html
+	APP_NAME=gv-js-dynamic-html
 	APP_MAIN=com.dynamichtml.DynamicHTML
-	APP_SO=$BENCHMARKS_HOME/src/javascript/$APP_NAME/build/libdynamichtml.so
+	APP_SO=$BENCHMARKS_HOME/src/javascript/gv-dynamic-html/build/libdynamichtml.so
 	curl -s -X POST $ip:8080/register?name=dynamichtml\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
 	echo '{"name":"dynamichtml","async":"false","arguments":"{\"url\":\"http://'$IP':8000/template.html\",\"username\":\"rbruno\",\"nsize\":\"10\"}"}' > $APP_POST
 }

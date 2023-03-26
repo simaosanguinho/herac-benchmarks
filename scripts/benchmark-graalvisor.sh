@@ -40,6 +40,10 @@ function benchmark {
 		WMULTIPLIER=256
 	fi
 
+	if [ ! -z "$WARMUP" ]; then
+	        ab -p $APP_POST -T application/json -c 1 -n $WARMUP http://$ip:8080/warmup &> $tmpdir/ab.log
+	fi
+
 	ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$ip:8080/ &> $tmpdir/ab.log
 	rm $tmpdir/ab.log
 	for i in $(seq 1 3)
