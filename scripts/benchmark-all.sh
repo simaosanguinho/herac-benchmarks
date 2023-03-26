@@ -95,7 +95,7 @@ function memory {
         function memory_gv_javascript {
             #$(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw benchmark 8 1 2048 # TODO - need to be ported
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_dynamichtml benchmark 8 1 2048
-            #$(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader benchmark 8 1 2048 # TODO - need to be ported
+            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader benchmark 8 1 2048
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_thumbnail benchmark 4 1 2048
         }
 

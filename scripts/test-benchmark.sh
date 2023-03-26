@@ -321,14 +321,13 @@ function cr_python_uploader {
 	echo '{ "value": { "url": "http://'$IP':8000/snap.png" } }' > $RUN_POST
 }
 
-
 function gv_javascript_uploader {
-	APP_LANG=javascript
-	APP_NAME=gv-uploader
-	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/main.js
+	APP_LANG=java
+	APP_NAME=gv-js-uploader
+	APP_MAIN=com.uploader.Uploader
+	APP_SCRIPT=$BENCHMARKS_HOME/src/javascript/gv-uploader/build/libuploader.so
 	curl -s -X POST $ip:8080/register?name=uploader\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-	echo '{"name":"uploader","async":"false","arguments":"http://'$IP':8000/snap.png"}' > $APP_POST
+	echo '{"name":"uploader","async":"false","arguments":"{\"url\":\"http://'$IP':8000/snap.png\"}"}' > $APP_POST
 }
 
 function cr_javascript_uploader {
