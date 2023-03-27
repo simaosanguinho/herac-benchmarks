@@ -324,12 +324,12 @@ function cr_python_dynamichtml {
 }
 
 function gv_python_uploader {
-	APP_LANG=python
-	APP_NAME=gv-uploader
-	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/main.py
+	APP_LANG=java
+	APP_NAME=gv-py-uploader
+	APP_MAIN=com.uploader.Uploader
+	APP_SCRIPT=$BENCHMARKS_HOME/src/python/gv-uploader/build/libuploader.so
 	curl -s -X POST $ip:8080/register?name=uploader\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-	echo '{"name":"uploader","async":"false","arguments":"http://'$IP':8000/snap.png"}' > $APP_POST
+	echo '{"name":"uploader","async":"false","arguments":"{\"url\":\"http://'$IP':8000/snap.png\"}"}' > $APP_POST
 }
 
 function cr_python_uploader {
