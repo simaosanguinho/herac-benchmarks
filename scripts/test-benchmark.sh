@@ -252,12 +252,12 @@ function cr_java_classify {
 }
 
 function gv_python_compression {
-	APP_LANG=python
-	APP_NAME=gv-compression
-	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/main.py
-	curl -s -X POST $ip:8080/register?name=compression\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-	echo '{"name":"compression","async":"false","arguments":"http://'$IP':8000/video.mp4"}' > $APP_POST
+	APP_LANG=java
+	APP_NAME=gv-py-compression
+	APP_MAIN=com.compression.Compression
+	APP_SO=$BENCHMARKS_HOME/src/python/gv-compression/build/libcompression.so
+	curl -s -X POST $ip:8080/register?name=compression\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+	echo '{"name":"compression","async":"false","arguments":"{\"url\":\"http://'$IP':8000/video.mp4\"}"}' > $APP_POST
 }
 
 function cr_python_compression {
