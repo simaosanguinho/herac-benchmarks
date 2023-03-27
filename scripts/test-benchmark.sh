@@ -75,12 +75,12 @@ function cr_python_hw {
 }
 
 function gv_python_thumbnail {
-	APP_LANG=python
-	APP_NAME=gv-thumbnail
-	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/main.py
-	curl -s -X POST $ip:8080/register?name=thumbnail\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-	echo '{"name":"thumbnail","async":"false","arguments":"http://'$IP':8000/snap.png"}' > $APP_POST
+	APP_LANG=java
+	APP_NAME=gv-py-thumbnail
+	APP_MAIN=com.thumbnail.Thumbnail
+	APP_SO=$BENCHMARKS_HOME/src/python/gv-thumbnail/build/libthumbnail.so
+	curl -s -X POST $ip:8080/register?name=thumbnail\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+	echo '{"name":"thumbnail","async":"false","arguments":"{\"url\":\"http://'$IP':8000/snap.png\"}"}' > $APP_POST
 }
 
 function cr_python_thumbnail {
