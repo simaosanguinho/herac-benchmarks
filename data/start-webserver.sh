@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#docker run -it --network host --rm -p 8080:8000 -v /home/rbruno/git/graalvm-argo/benchmarks/data:/usr/share/nginx/html --name web nginx
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 if [ ! -f ffmpeg ];
 then
@@ -15,4 +15,5 @@ if [ ! -f tensorflow_inception_graph.pb ];
 then
     wget https://github.com/martinwicke/tensorflow-tutorial/raw/master/tensorflow_inception_graph.pb
 fi
-python -m http.server 8000
+
+docker run -d -p 8000:80 --rm -v $DIR:/usr/share/nginx/html --name web nginx

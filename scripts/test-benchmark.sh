@@ -20,11 +20,21 @@ function cr_java_hw {
 	RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
 }
 
-function gv_javascript_hw {
+# Builtin means that we are using Truffle's builtin capability in graalvisor.
+function gv_javascript_hw_builtin {
 	APP_LANG=javascript
 	APP_NAME=gv-hello-world
 	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/hello-world.js
+	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/src/main/javascript/main.js
+	curl -s -X POST $ip:8080/register?name=hw\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
+	echo '{"name":"hw","async":"false","arguments":""}' > $APP_POST
+}
+
+function gv_javascript_hw {
+	APP_LANG=java
+	APP_NAME=gv-js-hello-world
+	APP_MAIN=com.helloworld.HelloWorld
+	APP_SCRIPT=$BENCHMARKS_HOME/src/javascript/gv-hello-world/build/libhelloworld.so
 	curl -s -X POST $ip:8080/register?name=hw\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
 	echo '{"name":"hw","async":"false","arguments":""}' > $APP_POST
 }
@@ -37,11 +47,21 @@ function cr_javascript_hw {
 	RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run2.json
 }
 
-function gv_python_hw {
+# Builtin means that we are using Truffle's builtin capability in graalvisor.
+function gv_python_hw_builtin {
 	APP_LANG=python
 	APP_NAME=gv-hello-world
 	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/hello-world.py
+	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/src/main/python/main.py
+	curl -s -X POST $ip:8080/register?name=hw\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
+	echo '{"name":"hw","async":"false","arguments":""}' > $APP_POST
+}
+
+function gv_python_hw {
+	APP_LANG=java
+	APP_NAME=gv-py-hello-world
+	APP_MAIN=com.helloworld.HelloWorld
+	APP_SCRIPT=$BENCHMARKS_HOME/src/python/gv-hello-world/build/libhelloworld.so
 	curl -s -X POST $ip:8080/register?name=hw\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
 	echo '{"name":"hw","async":"false","arguments":""}' > $APP_POST
 }
@@ -55,12 +75,12 @@ function cr_python_hw {
 }
 
 function gv_python_thumbnail {
-	APP_LANG=python
-	APP_NAME=gv-thumbnail
-	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/main.py
-	curl -s -X POST $ip:8080/register?name=thumbnail\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-	echo '{"name":"thumbnail","async":"false","arguments":"http://'$IP':8000/snap.png"}' > $APP_POST
+	APP_LANG=java
+	APP_NAME=gv-py-thumbnail
+	APP_MAIN=com.thumbnail.Thumbnail
+	APP_SO=$BENCHMARKS_HOME/src/python/gv-thumbnail/build/libthumbnail.so
+	curl -s -X POST $ip:8080/register?name=thumbnail\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+	echo '{"name":"thumbnail","async":"false","arguments":"{\"url\":\"http://'$IP':8000/snap.png\"}"}' > $APP_POST
 }
 
 function cr_python_thumbnail {
@@ -74,9 +94,9 @@ function cr_python_thumbnail {
 
 function gv_javascript_thumbnail {
 	APP_LANG=java
-	APP_NAME=gv-thumbnail
+	APP_NAME=gv-js-thumbnail
 	APP_MAIN=com.thumbnail.Thumbnail
-	APP_SO=$BENCHMARKS_HOME/src/javascript/$APP_NAME/build/libthumbnail.so
+	APP_SO=$BENCHMARKS_HOME/src/javascript/gv-thumbnail/build/libthumbnail.so
 	curl -s -X POST $ip:8080/register?name=thumbnail\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
 	echo '{"name":"thumbnail","async":"false","arguments":"{\"url\":\"http://'$IP':8000/snap.png\"}"}' > $APP_POST
 }
@@ -196,12 +216,12 @@ function cr_java_videoprocessing {
 }
 
 function gv_python_videoprocessing {
-	APP_LANG=python
-	APP_NAME=gv-video-processing
-	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/main.py
-	curl -s -X POST $ip:8080/register?name=videoprocessing\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-	echo '{"name":"videoprocessing","async":"false","arguments":"http://'$IP':8000/ffmpeg;http://'$IP':8000/video.mp4"}' > $APP_POST
+	APP_LANG=java
+	APP_NAME=gv-py-video-processing
+	APP_MAIN=com.videoprocessing.VideoProcessing
+	APP_SO=$BENCHMARKS_HOME/src/python/gv-video-processing/build/libvideoprocessing.so
+	curl -s -X POST $ip:8080/register?name=videoprocessing\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+	echo '{"name":"videoprocessing","async":"false","arguments":"{\"video\":\"http://'$IP':8000/video.mp4\",\"ffmpeg\":\"http://'$IP':8000/ffmpeg\"}"}' > $APP_POST
 }
 
 function cr_python_videoprocessing {
@@ -232,12 +252,12 @@ function cr_java_classify {
 }
 
 function gv_python_compression {
-	APP_LANG=python
-	APP_NAME=gv-compression
-	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/main.py
-	curl -s -X POST $ip:8080/register?name=compression\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-	echo '{"name":"compression","async":"false","arguments":"http://'$IP':8000/video.mp4"}' > $APP_POST
+	APP_LANG=java
+	APP_NAME=gv-py-compression
+	APP_MAIN=com.compression.Compression
+	APP_SO=$BENCHMARKS_HOME/src/python/gv-compression/build/libcompression.so
+	curl -s -X POST $ip:8080/register?name=compression\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+	echo '{"name":"compression","async":"false","arguments":"{\"url\":\"http://'$IP':8000/video.mp4\"}"}' > $APP_POST
 }
 
 function cr_python_compression {
@@ -269,9 +289,9 @@ function cr_python_mst {
 
 function gv_javascript_dynamichtml {
 	APP_LANG=java
-	APP_NAME=gv-dynamic-html
+	APP_NAME=gv-js-dynamic-html
 	APP_MAIN=com.dynamichtml.DynamicHTML
-	APP_SO=$BENCHMARKS_HOME/src/javascript/$APP_NAME/build/libdynamichtml.so
+	APP_SO=$BENCHMARKS_HOME/src/javascript/gv-dynamic-html/build/libdynamichtml.so
 	curl -s -X POST $ip:8080/register?name=dynamichtml\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
 	echo '{"name":"dynamichtml","async":"false","arguments":"{\"url\":\"http://'$IP':8000/template.html\",\"username\":\"rbruno\",\"nsize\":\"10\"}"}' > $APP_POST
 }
@@ -286,12 +306,12 @@ function cr_javascript_dynamichtml {
 }
 
 function gv_python_dynamichtml {
-	APP_LANG=python
-	APP_NAME=gv-dynamic-html
-	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/main.py
-	curl -s -X POST $ip:8080/register?name=dynamichtml\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-	echo '{"name":"dynamichtml","async":"false","arguments":"http://'$IP':8000/template.html;rbruno;10"}' > $APP_POST
+	APP_LANG=java
+	APP_NAME=gv-py-dynamic-html
+	APP_MAIN=com.dynamichtml.DynamicHTML
+	APP_SO=$BENCHMARKS_HOME/src/python/gv-dynamic-html/build/libdynamichtml.so
+	curl -s -X POST $ip:8080/register?name=dynamichtml\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+	echo '{"name":"dynamichtml","async":"false","arguments":"{\"url\":\"http://'$IP':8000/template.html\",\"username\":\"rbruno\",\"nsize\":\"10\"}"}' > $APP_POST
 }
 
 function cr_python_dynamichtml {
@@ -304,12 +324,12 @@ function cr_python_dynamichtml {
 }
 
 function gv_python_uploader {
-	APP_LANG=python
-	APP_NAME=gv-uploader
-	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/main.py
+	APP_LANG=java
+	APP_NAME=gv-py-uploader
+	APP_MAIN=com.uploader.Uploader
+	APP_SCRIPT=$BENCHMARKS_HOME/src/python/gv-uploader/build/libuploader.so
 	curl -s -X POST $ip:8080/register?name=uploader\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-	echo '{"name":"uploader","async":"false","arguments":"http://'$IP':8000/snap.png"}' > $APP_POST
+	echo '{"name":"uploader","async":"false","arguments":"{\"url\":\"http://'$IP':8000/snap.png\"}"}' > $APP_POST
 }
 
 function cr_python_uploader {
@@ -321,14 +341,13 @@ function cr_python_uploader {
 	echo '{ "value": { "url": "http://'$IP':8000/snap.png" } }' > $RUN_POST
 }
 
-
 function gv_javascript_uploader {
-	APP_LANG=javascript
-	APP_NAME=gv-uploader
-	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/main.js
+	APP_LANG=java
+	APP_NAME=gv-js-uploader
+	APP_MAIN=com.uploader.Uploader
+	APP_SCRIPT=$BENCHMARKS_HOME/src/javascript/gv-uploader/build/libuploader.so
 	curl -s -X POST $ip:8080/register?name=uploader\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-	echo '{"name":"uploader","async":"false","arguments":"http://'$IP':8000/snap.png"}' > $APP_POST
+	echo '{"name":"uploader","async":"false","arguments":"{\"url\":\"http://'$IP':8000/snap.png\"}"}' > $APP_POST
 }
 
 function cr_javascript_uploader {

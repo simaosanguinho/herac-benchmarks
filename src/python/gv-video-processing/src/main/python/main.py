@@ -51,5 +51,3 @@ def main(args):
         return {"result": videoprocessing(ffmpeg_url, video_url)}
     except Exception as e:
         return {"result": str(e)}
-
-#print(main("http://194.210.228.197:8000/ffmpeg;http://194.210.228.197:8000/video.mp4"))

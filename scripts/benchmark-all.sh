@@ -95,7 +95,7 @@ function memory {
         function memory_gv_javascript {
             #$(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw benchmark 8 1 2048 # TODO - need to be ported
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_dynamichtml benchmark 8 1 2048
-            #$(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader benchmark 8 1 2048 # TODO - need to be ported
+            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader benchmark 8 1 2048
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_thumbnail benchmark 4 1 2048
         }
 
@@ -118,11 +118,14 @@ function memory {
             memory_gv_java
             unset SANDBOX
         done
-        for sandbox in "context" "runtime" "process"
+        for sandbox in "context" "process"
         do
             export SANDBOX=$sandbox
+            # Used only for process sandbox, ignored for context.
+            export WARMUP=1
             memory_gv_javascript
             #memory_gv_python # TODO - need to be imported!
+            unset WARMUP
             unset SANDBOX
         done
 

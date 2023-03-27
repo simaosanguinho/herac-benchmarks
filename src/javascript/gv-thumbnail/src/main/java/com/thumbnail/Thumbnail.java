@@ -73,7 +73,7 @@ public class Thumbnail extends PolyglotHostAccess {
 
     public static void main(String[] args) {
         HashMap<String, Object> output = new HashMap<>();
-        output.put("url", "http://192.168.12.57:8000/snap.png");
+        output.put("url", "http://127.0.0.1:8000/snap.png");
         output = main(output);
         System.out.println(output);
     }
