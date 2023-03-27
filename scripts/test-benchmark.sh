@@ -216,12 +216,12 @@ function cr_java_videoprocessing {
 }
 
 function gv_python_videoprocessing {
-	APP_LANG=python
-	APP_NAME=gv-video-processing
-	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/main.py
-	curl -s -X POST $ip:8080/register?name=videoprocessing\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-	echo '{"name":"videoprocessing","async":"false","arguments":"http://'$IP':8000/ffmpeg;http://'$IP':8000/video.mp4"}' > $APP_POST
+	APP_LANG=java
+	APP_NAME=gv-py-video-processing
+	APP_MAIN=com.videoprocessing.VideoProcessing
+	APP_SO=$BENCHMARKS_HOME/src/python/gv-video-processing/build/libvideoprocessing.so
+	curl -s -X POST $ip:8080/register?name=videoprocessing\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+	echo '{"name":"videoprocessing","async":"false","arguments":"{\"video\":\"http://'$IP':8000/video.mp4\",\"ffmpeg\":\"http://'$IP':8000/ffmpeg\"}"}' > $APP_POST
 }
 
 function cr_python_videoprocessing {
