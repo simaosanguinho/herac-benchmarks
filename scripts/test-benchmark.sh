@@ -20,11 +20,21 @@ function cr_java_hw {
 	RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
 }
 
-function gv_javascript_hw {
+# Builtin means that we are using Truffle's builtin capability in graalvisor.
+function gv_javascript_hw_builtin {
 	APP_LANG=javascript
 	APP_NAME=gv-hello-world
 	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/hello-world.js
+	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/src/main/javascript/main.js
+	curl -s -X POST $ip:8080/register?name=hw\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
+	echo '{"name":"hw","async":"false","arguments":""}' > $APP_POST
+}
+
+function gv_javascript_hw {
+	APP_LANG=java
+	APP_NAME=gv-js-hello-world
+	APP_MAIN=com.helloworld.HelloWorld
+	APP_SCRIPT=$BENCHMARKS_HOME/src/javascript/gv-hello-world/build/libhelloworld.so
 	curl -s -X POST $ip:8080/register?name=hw\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
 	echo '{"name":"hw","async":"false","arguments":""}' > $APP_POST
 }

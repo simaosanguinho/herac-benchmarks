@@ -3,7 +3,7 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
-group 'com.uploader'
+group 'com.helloworld'
 version '1.0'
 
 repositories {
@@ -29,7 +29,7 @@ processResources{
 jar {
     manifest {
         attributes(
-                'Main-Class': 'com.uploader.Uploader',
+                'Main-Class': 'com.helloworld.HelloWorld',
                 'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
         )
     }
