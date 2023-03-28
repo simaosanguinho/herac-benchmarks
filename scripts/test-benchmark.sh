@@ -270,12 +270,12 @@ function cr_python_compression {
 }
 
 function gv_python_mst {
-	APP_LANG=python
-	APP_NAME=gv-mst
-	APP_MAIN=main
-	APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/main.py
-	curl -s -X POST $ip:8080/register?name=mst\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-	echo '{"name":"mst","async":"false","arguments":"100"}' > $APP_POST
+	APP_LANG=java
+	APP_NAME=gv-py-mst
+	APP_MAIN=com.mst.MST
+	APP_SO=$BENCHMARKS_HOME/src/python/gv-mst/build/libmst.so
+	curl -s -X POST $ip:8080/register?name=mst\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+	echo '{"name":"mst","async":"false","arguments":"{\"size\":\"100\"}"}' > $APP_POST
 }
 
 function cr_python_mst {
