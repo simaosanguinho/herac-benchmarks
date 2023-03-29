@@ -71,7 +71,7 @@ function warm_latency {
 # Memory (fixed HW resources of 1 core and 2GB of memory, measure ops/s/mb)
 function memory {
 
-    # Run graalvisor with 1 to 8 concurrent requests -> measure tput and RSS
+    # Graalvisor
     function memory_gv {
 
          function memory_gv_java_single {
@@ -135,7 +135,7 @@ function memory {
 
     }
 
-    # Run custom runtime with 1 to 8 concurrent requests
+    # Openwhisk runtimes
     function memory_cr {
         set_cgroup 12500 100000 # .125 cores
         $(DIR)/benchmark-cruntime.sh cr_java_hw benchmark 1 1 256
@@ -180,10 +180,20 @@ function memory {
         $(DIR)/benchmark-cruntime.sh cr_javascript_thumbnail benchmark 1 1 512
 
         set_cgroup 50000 100000 # 1 core
-        $(DIR)/benchmark-cruntime.sh cr_java_classify benchmark 1 1 1024
+        $(DIR)/benchmark-cruntime.sh cr_java_classify benchmark 1 1 2048
 
         set_cgroup 25000 100000 # .25 cores
         $(DIR)/benchmark-cruntime.sh cr_python_mst benchmark 1 1 512
+    }
+
+    # Photons runtimes
+    function memory_ph {
+        set_cgroup 100000 100000 # 1 core
+        #$(DIR)/benchmark-cruntime.sh ph_java_hw benchmark 8 1 2048
+        #$(DIR)/benchmark-cruntime.sh ph_java_filehashing benchmark 8 1 2048
+        #$(DIR)/benchmark-cruntime.sh ph_java_httprequest benchmark 8 1 2048
+        #$(DIR)/benchmark-cruntime.sh ph_java_videoprocessing benchmark 2 1 2048
+        $(DIR)/benchmark-cruntime.sh cr_java_classify benchmark 1 1 2048 # TODO - for some reason photons is not working.
     }
 
     export CGROUP="experiments"
@@ -194,6 +204,8 @@ function memory {
     memory_gv
 
     memory_cr
+
+    memory_ph
 
     # To remove cgroup.
     sudo rmdir /sys/fs/cgroup/$CGROUP

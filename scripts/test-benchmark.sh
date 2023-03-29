@@ -20,6 +20,15 @@ function cr_java_hw {
 	RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
 }
 
+function ph_java_hw {
+	IMG=docker.io/sergiyivan/large-scale-experiment:photons
+	APP_LANG=java
+	APP_NAME=cr-hello-world
+	INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
+	RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
+	APP_NAME=ph-hello-world
+}
+
 # Builtin means that we are using Truffle's builtin capability in graalvisor.
 function gv_javascript_hw_builtin {
 	APP_LANG=javascript
@@ -179,6 +188,16 @@ function cr_java_filehashing {
 	echo '{ "value": { "url": "http://'$IP':8000/snap.png" } }' > $RUN_POST
 }
 
+function ph_java_filehashing {
+	IMG=docker.io/sergiyivan/large-scale-experiment:photons
+	APP_LANG=java
+	APP_NAME=cr-file-hashing
+	INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
+	RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
+	echo '{ "value": { "url": "http://'$IP':8000/snap.png" } }' > $RUN_POST
+	APP_NAME=ph-file-hashing
+}
+
 function gv_java_httprequest {
 	APP_LANG=java
 	APP_NAME=gv-httprequest
@@ -197,6 +216,16 @@ function cr_java_httprequest {
 	echo '{ "value": { "url": "http://'$IP':8000/snap.png" } }' > $RUN_POST
 }
 
+function ph_java_httprequest {
+	IMG=docker.io/sergiyivan/large-scale-experiment:photons
+	APP_LANG=java
+	APP_NAME=cr-httprequest
+	INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
+	RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
+	echo '{ "value": { "url": "http://'$IP':8000/snap.png" } }' > $RUN_POST
+	APP_NAME=ph-httprequest
+}
+
 function gv_java_videoprocessing {
 	APP_LANG=java
 	APP_NAME=gv-video-processing
@@ -213,6 +242,16 @@ function cr_java_videoprocessing {
 	INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
 	RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
 	echo '{ "value": { "ffmpeg_url": "http://'$IP':8000/ffmpeg", "video_url": "http://'$IP':8000/video.mp4" } }' > $RUN_POST
+}
+
+function ph_java_videoprocessing {
+	IMG=docker.io/sergiyivan/large-scale-experiment:photons
+	APP_LANG=java
+	APP_NAME=cr-video-processing
+	INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
+	RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
+	echo '{ "value": { "ffmpeg_url": "http://'$IP':8000/ffmpeg", "video_url": "http://'$IP':8000/video.mp4" } }' > $RUN_POST
+	APP_NAME=ph-video-processing
 }
 
 function gv_python_videoprocessing {
@@ -249,6 +288,16 @@ function cr_java_classify {
 	INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
 	RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
 	echo '{ "value": { "model_url": "http://'$IP':8000/tensorflow_inception_graph.pb", "labels_url": "http://'$IP':8000/imagenet_comp_graph_label_strings.txt", "image_url": "http://'$IP':8000/eagle.jpg" } }' > $RUN_POST
+}
+
+function ph_java_classify {
+	IMG=docker.io/sergiyivan/large-scale-experiment:photons
+	APP_LANG=java
+	APP_NAME=cr-classify
+	INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
+	RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
+	echo '{ "value": { "model_url": "http://'$IP':8000/tensorflow_inception_graph.pb", "labels_url": "http://'$IP':8000/imagenet_comp_graph_label_strings.txt", "image_url": "http://'$IP':8000/eagle.jpg" } }' > $RUN_POST
+	APP_NAME=ph-classify
 }
 
 function gv_python_compression {
