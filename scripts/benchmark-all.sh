@@ -15,18 +15,18 @@ function set_cgroup {
     fi
 }
 
-GV_BENCHMARKS="$GV_BENCHMARKS gv_java_hw"                 # 256 MB
-GV_BENCHMARKS="$GV_BENCHMARKS gv_javascript_hw"           # 256 MB
-GV_BENCHMARKS="$GV_BENCHMARKS gv_python_hw"               # 256 MB
-CR_BENCHMARKS="$CR_BENCHMARKS cr_java_hw"                 # 256 MB
-CR_BENCHMARKS="$CR_BENCHMARKS cr_javascript_hw"           # 256 MB
-CR_BENCHMARKS="$CR_BENCHMARKS cr_python_hw"               # 256 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_java_sleep"
 GV_BENCHMARKS="$GV_BENCHMARKS gv_python_sleep"
 GV_BENCHMARKS="$GV_BENCHMARKS gv_javascript_sleep"
 CR_BENCHMARKS="$CR_BENCHMARKS cr_java_sleep"
 CR_BENCHMARKS="$CR_BENCHMARKS cr_python_sleep"
 CR_BENCHMARKS="$CR_BENCHMARKS cr_javascript_sleep"
+GV_BENCHMARKS="$GV_BENCHMARKS gv_java_hw"                 # 256 MB
+GV_BENCHMARKS="$GV_BENCHMARKS gv_javascript_hw"           # 256 MB
+GV_BENCHMARKS="$GV_BENCHMARKS gv_python_hw"               # 256 MB
+CR_BENCHMARKS="$CR_BENCHMARKS cr_java_hw"                 # 256 MB
+CR_BENCHMARKS="$CR_BENCHMARKS cr_javascript_hw"           # 256 MB
+CR_BENCHMARKS="$CR_BENCHMARKS cr_python_hw"               # 256 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_java_filehashing"        # 256 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_java_filehashing"        # 256 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_javascript_dynamichtml"  # 256 MB
@@ -40,17 +40,17 @@ CR_BENCHMARKS="$CR_BENCHMARKS cr_javascript_uploader"     # 256 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_java_httprequest"        # 256 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_java_httprequest"        # 256 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_java_videoprocessing"    # 1024 MB
-CR_BENCHMARKS="$CR_BENCHMARKS cr_java_videoprocessing"    # 1024 MB, note reduce benchmark to 10*workload
+CR_BENCHMARKS="$CR_BENCHMARKS cr_java_videoprocessing"    # 1024 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_python_uploader"         # 256 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_python_uploader"         # 256 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_python_compression"      # 512 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_python_compression"      # 256 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_python_videoprocessing"  # 512 MB
-CR_BENCHMARKS="$CR_BENCHMARKS cr_python_videoprocessing"  # 512 MB, note reduce benchmark to 10*workload
+CR_BENCHMARKS="$CR_BENCHMARKS cr_python_videoprocessing"  # 512 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_javascript_thumbnail"    # 512 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_javascript_thumbnail"    # 512 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_java_classify"           # 1024 MB
-CR_BENCHMARKS="$CR_BENCHMARKS cr_java_classify"           # 1024 MB, note reduce benchmark to 50*workload
+CR_BENCHMARKS="$CR_BENCHMARKS cr_java_classify"           # 1024 MB
 GV_BENCHMARKS="$GV_BENCHMARKS gv_python_mst"              # 512 MB
 CR_BENCHMARKS="$CR_BENCHMARKS cr_python_mst"              # 512 MB
 
@@ -93,7 +93,7 @@ function memory {
         }
 
         function memory_gv_javascript {
-            #$(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw benchmark 8 1 2048 # TODO - need to be ported
+            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw benchmark 8 1 2048
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_dynamichtml benchmark 8 1 2048
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader benchmark 8 1 2048
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_thumbnail benchmark 4 1 2048
@@ -101,12 +101,16 @@ function memory {
 
         function memory_gv_python {
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_hw benchmark 8 1 2048
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_dynamichtml benchmark 8 1 2048
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_thumbnail benchmark 8 1 2048
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_uploader benchmark 8 1 2048
+            export WMULTIPLIER=5;
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_dynamichtml benchmark 4 1 2048
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_thumbnail benchmark 2 1 2048
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_uploader benchmark 4 1 2048
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_compression benchmark 4 1 2048
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_videoprocessing benchmark 4 1 2048
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_mst benchmark 4 1 2048
+            export WMULTIPLIER=2;
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_videoprocessing benchmark 2 1 2048
+            export WMULTIPLIER=50;
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_mst benchmark 2 1 2048
+            unset WMULTIPLIER
         }
 
         # All gv benchmarks run on a single core.
@@ -124,7 +128,7 @@ function memory {
             # Used only for process sandbox, ignored for context.
             export WARMUP=1
             memory_gv_javascript
-            #memory_gv_python # TODO - need to be imported!
+            memory_gv_python
             unset WARMUP
             unset SANDBOX
         done
