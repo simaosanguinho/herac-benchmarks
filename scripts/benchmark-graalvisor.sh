@@ -9,7 +9,7 @@ source $(DIR)/test-benchmark.sh
 
 # Processing input parameters
 if [ "$#" -lt 3 ]; then
-	echo "Syntax: <jvm|svm|niuk> <gv_java_hw|gv_javascript_hw|gv_python_hw> <test|benchmark> [<tests|concurrency> [<cpu> [<memory>]]]"
+	echo "Syntax: <svm|container|niuk> <gv_java_hw|gv_javascript_hw|gv_python_hw> <test|benchmark> [<tests|concurrency> [<cpu> [<memory>]]]"
 	exit 1
 fi
 
@@ -64,41 +64,44 @@ function test {
 # Writing post file to disk
 APP_POST=$tmpdir/payload.post
 
-# Deleting old dat and log files
-rm $tmpdir/{*.dat,*.log} &> /dev/null
+# Preparing working directory
+sudo rm -r $tmpdir/ &> /dev/null
+mkdir $tmpdir &> /dev/null
 
 # Setting up environment.
-if [ "$backend" == "jvm" ]; then
+if [ "$backend" == "container" ]; then
 	ip=127.0.0.1
-	# TODO - jvm does not support so apps (Java built as Native Library). We should instead send a Jar.
-	start_polyglot_jvm &> $tmpdir/lambda.log &
-elif [ "$backend" == "container" ]; then
-	ip=127.0.0.1
-	setup_polyglot_container
-	start_polyglot_container &> $tmpdir/lambda.log &
+	start_container &> $tmpdir/lambda.log &
 elif [ "$backend" == "svm" ]; then
 	ip=127.0.0.1
-	setup_polyglot_svm
-	start_polyglot_svm &> $tmpdir/lambda.log &
+	start_svm &> $tmpdir/lambda.log &
 elif [ "$backend" == "niuk" ]; then
 	# Note: ip is already set when loading test-shared.sh
-	setup_polyglot_niuk
-	start_polyglot_niuk &> $tmpdir/lambda.log &
+	start_niuk &> $tmpdir/lambda.log &
 fi
 
-# Let graalvisor start.
+# Let the lambda start.
 wait_port $ip 8080
 
-# Adding firecracker to cgroup.
+# Get PID of lambda.
+if [ "$backend" == "container" ]; then
+	PID=$(docker inspect --format '{{ .State.Pid }}' gcontainer)
+elif [ "$backend" == "svm" ]; then
+	PID=$(sudo fuser -v -n tcp 8080 2>&1 | grep 8080/tcp | awk '{print $3}')
+elif [ "$backend" == "niuk" ]; then
+	PID=$(sudo fuser /tmp/testtap.socket 2>&1 | awk '{print $2}') &> /dev/null
+fi
+
+# Log memory.
+log_rss $PID $tmpdir/lambda.rss &
+
+# Adding lambda to cgroup.
 if [ ! -z "$CGROUP" ]
 then
-        # This is a workaround to identify the PID of the firecracker vm.
-	PID=$(ps aux | grep firecracker | grep testtap.socket | awk '{print $2}')
 	echo "Adding $PID to cgroup $CGROUP"
 	echo $PID | sudo tee -a /sys/fs/cgroup/$CGROUP/cgroup.procs
 	echo "Setting $PID to core 0"
 	sudo taskset -cp 0 $PID
-
 fi
 
 # Setting a sandbox if not already set.
@@ -121,10 +124,8 @@ $app
 # Run test/benchmark.
 $mode | tee -a $tmpdir/app.log
 
-# Teardown environment.
-if [ "$backend" == "jvm" ]; then
-	stop_baremetal &>> $tmpdir/lambda.log
-elif [ "$backend" == "container" ]; then
+# Teardown the lambda.
+if [ "$backend" == "container" ]; then
 	stop_container &>> $tmpdir/lambda.log
 elif [ "$backend" == "svm" ]; then
 	stop_baremetal &>> $tmpdir/lambda.log

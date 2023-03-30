@@ -76,6 +76,13 @@ openwhisk_benchmark_path = [
 #    "python/cr-mst-benchmark-1-1-512",
 ]
 
+photons_benchmark_path = [
+    "java/ph-hello-world-benchmark-8-1-2048",
+    "java/ph-file-hashing-benchmark-8-1-2048",
+    "java/ph-httprequest-benchmark-8-1-2048",
+    "java/ph-video-processing-benchmark-2-1-2048",
+    "java/ph-classify-benchmark-1-1-2048",
+]
 # This is the memory used by each VM. For a 2GB slot, we can calculate the total memory and the estimated throughput.
 openwhisk_mem_factor = [
     256,

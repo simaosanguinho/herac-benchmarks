@@ -56,7 +56,7 @@ CR_BENCHMARKS="$CR_BENCHMARKS cr_python_mst"              # 512 MB
 
 
 function cdf_latency_filehashing {
-    $(DIR)/benchmark-cruntime.sh        cr_java_filehashing test
+    $(DIR)/benchmark-cruntime.sh   vm   cr_java_filehashing test
     $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing test
 }
 
@@ -64,7 +64,7 @@ function warm_latency {
     export CGROUP="experiments"
     set_cgroup 100000 100000 # 1 core
     for benchmark in $GV_BENCHMARKS; do $(DIR)/benchmark-graalvisor.sh niuk $benchmark test 100 1 2048; done
-    for benchmark in $CR_BENCHMARKS; do $(DIR)/benchmark-cruntime.sh        $benchmark test 100 1 2048; done
+    for benchmark in $CR_BENCHMARKS; do $(DIR)/benchmark-cruntime.sh   vm   $benchmark test 100 1 2048; done
     unset CGROUP
 }
 
@@ -138,62 +138,62 @@ function memory {
     # Openwhisk runtimes
     function memory_cr {
         set_cgroup 12500 100000 # .125 cores
-        $(DIR)/benchmark-cruntime.sh cr_java_hw benchmark 1 1 256
+        $(DIR)/benchmark-cruntime.sh vm cr_java_hw benchmark 1 1 256
 
         set_cgroup 12500 100000 # .125 cores
-        $(DIR)/benchmark-cruntime.sh cr_python_hw benchmark 1 1 256
+        $(DIR)/benchmark-cruntime.sh vm cr_python_hw benchmark 1 1 256
 
         set_cgroup 12500 100000 # .125 cores
-        $(DIR)/benchmark-cruntime.sh cr_javascript_hw benchmark 1 1 256
+        $(DIR)/benchmark-cruntime.sh vm cr_javascript_hw benchmark 1 1 256
 
         set_cgroup 12500 100000 # .125 cores
-        $(DIR)/benchmark-cruntime.sh cr_java_filehashing benchmark 1 1 256
+        $(DIR)/benchmark-cruntime.sh vm cr_java_filehashing benchmark 1 1 256
 
         set_cgroup 12500 100000 # .125 cores
-        $(DIR)/benchmark-cruntime.sh cr_javascript_dynamichtml benchmark 1 1 256
+        $(DIR)/benchmark-cruntime.sh vm cr_javascript_dynamichtml benchmark 1 1 256
 
         set_cgroup 12500 100000 # .125 cores
-        $(DIR)/benchmark-cruntime.sh cr_python_dynamichtml benchmark 1 1 256
+        $(DIR)/benchmark-cruntime.sh vm cr_python_dynamichtml benchmark 1 1 256
 
         set_cgroup 12500 100000 # .125 cores
-        $(DIR)/benchmark-cruntime.sh cr_python_thumbnail benchmark 1 1 256
+        $(DIR)/benchmark-cruntime.sh vm cr_python_thumbnail benchmark 1 1 256
 
         set_cgroup 12500 100000 # .125 cores
-        $(DIR)/benchmark-cruntime.sh cr_javascript_uploader benchmark 1 1 256
+        $(DIR)/benchmark-cruntime.sh vm cr_javascript_uploader benchmark 1 1 256
 
         set_cgroup 12500 100000 # .125 cores
-        $(DIR)/benchmark-cruntime.sh cr_java_httprequest benchmark 1 1 256
+        $(DIR)/benchmark-cruntime.sh vm cr_java_httprequest benchmark 1 1 256
 
         set_cgroup 50000 100000 # .5 cores
-        $(DIR)/benchmark-cruntime.sh cr_java_videoprocessing benchmark 1 1 1024
+        $(DIR)/benchmark-cruntime.sh vm cr_java_videoprocessing benchmark 1 1 1024
 
         set_cgroup 12500 100000 # .125 cores
-        $(DIR)/benchmark-cruntime.sh cr_python_uploader benchmark 1 1 256
+        $(DIR)/benchmark-cruntime.sh vm cr_python_uploader benchmark 1 1 256
 
         set_cgroup 12500 100000 # .125 cores
-        $(DIR)/benchmark-cruntime.sh cr_python_compression benchmark 1 1 256
+        $(DIR)/benchmark-cruntime.sh vm cr_python_compression benchmark 1 1 256
 
         set_cgroup 25000 100000 # .25 cores
-        $(DIR)/benchmark-cruntime.sh cr_python_videoprocessing benchmark 1 1 512
+        $(DIR)/benchmark-cruntime.sh vm cr_python_videoprocessing benchmark 1 1 512
 
         set_cgroup 25000 100000 # .25 cores
-        $(DIR)/benchmark-cruntime.sh cr_javascript_thumbnail benchmark 1 1 512
+        $(DIR)/benchmark-cruntime.sh vm cr_javascript_thumbnail benchmark 1 1 512
 
         set_cgroup 50000 100000 # 1 core
-        $(DIR)/benchmark-cruntime.sh cr_java_classify benchmark 1 1 2048
+        $(DIR)/benchmark-cruntime.sh vm cr_java_classify benchmark 1 1 2048
 
         set_cgroup 25000 100000 # .25 cores
-        $(DIR)/benchmark-cruntime.sh cr_python_mst benchmark 1 1 512
+        $(DIR)/benchmark-cruntime.sh vm cr_python_mst benchmark 1 1 512
     }
 
     # Photons runtimes
     function memory_ph {
         set_cgroup 100000 100000 # 1 core
-        #$(DIR)/benchmark-cruntime.sh ph_java_hw benchmark 8 1 2048
-        #$(DIR)/benchmark-cruntime.sh ph_java_filehashing benchmark 8 1 2048
-        #$(DIR)/benchmark-cruntime.sh ph_java_httprequest benchmark 8 1 2048
-        #$(DIR)/benchmark-cruntime.sh ph_java_videoprocessing benchmark 2 1 2048
-        $(DIR)/benchmark-cruntime.sh cr_java_classify benchmark 1 1 2048 # TODO - for some reason photons is not working.
+        $(DIR)/benchmark-cruntime.sh vm ph_java_hw benchmark 8 1 2048
+        $(DIR)/benchmark-cruntime.sh vm ph_java_filehashing benchmark 8 1 2048
+        $(DIR)/benchmark-cruntime.sh vm ph_java_httprequest benchmark 8 1 2048
+        export WMULTIPLIER=2; $(DIR)/benchmark-cruntime.sh vm ph_java_videoprocessing benchmark 2 1 2048; unset WMULTIPLIER
+        export WMULTIPLIER=5;$(DIR)/benchmark-cruntime.sh vm ph_java_classify benchmark 1 1 2048; unset WMULTIPLIER
     }
 
     export CGROUP="experiments"

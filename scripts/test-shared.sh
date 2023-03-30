@@ -65,32 +65,17 @@ function postime {
 function log_rss {
 	PID=$1
 	OFILE=$2
-	rm $OFILE
+	sudo rm $OFILE &> /dev/null
         while sudo kill -0 $PID &> /dev/null; do
                 ps -q $PID -o rss= >> $OFILE
                 sleep .5
         done
 }
 
-function stop_niuk {
-	ppid=`sudo cat $tmpdir/lambda.pid`
-	for child in $(ps -o pid --no-headers --ppid $ppid); do
-		sudo kill $child 
-	done
-	sudo bash $MANAGER_HOME/src/scripts/remove_taps.sh testtap
-}
-
-function stop_container {
-	docker kill gcontainer
-}
-
-function stop_baremetal {
-	pid=`sudo cat $tmpdir/lambda.pid`
-	sudo kill $pid
-}
-
 function start_niuk {
+	cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy.img $tmpdir
 	cd $tmpdir
+	proxy_args="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
 	sudo bash $MANAGER_HOME/src/scripts/create_taps.sh testtap $ip
 	sudo bash $NIUK_HOME/run_niuk.sh \
 		--vmm firecracker \
@@ -106,64 +91,28 @@ function start_niuk {
 		$proxy_args 
 }
 
-function start_polyglot_niuk {
-	proxy_args="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
-	start_niuk &
-	wait_port $ip 8080
-	log_rss $(sudo ps aux | grep firecracker | grep testtap.socket | awk '{print $2}') $tmpdir/lambda.rss &
-        wait
-}
-
-function start_svm {
-	cd $tmpdir
-	./app &
-	pid=$!
-	echo $! > $tmpdir/lambda.pid
-	log_rss $pid $tmpdir/lambda.rss &
-	wait
-}
-
-function start_jvm {
-	#NI_AGENT="-agentlib:native-image-agent=config-output-dir=$tmpdir/agent-output"
-	$JAVA_HOME/bin/java $NI_AGENT -cp $PROXY_JAR:$APP_JAR $proxy_main &
-	pid=$!
-	echo $! > $tmpdir/lambda.pid
-	log_rss $pid $tmpdir/lambda.rss &
-	wait
-}
-
-function setup_polyglot_container {
-	mkdir $tmpdir &> /dev/null
-	sudo ls $tmpdir &> /dev/null
-}
-
-function setup_polyglot_svm {
-	mkdir $tmpdir &> /dev/null
-	sudo ls $tmpdir &> /dev/null
-	cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy $tmpdir/app
-}
-
-function setup_polyglot_niuk {
-	mkdir $tmpdir &> /dev/null
-	sudo ls $tmpdir &> /dev/null
-	cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy.img $tmpdir
-}
-
-function start_polyglot_container {
+function start_container {
 	docker run --rm --name=gcontainer --network host -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="8080" -e JAVA_HOME="/jvm" graalvisor:latest
 }
 
-function start_polyglot_svm {
+function start_svm {
+	cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy $tmpdir/app
+	cd $tmpdir
 	export lambda_timestamp="$(date +%s%N | cut -b1-13)"
 	export lambda_port="8080"
-	start_svm
+	./app
 }
 
-function start_polyglot_jvm {
-	export lambda_timestamp="$(date +%s%N | cut -b1-13)"
-	export lambda_port="8080"
-	export lambda_entry_point="$APP_MAIN"
-	export proxy_main="org.graalvm.argo.lambda_proxy.PolyglotProxy"
-	start_jvm
+function stop_niuk {
+	sudo kill $PID
+	sudo bash $MANAGER_HOME/src/scripts/remove_taps.sh testtap
+}
+
+function stop_container {
+	docker kill gcontainer
+}
+
+function stop_baremetal {
+	sudo kill $PID
 }
 
