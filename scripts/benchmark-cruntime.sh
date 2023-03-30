@@ -7,16 +7,18 @@ function DIR {
 source $(DIR)/test-shared.sh
 source $(DIR)/test-benchmark.sh
 
-if [ "$#" -lt 2 ]; then
-	echo "Syntax: <cr_java_hw|cr_javascript_hw|cr_python_hw> <test|benchmark> [<tests|concurrency> [<cpu> [<memory>]]]"
+# Processing input parameters
+if [ "$#" -lt 3 ]; then
+	echo "Syntax: <container|vm> <cr_java_hw|cr_javascript_hw|cr_python_hw> <test|benchmark> [<tests|concurrency> [<cpu> [<memory>]]]"
 	exit 1
 fi
 
-app=$1
-mode=$2
+backend=$1
+app=$2
+mode=$3
 
-if [ "$#" -ge 3 ]; then
-	workload=$3
+if [ "$#" -ge 4 ]; then
+	workload=$4
 else
 	if [ "$mode" = "test" ]; then
 		workload=10
@@ -25,25 +27,30 @@ else
 	fi
 fi
 
-if [ "$#" -ge 4 ]; then
-	CPU=$4
-fi
-
 if [ "$#" -ge 5 ]; then
-	MEM=$5
+	CPU=$5
 fi
 
-echo "Running app=$app; mode=$mode; workload=$workload; cpu=$CPU; mem=$MEM"
+if [ "$#" -ge 6 ]; then
+	MEM=$6
+fi
 
 function benchmark {
-	ab -p $RUN_POST -T application/json -s 60 -c $workload -n $((workload * 100))  http://$ip:8080/run &> $tmpdir/ab.log
+	if [ -z "$WMULTIPLIER" ]; then
+		WMULTIPLIER=256
+	fi
+
+	for i in $(seq 1 3)
+	do
+		ab -p $RUN_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$ip:8080/run &> $tmpdir/ab.log
+	done
 }
 
 function test {
 	for i in $(seq 1 $workload)
 	do
 		pretime
-		curl -s --max-time 60 -X POST $ip:8080/run -H 'Content-Type: application/json' -d @$RUN_POST
+		curl -s -X POST $ip:8080/run -H 'Content-Type: application/json' -d @$RUN_POST
 		postime
 	done
 }
@@ -51,33 +58,45 @@ function test {
 TAP=benchtap
 VMID=benchvm
 
-# Deleting old dat files
-rm $tmpdir/{*.dat,*.log,*.png} &> /dev/null
+# Preparing working directory
+sudo rm -r $tmpdir/ &> /dev/null
+mkdir $tmpdir &> /dev/null
+
+echo "Running environment=$backend; app=$app; mode=$mode; workload=$workload; cpu=$CPU; mem=$MEM"
 
 # Load function to benchmark
 $app
 
-# Create tap.
-sudo bash $MANAGER_HOME/src/scripts/create_taps.sh $TAP $ip
+# Starting the lambda.
+if [ "$backend" == "container" ]; then
+	ip=127.0.0.1
+	docker run -d --rm --name=ccontainer --network host $IMG &> $tmpdir/lambda.log
+elif [ "$backend" == "vm" ]; then
+	sudo bash $MANAGER_HOME/src/scripts/create_taps.sh $TAP $ip
+	sudo $CRUNTIME_HOME/start-vm -ip $ip/$smask -gw $gateway -tap $TAP -id $VMID -img $IMG -mem $MEM -cpu $CPU
+fi
 
-# Launch runtime.
-sudo $CRUNTIME_HOME/start-vm -ip $ip/$smask -gw $gateway -tap $TAP -id $VMID -img $IMG -mem $MEM -cpu $CPU
-
-# Just let the VM boot...
+# Let the lambda start.
 wait_port $ip 8080
+
+# Get PID of lambda.
+if [ "$backend" == "container" ]; then
+	PID=$(docker inspect --format '{{ .State.Pid }}' ccontainer)
+elif [ "$backend" == "vm" ]; then
+	PID=$(ps aux | grep firecracker | grep $VMID | awk '{print $2}')
+fi
+
+# Log memory.
+log_rss $PID $tmpdir/lambda.rss &
 
 # Adding firecracker to cgroup.
 if [ ! -z "$CGROUP" ]
 then
-	PID=$(ps aux | grep firecracker | grep $VMID | awk '{print $2}')
 	echo "Adding $PID to cgroup $CGROUP"
 	echo $PID | sudo tee -a /sys/fs/cgroup/$CGROUP/cgroup.procs
 	echo "Setting $PID to core 0"
 	sudo taskset -cp 0 $PID
 fi
-
-# Log memory.	
-log_rss $(ps aux | grep firecracker | grep $VMID | awk '{print $2}') $tmpdir/lambda.rss &
 
 # Load function to benchmark
 curl -s -X POST $ip:8080/init -H 'Content-Type: application/json' -d @$INIT_POST
@@ -85,15 +104,17 @@ curl -s -X POST $ip:8080/init -H 'Content-Type: application/json' -d @$INIT_POST
 # Run test/benchmark.
 $mode | tee -a $tmpdir/app.log
 
-# Stopping VM.
-sudo $CRUNTIME_HOME/stop-vm -id $VMID
-sudo bash $MANAGER_HOME/src/scripts/remove_taps.sh $TAP
-
-# Wait for log_rss.
+# Teardown the lambda.
+if [ "$backend" == "container" ]; then
+	docker kill ccontainer &> lambda.log
+elif [ "$backend" == "vm" ]; then
+	sudo $CRUNTIME_HOME/stop-vm -id $VMID
+	sudo bash $MANAGER_HOME/src/scripts/remove_taps.sh $TAP
+fi
 wait
 
 # Copy output to app's privde result dir.
 RESULT_DIR=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$mode-$workload-$CPU-$MEM
 mkdir -p $RESULT_DIR
-cp $tmpdir/lambda.* $tmpdir/*.log $RESULT_DIR
+cp $tmpdir/lambda.* $tmpdir/*.log $RESULT_DIR &> /dev/null
 echo "Check logs: $RESULT_DIR/lambda.log"

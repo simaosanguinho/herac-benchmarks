@@ -80,7 +80,7 @@ elif [ "$backend" == "niuk" ]; then
 	start_niuk &> $tmpdir/lambda.log &
 fi
 
-# Let graalvisor start.
+# Let the lambda start.
 wait_port $ip 8080
 
 # Get PID of lambda.
@@ -124,7 +124,7 @@ $app
 # Run test/benchmark.
 $mode | tee -a $tmpdir/app.log
 
-# Teardown environment.
+# Teardown the lambda.
 if [ "$backend" == "container" ]; then
 	stop_container &>> $tmpdir/lambda.log
 elif [ "$backend" == "svm" ]; then
