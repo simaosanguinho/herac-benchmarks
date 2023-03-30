@@ -106,7 +106,7 @@ $mode | tee -a $tmpdir/app.log
 
 # Teardown the lambda.
 if [ "$backend" == "container" ]; then
-	docker kill ccontainer &> lambda.log
+	docker kill ccontainer &> $tmpdir/lambda.log
 elif [ "$backend" == "vm" ]; then
 	sudo $CRUNTIME_HOME/stop-vm -id $VMID
 	sudo bash $MANAGER_HOME/src/scripts/remove_taps.sh $TAP
