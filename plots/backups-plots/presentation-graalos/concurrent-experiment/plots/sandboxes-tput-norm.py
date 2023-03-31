@@ -9,7 +9,8 @@ benchmark_labels = [
     "jv/hashing",
     "jv/rest",
     "jv/video",
-    "jv/classify"
+    "jv/classify",
+    "jv/shopcart",
 ]
 
 isolate_benchmark_path = [
@@ -18,6 +19,7 @@ isolate_benchmark_path = [
     "java/gv-httprequest-niuk-isolate-benchmark-8-1-2048",
     "java/gv-video-processing-niuk-isolate-benchmark-2-1-2048",
     "java/gv-classify-niuk-isolate-benchmark-1-1-2048",
+    "java/gv-shopcart-niuk-isolate-benchmark-8-1-2048",
 ]
 
 runtime_benchmark_path = [
@@ -26,6 +28,7 @@ runtime_benchmark_path = [
     "java/gv-httprequest-niuk-runtime-benchmark-8-1-2048",
     "java/gv-video-processing-niuk-runtime-benchmark-2-1-2048",
     "java/gv-classify-niuk-runtime-benchmark-1-1-2048",
+    "java/gv-shopcart-niuk-runtime-benchmark-8-1-2048",
 ]
 
 process_benchmark_path = [
@@ -34,6 +37,7 @@ process_benchmark_path = [
     "java/gv-httprequest-niuk-process-benchmark-8-1-2048",
     "java/gv-video-processing-niuk-process-benchmark-2-1-2048",
     "java/gv-classify-niuk-process-benchmark-1-1-2048",
+    "java/gv-shopcart-niuk-process-benchmark-8-1-2048",
 ]
 
 # Throughput in ops/s.
