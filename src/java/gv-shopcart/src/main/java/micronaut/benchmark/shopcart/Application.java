@@ -18,6 +18,7 @@ package micronaut.benchmark.shopcart;
 import io.micronaut.runtime.Micronaut;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collections;
 
 
 public class Application {
@@ -33,7 +34,7 @@ public class Application {
 
         synchronized (Application.class) {
             if (!INITIALIZED) {
-                main(new String[0]);
+                Micronaut.build(new String[0]).properties(Collections.singletonMap("micronaut.server.port", "-1")).start();
                 INITIALIZED = true;
                 output.put("Log", "Hello from shopcart! (initialized)");
             } else {
