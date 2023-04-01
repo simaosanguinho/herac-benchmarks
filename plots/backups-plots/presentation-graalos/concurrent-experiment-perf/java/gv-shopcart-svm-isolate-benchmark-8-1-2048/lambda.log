@@ -1,0 +1,94 @@
+Graalvisor listening on port 8080.
+Warning: graalvisor compiled with no truffle language support.
+Function shopcart registered with isolate sandboxing in 41 ms
+[thread 42] New isolate sandbox 139831249207296 in 1430 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[36m20:50:57.506[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 19ms. Server Running: http://localhost:32789
+[thread 50] New isolate sandbox 139761723375616 in 3115 us
+[thread 52] New isolate sandbox 139727096250368 in 3068 us
+[thread 49] New isolate sandbox 139796084162560 in 3369 us
+[thread 53] New isolate sandbox 139692735463424 in 2823 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+ __  __ _                                  _    __  __ _                                  _   
+
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ |  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ | |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__||_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__| __  __ _                                  _   
+
+
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+  Micronaut (v3.3.1)
+  Micronaut (v3.3.1)
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+
+
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[thread 54] New isolate sandbox 139658108338176 in 3082 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[thread 56] New isolate sandbox 139623211728896 in 2685 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[thread 55] New isolate sandbox 139588850941952 in 2995 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[36m20:50:57.594[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 83ms. Server Running: http://localhost:40659
+[36m20:50:57.597[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 86ms. Server Running: http://localhost:37795
+[36m20:50:57.606[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 91ms. Server Running: http://localhost:38115
+[36m20:50:57.606[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 95ms. Server Running: http://localhost:41345
+[36m20:50:57.693[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 178ms. Server Running: http://localhost:39061
+[36m20:50:57.693[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 180ms. Server Running: http://localhost:43469
+[36m20:50:57.693[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 182ms. Server Running: http://localhost:38459
+./app: Terminated
+
+ Performance counter stats for './app':
+
+          5,953.01 msec task-clock                #    0.890 CPUs utilized          
+           206,577      context-switches          #    0.035 M/sec                  
+            51,037      cpu-migrations            #    0.009 M/sec                  
+            53,583      page-faults               #    0.009 M/sec                  
+    14,665,312,216      cycles                    #    2.464 GHz                    
+    12,527,496,285      instructions              #    0.85  insn per cycle         
+     2,813,620,217      branches                  #  472.638 M/sec                  
+        33,482,918      branch-misses             #    1.19% of all branches        
+
+       6.688302922 seconds time elapsed
+
+       3.298554000 seconds user
+       3.217894000 seconds sys
+
+
