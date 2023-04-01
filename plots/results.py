@@ -9,7 +9,7 @@ def read_benchmark_throughput(path):
             for line in file:
                 if 'Requests per second:' in line:
                     tput.append(float(line.split()[3]))
-            tput = np.array(tput[-2:])
+            tput = np.array(tput[-3:])
     except Exception as e:
         print("Error processing " + path + ":")
         raise e
