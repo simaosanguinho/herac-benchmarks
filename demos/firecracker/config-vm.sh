@@ -6,7 +6,7 @@
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 if [ -z "$1" ]; then
-    echo "Please use a free IP 172.17.0.[2,255]. The IP will be used to create a firecracker directory and tap."
+    echo "Please use a free IP 172.17.[0,255].[2,255]. The IP will be used to create a firecracker directory and tap."
     exit 0
 fi
 
@@ -28,11 +28,11 @@ VM_DEV=eth0
 # MAC address generated for the VM.
 VM_MAC=$(printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)))
 
-# IP address of the host in the VM network (172.17.0.0/24). We are using the docker network.
+# IP address of the host in the VM network (172.17.0.0/16). We are using the docker network.
 VM_GW=172.17.0.1
 
 # Network mask of the VM network (long version).
-VM_MK_LONG=255.255.255.0
+VM_MK_LONG=255.255.0.0
 
 # Kernel image used in the VM.
 KERNEL=$DIR/hello-vmlinux.bin
