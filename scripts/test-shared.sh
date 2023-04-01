@@ -4,18 +4,6 @@ function DIR {
 	echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
-function cidr_to_netmask() {
-    value=$(( 0xffffffff ^ ((1 << (32 - $1)) - 1) ))
-    echo "$(( (value >> 24) & 0xff )).$(( (value >> 16) & 0xff )).$(( (value >> 8) & 0xff )).$(( value & 0xff ))"
-}
-
-function next_ip(){
-    IP_HEX=$(printf '%.2X%.2X%.2X%.2X\n' `echo $1 | sed -e 's/\./ /g'`)
-    NEXT_IP_HEX=$(printf %.8X `echo $(( 0x$IP_HEX + 1 ))`)
-    NEXT_IP=$(printf '%d.%d.%d.%d\n' `echo $NEXT_IP_HEX | sed -r 's/(..)/0x\1 /g'`)
-    echo "$NEXT_IP"
-}
-
 function wait_port {
     host=$1
     port=$2
@@ -27,7 +15,6 @@ if [[ -z "${ARGO_HOME}" ]]; then
         echo "ARGO_HOME is not defined. Existing..."
         exit 1
 else
-    MANAGER_HOME=$ARGO_HOME/lambda-manager
     CRUNTIME_HOME=$ARGO_HOME/lambda-manager/src/scripts/cruntime
     NIUK_HOME=$ARGO_HOME/niuk
     GRAALVISOR_HOME=$ARGO_HOME/graalvisor
@@ -42,12 +29,12 @@ BENCHMARKS_HOME=$(DIR)/..
 tmpdir=/tmp/test-proxy
 mkdir $tmpdir &> /dev/null
 
-# TODO - make this a function?
-# Network setup for the test. Gateway is the ip of the host. The guest will have the next ip.
-gateway=$(ip route get 8.8.8.8 | grep -oP  'src \K\S+')
-smask=$(ip r | grep $gateway | awk '{print $1}' | awk -F / '{print $2}')
-mask=$(cidr_to_netmask $smask)
-ip=$(next_ip $gateway)
+# Network setup for the test. We are using docker0 bridge.
+gateway=172.17.0.1
+mask=255.255.0.0
+smask=16
+ip=172.17.1.0
+tap=testtap
 
 # Default memory and cpu count.
 MEM=2048
@@ -72,11 +59,21 @@ function log_rss {
         done
 }
 
+function create_tap {
+	sudo ip tuntap add dev $tap mode tap
+	sudo brctl addif docker0 $tap
+	sudo ip link set dev $tap up
+}
+
+function remove_tap {
+	sudo ip link delete $tap
+}
+
 function start_niuk {
 	cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy.img $tmpdir
 	cd $tmpdir
 	proxy_args="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
-	sudo bash $MANAGER_HOME/src/scripts/create_taps.sh testtap $ip
+	create_tap
 	sudo bash $NIUK_HOME/run_niuk.sh \
 		--vmm firecracker \
 		--disk $tmpdir/polyglot-proxy.img \
@@ -86,7 +83,7 @@ function start_niuk {
 		--ip $ip \
 		--gateway $gateway \
 		--mask $mask \
-		--tap testtap \
+		--tap $tap \
 		--console \
 		$proxy_args 
 }
@@ -105,7 +102,7 @@ function start_svm {
 
 function stop_niuk {
 	sudo kill $PID
-	sudo bash $MANAGER_HOME/src/scripts/remove_taps.sh testtap
+	remove_tap
 }
 
 function stop_container {

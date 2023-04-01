@@ -55,7 +55,6 @@ function test {
 	done
 }
 
-TAP=benchtap
 VMID=benchvm
 
 # Preparing working directory
@@ -72,8 +71,8 @@ if [ "$backend" == "container" ]; then
 	ip=127.0.0.1
 	docker run -d --rm --name=ccontainer --network host $IMG &> $tmpdir/lambda.log
 elif [ "$backend" == "vm" ]; then
-	sudo bash $MANAGER_HOME/src/scripts/create_taps.sh $TAP $ip
-	sudo $CRUNTIME_HOME/start-vm -ip $ip/$smask -gw $gateway -tap $TAP -id $VMID -img $IMG -mem $MEM -cpu $CPU
+        create_tap
+	sudo $CRUNTIME_HOME/start-vm -ip $ip/$smask -gw $gateway -tap $tap -id $VMID -img $IMG -mem $MEM -cpu $CPU
 fi
 
 # Let the lambda start.
@@ -109,7 +108,7 @@ if [ "$backend" == "container" ]; then
 	docker kill ccontainer &> $tmpdir/lambda.log
 elif [ "$backend" == "vm" ]; then
 	sudo $CRUNTIME_HOME/stop-vm -id $VMID
-	sudo bash $MANAGER_HOME/src/scripts/remove_taps.sh $TAP
+	remove_tap
 fi
 wait
 
