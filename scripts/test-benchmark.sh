@@ -12,6 +12,15 @@ function gv_java_hw {
 	echo '{"name":"hw","async":"false","cached":"true","arguments":""}' > $APP_POST
 }
 
+function gv_java_shopcart {
+	APP_LANG=java
+	APP_NAME=gv-shopcart
+	APP_SO=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/target/libshopcart.so
+	APP_MAIN=micronaut.benchmark.shopcart.Application
+	curl -s -X POST $ip:8080/register?name=shopcart\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+	echo '{"name":"shopcart","async":"false","cached":"true","arguments":""}' > $APP_POST
+}
+
 function cr_java_hw {
 	IMG=docker.io/openwhisk/java8action:latest
 	APP_LANG=java

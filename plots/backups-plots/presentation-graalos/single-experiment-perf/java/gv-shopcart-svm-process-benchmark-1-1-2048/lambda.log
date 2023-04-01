@@ -1,0 +1,30 @@
+Graalvisor listening on port 8080.
+Warning: graalvisor compiled with no truffle language support.
+Function shopcart registered with process sandboxing in 41 ms
+[thread 42] New process sandbox 4101683 in 101020 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[36m20:38:33.174[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 29ms. Server Running: http://localhost:42035
+
+ Performance counter stats for './app':
+
+          9,034.90 msec task-clock                #    0.180 CPUs utilized          
+           224,541      context-switches          #    0.025 M/sec                  
+             4,620      cpu-migrations            #    0.511 K/sec                  
+            32,049      page-faults               #    0.004 M/sec                  
+    13,959,576,865      cycles                    #    1.545 GHz                    
+     8,652,188,732      instructions              #    0.62  insn per cycle         
+     1,929,036,540      branches                  #  213.509 M/sec                  
+        99,740,176      branch-misses             #    5.17% of all branches        
+
+      50.263615857 seconds time elapsed
+
+       5.529243000 seconds user
+       7.173389000 seconds sys
+
+

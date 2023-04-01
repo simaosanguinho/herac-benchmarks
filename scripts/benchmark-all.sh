@@ -80,6 +80,7 @@ function memory {
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 1 1 2048
             export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 1 1 2048; unset WMULTIPLIER
             export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1 1 2048; unset WMULTIPLIER
+            export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 1 1 2048; unset WMULTIPLIER
         }
 
         function memory_gv_java {
@@ -90,6 +91,7 @@ function memory {
             # Note: there is a bug in gv, it can't run 2 parallel calls to classify.
             # Since the workload is throughput intensive, having a second one would keep the same throughput so it is fine...
             export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1 1 2048; unset WMULTIPLIER
+            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 8 1 2048; unset WMULTIPLIER
         }
 
         function memory_gv_javascript {
