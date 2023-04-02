@@ -4,11 +4,21 @@ function DIR {
 	echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
-function wait_port {
-    host=$1
-    port=$2
-    while ! nc -z $host $port; do echo "Waiting for $host:$port"; sleep 0.1; done
-}
+BENCHMARKS_HOME=$(DIR)/..
+tmpdir=/tmp/test-proxy
+mkdir $tmpdir &> /dev/null
+
+# Network setup for the test.
+gateway=172.18.0.1
+mask=255.255.0.0
+smask=16
+ip=172.18.0.2
+tap=testtap
+bridge=testbridge
+
+# Default memory and cpu count.
+MEM=2048
+CPU=1
 
 # Preparing global paths.
 if [[ -z "${ARGO_HOME}" ]]; then
@@ -25,20 +35,11 @@ if [[ -z "${JAVA_HOME}" ]]; then
         exit 1
 fi
 
-BENCHMARKS_HOME=$(DIR)/..
-tmpdir=/tmp/test-proxy
-mkdir $tmpdir &> /dev/null
-
-# Network setup for the test. We are using docker0 bridge.
-gateway=172.17.0.1
-mask=255.255.0.0
-smask=16
-ip=172.17.1.0
-tap=testtap
-
-# Default memory and cpu count.
-MEM=2048
-CPU=1
+function wait_port {
+    host=$1
+    port=$2
+    while ! nc -z $host $port; do echo "Waiting for $host:$port"; sleep 0.1; done
+}
 
 function pretime {
 	ts=$(date +%s%N)
@@ -60,8 +61,14 @@ function log_rss {
 }
 
 function create_tap {
+	# Create bridge if not already created
+	if [ ! -d "/sys/class/net/$bridge" ]; then
+		sudo ip link add name $bridge type bridge
+		sudo ip addr add $gateway/$smask brd + dev $bridge
+		sudo ip link set dev $bridge up
+	fi
 	sudo ip tuntap add dev $tap mode tap
-	sudo brctl addif docker0 $tap
+	sudo brctl addif $bridge $tap
 	sudo ip link set dev $tap up
 }
 
