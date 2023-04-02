@@ -126,11 +126,11 @@ $mode | tee -a $tmpdir/app.log
 
 # Teardown the lambda.
 if [ "$backend" == "container" ]; then
-	stop_container &>> $tmpdir/lambda.log
+	stop_container
 elif [ "$backend" == "svm" ]; then
-	stop_baremetal &>> $tmpdir/lambda.log
+	stop_baremetal
 elif [ "$backend" == "niuk" ]; then
-	stop_niuk &>> $tmpdir/lambda.log
+	stop_niuk
 fi
 wait
 
