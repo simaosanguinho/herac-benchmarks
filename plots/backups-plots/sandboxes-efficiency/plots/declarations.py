@@ -83,8 +83,47 @@ photons_benchmark_path = [
     "java/ph-video-processing-benchmark-2-1-2048",
     "java/ph-classify-benchmark-1-1-2048",
 ]
+
+snapshot_benchmark_path = [
+    "java/gv-hello-world-niuk-snapshot-isolate-benchmark-1-1-256",
+    "java/gv-file-hashing-niuk-snapshot-isolate-benchmark-1-1-256",
+    "java/gv-httprequest-niuk-snapshot-isolate-benchmark-1-1-256",
+    "java/gv-video-processing-niuk-snapshot-isolate-benchmark-1-1-1024",
+    "java/gv-classify-niuk-snapshot-isolate-benchmark-1-1-2048",
+    "java/gv-js-dynamic-html-niuk-snapshot-context-benchmark-1-1-256",
+    "java/gv-js-uploader-niuk-snapshot-context-benchmark-1-1-256",
+    "java/gv-js-thumbnail-niuk-snapshot-context-benchmark-1-1-512",
+    "java/gv-js-hello-world-niuk-snapshot-context-benchmark-1-1-256",
+    "java/gv-py-hello-world-niuk-snapshot-context-benchmark-1-1-256",
+    "java/gv-py-dynamic-html-niuk-snapshot-context-benchmark-1-1-512",
+    "java/gv-py-thumbnail-niuk-snapshot-context-benchmark-1-1-1024",
+    "java/gv-py-uploader-niuk-snapshot-context-benchmark-1-1-512",
+    "java/gv-py-compression-niuk-snapshot-context-benchmark-1-1-512",
+    "java/gv-py-video-processing-niuk-snapshot-context-benchmark-1-1-1024",
+#    "java/gv-py-mst-niuk-snapshot-context-benchmark-1-1-1024",
+]
+
 # This is the memory used by each VM. For a 2GB slot, we can calculate the total memory and the estimated throughput.
 openwhisk_mem_factor = [
+    256,
+    256,
+    256,
+    1024,
+    1024,
+    256,
+    256,
+    512,
+    256,
+    256,
+    256,
+    256,
+    256,
+    256,
+    512,
+#    512,
+]
+
+snapshot_mem_factor = [
     256,
     256,
     256,

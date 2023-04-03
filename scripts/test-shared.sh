@@ -123,11 +123,11 @@ function snapshot_niuk {
 	memory_file=$3
 	disk_file=$4
 	echo "Snapshotting niuk..."
-	sudo -s curl --unix-socket $vm_socket -i \
+	sudo curl -s --unix-socket $vm_socket -i \
 	    -X PATCH "http://localhost/vm" \
 	    -d "{ \"state\": \"Paused\" }"
 
-	sudo -s curl --unix-socket $vm_socket -i \
+	sudo curl -s --unix-socket $vm_socket -i \
 	    -X PUT "http://localhost/snapshot/create" \
 	    -d "{
 	        \"snapshot_type\": \"Full\",
@@ -137,7 +137,7 @@ function snapshot_niuk {
 
 	cp $tmpdir/polyglot-proxy.img $disk_file
 
-	sudo -s curl --unix-socket $vm_socket -i \
+	sudo curl -s --unix-socket $vm_socket -i \
 	    -X PATCH "http://localhost/vm" \
 	    -d "{ \"state\": \"Resumed\" }"
 	echo "Snapshotting niuk... done!"
@@ -153,7 +153,7 @@ function restore_niuk {
 
 	cp $disk_file $tmpdir/polyglot-proxy.img
 
-	sudo -s curl --unix-socket $vm_socket -i \
+	sudo curl -s --unix-socket $vm_socket -i \
 	    -X PUT "http://localhost/snapshot/load" \
 	    -d "{
 	        \"snapshot_path\": \"$snapshot_file\",

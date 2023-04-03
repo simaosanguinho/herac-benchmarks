@@ -46,7 +46,7 @@ function benchmark {
 
 	ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$ip:8080/ &> $tmpdir/ab.log
 	rm $tmpdir/ab.log
-	for i in $(seq 1 3)
+	for i in $(seq 1 5)
 	do
 		ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$ip:8080/ &>> $tmpdir/ab.log
 	done
