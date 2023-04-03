@@ -69,12 +69,12 @@ function warm_latency {
 }
 
 # Memory (fixed HW resources of 1 core and 2GB of memory, measure ops/s/mb)
-function memory {
+function efficiency {
 
     # Graalvisor
-    function memory_gv {
+    function efficiency_gv {
 
-         function memory_gv_java_single {
+         function efficiency_gv_java_single {
             export WMULTIPLIER=2000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 1 1 2048; unset WMULTIPLIER
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 1 1 2048;
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 1 1 2048
@@ -83,7 +83,7 @@ function memory {
             export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 1 1 2048; unset WMULTIPLIER
         }
 
-        function memory_gv_java {
+        function efficiency_gv_java {
             export WMULTIPLIER=500; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 8 1 2048; unset WMULTIPLIER
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 8 1 2048
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 8 1 2048
@@ -94,14 +94,14 @@ function memory {
             export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 8 1 2048; unset WMULTIPLIER
         }
 
-        function memory_gv_javascript {
+        function efficiency_gv_javascript {
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw benchmark 8 1 2048
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_dynamichtml benchmark 8 1 2048
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader benchmark 8 1 2048
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_thumbnail benchmark 4 1 2048
         }
 
-        function memory_gv_python {
+        function efficiency_gv_python {
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_hw benchmark 8 1 2048
             export WMULTIPLIER=5;
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_dynamichtml benchmark 4 1 2048
@@ -120,8 +120,8 @@ function memory {
         for sandbox in "isolate" "runtime" "process"
         do
             export SANDBOX=$sandbox
-            memory_gv_java_single
-            memory_gv_java
+            efficiency_gv_java_single
+            efficiency_gv_java
             unset SANDBOX
         done
         for sandbox in "context" "process"
@@ -129,16 +129,148 @@ function memory {
             export SANDBOX=$sandbox
             # Used only for process sandbox, ignored for context.
             export WARMUP=1
-            memory_gv_javascript
-            memory_gv_python
+            efficiency_gv_javascript
+            efficiency_gv_python
             unset WARMUP
             unset SANDBOX
         done
 
     }
 
+    # Graalvisor with vm snapshotting
+    function efficiency_gv_snapshot {
+
+        function efficiency_gv_java {
+            snapshots=/tmp/snapshots/java
+            mkdir -p $snapshots
+
+            export SNAPSHOT=$snapshots/hw
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 12500 100000 # .125 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw test 1 1 256
+            export WMULTIPLIER=2000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 1 1 256; unset WMULTIPLIER
+
+            export SNAPSHOT=$snapshots/fh
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 12500 100000 # .125 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing test 1 1 256
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 1 1 256
+
+            export SNAPSHOT=$snapshots/rest
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 12500 100000 # .125 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest test 1 1 256
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 1 1 256
+
+            export SNAPSHOT=$snapshots/video
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 50000 100000 # .5 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing test 1 1 1024
+            export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 1 1 1024; unset WMULTIPLIER
+
+            export SNAPSHOT=$snapshots/classify
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 50000 100000 # 1 core
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify test 1 1 2048
+            export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1 1 2048; unset WMULTIPLIER
+
+            export SNAPSHOT=$snapshots/shopcart
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 12500 100000 # .125 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart test 1 1 256
+            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 1 1 256; unset WMULTIPLIER
+            unset SNAPSHOT
+        }
+
+        function efficiency_gv_javascript {
+            snapshots=/tmp/snapshots/javascript
+            mkdir -p $snapshots
+
+            export SNAPSHOT=$snapshots/hw
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 12500 100000 # .125 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw test 100 1 256
+            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw benchmark 1 1 256
+
+            export SNAPSHOT=$snapshots/html
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 12500 100000 # .125 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_dynamichtml test 100 1 256
+            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_dynamichtml benchmark 1 1 256
+
+            export SNAPSHOT=$snapshots/uploader
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 12500 100000 # .125 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader test 100 1 256
+            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader benchmark 1 1 256
+
+            export SNAPSHOT=$snapshots/uploader
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 25000 100000 # .25 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_thumbnail test 100 1 512
+            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_thumbnail benchmark 1 1 512
+        }
+
+        function efficiency_gv_python {
+            snapshots=/tmp/snapshots/python
+            mkdir -p $snapshots
+
+            export SNAPSHOT=$snapshots/hw
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 12500 100000 # .125 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_hw test 100 1 256
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_hw benchmark 1 1 256
+
+            export WMULTIPLIER=5;
+            export SNAPSHOT=$snapshots/html
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 25000 100000 # .25 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_dynamichtml test $WMULTIPLIER 1 512
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_dynamichtml benchmark 1 1 512
+
+            export SNAPSHOT=$snapshots/thumbnail
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 50000 100000 # .5 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_thumbnail test $WMULTIPLIER 1 1024
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_thumbnail benchmark 1 1 1024
+
+            export SNAPSHOT=$snapshots/uploader
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 25000 100000 # .25 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_uploader test $WMULTIPLIER 1 512
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_uploader benchmark 1 1 512
+
+            export SNAPSHOT=$snapshots/compression
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 25000 100000 # .25 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_compression test $WMULTIPLIER 1 512
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_compression benchmark 1 1 512
+            unset WMULTIPLIER
+
+            export WMULTIPLIER=2;
+            export SNAPSHOT=$snapshots/video
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 50000 100000 # .5 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_videoprocessing test $WMULTIPLIER 1 1024
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_videoprocessing benchmark 1 1 1024
+            unset WMULTIPLIER
+
+            export WMULTIPLIER=50
+            export SNAPSHOT=$snapshots/mst
+            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+            set_cgroup 50000 100000 # .5 cores
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_mst test $WMULTIPLIER 1 1024
+            $(DIR)/benchmark-graalvisor.sh niuk gv_python_mst benchmark 1 1 1024
+            unset WMULTIPLIER
+        }
+
+        export SANDBOX="isolate"; efficiency_gv_java; unset SANDBOX
+        export SANDBOX="context"; efficiency_gv_javascript; unset SANDBOX
+        export SANDBOX="context"; efficiency_gv_python; unset SANDBOX
+    }
+
     # Openwhisk runtimes
-    function memory_cr {
+    function efficiency_cr {
         set_cgroup 12500 100000 # .125 cores
         $(DIR)/benchmark-cruntime.sh vm cr_java_hw benchmark 1 1 256
 
@@ -189,7 +321,7 @@ function memory {
     }
 
     # Photons runtimes
-    function memory_ph {
+    function efficiency_ph {
         set_cgroup 100000 100000 # 1 core
         $(DIR)/benchmark-cruntime.sh vm ph_java_hw benchmark 8 1 2048
         $(DIR)/benchmark-cruntime.sh vm ph_java_filehashing benchmark 8 1 2048
@@ -203,11 +335,13 @@ function memory {
     # Create cgroup.
     sudo mkdir /sys/fs/cgroup/$CGROUP
 
-    memory_gv
+    efficiency_gv
 
-    memory_cr
+    efficiency_gv_snapshot
 
-    memory_ph
+    efficiency_cr
+
+    efficiency_ph
 
     # To remove cgroup.
     sudo rmdir /sys/fs/cgroup/$CGROUP
@@ -270,6 +404,6 @@ function startup_latency {
 
 #cdf_latency_filehashing
 #warm_latency
-memory
+efficiency
 #startup_latency
 

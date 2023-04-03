@@ -10,6 +10,7 @@ isolate_benchmark_path = declarations.isolate_benchmark_path
 process_benchmark_path = declarations.process_benchmark_path 
 openwhisk_benchmark_path = declarations.openwhisk_benchmark_path 
 photons_benchmark_path = declarations.photons_benchmark_path
+snapshot_benchmark_path = declarations.snapshot_benchmark_path
 
 # Efficiency in ops/s/gb.
 isolate_eff_avg = {}
@@ -20,7 +21,8 @@ openwhisk_eff_avg = {}
 openwhisk_eff_std = {}
 photons_eff_avg = {}
 photons_eff_std = {}
-
+snapshot_eff_avg = {}
+snapshot_eff_std = {}
 
 # Processing results.
 for idx, path in enumerate(isolate_benchmark_path):
@@ -35,7 +37,9 @@ for idx, path in enumerate(openwhisk_benchmark_path):
 for idx, path in enumerate(photons_benchmark_path):
     photons_eff_avg[idx] = results.process_result(path)["eff_avg"]
     photons_eff_std[idx] = results.process_result(path)["eff_std"]
-
+for idx, path in enumerate(snapshot_benchmark_path):
+    snapshot_eff_avg[idx] = results.process_result(path)["eff_avg"]
+    snapshot_eff_std[idx] = results.process_result(path)["eff_std"]
 
 # Normalization to isolate.
 for idx, path in enumerate(process_benchmark_path):
@@ -47,6 +51,9 @@ for idx, path in enumerate(openwhisk_benchmark_path):
 for idx, path in enumerate(photons_benchmark_path):
     photons_eff_avg[idx] = photons_eff_avg[idx] / isolate_eff_avg[idx]
     photons_eff_std[idx] = photons_eff_std[idx] / isolate_eff_avg[idx]
+for idx, path in enumerate(snapshot_benchmark_path):
+    snapshot_eff_avg[idx] = snapshot_eff_avg[idx] / isolate_eff_avg[idx]
+    snapshot_eff_std[idx] = snapshot_eff_std[idx] / isolate_eff_avg[idx]
 for idx, path in enumerate(isolate_benchmark_path):
     isolate_eff_std[idx] = isolate_eff_std[idx] / isolate_eff_avg[idx]
     isolate_eff_avg[idx] = 1
@@ -61,10 +68,11 @@ width = 0.15
 plt.rcParams.update({'font.size': 16})
 
 fig, ax = plt.subplots()
-ax.bar(x + 1*width, isolate_eff_avg.values(),   yerr=isolate_eff_std.values(),   width=width, hatch='//', label='Graalvisor', alpha=0.75)
-ax.bar(x + 2*width, process_eff_avg.values(),   yerr=process_eff_std.values(),   width=width, hatch='.',  label='SAND/SOCK',  alpha=0.75)
-ax.bar(x + 3*width, photons_eff_avg.values(),   yerr=photons_eff_std.values(),   width=width, hatch=',',  label='Photons',    alpha=0.75)
-ax.bar(x + 4*width, openwhisk_eff_avg.values(), yerr=openwhisk_eff_std.values(), width=width, hatch='*',  label='OpenWhisk',  alpha=0.75)
+ax.bar(x + 1*width, isolate_eff_avg.values(),   yerr=isolate_eff_std.values(),   width=width, hatch='*', label='Graalvisor', alpha=0.75)
+ax.bar(x + 2*width, process_eff_avg.values(),   yerr=process_eff_std.values(),   width=width, hatch='.',  label='Forking',  alpha=0.75)
+ax.bar(x + 3*width, photons_eff_avg.values(),   yerr=photons_eff_std.values(),   width=width, hatch='O',  label='Photons',    alpha=0.75)
+ax.bar(x + 4*width, snapshot_eff_avg.values(),   yerr=snapshot_eff_std.values(),   width=width, hatch='+',  label='VM Snapshot',    alpha=0.75)
+ax.bar(x + 5*width, openwhisk_eff_avg.values(), yerr=openwhisk_eff_std.values(), width=width, hatch='-',  label='OpenWhisk',  alpha=0.75)
 
 ax.set_ylabel('Efficiency norm. to Isolate')
 ax.set_xticks(x, benchmark_labels)
@@ -74,7 +82,7 @@ plt.xticks(rotation = 35)
 fig.set_figwidth(15)
 fig.set_figheight(4)
 
-ax.legend(ncol=4)
+ax.legend(ncol=5)
 plt.savefig("sandboxes-efficiency-norm.pdf", bbox_inches='tight')
 plt.savefig("sandboxes-efficiency-norm.png", bbox_inches='tight')
 plt.show()

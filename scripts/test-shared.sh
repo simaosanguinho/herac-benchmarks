@@ -77,22 +77,32 @@ function remove_tap {
 }
 
 function start_niuk {
-	cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy.img $tmpdir
-	cd $tmpdir
-	proxy_args="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
 	create_tap
-	sudo bash $NIUK_HOME/run_niuk.sh \
-		--vmm firecracker \
-		--disk $tmpdir/polyglot-proxy.img \
-		--kernel $RES_HOME/hello-vmlinux.bin \
-		--memory $MEM \
-		--cpu $CPU \
-		--ip $ip \
-		--gateway $gateway \
-		--mask $mask \
-		--tap $tap \
-		--console \
-		$proxy_args 
+	if [ ! -z "$SNAPSHOT" ] && [ -f "$SNAPSHOT.snap" ]
+	then
+		restore_niuk \
+			/tmp/testtap.socket \
+			$SNAPSHOT.snap \
+			$SNAPSHOT.mem \
+			$SNAPSHOT.disk
+
+	else
+		cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy.img $tmpdir
+		cd $tmpdir
+		proxy_args="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
+		sudo bash $NIUK_HOME/run_niuk.sh \
+			--vmm firecracker \
+			--disk $tmpdir/polyglot-proxy.img \
+			--kernel $RES_HOME/hello-vmlinux.bin \
+			--memory $MEM \
+			--cpu $CPU \
+			--ip $ip \
+			--gateway $gateway \
+			--mask $mask \
+			--tap $tap \
+			--console \
+			$proxy_args
+	fi
 }
 
 function start_container {
@@ -107,8 +117,64 @@ function start_svm {
 	./app
 }
 
+function snapshot_niuk {
+	vm_socket=$1
+	snapshot_file=$2
+	memory_file=$3
+	disk_file=$4
+	echo "Snapshotting niuk..."
+	sudo curl -s --unix-socket $vm_socket -i \
+	    -X PATCH "http://localhost/vm" \
+	    -d "{ \"state\": \"Paused\" }"
+
+	sudo curl -s --unix-socket $vm_socket -i \
+	    -X PUT "http://localhost/snapshot/create" \
+	    -d "{
+	        \"snapshot_type\": \"Full\",
+	        \"snapshot_path\": \"$snapshot_file\",
+	        \"mem_file_path\": \"$memory_file\"
+	    }"
+
+	cp $tmpdir/polyglot-proxy.img $disk_file
+
+	sudo curl -s --unix-socket $vm_socket -i \
+	    -X PATCH "http://localhost/vm" \
+	    -d "{ \"state\": \"Resumed\" }"
+	echo "Snapshotting niuk... done!"
+}
+
+function restore_niuk {
+	vm_socket=$1
+	snapshot_file=$2
+	memory_file=$3
+	disk_file=$4
+	echo "Restoring niuk..."
+	sudo firecracker --api-sock $vm_socket &
+
+	cp $disk_file $tmpdir/polyglot-proxy.img
+
+	sudo curl -s --unix-socket $vm_socket -i \
+	    -X PUT "http://localhost/snapshot/load" \
+	    -d "{
+	        \"snapshot_path\": \"$snapshot_file\",
+	        \"mem_file_path\": \"$memory_file\",
+	        \"enable_diff_snapshots\": false,
+	        \"resume_vm\": true
+	    }"
+	echo "Restoring niuk... done!"
+}
+
 function stop_niuk {
+	if [ ! -z "$SNAPSHOT" ] && [ ! -f "$SNAPSHOT.snap" ]
+	then
+		snapshot_niuk \
+			/tmp/testtap.socket \
+			$SNAPSHOT.snap \
+			$SNAPSHOT.mem \
+			$SNAPSHOT.disk
+	fi
 	sudo kill $PID
+	sudo rm /tmp/testtap.socket
 	remove_tap
 }
 
