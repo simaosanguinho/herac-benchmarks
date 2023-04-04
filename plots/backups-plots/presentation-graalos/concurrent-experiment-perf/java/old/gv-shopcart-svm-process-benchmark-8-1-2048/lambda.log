@@ -1,0 +1,93 @@
+Graalvisor listening on port 8080.
+Warning: graalvisor compiled with no truffle language support.
+Function shopcart registered with process sandboxing in 41 ms
+[thread 42] New process sandbox 4107493 in 100900 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[36m20:51:17.722[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 35ms. Server Running: http://localhost:37213
+[thread 51] New process sandbox 4107507 in 101679 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[thread 52] New process sandbox 4107508 in 102408 us
+[thread 53] New process sandbox 4107510 in 100927 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[thread 54] New process sandbox 4107511 in 101525 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[thread 55] New process sandbox 4107515 in 100917 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[thread 56] New process sandbox 4107519 in 100829 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[thread 57] New process sandbox 4107520 in 100881 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[36m20:51:17.846[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 18ms. Server Running: http://localhost:46161
+[36m20:51:17.851[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 22ms. Server Running: http://localhost:35789
+[36m20:51:17.851[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 19ms. Server Running: http://localhost:44911
+[36m20:51:17.851[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 23ms. Server Running: http://localhost:34881
+[36m20:51:17.852[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 21ms. Server Running: http://localhost:38399
+[36m20:51:17.852[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 21ms. Server Running: http://localhost:32893
+[36m20:51:17.853[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 21ms. Server Running: http://localhost:37243
+
+ Performance counter stats for './app':
+
+          4,492.37 msec task-clock                #    0.414 CPUs utilized          
+           328,231      context-switches          #    0.073 M/sec                  
+            54,119      cpu-migrations            #    0.012 M/sec                  
+            69,139      page-faults               #    0.015 M/sec                  
+    16,899,931,580      cycles                    #    3.762 GHz                    
+    14,140,089,790      instructions              #    0.84  insn per cycle         
+     3,168,678,916      branches                  #  705.346 M/sec                  
+        39,071,957      branch-misses             #    1.23% of all branches        
+
+      10.857046573 seconds time elapsed
+
+       1.997981000 seconds user
+       2.638664000 seconds sys
+
+

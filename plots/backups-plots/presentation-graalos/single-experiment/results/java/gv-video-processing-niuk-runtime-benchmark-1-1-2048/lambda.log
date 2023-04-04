@@ -1,23 +1,23 @@
-time="2023-03-23T23:47:02-04:00" level=info msg="Called startVMM(), setting up a VMM on /tmp/testtap.socket"
-time="2023-03-23T23:47:02-04:00" level=info msg="VMM logging disabled."
-time="2023-03-23T23:47:02-04:00" level=info msg="VMM metrics disabled."
-time="2023-03-23T23:47:02-04:00" level=info msg="refreshMachineConfiguration: [GET /machine-config][200] getMachineConfigurationOK  &{CPUTemplate:Uninitialized HtEnabled:0xc0004920ec MemSizeMib:0xc0004920e0 VcpuCount:0xc0004920c8}"
-time="2023-03-23T23:47:02-04:00" level=info msg="PutGuestBootSource: [PUT /boot-source][204] putGuestBootSourceNoContent "
-time="2023-03-23T23:47:02-04:00" level=info msg="Attaching drive /tmp/test-proxy/polyglot-proxy.img, slot 1, root true."
-time="2023-03-23T23:47:02-04:00" level=info msg="Attached drive /tmp/test-proxy/polyglot-proxy.img: [PUT /drives/{drive_id}][204] putGuestDriveByIdNoContent "
-time="2023-03-23T23:47:02-04:00" level=info msg="Attaching NIC testtap (hwaddr DE:AD:BE:EF:2A:21) at index 1"
-2023-03-23T23:47:02.890167374 [anonymous-instance:main:WARN:src/vmm/src/builder.rs:599] Could not add serial input event to epoll: Error during epoll call: Operation not permitted (os error 1)
-time="2023-03-23T23:47:02-04:00" level=info msg="startInstance successful: [PUT /actions][204] createSyncActionNoContent "
+time="2023-04-03T17:13:34-04:00" level=info msg="Called startVMM(), setting up a VMM on /tmp/testtap.socket"
+time="2023-04-03T17:13:34-04:00" level=info msg="VMM logging disabled."
+time="2023-04-03T17:13:34-04:00" level=info msg="VMM metrics disabled."
+time="2023-04-03T17:13:34-04:00" level=info msg="refreshMachineConfiguration: [GET /machine-config][200] getMachineConfigurationOK  &{CPUTemplate:Uninitialized HtEnabled:0xc000402194 MemSizeMib:0xc000402188 VcpuCount:0xc000402180}"
+time="2023-04-03T17:13:34-04:00" level=info msg="PutGuestBootSource: [PUT /boot-source][204] putGuestBootSourceNoContent "
+time="2023-04-03T17:13:34-04:00" level=info msg="Attaching drive /tmp/test-proxy/polyglot-proxy.img, slot 1, root true."
+time="2023-04-03T17:13:34-04:00" level=info msg="Attached drive /tmp/test-proxy/polyglot-proxy.img: [PUT /drives/{drive_id}][204] putGuestDriveByIdNoContent "
+time="2023-04-03T17:13:34-04:00" level=info msg="Attaching NIC testtap (hwaddr DE:AD:BE:EF:15:2B) at index 1"
+2023-04-03T17:13:34.404180635 [anonymous-instance:main:WARN:src/vmm/src/builder.rs:599] Could not add serial input event to epoll: Error during epoll call: Operation not permitted (os error 1)
+time="2023-04-03T17:13:34-04:00" level=info msg="startInstance successful: [PUT /actions][204] createSyncActionNoContent "
 [    0.012000] dmi: Firmware registration failed.
-[    0.041362] zswap: default zpool zbud not available
-[    0.041638] zswap: pool creation failed
-Graalvisor boot time: 207 ms.
+[    0.040332] zswap: default zpool zbud not available
+[    0.040580] zswap: pool creation failed
+Graalvisor boot time: 165 ms.
 Graalvisor listening on port 8080.
-Waiting for 192.168.4.33:8080
-Function videoprocessing registered with runtime sandboxing in 34 ms
-[thread 43] New runtime sandbox 139663184482304 in 2011 us
+Warning: graalvisor compiled with no truffle language support.
+Function videoprocessing registered with runtime sandboxing in 31 ms
+[thread 42] New runtime sandbox 140233902391296 in 1582 us
 SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
 SLF4J: Defaulting to no-operation (NOP) logger implementation
 SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
-time="2023-03-23T23:47:35-04:00" level=warning msg="firecracker exited: signal: terminated"
-time="2023-03-23T23:47:35-04:00" level=fatal msg="Wait returned an error 1 error occurred:\n\t* signal: terminated\n\n"
+time="2023-04-03T17:14:20-04:00" level=warning msg="firecracker exited: signal: terminated"
+time="2023-04-03T17:14:20-04:00" level=fatal msg="Wait returned an error 1 error occurred:\n\t* signal: terminated\n\n"

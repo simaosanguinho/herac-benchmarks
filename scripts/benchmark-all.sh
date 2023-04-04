@@ -76,22 +76,22 @@ function efficiency {
 
          function efficiency_gv_java_single {
             export WMULTIPLIER=2000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 1 1 2048; unset WMULTIPLIER
-            $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 1 1 2048;
-            $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 1 1 2048
+            export WMULTIPLIER=2000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 1 1 2048; unset WMULTIPLIER
+            export WMULTIPLIER=3000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 1 1 2048; unset WMULTIPLIER
             export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 1 1 2048; unset WMULTIPLIER
             export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1 1 2048; unset WMULTIPLIER
-            export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 1 1 2048; unset WMULTIPLIER
+            export WMULTIPLIER=10000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 1 1 2048; unset WMULTIPLIER
         }
 
         function efficiency_gv_java {
             export WMULTIPLIER=500; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 8 1 2048; unset WMULTIPLIER
-            $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 8 1 2048
+            export WMULTIPLIER=500; $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 8 1 2048; unset WMULTIPLIER
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 8 1 2048
             export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 2 1 2048; unset WMULTIPLIER
             # Note: there is a bug in gv, it can't run 2 parallel calls to classify.
             # Since the workload is throughput intensive, having a second one would keep the same throughput so it is fine...
             export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1 1 2048; unset WMULTIPLIER
-            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 8 1 2048; unset WMULTIPLIER
+            export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh svm gv_java_shopcart benchmark 8 1 2048; unset WMULTIPLIER
         }
 
         function efficiency_gv_javascript {

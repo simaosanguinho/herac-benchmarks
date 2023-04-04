@@ -1,20 +1,20 @@
-time="2023-03-24T16:45:25-04:00" level=info msg="Called startVMM(), setting up a VMM on /tmp/testtap.socket"
-time="2023-03-24T16:45:25-04:00" level=info msg="VMM logging disabled."
-time="2023-03-24T16:45:25-04:00" level=info msg="VMM metrics disabled."
-time="2023-03-24T16:45:25-04:00" level=info msg="refreshMachineConfiguration: [GET /machine-config][200] getMachineConfigurationOK  &{CPUTemplate:Uninitialized HtEnabled:0xc0004d83e4 MemSizeMib:0xc0004d83c8 VcpuCount:0xc0004d83c0}"
-time="2023-03-24T16:45:25-04:00" level=info msg="PutGuestBootSource: [PUT /boot-source][204] putGuestBootSourceNoContent "
-time="2023-03-24T16:45:25-04:00" level=info msg="Attaching drive /tmp/test-proxy/polyglot-proxy.img, slot 1, root true."
-time="2023-03-24T16:45:25-04:00" level=info msg="Attached drive /tmp/test-proxy/polyglot-proxy.img: [PUT /drives/{drive_id}][204] putGuestDriveByIdNoContent "
-time="2023-03-24T16:45:25-04:00" level=info msg="Attaching NIC testtap (hwaddr DE:AD:BE:EF:15:F2) at index 1"
-2023-03-24T16:45:25.814776503 [anonymous-instance:main:WARN:src/vmm/src/builder.rs:599] Could not add serial input event to epoll: Error during epoll call: Operation not permitted (os error 1)
-time="2023-03-24T16:45:25-04:00" level=info msg="startInstance successful: [PUT /actions][204] createSyncActionNoContent "
+time="2023-04-03T16:57:16-04:00" level=info msg="Called startVMM(), setting up a VMM on /tmp/testtap.socket"
+time="2023-04-03T16:57:16-04:00" level=info msg="VMM logging disabled."
+time="2023-04-03T16:57:16-04:00" level=info msg="VMM metrics disabled."
+time="2023-04-03T16:57:16-04:00" level=info msg="refreshMachineConfiguration: [GET /machine-config][200] getMachineConfigurationOK  &{CPUTemplate:Uninitialized HtEnabled:0xc000458444 MemSizeMib:0xc000458438 VcpuCount:0xc000458430}"
+time="2023-04-03T16:57:16-04:00" level=info msg="PutGuestBootSource: [PUT /boot-source][204] putGuestBootSourceNoContent "
+time="2023-04-03T16:57:16-04:00" level=info msg="Attaching drive /tmp/test-proxy/polyglot-proxy.img, slot 1, root true."
+time="2023-04-03T16:57:16-04:00" level=info msg="Attached drive /tmp/test-proxy/polyglot-proxy.img: [PUT /drives/{drive_id}][204] putGuestDriveByIdNoContent "
+time="2023-04-03T16:57:16-04:00" level=info msg="Attaching NIC testtap (hwaddr DE:AD:BE:EF:A7:62) at index 1"
+2023-04-03T16:57:16.730318115 [anonymous-instance:main:WARN:src/vmm/src/builder.rs:599] Could not add serial input event to epoll: Error during epoll call: Operation not permitted (os error 1)
+time="2023-04-03T16:57:16-04:00" level=info msg="startInstance successful: [PUT /actions][204] createSyncActionNoContent "
 [    0.012000] dmi: Firmware registration failed.
-[    0.040757] zswap: default zpool zbud not available
-[    0.041006] zswap: pool creation failed
-Graalvisor boot time: 200 ms.
+[    0.040856] zswap: default zpool zbud not available
+[    0.041102] zswap: pool creation failed
+Graalvisor boot time: 166 ms.
 Graalvisor listening on port 8080.
-Waiting for 192.168.16.182:8080
-Function httprequest registered with process sandboxing in 31 ms
-[thread 43] New process sandbox 461 in 101183 us
-time="2023-03-24T16:45:31-04:00" level=warning msg="firecracker exited: signal: terminated"
-time="2023-03-24T16:45:31-04:00" level=fatal msg="Wait returned an error 1 error occurred:\n\t* signal: terminated\n\n"
+Warning: graalvisor compiled with no truffle language support.
+Function httprequest registered with process sandboxing in 33 ms
+[thread 42] New process sandbox 460 in 100465 us
+time="2023-04-03T16:57:26-04:00" level=warning msg="firecracker exited: signal: terminated"
+time="2023-04-03T16:57:26-04:00" level=fatal msg="Wait returned an error 1 error occurred:\n\t* signal: terminated\n\n"

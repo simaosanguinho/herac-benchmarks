@@ -1,22 +1,21 @@
-time="2023-03-23T16:21:24-04:00" level=info msg="Called startVMM(), setting up a VMM on /tmp/testtap.socket"
-time="2023-03-23T16:21:24-04:00" level=info msg="VMM logging disabled."
-time="2023-03-23T16:21:24-04:00" level=info msg="VMM metrics disabled."
-time="2023-03-23T16:21:24-04:00" level=info msg="refreshMachineConfiguration: [GET /machine-config][200] getMachineConfigurationOK  &{CPUTemplate:Uninitialized HtEnabled:0xc00008e104 MemSizeMib:0xc00008e0f8 VcpuCount:0xc00008e0f0}"
-time="2023-03-23T16:21:24-04:00" level=info msg="PutGuestBootSource: [PUT /boot-source][204] putGuestBootSourceNoContent "
-time="2023-03-23T16:21:24-04:00" level=info msg="Attaching drive /tmp/test-proxy/polyglot-proxy.img, slot 1, root true."
-time="2023-03-23T16:21:24-04:00" level=info msg="Attached drive /tmp/test-proxy/polyglot-proxy.img: [PUT /drives/{drive_id}][204] putGuestDriveByIdNoContent "
-time="2023-03-23T16:21:24-04:00" level=info msg="Attaching NIC testtap (hwaddr DE:AD:BE:EF:86:78) at index 1"
-2023-03-23T16:21:24.105465274 [anonymous-instance:main:WARN:src/vmm/src/builder.rs:599] Could not add serial input event to epoll: Error during epoll call: Operation not permitted (os error 1)
-time="2023-03-23T16:21:24-04:00" level=info msg="startInstance successful: [PUT /actions][204] createSyncActionNoContent "
+time="2023-04-03T21:08:55-04:00" level=info msg="Called startVMM(), setting up a VMM on /tmp/testtap.socket"
+time="2023-04-03T21:08:55-04:00" level=info msg="VMM logging disabled."
+time="2023-04-03T21:08:55-04:00" level=info msg="VMM metrics disabled."
+time="2023-04-03T21:08:55-04:00" level=info msg="refreshMachineConfiguration: [GET /machine-config][200] getMachineConfigurationOK  &{CPUTemplate:Uninitialized HtEnabled:0xc00008f114 MemSizeMib:0xc00008f108 VcpuCount:0xc00008f100}"
+time="2023-04-03T21:08:55-04:00" level=info msg="PutGuestBootSource: [PUT /boot-source][204] putGuestBootSourceNoContent "
+time="2023-04-03T21:08:55-04:00" level=info msg="Attaching drive /tmp/test-proxy/polyglot-proxy.img, slot 1, root true."
+time="2023-04-03T21:08:55-04:00" level=info msg="Attached drive /tmp/test-proxy/polyglot-proxy.img: [PUT /drives/{drive_id}][204] putGuestDriveByIdNoContent "
+time="2023-04-03T21:08:55-04:00" level=info msg="Attaching NIC testtap (hwaddr DE:AD:BE:EF:B3:ED) at index 1"
+2023-04-03T21:08:55.042343767 [anonymous-instance:main:WARN:src/vmm/src/builder.rs:599] Could not add serial input event to epoll: Error during epoll call: Operation not permitted (os error 1)
+time="2023-04-03T21:08:55-04:00" level=info msg="startInstance successful: [PUT /actions][204] createSyncActionNoContent "
 [    0.012000] dmi: Firmware registration failed.
-[    0.040717] zswap: default zpool zbud not available
-[    0.040984] zswap: pool creation failed
-Graalvisor boot time: 200 ms.
+[    0.040672] zswap: default zpool zbud not available
+[    0.040918] zswap: pool creation failed
+Graalvisor boot time: 169 ms.
 Graalvisor listening on port 8080.
-Waiting for 192.168.16.182:8080
-rm: cannot remove '/tmp/test-proxy/lambda.rss': No such file or directory
-Function classify registered with runtime sandboxing in 205 ms
-[thread 43] New runtime sandbox 140655980425216 in 5642 us
-2023-03-23 20:21:25.731752: I tensorflow/core/platform/cpu_feature_guard.cc:137] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 AVX512F FMA
-time="2023-03-23T16:21:32-04:00" level=warning msg="firecracker exited: signal: terminated"
-time="2023-03-23T16:21:32-04:00" level=fatal msg="Wait returned an error 1 error occurred:\n\t* signal: terminated\n\n"
+Warning: graalvisor compiled with no truffle language support.
+Function classify registered with runtime sandboxing in 179 ms
+[thread 40] New runtime sandbox 140057182732288 in 2561 us
+2023-04-04 01:08:56.357726: I tensorflow/core/platform/cpu_feature_guard.cc:137] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 AVX512F FMA
+time="2023-04-03T21:09:06-04:00" level=warning msg="firecracker exited: signal: terminated"
+time="2023-04-03T21:09:06-04:00" level=fatal msg="Wait returned an error 1 error occurred:\n\t* signal: terminated\n\n"

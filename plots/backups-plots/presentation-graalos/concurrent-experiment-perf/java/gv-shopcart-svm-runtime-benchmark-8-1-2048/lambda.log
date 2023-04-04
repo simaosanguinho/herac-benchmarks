@@ -1,7 +1,7 @@
 Graalvisor listening on port 8080.
 Warning: graalvisor compiled with no truffle language support.
-Function shopcart registered with runtime sandboxing in 40 ms
-[thread 42] New runtime sandbox 140343964073984 in 5043 us
+Function shopcart registered with runtime sandboxing in 38 ms
+[thread 40] New runtime sandbox 139783333478400 in 4450 us
  __  __ _                                  _   
 |  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
 | |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
@@ -9,9 +9,9 @@ Function shopcart registered with runtime sandboxing in 40 ms
 |_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
   Micronaut (v3.3.1)
 
-[36m20:51:07.296[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 23ms. Server Running: http://localhost:36515
-[thread 50] New runtime sandbox 140274301927424 in 3203 us
-[thread 49] New runtime sandbox 140308795883520 in 3743 us
+[36m22:27:51.781[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 24ms. Server Running: http://localhost:45369
+[thread 48] New runtime sandbox 139748101324800 in 2668 us
+[thread 49] New runtime sandbox 139713607368704 in 2543 us
  __  __ _                                  _   
 |  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
 | |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
@@ -19,6 +19,7 @@ Function shopcart registered with runtime sandboxing in 40 ms
 |_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
   Micronaut (v3.3.1)
 
+[thread 50] New runtime sandbox 139678979194880 in 2734 us
  __  __ _                                  _   
 |  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
 | |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
@@ -26,24 +27,7 @@ Function shopcart registered with runtime sandboxing in 40 ms
 |_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
   Micronaut (v3.3.1)
 
-[thread 51] New runtime sandbox 140239673753600 in 4185 us
- __  __ _                                  _   
-|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
-| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
-| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
-|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
-  Micronaut (v3.3.1)
-
-[thread 54] New runtime sandbox 140170685841408 in 4911 us
-[thread 53] New runtime sandbox 140205312966656 in 5549 us
- __  __ _                                  _   
-|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
-| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
-| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
-|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
-  Micronaut (v3.3.1)
-
-[thread 55] New runtime sandbox 140136325054464 in 3989 us
+[thread 51] New runtime sandbox 139644618407936 in 3053 us
  __  __ _                                  _   
 |  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
 | |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
@@ -58,7 +42,7 @@ Function shopcart registered with runtime sandboxing in 40 ms
 |_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
   Micronaut (v3.3.1)
 
-[thread 56] New runtime sandbox 140100959731712 in 1340 us
+[thread 52] New runtime sandbox 139610257620992 in 2418 us
  __  __ _                                  _   
 |  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
 | |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
@@ -66,29 +50,41 @@ Function shopcart registered with runtime sandboxing in 40 ms
 |_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
   Micronaut (v3.3.1)
 
-[36m20:51:07.394[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 89ms. Server Running: http://localhost:40867
-[36m20:51:07.395[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 93ms. Server Running: http://localhost:40579
-[36m20:51:07.395[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 93ms. Server Running: http://localhost:44857
-[36m20:51:07.406[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 101ms. Server Running: http://localhost:41837
-[36m20:51:07.407[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 103ms. Server Running: http://localhost:46419
-[36m20:51:07.493[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 188ms. Server Running: http://localhost:33293
-[36m20:51:07.496[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 187ms. Server Running: http://localhost:38645
+[thread 53] New runtime sandbox 139575497326592 in 1990 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[thread 54] New runtime sandbox 139540466499584 in 1320 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[36m22:27:51.831[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 46ms. Server Running: http://localhost:45227
+[36m22:27:51.856[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 70ms. Server Running: http://localhost:37591
+[36m22:27:51.931[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 145ms. Server Running: http://localhost:37009
+[36m22:27:51.931[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 140ms. Server Running: http://localhost:40957
+[36m22:27:51.931[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 145ms. Server Running: http://localhost:37469
+[36m22:27:51.948[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 159ms. Server Running: http://localhost:35371
+[36m22:27:51.948[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 160ms. Server Running: http://localhost:45747
 ./app: Terminated
 
  Performance counter stats for './app':
 
-          6,474.49 msec task-clock                #    0.637 CPUs utilized          
-           204,571      context-switches          #    0.032 M/sec                  
-            50,760      cpu-migrations            #    0.008 M/sec                  
-            55,807      page-faults               #    0.009 M/sec                  
-    14,688,538,761      cycles                    #    2.269 GHz                    
-    12,519,502,160      instructions              #    0.85  insn per cycle         
-     2,812,160,154      branches                  #  434.344 M/sec                  
-        33,375,803      branch-misses             #    1.19% of all branches        
+       225,118,762      cache-misses                                                
+         1,038,244      context-switches                                            
+       158,779,844      branch-misses                                               
+           162,188      page-faults                                                 
 
-      10.162436024 seconds time elapsed
+      54.445437775 seconds time elapsed
 
-       3.604488000 seconds user
-       3.472095000 seconds sys
+      27.567874000 seconds user
+      23.549663000 seconds sys
 
 
