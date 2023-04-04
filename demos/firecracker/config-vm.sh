@@ -28,11 +28,20 @@ VM_DEV=eth0
 # MAC address generated for the VM.
 VM_MAC=$(printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)))
 
-# IP address of the host in the VM network (172.17.0.0/16). We are using the docker network.
-VM_GW=172.17.0.1
+# IP address of the host brige (172.17.0.0/16). Used as gateway for VM taps.
+VM_GW=172.18.0.1
+
+# Host default device.
+HOST_DEV=$(ip route get 8.8.8.8 | grep -Po '(?<=(dev ))(\S+)')
+
+# Host bridge where the taps are connected.
+HOST_BRIDGE=testbridge
 
 # Network mask of the VM network (long version).
 VM_MK_LONG=255.255.0.0
+
+# Network mask of the VM network (shot version).
+VM_MK_SHORT=16
 
 # Kernel image used in the VM.
 KERNEL=$DIR/hello-vmlinux.bin
@@ -51,8 +60,19 @@ VM_CPU=1
 # Create a new tap for the vm.
 sudo ip tuntap add dev "$VM_TAP" mode tap
 
-# We are using the docker bridge. Just adding the tap to the bridge.
-sudo brctl addif docker0 $VM_TAP
+# Creating a bridge if there is not one already.
+if [ ! -d "/sys/class/net/$HOST_BRIDGE" ]; then
+    sudo ip link add name $HOST_BRIDGE type bridge
+    sudo ip addr add $VM_GW/$VM_MK_SHORT brd + dev $HOST_BRIDGE
+    sudo ip link set dev $HOST_BRIDGE up
+    sudo iptables -A FORWARD -o $HOST_BRIDGE -j ACCEPT
+    sudo iptables -A FORWARD -i $HOST_BRIDGE -j ACCEPT
+    sudo iptables -t nat -A POSTROUTING -o $HOST_DEV -j MASQUERADE
+    sudo iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+fi
+
+# Add tap to bridge.
+sudo brctl addif $HOST_BRIDGE $VM_TAP
 
 # Enabling the vm tap.
 sudo ip link set dev "$VM_TAP" up
