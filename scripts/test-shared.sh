@@ -77,6 +77,7 @@ function create_cgroup {
     period=100000
     sudo taskset -cp 0 $PID
     echo "Pinned process $PID to core 0."
+    # TODO - also set a limit for memory based on CGROUP_MEM.
     if [ -d "/sys/fs/cgroup/unified" ]; then
         sudo mkdir /sys/fs/cgroup/cpu/$CGROUP
         echo "$period"            | sudo tee -a /sys/fs/cgroup/cpu/$CGROUP/cpu.cfs_period_us

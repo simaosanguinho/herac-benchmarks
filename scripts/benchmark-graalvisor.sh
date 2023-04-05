@@ -20,7 +20,7 @@ if [ "$#" -ne 4 ]; then
     echo "- WARMUP=<number> - defines the number of warmup requests sent to graalvisor. Only used in benchmark mode. Defaults to zero;"
     echo "- CGROUP=<name> - defines the name of the cgroup to use. A directory with that name will be created under /sys/fs/cgroup. Defaults to empty which leads to no CGROUP being used;"
     echo "- CGROUP_CPU_QUOTA=<number> - defines the CPU quota for a 100ms period. A quota 100000 means using a full core. Only used if CGROUP is set. Defaults to 100000 (full core)."
-    echo "- CGROUP_MEM=<number> - defines the memory limit in MBs configued in the CGROUP. Only used if CGROUP is set. Defaults to 2048MBs." # TODO - implement
+    echo "- CGROUP_MEM=<number> - defines the memory limit in MBs configued in the CGROUP. Only used if CGROUP is set. Defaults to 2048MBs."
     echo "- VM_CPU=<number> - defines the number of cores that the VM will create internally (only used in niuk mode). Defaults to 1;"
     echo "- VM_MEM=<number> - defines the memory given to the VM (only used in niuk mode). Defaults to 2048;"
     exit 1

@@ -1,58 +1,51 @@
 #!/bin/bash
 
 function DIR {
-	echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+    echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
 source $(DIR)/test-shared.sh
 source $(DIR)/test-benchmark.sh
 
-# Processing input parameters
-if [ "$#" -lt 3 ]; then
-	echo "Syntax: <container|vm> <cr_java_hw|cr_javascript_hw|cr_python_hw> <test|benchmark> [<tests|concurrency> [<cpu> [<memory>]]]"
-	exit 1
-fi
-
-backend=$1
-app=$2
-mode=$3
-
-if [ "$#" -ge 4 ]; then
-	workload=$4
+if [ "$#" -ne 4 ]; then
+    echo "Syntax: <container|vm> <app> <mode> <# of tests or concurrency level>"
+    echo "Available backends: container (Docker container), vm (containerd-firecracker VM)."
+    echo "Available apps: $CR_BENCHMARKS"
+    echo "Available modes: test benchmark. Test will perform a number of requests. Benchmark will use apache bench with the desired concurrency level."
+    echo "Example: benchmark-cruntime.sh svm cr_java_hw test 1"
+    echo "Available environment variables: "
+    echo "- WMULTIPLIER=<number> - defines the a workload multiplier to scale up or down the length of the benchmark (only used in benchmark mode). Defaults to 256;"
+    echo "- CGROUP=<name> - defines the name of the cgroup to use. A directory with that name will be created under /sys/fs/cgroup. Defaults to empty which leads to no CGROUP being used;"
+    echo "- CGROUP_CPU_QUOTA=<number> - defines the CPU quota for a 100ms period. A quota 100000 means using a full core. Only used if CGROUP is set. Defaults to 100000 (full core)."
+    echo "- CGROUP_MEM=<number> - defines the memory limit in MBs configued in the CGROUP. Only used if CGROUP is set. Defaults to 2048MBs."
+    echo "- VM_CPU=<number> - defines the number of cores that the VM will create internally (only used in niuk mode). Defaults to 1;"
+    echo "- VM_MEM=<number> - defines the memory given to the VM (only used in niuk mode). Defaults to 2048;"
+    exit 1
 else
-	if [ "$mode" = "test" ]; then
-		workload=10
-	else
-		workload=1
-	fi
-fi
-
-if [ "$#" -ge 5 ]; then
-	CPU=$5
-fi
-
-if [ "$#" -ge 6 ]; then
-	MEM=$6
+    backend=$1
+    app=$2
+    mode=$3
+    workload=$4
 fi
 
 function benchmark {
-	if [ -z "$WMULTIPLIER" ]; then
-		WMULTIPLIER=256
-	fi
+    if [ -z "$WMULTIPLIER" ]; then
+        WMULTIPLIER=256
+    fi
 
-	for i in $(seq 1 3)
-	do
-		ab -p $RUN_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$ip:8080/run &> $tmpdir/ab.log
-	done
+    for i in $(seq 1 3)
+    do
+        ab -p $RUN_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$ip:8080/run &> $tmpdir/ab.log
+    done
 }
 
 function test {
-	for i in $(seq 1 $workload)
-	do
-		pretime
-		curl -s -X POST $ip:8080/run -H 'Content-Type: application/json' -d @$RUN_POST
-		postime
-	done
+    for i in $(seq 1 $workload)
+    do
+        pretime
+        curl -s -X POST $ip:8080/run -H 'Content-Type: application/json' -d @$RUN_POST
+        postime
+    done
 }
 
 VMID=benchvm
@@ -61,18 +54,18 @@ VMID=benchvm
 sudo rm -r $tmpdir/ &> /dev/null
 mkdir $tmpdir &> /dev/null
 
-echo "Running environment=$backend; app=$app; mode=$mode; workload=$workload; cpu=$CPU; mem=$MEM"
+echo "Running environment=$backend; app=$app; mode=$mode; workload=$workload; cpu=$VM_CPU; mem=$VM_MEM"
 
 # Load function to benchmark
 $app
 
 # Starting the lambda.
 if [ "$backend" == "container" ]; then
-	ip=127.0.0.1
-	docker run -d --rm --name=ccontainer --network host $IMG &> $tmpdir/lambda.log
+    ip=127.0.0.1
+    docker run -d --rm --name=ccontainer --network host $IMG &> $tmpdir/lambda.log
 elif [ "$backend" == "vm" ]; then
         create_tap
-	sudo $CRUNTIME_HOME/start-vm -ip $ip/$smask -gw $gateway -tap $tap -id $VMID -img $IMG -mem $MEM -cpu $CPU
+    sudo $CRUNTIME_HOME/start-vm -ip $ip/$smask -gw $gateway -tap $tap -id $VMID -img $IMG -mem $VM_MEM -cpu $VM_CPU
 fi
 
 # Let the lambda start.
@@ -80,21 +73,18 @@ wait_port $ip 8080
 
 # Get PID of lambda.
 if [ "$backend" == "container" ]; then
-	PID=$(docker inspect --format '{{ .State.Pid }}' ccontainer)
+    PID=$(docker inspect --format '{{ .State.Pid }}' ccontainer)
 elif [ "$backend" == "vm" ]; then
-	PID=$(ps aux | grep firecracker | grep $VMID | awk '{print $2}')
+    PID=$(ps aux | grep firecracker | grep $VMID | awk '{print $2}')
 fi
 
 # Log memory.
 log_rss $PID $tmpdir/lambda.rss &
 
-# Adding firecracker to cgroup.
+# Adding lambda to cgroup.
 if [ ! -z "$CGROUP" ]
 then
-	echo "Adding $PID to cgroup $CGROUP"
-	echo $PID | sudo tee -a /sys/fs/cgroup/$CGROUP/cgroup.procs
-	echo "Setting $PID to core 0"
-	sudo taskset -cp 0 $PID
+    create_cgroup
 fi
 
 # Load function to benchmark
@@ -105,15 +95,21 @@ $mode | tee -a $tmpdir/app.log
 
 # Teardown the lambda.
 if [ "$backend" == "container" ]; then
-	docker kill ccontainer &> $tmpdir/lambda.log
+    docker kill ccontainer &> $tmpdir/lambda.log
 elif [ "$backend" == "vm" ]; then
-	sudo $CRUNTIME_HOME/stop-vm -id $VMID
-	remove_tap
+    sudo $CRUNTIME_HOME/stop-vm -id $VMID
+    remove_tap
 fi
 wait
 
+# Tear down cgroup.
+if [ ! -z "$CGROUP" ]
+then
+    destroy_cgroup
+fi
+
 # Copy output to app's privde result dir.
-RESULT_DIR=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$mode-$workload-$CPU-$MEM
+RESULT_DIR=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$mode-$workload-$VM_CPU-$VM_MEM
 mkdir -p $RESULT_DIR
 cp $tmpdir/lambda.* $tmpdir/*.log $RESULT_DIR &> /dev/null
 echo "Check logs: $RESULT_DIR/lambda.log"
