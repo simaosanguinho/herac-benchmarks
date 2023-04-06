@@ -6,7 +6,6 @@ function DIR {
 
 BENCHMARKS_HOME=$(DIR)/..
 tmpdir=/tmp/test-proxy
-mkdir $tmpdir &> /dev/null
 
 # Network setup for the test.
 gateway=172.18.0.1
@@ -47,6 +46,9 @@ fi
 if [ -z "${CGROUP_MEM}" ]; then
     CGROUP_MEM=2048
 fi
+if [ -z "${ITERATIONS}" ]; then
+    ITERATIONS=1
+fi
 
 function wait_port {
     host=$1
@@ -76,18 +78,18 @@ function log_rss {
 function enable_turbo_boost {
     if [ -f "/sys/devices/system/cpu/intel_pstate/no_turbo" ]; then
         echo "0" | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo
-	echo "Enabled turbo boost."
+    echo "Enabled turbo boost."
     else
-	echo "Warning: failed to enable turbo boost."
+    echo "Warning: failed to enable turbo boost."
     fi
 }
 
 function disable_turbo_boost {
     if [ -f "/sys/devices/system/cpu/intel_pstate/no_turbo" ]; then
         echo "1" | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo
-	echo "Disabled turbo boost."
+    echo "Disabled turbo boost."
     else
-	echo "Warning: failed to disable turbo boost."
+    echo "Warning: failed to disable turbo boost."
     fi
 }
 

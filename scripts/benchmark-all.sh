@@ -310,6 +310,7 @@ function efficiency {
         export WMULTIPLIER=5;$(DIR)/benchmark-cruntime.sh vm ph_java_classify benchmark 1; unset WMULTIPLIER
     }
 
+    export ITERATIONS=5
     export CGROUP="experiments"
     export PIN_CORE="true"
     export DISABLE_TURBO="true"
@@ -322,7 +323,8 @@ function efficiency {
 
     #efficiency_ph
 
-    # Clear variable.
+    # Clear variables.
+    unset ITERATIONS
     unset CGROUP
     unset PIN_CORE
     unset DISABLE_TURBO
