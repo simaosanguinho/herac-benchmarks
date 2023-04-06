@@ -311,6 +311,8 @@ function efficiency {
     }
 
     export CGROUP="experiments"
+    export PIN_CORE="true"
+    export DISABLE_TURBO="true"
 
     efficiency_gv
 
@@ -322,6 +324,8 @@ function efficiency {
 
     # Clear variable.
     unset CGROUP
+    unset PIN_CORE
+    unset DISABLE_TURBO
 }
 
 function startup_latency {

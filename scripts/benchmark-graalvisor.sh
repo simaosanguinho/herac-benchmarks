@@ -23,6 +23,8 @@ if [ "$#" -ne 4 ]; then
     echo "- CGROUP_MEM=<number> - defines the memory limit in MBs configued in the CGROUP. Only used if CGROUP is set. Defaults to 2048MBs."
     echo "- VM_CPU=<number> - defines the number of cores that the VM will create internally (only used in niuk mode). Defaults to 1;"
     echo "- VM_MEM=<number> - defines the memory given to the VM (only used in niuk mode). Defaults to 2048;"
+    echo "- PIN_CORE=<boolean> - if true, will pin the process to core 0. Defaults to false;"
+    echo "- DISABLE_TURBO=<boolean> - if true, will disable turbo boost. Defaults to false;"
     exit 1
 else
     backend=$1
@@ -91,11 +93,8 @@ fi
 # Log memory.
 log_rss $PID $tmpdir/lambda.rss &
 
-# Adding lambda to cgroup.
-if [ ! -z "$CGROUP" ]
-then
-    create_cgroup
-fi
+# Prepares the local resources (cgroups, core pinning, turbo boost).
+prepare_resources
 
 # Setting a sandbox if not already set.
 if [ -z "$SANDBOX" ]
@@ -119,17 +118,14 @@ $mode | tee -a $tmpdir/app.log
 if [ "$backend" == "container" ]; then
     stop_container
 elif [ "$backend" == "svm" ]; then
-    stop_baremetal
+    stop_svm
 elif [ "$backend" == "niuk" ]; then
     stop_niuk
 fi
 wait
 
-# Tear down cgroup.
-if [ ! -z "$CGROUP" ]
-then
-    destroy_cgroup
-fi
+# Teardown local resource changes (delete cgroups, enable turbo boost).
+teardown_resources
 
 # Copy output to app's privde result dir.
 RESULT_DIR=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$backend-$SANDBOX-$mode-$workload-$VM_CPU-$VM_MEM

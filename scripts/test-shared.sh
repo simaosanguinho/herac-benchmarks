@@ -73,11 +73,32 @@ function log_rss {
         done
 }
 
-function create_cgroup {
-    period=100000
+function enable_turbo_boost {
+    if [ -f "/sys/devices/system/cpu/intel_pstate/no_turbo" ]; then
+        echo "0" | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo
+	echo "Enabled turbo boost."
+    else
+	echo "Warning: failed to enable turbo boost."
+    fi
+}
+
+function disable_turbo_boost {
+    if [ -f "/sys/devices/system/cpu/intel_pstate/no_turbo" ]; then
+        echo "1" | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo
+	echo "Disabled turbo boost."
+    else
+	echo "Warning: failed to disable turbo boost."
+    fi
+}
+
+function pin_core {
     sudo taskset -cp 0 $PID
     echo "Pinned process $PID to core 0."
+}
+
+function create_cgroup {
     # TODO - also set a limit for memory based on CGROUP_MEM.
+    period=100000
     if [ -d "/sys/fs/cgroup/unified" ]; then
         sudo mkdir /sys/fs/cgroup/cpu/$CGROUP
         echo "$period"            | sudo tee -a /sys/fs/cgroup/cpu/$CGROUP/cpu.cfs_period_us
@@ -96,6 +117,32 @@ function destroy_cgroup {
         sudo rmdir /sys/fs/cgroup/cpu/$CGROUP
     else
         sudo rmdir /sys/fs/cgroup/$CGROUP
+    fi
+}
+
+function prepare_resources {
+    if [ ! -z "$CGROUP" ]
+    then
+        create_cgroup
+    fi
+    if [ "$PIN_CORE" = "true" ]
+    then
+        pin_core
+    fi
+    if [ "$DISABLE_TURBO" = "true" ]
+    then
+        disable_turbo_boost
+    fi
+}
+
+function teardown_resources {
+    if [ ! -z "$CGROUP" ]
+    then
+        destroy_cgroup
+    fi
+    if [ "$DISABLE_TURBO" = "true" ]
+    then
+        enable_turbo_boost
     fi
 }
 
@@ -227,7 +274,7 @@ function stop_container {
     docker kill gcontainer
 }
 
-function stop_baremetal {
+function stop_svm {
     sudo kill $PID
 }
 
