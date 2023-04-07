@@ -125,26 +125,26 @@ function destroy_cgroup {
 function prepare_resources {
     if [ ! -z "$CGROUP" ]
     then
-        create_cgroup
+        create_cgroup &>> $tmpdir/resources.log
     fi
     if [ "$PIN_CORE" = "true" ]
     then
-        pin_core
+        pin_core &>> $tmpdir/resources.log
     fi
     if [ "$DISABLE_TURBO" = "true" ]
     then
-        disable_turbo_boost
+        disable_turbo_boost &>> $tmpdir/resources.log
     fi
 }
 
 function teardown_resources {
     if [ ! -z "$CGROUP" ]
     then
-        destroy_cgroup
+        destroy_cgroup &>> $tmpdir/resources.log
     fi
     if [ "$DISABLE_TURBO" = "true" ]
     then
-        enable_turbo_boost
+        enable_turbo_boost &>> $tmpdir/resources.log
     fi
 }
 

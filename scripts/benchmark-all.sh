@@ -25,13 +25,13 @@ function efficiency {
         }
 
         function efficiency_gv_java {
-            export WMULTIPLIER=500; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 8; unset WMULTIPLIER
-            export WMULTIPLIER=500; $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 8; unset WMULTIPLIER
-            $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 8
-            export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 2; unset WMULTIPLIER
+            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 8; unset WMULTIPLIER
+            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 8; unset WMULTIPLIER
+            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 8; unset WMULTIPLIER
+            export WMULTIPLIER=1; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
             # Note: there is a bug in gv, it can't run 2 parallel calls to classify.
             # Since the workload is throughput intensive, having a second one would keep the same throughput so it is fine...
-            export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1; unset WMULTIPLIER
+	    export WMULTIPLIER=25; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1; unset WMULTIPLIER
             export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 8; unset WMULTIPLIER
         }
 
@@ -84,59 +84,59 @@ function efficiency {
             snapshots=/tmp/snapshots/java
             mkdir -p $snapshots
 
-        # VM memory and cgroup cpu quota for the following benchmarks.
+            # VM memory and cgroup cpu quota for the following benchmarks.
             export VM_MEM=256
             export CGROUP_CPU_QUOTA=12500 # .125 cores
 
             # Hello world
             export SNAPSHOT=$snapshots/hw
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-        $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw test 1
+            $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw test 1
             export WMULTIPLIER=2000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 1; unset WMULTIPLIER
-        unset SNAPSHOT
+            unset SNAPSHOT
 
-        # File hashing
+            # File hashing
             export SNAPSHOT=$snapshots/fh
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing test 1
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 1
-        unset SNAPSHOT
+            unset SNAPSHOT
 
-        # Http request
+            # Http request
             export SNAPSHOT=$snapshots/rest
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest test 1
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 1
-        unset SNAPSHOT
+            unset SNAPSHOT
 
-        # Shopcart
+            # Shopcart
             export SNAPSHOT=$snapshots/shopcart
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart test 1
             export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 1; unset WMULTIPLIER
             unset SNAPSHOT
 
-        # Video processing
+            # Video processing
             export SNAPSHOT=$snapshots/video
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-        export VM_MEM=1024
+            export VM_MEM=1024
             export CGROUP_CPU_QUOTA=50000 # .5 cores
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing test 1
             export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
             unset CGROUP_CPU_QUOTA
-        unset VM_MEM
-        unset SNAPSHOT
+            unset VM_MEM
+            unset SNAPSHOT
 
-        # Classify
+            # Classify
             export SNAPSHOT=$snapshots/classify
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-        export VM_MEM=2048
+            export VM_MEM=2048
             export CGROUP_CPU_QUOTA=50000 # 1 core?
             $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify test 1
             export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1; unset WMULTIPLIER
             unset CGROUP_CPU_QUOTA
-        unset VM_MEM
-        unset SNAPSHOT
+            unset VM_MEM
+            unset SNAPSHOT
         }
 
         function efficiency_gv_javascript {
@@ -147,14 +147,14 @@ function efficiency {
             export VM_MEM=256
             export CGROUP_CPU_QUOTA=12500 # .125 cores
 
-        # Hello world
+            # Hello world
             export SNAPSHOT=$snapshots/hw
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw test 100
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw benchmark 1
             unset SNAPSHOT
 
-        # Dynamic HTML
+            # Dynamic HTML
             export SNAPSHOT=$snapshots/html
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_dynamichtml test 100
@@ -171,12 +171,12 @@ function efficiency {
             # Thumbnail
             export SNAPSHOT=$snapshots/thumbnail
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-        export VM_MEM=512
+            export VM_MEM=512
             export CGROUP_CPU_QUOTA=25000 # .25 cores
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_thumbnail test 100
             $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_thumbnail benchmark 1
             unset CGROUP_CPU_QUOTA
-        unset VM_MEM
+            unset VM_MEM
             unset SNAPSHOT
         }
 
@@ -184,18 +184,18 @@ function efficiency {
             snapshots=/tmp/snapshots/python
             mkdir -p $snapshots
 
-        # Hello world
+            # Hello world
             export SNAPSHOT=$snapshots/hw
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-        export VM_MEM=256
+            export VM_MEM=256
             export CGROUP_CPU_QUOTA=12500 # .125 cores
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_hw test 100
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_hw benchmark 1
             unset CGROUP_CPU_QUOTA
-        unset VM_MEM
+            unset VM_MEM
             unset SNAPSHOT
 
-        # VM memory, cgroup cpu quota, and multiplier for the following benchmarks.
+            # VM memory, cgroup cpu quota, and multiplier for the following benchmarks.
             export VM_MEM=512
             export CGROUP_CPU_QUOTA=25000 # .25 cores
             export WMULTIPLIER=5
@@ -232,10 +232,10 @@ function efficiency {
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_thumbnail benchmark 1
             unset SNAPSHOT
 
-        # Multiplier for the next benchmarks.
+            # Multiplier for the next benchmarks.
             export WMULTIPLIER=2;
 
-        # Video processing
+            # Video processing
             export SNAPSHOT=$snapshots/video
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_videoprocessing test $WMULTIPLIER
@@ -245,15 +245,15 @@ function efficiency {
             # Multiplier for the next benchmarks.
             export WMULTIPLIER=50
 
-        # MST
+            # MST
             export SNAPSHOT=$snapshots/mst
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_mst test $WMULTIPLIER
             $(DIR)/benchmark-graalvisor.sh niuk gv_python_mst benchmark 1
             unset SNAPSHOT
             unset WMULTIPLIER
-        unset VM_MEM
-        unset CGROUP_CPU_QUOTA
+            unset VM_MEM
+            unset CGROUP_CPU_QUOTA
         }
 
         export SANDBOX="isolate"; efficiency_gv_java; unset SANDBOX
@@ -264,15 +264,15 @@ function efficiency {
     # Openwhisk runtimes
     function efficiency_cr {
 
-    # VM memory and cgroup cpu quota for the following benchmarks.
-    export VM_MEM=256
+        # VM memory and cgroup cpu quota for the following benchmarks.
+        export VM_MEM=256
         export CGROUP_CPU_QUOTA=12500 # .125 cores
 
-    $(DIR)/benchmark-cruntime.sh vm cr_java_hw benchmark 1
+        $(DIR)/benchmark-cruntime.sh vm cr_java_hw benchmark 1
         $(DIR)/benchmark-cruntime.sh vm cr_python_hw benchmark 1
         $(DIR)/benchmark-cruntime.sh vm cr_javascript_hw benchmark 1
         $(DIR)/benchmark-cruntime.sh vm cr_java_filehashing benchmark 1
-    $(DIR)/benchmark-cruntime.sh vm cr_javascript_dynamichtml benchmark 1
+        $(DIR)/benchmark-cruntime.sh vm cr_javascript_dynamichtml benchmark 1
         $(DIR)/benchmark-cruntime.sh vm cr_python_dynamichtml benchmark 1
         $(DIR)/benchmark-cruntime.sh vm cr_python_thumbnail benchmark 1
         $(DIR)/benchmark-cruntime.sh vm cr_javascript_uploader benchmark 1
@@ -280,8 +280,8 @@ function efficiency {
         $(DIR)/benchmark-cruntime.sh vm cr_python_uploader benchmark 1
         $(DIR)/benchmark-cruntime.sh vm cr_python_compression benchmark 1
 
-    # VM memory and cgroup cpu quota for the following benchmarks.
-    export VM_MEM=512
+        # VM memory and cgroup cpu quota for the following benchmarks.
+        export VM_MEM=512
         export CGROUP_CPU_QUOTA=25000 # .25 cores
 
         $(DIR)/benchmark-cruntime.sh vm cr_python_videoprocessing benchmark 1
@@ -290,15 +290,15 @@ function efficiency {
 
         export VM_MEM=1024
         export CGROUP_CPU_QUOTA=50000 # .5 cores
-    $(DIR)/benchmark-cruntime.sh vm cr_java_videoprocessing benchmark 1
+        $(DIR)/benchmark-cruntime.sh vm cr_java_videoprocessing benchmark 1
         unset CGROUP_CPU_QUOTA
-    unset VM_MEM
+        unset VM_MEM
 
         export VM_MEM=2048
         export CGROUP_CPU_QUOTA=100000 # 1 core
-    $(DIR)/benchmark-cruntime.sh vm cr_java_classify benchmark 1
+        $(DIR)/benchmark-cruntime.sh vm cr_java_classify benchmark 1
         unset CGROUP_CPU_QUOTA
-    unset VM_MEM
+        unset VM_MEM
     }
 
     # Photons runtimes
@@ -313,15 +313,16 @@ function efficiency {
     export ITERATIONS=5
     export CGROUP="experiments"
     export PIN_CORE="true"
-    export DISABLE_TURBO="true"
+    # Disabling turbo will make some benchmarks more stable. However, it will make everything much slower.
+    export DISABLE_TURBO="false"
 
     efficiency_gv
 
-    #efficiency_gv_snapshot
+    efficiency_gv_snapshot
 
-    #efficiency_cr
+    efficiency_cr
 
-    #efficiency_ph
+    efficiency_ph
 
     # Clear variables.
     unset ITERATIONS
