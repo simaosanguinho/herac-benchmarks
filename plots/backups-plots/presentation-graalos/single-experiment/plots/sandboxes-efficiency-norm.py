@@ -79,6 +79,7 @@ ax.bar(x - width, isolate_eff_avg.values(), yerr=isolate_eff_std.values(), width
 ax.bar(x        , runtime_eff_avg.values(), yerr=runtime_eff_std.values(), width=width, hatch='..', label='Runtime', alpha=0.75)
 ax.bar(x + width, process_eff_avg.values(), yerr=process_eff_std.values(), width=width, hatch='.', label='Process', alpha=0.75)
 
+ax.set_ylim([.8, 1.2])
 ax.set_ylabel('Efficiency norm. to Isolate')
 ax.set_xticks(x, benchmark_labels)
 ax.set_axisbelow(True)
@@ -87,8 +88,7 @@ plt.xticks(rotation = 35)
 fig.set_figwidth(10)
 fig.set_figheight(4)
 
-ax.legend(ncol=3, bbox_to_anchor=(.15, 1))
+ax.legend(ncol=3, loc='upper center')
 plt.savefig("sandboxes-efficiency-norm.pdf", bbox_inches='tight')
 plt.savefig("sandboxes-efficiency-norm.png", bbox_inches='tight')
-ax.legend(ncol=3)
 plt.show()

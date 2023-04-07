@@ -19,7 +19,7 @@ Failed requests:        0
 Total transferred:      326 bytes
 Total body sent:        584
 HTML transferred:       136 bytes
-Requests per second:    0.07 [#/sec] (mean)
+Requests per second:    0.08 [#/sec] (mean)
 Time per request:       13424.736 [ms] (mean)
 Time per request:       13424.736 [ms] (mean, across all concurrent requests)
 Transfer rate:          0.01 [Kbytes/sec] received
