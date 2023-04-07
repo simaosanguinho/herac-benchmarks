@@ -1,0 +1,91 @@
+time="2023-04-06T17:21:37-04:00" level=info msg="Called startVMM(), setting up a VMM on /tmp/testtap.socket"
+time="2023-04-06T17:21:37-04:00" level=info msg="VMM logging disabled."
+time="2023-04-06T17:21:37-04:00" level=info msg="VMM metrics disabled."
+time="2023-04-06T17:21:37-04:00" level=info msg="refreshMachineConfiguration: [GET /machine-config][200] getMachineConfigurationOK  &{CPUTemplate:Uninitialized HtEnabled:0xc00046bf6c MemSizeMib:0xc00046bf60 VcpuCount:0xc00046bf58}"
+time="2023-04-06T17:21:37-04:00" level=info msg="PutGuestBootSource: [PUT /boot-source][204] putGuestBootSourceNoContent "
+time="2023-04-06T17:21:37-04:00" level=info msg="Attaching drive /tmp/test-proxy/polyglot-proxy.img, slot 1, root true."
+time="2023-04-06T17:21:37-04:00" level=info msg="Attached drive /tmp/test-proxy/polyglot-proxy.img: [PUT /drives/{drive_id}][204] putGuestDriveByIdNoContent "
+time="2023-04-06T17:21:37-04:00" level=info msg="Attaching NIC testtap (hwaddr DE:AD:BE:EF:39:AC) at index 1"
+2023-04-06T17:21:37.228384721 [anonymous-instance:main:WARN:src/vmm/src/builder.rs:599] Could not add serial input event to epoll: Error during epoll call: Operation not permitted (os error 1)
+time="2023-04-06T17:21:37-04:00" level=info msg="startInstance successful: [PUT /actions][204] createSyncActionNoContent "
+[    0.012000] dmi: Firmware registration failed.
+[    0.040870] zswap: default zpool zbud not available
+[    0.041120] zswap: pool creation failed
+Graalvisor boot time: 171 ms.
+Graalvisor listening on port 8080.
+Warning: graalvisor compiled with no truffle language support.
+Function shopcart registered with isolate sandboxing in 520 ms
+[thread 40] New isolate sandbox 140430397145088 in 7051 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+[36m17:21:38.738[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 34ms. Server Running: http://localhost:33639
+[thread 50] New isolate sandbox 140395701862400 in 42270 us
+[thread 48] New isolate sandbox 140361341075456 in 42785 us
+[thread 53] New isolate sandbox 140258258714624 in 35106 us
+[thread 54] New isolate sandbox 140223897927680 in 34973 us
+[thread 52] New isolate sandbox 140292619501568 in 46997 us
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_  __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+ __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ [thread 49] New isolate sandbox 140189537140736 in 64352 us
+[thread 51] New isolate sandbox 140326980288512 in 56533 us
+ __  __ _                                  _    __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__| __  __ _                                  _   
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+
+|  \/  (_) ___ _ __ ___  _ __   __ _ _   _| |_ 
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+| |\/| | |/ __| '__/ _ \| '_ \ / _` | | | | __|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ 
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+| |  | | | (__| | | (_) | | | | (_| | |_| | |_ |_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+
+
+|_|  |_|_|\___|_|  \___/|_| |_|\__,_|\__,_|\__|
+  Micronaut (v3.3.1)
+
+  Micronaut (v3.3.1)
+
+
+  Micronaut (v3.3.1)
+
+  Micronaut (v3.3.1)
+
+[36m17:21:39.107[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 263ms. Server Running: http://localhost:40381
+[36m17:21:39.113[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 258ms. Server Running: http://localhost:44111
+[36m17:21:39.117[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 266ms. Server Running: http://localhost:46083
+[36m17:21:39.121[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 281ms. Server Running: http://localhost:38765
+[36m17:21:39.124[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 263ms. Server Running: http://localhost:34205
+[36m17:21:39.131[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 294ms. Server Running: http://localhost:34217
+[36m17:21:39.136[0;39m [1;30m[main][0;39m [34mINFO [0;39m [35mio.micronaut.runtime.Micronaut[0;39m - Startup completed in 303ms. Server Running: http://localhost:38931
+time="2023-04-06T17:22:42-04:00" level=warning msg="firecracker exited: signal: terminated"
+time="2023-04-06T17:22:42-04:00" level=fatal msg="Wait returned an error 1 error occurred:\n\t* signal: terminated\n\n"

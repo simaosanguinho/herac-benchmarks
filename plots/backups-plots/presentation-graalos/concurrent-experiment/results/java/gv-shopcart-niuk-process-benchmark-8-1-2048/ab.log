@@ -3,17 +3,17 @@ Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
 
 Benchmarking 172.18.0.2 (be patient)
-Completed 800 requests
-Completed 1600 requests
-Completed 2400 requests
-Completed 3200 requests
 Completed 4000 requests
-Completed 4800 requests
-Completed 5600 requests
-Completed 6400 requests
-Completed 7200 requests
 Completed 8000 requests
-Finished 8000 requests
+Completed 12000 requests
+Completed 16000 requests
+Completed 20000 requests
+Completed 24000 requests
+Completed 28000 requests
+Completed 32000 requests
+Completed 36000 requests
+Completed 40000 requests
+Finished 40000 requests
 
 
 Server Software:        
@@ -21,55 +21,56 @@ Server Hostname:        172.18.0.2
 Server Port:            8080
 
 Document Path:          /
-Document Length:        113 bytes
+Document Length:        93 bytes
 
 Concurrency Level:      8
-Time taken for tests:   2.127 seconds
-Complete requests:      8000
-Failed requests:        0
-Total transferred:      1672000 bytes
-Total body sent:        1624000
-HTML transferred:       904000 bytes
-Requests per second:    3761.45 [#/sec] (mean)
-Time per request:       2.127 [ms] (mean)
-Time per request:       0.266 [ms] (mean, across all concurrent requests)
-Transfer rate:          767.72 [Kbytes/sec] received
-                        745.68 kb/s sent
-                        1513.40 kb/s total
+Time taken for tests:   34.511 seconds
+Complete requests:      40000
+Failed requests:        27959
+   (Connect: 0, Receive: 0, Length: 27959, Exceptions: 0)
+Total transferred:      7492614 bytes
+Total body sent:        8120000
+HTML transferred:       3692614 bytes
+Requests per second:    1159.06 [#/sec] (mean)
+Time per request:       6.902 [ms] (mean)
+Time per request:       0.863 [ms] (mean, across all concurrent requests)
+Transfer rate:          212.02 [Kbytes/sec] received
+                        229.77 kb/s sent
+                        441.80 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0    0   0.0      0       2
-Processing:     1    2   0.3      2       6
-Waiting:        1    2   0.3      2       6
-Total:          1    2   0.3      2       6
+Connect:        0    0   1.2      0      29
+Processing:     1    7   5.6      5      44
+Waiting:        0    6   5.5      5      44
+Total:          1    7   5.7      5      44
 
 Percentage of the requests served within a certain time (ms)
-  50%      2
-  66%      2
-  75%      2
-  80%      2
-  90%      2
-  95%      2
-  98%      3
-  99%      4
- 100%      6 (longest request)
+  50%      5
+  66%      5
+  75%      6
+  80%      6
+  90%      8
+  95%     26
+  98%     28
+  99%     30
+ 100%     44 (longest request)
 This is ApacheBench, Version 2.3 <$Revision: 1879490 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
 
 Benchmarking 172.18.0.2 (be patient)
-Completed 800 requests
-Completed 1600 requests
-Completed 2400 requests
-Completed 3200 requests
 Completed 4000 requests
-Completed 4800 requests
-Completed 5600 requests
-Completed 6400 requests
-Completed 7200 requests
 Completed 8000 requests
-Finished 8000 requests
+Completed 12000 requests
+Completed 16000 requests
+Completed 20000 requests
+Completed 24000 requests
+Completed 28000 requests
+Completed 32000 requests
+Completed 36000 requests
+Completed 40000 requests
+Finished 40000 requests
 
 
 Server Software:        
@@ -77,55 +78,56 @@ Server Hostname:        172.18.0.2
 Server Port:            8080
 
 Document Path:          /
-Document Length:        113 bytes
+Document Length:        93 bytes
 
 Concurrency Level:      8
-Time taken for tests:   2.149 seconds
-Complete requests:      8000
-Failed requests:        0
-Total transferred:      1672000 bytes
-Total body sent:        1624000
-HTML transferred:       904000 bytes
-Requests per second:    3722.50 [#/sec] (mean)
-Time per request:       2.149 [ms] (mean)
-Time per request:       0.269 [ms] (mean, across all concurrent requests)
-Transfer rate:          759.77 [Kbytes/sec] received
-                        737.96 kb/s sent
-                        1497.72 kb/s total
+Time taken for tests:   34.537 seconds
+Complete requests:      40000
+Failed requests:        27509
+   (Connect: 0, Receive: 0, Length: 27509, Exceptions: 0)
+Total transferred:      7492968 bytes
+Total body sent:        8120000
+HTML transferred:       3692968 bytes
+Requests per second:    1158.17 [#/sec] (mean)
+Time per request:       6.907 [ms] (mean)
+Time per request:       0.863 [ms] (mean, across all concurrent requests)
+Transfer rate:          211.87 [Kbytes/sec] received
+                        229.60 kb/s sent
+                        441.47 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0    0   0.0      0       1
-Processing:     1    2   0.5      2       7
-Waiting:        1    2   0.5      2       7
-Total:          1    2   0.5      2       7
+Connect:        0    0   1.3      0      31
+Processing:     1    7   5.7      5      47
+Waiting:        0    6   5.6      5      46
+Total:          1    7   5.8      5      47
 
 Percentage of the requests served within a certain time (ms)
-  50%      2
-  66%      2
-  75%      2
-  80%      2
-  90%      2
-  95%      2
-  98%      4
-  99%      5
- 100%      7 (longest request)
+  50%      5
+  66%      5
+  75%      6
+  80%      6
+  90%      8
+  95%     26
+  98%     29
+  99%     31
+ 100%     47 (longest request)
 This is ApacheBench, Version 2.3 <$Revision: 1879490 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
 
 Benchmarking 172.18.0.2 (be patient)
-Completed 800 requests
-Completed 1600 requests
-Completed 2400 requests
-Completed 3200 requests
 Completed 4000 requests
-Completed 4800 requests
-Completed 5600 requests
-Completed 6400 requests
-Completed 7200 requests
 Completed 8000 requests
-Finished 8000 requests
+Completed 12000 requests
+Completed 16000 requests
+Completed 20000 requests
+Completed 24000 requests
+Completed 28000 requests
+Completed 32000 requests
+Completed 36000 requests
+Completed 40000 requests
+Finished 40000 requests
 
 
 Server Software:        
@@ -133,55 +135,56 @@ Server Hostname:        172.18.0.2
 Server Port:            8080
 
 Document Path:          /
-Document Length:        113 bytes
+Document Length:        93 bytes
 
 Concurrency Level:      8
-Time taken for tests:   2.185 seconds
-Complete requests:      8000
-Failed requests:        0
-Total transferred:      1672000 bytes
-Total body sent:        1624000
-HTML transferred:       904000 bytes
-Requests per second:    3660.67 [#/sec] (mean)
-Time per request:       2.185 [ms] (mean)
-Time per request:       0.273 [ms] (mean, across all concurrent requests)
-Transfer rate:          747.15 [Kbytes/sec] received
-                        725.70 kb/s sent
-                        1472.85 kb/s total
+Time taken for tests:   34.076 seconds
+Complete requests:      40000
+Failed requests:        28654
+   (Connect: 0, Receive: 0, Length: 28654, Exceptions: 0)
+Total transferred:      7491816 bytes
+Total body sent:        8120000
+HTML transferred:       3691816 bytes
+Requests per second:    1173.85 [#/sec] (mean)
+Time per request:       6.815 [ms] (mean)
+Time per request:       0.852 [ms] (mean, across all concurrent requests)
+Transfer rate:          214.70 [Kbytes/sec] received
+                        232.71 kb/s sent
+                        447.41 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0    0   0.0      0       0
-Processing:     1    2   0.5      2      10
-Waiting:        1    2   0.5      2       9
-Total:          1    2   0.5      2      10
+Connect:        0    0   1.2      0      29
+Processing:     1    7   5.7      5      50
+Waiting:        0    6   5.5      5      50
+Total:          1    7   5.8      5      50
 
 Percentage of the requests served within a certain time (ms)
-  50%      2
-  66%      2
-  75%      2
-  80%      2
-  90%      2
-  95%      2
-  98%      4
-  99%      5
- 100%     10 (longest request)
+  50%      5
+  66%      5
+  75%      6
+  80%      6
+  90%      8
+  95%     27
+  98%     29
+  99%     30
+ 100%     50 (longest request)
 This is ApacheBench, Version 2.3 <$Revision: 1879490 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
 
 Benchmarking 172.18.0.2 (be patient)
-Completed 800 requests
-Completed 1600 requests
-Completed 2400 requests
-Completed 3200 requests
 Completed 4000 requests
-Completed 4800 requests
-Completed 5600 requests
-Completed 6400 requests
-Completed 7200 requests
 Completed 8000 requests
-Finished 8000 requests
+Completed 12000 requests
+Completed 16000 requests
+Completed 20000 requests
+Completed 24000 requests
+Completed 28000 requests
+Completed 32000 requests
+Completed 36000 requests
+Completed 40000 requests
+Finished 40000 requests
 
 
 Server Software:        
@@ -189,55 +192,56 @@ Server Hostname:        172.18.0.2
 Server Port:            8080
 
 Document Path:          /
-Document Length:        113 bytes
+Document Length:        93 bytes
 
 Concurrency Level:      8
-Time taken for tests:   2.254 seconds
-Complete requests:      8000
-Failed requests:        0
-Total transferred:      1672000 bytes
-Total body sent:        1624000
-HTML transferred:       904000 bytes
-Requests per second:    3549.11 [#/sec] (mean)
-Time per request:       2.254 [ms] (mean)
-Time per request:       0.282 [ms] (mean, across all concurrent requests)
-Transfer rate:          724.38 [Kbytes/sec] received
-                        703.58 kb/s sent
-                        1427.96 kb/s total
+Time taken for tests:   33.953 seconds
+Complete requests:      40000
+Failed requests:        28702
+   (Connect: 0, Receive: 0, Length: 28702, Exceptions: 0)
+Total transferred:      7491746 bytes
+Total body sent:        8120000
+HTML transferred:       3691746 bytes
+Requests per second:    1178.09 [#/sec] (mean)
+Time per request:       6.791 [ms] (mean)
+Time per request:       0.849 [ms] (mean, across all concurrent requests)
+Transfer rate:          215.48 [Kbytes/sec] received
+                        233.55 kb/s sent
+                        449.02 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0    0   0.0      0       1
-Processing:     1    2   0.6      2      10
-Waiting:        1    2   0.6      2       9
-Total:          1    2   0.6      2      10
+Connect:        0    0   1.2      0      29
+Processing:     1    7   5.8      5      56
+Waiting:        1    6   5.7      5      55
+Total:          1    7   5.9      5      56
 
 Percentage of the requests served within a certain time (ms)
-  50%      2
-  66%      2
-  75%      2
-  80%      2
-  90%      2
-  95%      3
-  98%      5
-  99%      5
- 100%     10 (longest request)
+  50%      5
+  66%      5
+  75%      6
+  80%      6
+  90%      7
+  95%     27
+  98%     29
+  99%     32
+ 100%     56 (longest request)
 This is ApacheBench, Version 2.3 <$Revision: 1879490 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
 
 Benchmarking 172.18.0.2 (be patient)
-Completed 800 requests
-Completed 1600 requests
-Completed 2400 requests
-Completed 3200 requests
 Completed 4000 requests
-Completed 4800 requests
-Completed 5600 requests
-Completed 6400 requests
-Completed 7200 requests
 Completed 8000 requests
-Finished 8000 requests
+Completed 12000 requests
+Completed 16000 requests
+Completed 20000 requests
+Completed 24000 requests
+Completed 28000 requests
+Completed 32000 requests
+Completed 36000 requests
+Completed 40000 requests
+Finished 40000 requests
 
 
 Server Software:        
@@ -245,36 +249,37 @@ Server Hostname:        172.18.0.2
 Server Port:            8080
 
 Document Path:          /
-Document Length:        113 bytes
+Document Length:        93 bytes
 
 Concurrency Level:      8
-Time taken for tests:   2.174 seconds
-Complete requests:      8000
-Failed requests:        0
-Total transferred:      1672000 bytes
-Total body sent:        1624000
-HTML transferred:       904000 bytes
-Requests per second:    3680.44 [#/sec] (mean)
-Time per request:       2.174 [ms] (mean)
-Time per request:       0.272 [ms] (mean, across all concurrent requests)
-Transfer rate:          751.18 [Kbytes/sec] received
-                        729.62 kb/s sent
-                        1480.80 kb/s total
+Time taken for tests:   34.236 seconds
+Complete requests:      40000
+Failed requests:        28408
+   (Connect: 0, Receive: 0, Length: 28408, Exceptions: 0)
+Total transferred:      7492151 bytes
+Total body sent:        8120000
+HTML transferred:       3692151 bytes
+Requests per second:    1168.36 [#/sec] (mean)
+Time per request:       6.847 [ms] (mean)
+Time per request:       0.856 [ms] (mean, across all concurrent requests)
+Transfer rate:          213.71 [Kbytes/sec] received
+                        231.62 kb/s sent
+                        445.33 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0    0   0.0      0       1
-Processing:     1    2   0.4      2       7
-Waiting:        1    2   0.5      2       7
-Total:          1    2   0.5      2       7
+Connect:        0    0   1.3      0      34
+Processing:     1    7   5.7      5      42
+Waiting:        0    6   5.6      5      41
+Total:          1    7   5.8      5      42
 
 Percentage of the requests served within a certain time (ms)
-  50%      2
-  66%      2
-  75%      2
-  80%      2
-  90%      2
-  95%      2
-  98%      4
-  99%      5
- 100%      7 (longest request)
+  50%      5
+  66%      5
+  75%      6
+  80%      6
+  90%      8
+  95%     27
+  98%     29
+  99%     31
+ 100%     42 (longest request)

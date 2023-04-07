@@ -1,0 +1,27 @@
+time="2023-04-06T15:49:45-04:00" level=info msg="Called startVMM(), setting up a VMM on /tmp/testtap.socket"
+time="2023-04-06T15:49:45-04:00" level=info msg="VMM logging disabled."
+time="2023-04-06T15:49:45-04:00" level=info msg="VMM metrics disabled."
+time="2023-04-06T15:49:45-04:00" level=info msg="refreshMachineConfiguration: [GET /machine-config][200] getMachineConfigurationOK  &{CPUTemplate:Uninitialized HtEnabled:0xc00008e144 MemSizeMib:0xc00008e138 VcpuCount:0xc00008e130}"
+time="2023-04-06T15:49:45-04:00" level=info msg="PutGuestBootSource: [PUT /boot-source][204] putGuestBootSourceNoContent "
+time="2023-04-06T15:49:45-04:00" level=info msg="Attaching drive /tmp/test-proxy/polyglot-proxy.img, slot 1, root true."
+time="2023-04-06T15:49:45-04:00" level=info msg="Attached drive /tmp/test-proxy/polyglot-proxy.img: [PUT /drives/{drive_id}][204] putGuestDriveByIdNoContent "
+time="2023-04-06T15:49:45-04:00" level=info msg="Attaching NIC testtap (hwaddr DE:AD:BE:EF:D6:51) at index 1"
+2023-04-06T15:49:45.487817731 [anonymous-instance:main:WARN:src/vmm/src/builder.rs:599] Could not add serial input event to epoll: Error during epoll call: Operation not permitted (os error 1)
+time="2023-04-06T15:49:45-04:00" level=info msg="startInstance successful: [PUT /actions][204] createSyncActionNoContent "
+[    0.012029] dmi: Firmware registration failed.
+[    0.040838] zswap: default zpool zbud not available
+[    0.041089] zswap: pool creation failed
+Graalvisor boot time: 173 ms.
+Graalvisor listening on port 8080.
+Warning: graalvisor compiled with no truffle language support.
+Function hw registered with runtime sandboxing in 24 ms
+[thread 40] New runtime sandbox 140341331099648 in 1202 us
+[thread 49] New runtime sandbox 140306581291008 in 481 us
+[thread 50] New runtime sandbox 140272220504064 in 444 us
+[thread 52] New runtime sandbox 140203498930176 in 373 us
+[thread 53] New runtime sandbox 140169138143232 in 366 us
+[thread 54] New runtime sandbox 140134777356288 in 420 us
+[thread 55] New runtime sandbox 140100408180736 in 380 us
+[thread 51] New runtime sandbox 140237859717120 in 5839 us
+time="2023-04-06T15:49:50-04:00" level=warning msg="firecracker exited: signal: terminated"
+time="2023-04-06T15:49:50-04:00" level=fatal msg="Wait returned an error 1 error occurred:\n\t* signal: terminated\n\n"
