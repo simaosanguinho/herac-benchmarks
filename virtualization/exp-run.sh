@@ -20,8 +20,8 @@ if [[ -z "${ARGO_HOME}" ]]; then
         exit 1
 fi
 
-if [[ -z "${GRAALVM_HOME}" ]]; then
-        echo "GRAALVM_HOME is not defined. Existing..."
+if [[ -z "${JAVA_HOME}" ]]; then
+        echo "JAVA_HOME is not defined. Existing..."
         exit 1
 fi
 
@@ -50,9 +50,9 @@ function vm_rss {
     cd results/rss-$emulator
     rm rss-*.dat &> /dev/null
 
-    $GRAALVM_HOME/bin/native-image -cp $JAR Sleep sleep-benchmark
+    $JAVA_HOME/bin/native-image -cp $JAR Sleep sleep-benchmark
 
-    $ARGO_HOME/niuk/build_niuk.sh $GRAALVM_HOME $PWD/sleep-benchmark $PWD/sleep-benchmark.img
+    $ARGO_HOME/niuk/build_niuk.sh $JAVA_HOME $PWD/sleep-benchmark $PWD/sleep-benchmark.img
 
     sudo bash $ARGO_HOME/lambda-manager/src/scripts/create_taps.sh ttap $TAP_IP
 
@@ -91,9 +91,9 @@ function vm_latency {
     cd results/latency-$emulator
     rm latency-*.dat &> /dev/null
 
-    $GRAALVM_HOME/bin/native-image -cp $JAR Time2 time-benchmark
+    $JAVA_HOME/bin/native-image -cp $JAR Time2 time-benchmark
 
-    $ARGO_HOME/niuk/build_niuk.sh $GRAALVM_HOME $PWD/time-benchmark $PWD/time-benchmark.img
+    $ARGO_HOME/niuk/build_niuk.sh $JAVA_HOME $PWD/time-benchmark $PWD/time-benchmark.img
 
     sudo bash $ARGO_HOME/lambda-manager/src/scripts/create_taps.sh ttap $TAP_IP
 
@@ -174,10 +174,10 @@ function cpython_rss_latency {
 
 function nativeimage_rss_latency {
     rm -f $RESULTS_DIR/*-ni.dat
-    $GRAALVM_HOME/bin/native-image -cp $JAR Sleep target/sleep-benchmark
+    $JAVA_HOME/bin/native-image -cp $JAR Sleep target/sleep-benchmark
     target/sleep-benchmark &
     log_rss $! $RESULTS_DIR/rss-ni.dat &> /dev/null
-    $GRAALVM_HOME/bin/native-image -cp $JAR Time target/time-benchmark
+    $JAVA_HOME/bin/native-image -cp $JAR Time target/time-benchmark
     for i in $(seq 1 $ITERS)
     do
         target/time-benchmark $(($(date +%s%N)/1000000)) >> $RESULTS_DIR/latency-ni.dat
@@ -185,7 +185,7 @@ function nativeimage_rss_latency {
 }
 
 function isolate_latency {
-    $GRAALVM_HOME/bin/native-image -H:+SpawnIsolates -cp $JAR IsolateBenchmark target/isolate-benchmark
+    $JAVA_HOME/bin/native-image -H:+SpawnIsolates -cp $JAR IsolateBenchmark target/isolate-benchmark
     rm -f $RESULTS_DIR/*-isolate.dat
     $VBENCH_HOME/target/isolate-benchmark $ITERS >> $RESULTS_DIR/latency-isolate.dat
 }
