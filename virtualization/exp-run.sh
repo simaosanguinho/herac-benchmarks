@@ -1,10 +1,10 @@
 #!/bin/bash
 
-VBENCH_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 ITERS=10
-JAR=$VBENCH_HOME/target/isolate-benchmark-0.1-jar-with-dependencies.jar
+JAR=$DIR/target/isolate-benchmark-0.1-jar-with-dependencies.jar
 DOCKER_IMG=ghcr.io/graalvm/graalvm-ce:latest
-RESULTS_DIR=$VBENCH_HOME/results
+RESULTS_DIR=$DIR/results
 
 # TODO - update instructions to use the bridge.
 # IP of your local host.
@@ -153,11 +153,42 @@ function vm_latency {
 
 function firecracker_snapshot_rss_latency {
     # Use a temporary directory.
-    rm -r results/firecracker-snapshot &> /dev/null
-    mkdir results/firecracker-snapshot&> /dev/null
-    cd results/firecracker-snapshot
+    rm -r $DIR/results/firecracker-snapshot &> /dev/null
+    mkdir $DIR/results/firecracker-snapshot&> /dev/null
+    cd $DIR/results/firecracker-snapshot
+    ip=172.18.0.2
 
-    # TODO - use firecracker demo
+    for i in $(seq 1 $ITERS)
+    do
+        echo "(iter $i) Starting vm..."
+        $DIR/../demos/firecracker/start-vm.sh $ip &> start-vm-$i-a.log &
+        sleep 1
+	echo "(iter $i) Configuring vm..."
+        $DIR/../demos/firecracker/config-vm.sh $ip &> config-vm-$i.log
+        sleep 1
+	echo "(iter $i) Snapshotting vm..."
+        $DIR/../demos/firecracker/snapshot-vm.sh $ip &> snapshot-vm-$i.log
+        sleep 1
+	echo "(iter $i) Stopping vm..."
+        $DIR/../demos/firecracker/stop-vm.sh $ip &> stop-vm-$i-a.log
+        sleep 1
+	echo "(iter $i) Starting vm..."
+        $DIR/../demos/firecracker/start-vm.sh $ip &> start-vm-$i-b.log &
+        sleep 1
+	echo "(iter $i) Restoring vm..."
+        $DIR/../demos/firecracker/restore-vm.sh $ip &> restore-vm-$i.log
+        sleep 1
+	echo "(iter $i) Tracking memory..."
+        pid=$(sudo fuser $DIR/../demos/firecracker/$ip/firecracker.socket 2>&1 | grep firecracker.socket | awk '{print $2}')
+        log_rss $pid $DIR/results/firecracker-snapshot/rss-firecracker-snapshot-$i.dat &> /dev/null &
+        sleep 5
+	echo "(iter $i) Stopping vm..."
+        $DIR/../demos/firecracker/stop-vm.sh $ip &> stop-vm-$i-b.log
+        sleep 1
+	echo "(iter $i) Deleting vm..."
+        $DIR/../demos/firecracker/delete-vm.sh $ip &> delete-vm-$i.log
+    done
+    cd - &> /dev/null
 }
 
 function docker_rss_latency {
@@ -222,7 +253,7 @@ function nativeimage_rss_latency {
 function isolate_latency {
     $JAVA_HOME/bin/native-image -H:+SpawnIsolates -cp $JAR IsolateBenchmark target/isolate-benchmark
     rm -f $RESULTS_DIR/*-isolate.dat
-    $VBENCH_HOME/target/isolate-benchmark $ITERS >> $RESULTS_DIR/latency-isolate.dat
+    $DIR/target/isolate-benchmark $ITERS >> $RESULTS_DIR/latency-isolate.dat
 }
 
 function graalvisor_rss_latency {
@@ -290,9 +321,9 @@ function graalvisor_rss_latency {
     sandbox=$1
 
     # Use a temporary directory.
-    rm -r results/graalvisor-$sandbox &> /dev/null
-    mkdir results/graalvisor-$sandbox &> /dev/null
-    cd results/graalvisor-$sandbox
+    rm -r $DIR/results/graalvisor-$sandbox &> /dev/null
+    mkdir $DIR/results/graalvisor-$sandbox &> /dev/null
+    cd $DIR/results/graalvisor-$sandbox
 
     # Build application into a shared library.
     build_ni_so
@@ -308,6 +339,7 @@ vm_rss firecracker
 vm_latency firecracker
 vm_rss qemu
 vm_latency qemu
+firecracker_snapshot_rss_latency
 docker_rss_latency
 isolate_latency
 isolate_rss
