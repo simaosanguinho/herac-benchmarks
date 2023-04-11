@@ -55,6 +55,7 @@ function parent_child_memory {
     echo "RSS $total_rss PSS $total_pss"
 }
 
+# TODO - do not depend on argo resources
 function get_kernel {
     emulator=$1
     if [ "$emulator" = "firecracker" ]; then
@@ -64,6 +65,7 @@ function get_kernel {
     fi
 }
 
+# TODO - update, do not benchmark niuk. Benchmark directly firecracker and qemu.
 function vm_rss {
     emulator=$1
     get_kernel $emulator
@@ -105,6 +107,7 @@ function vm_rss {
     cd - &> /dev/null
 }
 
+# TODO - update
 function vm_latency {
     emulator=$1
     get_kernel $emulator
@@ -146,6 +149,15 @@ function vm_latency {
     sudo bash $ARGO_HOME/lambda-manager/src/scripts/remove_taps.sh ttap
 
     cd - &> /dev/null
+}
+
+function firecracker_snapshot_rss_latency {
+    # Use a temporary directory.
+    rm -r results/firecracker-snapshot &> /dev/null
+    mkdir results/firecracker-snapshot&> /dev/null
+    cd results/firecracker-snapshot
+
+    # TODO - use firecracker demo
 }
 
 function docker_rss_latency {
@@ -278,12 +290,12 @@ function graalvisor_rss_latency {
     sandbox=$1
 
     # Use a temporary directory.
-#    rm -r results/graalvisor-$sandbox &> /dev/null
+    rm -r results/graalvisor-$sandbox &> /dev/null
     mkdir results/graalvisor-$sandbox &> /dev/null
     cd results/graalvisor-$sandbox
 
     # Build application into a shared library.
-#    build_ni_so
+    build_ni_so
 
     measure_latency
     measure_memory
