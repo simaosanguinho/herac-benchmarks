@@ -238,25 +238,20 @@ function cpython_rss_latency {
     done
 }
 
-function nativeimage_rss_latency {
-    rm -f $RESULTS_DIR/*-ni.dat
-    $JAVA_HOME/bin/native-image -cp $JAR Sleep target/sleep-benchmark
-    target/sleep-benchmark &
-    log_rss $! $RESULTS_DIR/rss-ni.dat &> /dev/null
-    $JAVA_HOME/bin/native-image -cp $JAR Time target/time-benchmark
+function graalvisor_rss_latency {
+    rm $RESULTS_DIR/*-graalvisor.dat
     for i in $(seq 1 $ITERS)
     do
-        target/time-benchmark $(($(date +%s%N)/1000000)) >> $RESULTS_DIR/latency-ni.dat
+        export lambda_timestamp="$(date +%s%N | cut -b1-13)"
+        $ARGO_HOME/graalvisor/build/native-image/polyglot-proxy &>> $RESULTS_DIR/latency-graalvisor.dat &
+        pid=$!
+        log_rss $! $RESULTS_DIR/rss-graalvisor.dat &> /dev/null &
+        sleep 5
+        kill $pid
     done
 }
 
-function isolate_latency {
-    $JAVA_HOME/bin/native-image -H:+SpawnIsolates -cp $JAR IsolateBenchmark target/isolate-benchmark
-    rm -f $RESULTS_DIR/*-isolate.dat
-    $DIR/target/isolate-benchmark $ITERS >> $RESULTS_DIR/latency-isolate.dat
-}
-
-function graalvisor_rss_latency {
+function graalvisor_sandbox_rss_latency {
 
     function build_ni_so {
         $JAVA_HOME/bin/native-image -cp $JAR:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
@@ -341,13 +336,9 @@ vm_rss qemu
 vm_latency qemu
 firecracker_snapshot_rss_latency
 docker_rss_latency
-isolate_latency
-isolate_rss
-gv_latency
-gv_rss
-graalvisor_rss_latency isolate
-graalvisor_rss_latency process
+graalvisor_rss_latency
+graalvisor_sandbox_rss_latency process
+graalvisor_sandbox_rss_latency process
 hotspot_rss_latency
-nativeimage_rss_latency
 node_rss_latency
 cpython_rss_latency
