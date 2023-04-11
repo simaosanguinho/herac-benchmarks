@@ -6,6 +6,7 @@ JAR=$VBENCH_HOME/target/isolate-benchmark-0.1-jar-with-dependencies.jar
 DOCKER_IMG=ghcr.io/graalvm/graalvm-ce:latest
 RESULTS_DIR=$VBENCH_HOME/results
 
+# TODO - update instructions to use the bridge.
 # IP of your local host.
 TAP_GW=194.210.229.99
 
@@ -30,6 +31,28 @@ function log_rss {
         ps -q $1 -o rss= >> $2
         sleep .5
     done
+}
+
+function parent_child_memory {
+    parent_pid=$1
+
+    total_rss=0
+    total_pss=0
+
+    parent_rss=$(ps -q $parent_pid -o rss=)
+    parent_pss=$(cat /proc/$parent_pid/smaps | grep "^Pss:" | awk '{ sum += $2 } END { print sum }')
+    total_rss=$((total_rss + parent_rss))
+    total_pss=$((total_pss + parent_pss))
+
+    for child_pid in $(ps -o pid --no-headers --ppid $parent_pid)
+    do
+        child_rss=$(ps -q $child_pid -o rss=)
+    child_pss=$(cat /proc/$child_pid/smaps | grep "^Pss:" | awk '{ sum += $2 } END { print sum }')
+    total_rss=$((total_rss + child_rss))
+    total_pss=$((total_pss + child_pss))
+    done
+
+    echo "RSS $total_rss PSS $total_pss"
 }
 
 function get_kernel {
@@ -57,12 +80,12 @@ function vm_rss {
     sudo bash $ARGO_HOME/lambda-manager/src/scripts/create_taps.sh ttap $TAP_IP
 
     $ARGO_HOME/niuk/run_niuk.sh \
-	--vmm $emulator \
-	--disk $PWD/sleep-benchmark.img \
-	--kernel $kernel \
-	--memory 512 --cpu 1 \
-	--ip $TAP_IP --gateway $TAP_GW --mask $TAP_MASK --tap ttap \
-	--console &> emulator.log &
+    --vmm $emulator \
+    --disk $PWD/sleep-benchmark.img \
+    --kernel $kernel \
+    --memory 512 --cpu 1 \
+    --ip $TAP_IP --gateway $TAP_GW --mask $TAP_MASK --tap ttap \
+    --console &> emulator.log &
 
     # Note: give it time for the vm to be launched.
     sleep 1
@@ -190,30 +213,82 @@ function isolate_latency {
     $VBENCH_HOME/target/isolate-benchmark $ITERS >> $RESULTS_DIR/latency-isolate.dat
 }
 
-function isolate_rss {
-    echo "1024" > $RESULTS_DIR/rss-isolate.dat # Note, this value comes from isolate-scalability.
-}
+function graalvisor_rss_latency {
 
-function gv_rss {
-    echo "1549" > $RESULTS_DIR/rss-gv-fork.dat # Note, this value comes from gv-scalability.
-    echo "1549" > $RESULTS_DIR/rss-gv-isolate.dat # Note, this value comes from gv-scalability.
-}
+    function build_ni_so {
+        $JAVA_HOME/bin/native-image -cp $JAR:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
+                -DGraalVisorGuest=true \
+                -Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
+                --initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
+                -H:ConfigurationFileDirectories=../../src/main/resources/ni-agent-config \
+                --shared \
+                -H:Name=libapp
+    }
 
-function gv_latency {
-    # Building gv host
-    cd gv-host
-    ./build_script.sh
+    function measure_memory {
+        # Launch graalvisor
+        $ARGO_HOME/graalvisor/build/native-image/polyglot-proxy &> memory.log &
+        pid=$!
+
+        # Register application.
+        curl -s -X POST 127.0.0.1:8080/register?name=sleep\&entryPoint=Sleep\&language=java\&sandbox=$sandbox -H 'Content-Type: application/json' --data-binary @libapp.so &> memory-app.log
+
+        # Measuring RSS and PSS (in case of process sandbox).
+        for i in $(seq 1 $ITERS)
+        do
+            bmem=$(parent_child_memory $pid)
+            curl -s -X POST 127.0.0.1:8080 -H 'Content-Type: application/json' -d '{"name":"sleep","async":"false","cached":"false","arguments":"{\"millis\":\"2000\"}"}' &>> memory-app.log &
+            curl_pid=$!
+
+            # Let the request get started.
+            sleep 1
+
+            amem=$(parent_child_memory $pid)
+            brss=$(echo $bmem | awk '{print $2}')
+            arss=$(echo $amem | awk '{print $2}')
+            bpss=$(echo $bmem | awk '{print $4}')
+            apss=$(echo $amem | awk '{print $4}')
+            echo "RSS memory=$((arss - brss))" >> rss-graalsivor.dat
+            echo "PSS memory=$((apss - bpss))" >> pss-graalsivor.dat
+            wait $curl_pid
+        done
+
+        # Kill graalvisor
+        kill $pid &> /dev/null
+    }
+
+    function measure_latency {
+        # Launch graalvisor
+        $ARGO_HOME/graalvisor/build/native-image/polyglot-proxy &> latency.log &
+        pid=$!
+
+        # Register application.
+        curl -s -X POST 127.0.0.1:8080/register?name=time\&entryPoint=Time\&language=java\&sandbox=$sandbox -H 'Content-Type: application/json' --data-binary @libapp.so &> latency-app.log
+
+        # Measuring latency.
+        for i in $(seq 1 $ITERS)
+        do
+            curl -s -X POST 127.0.0.1:8080 -H 'Content-Type: application/json' -d '{"name":"time","async":"false","cached":"false","arguments":"{\"stime\":\"0\"}"}' &>> latency-app.log
+        done
+
+        # Kill graalvisor
+        kill $pid &> /dev/null
+    }
+
+    sandbox=$1
+
+    # Use a temporary directory.
+#    rm -r results/graalvisor-$sandbox &> /dev/null
+    mkdir results/graalvisor-$sandbox &> /dev/null
+    cd results/graalvisor-$sandbox
+
+    # Build application into a shared library.
+#    build_ni_so
+
+    measure_latency
+    measure_memory
+
     cd - &> /dev/null
-    # Building gv guest
-    cd gv-guest
-    ./build_script.sh
-    cd - &> /dev/null
-    # Call host and pass guest as an argument
-    ITERS=100
-    gv-host/build/graalvisorhost false $ITERS gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark > $RESULTS_DIR/latency-gv-isolate.dat
-    gv-host/build/graalvisorhost true  $ITERS gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark > $RESULTS_DIR/latency-gv-fork.dat
-    cat $RESULTS_DIR/latency-gv-fork.dat    | tail -n 25 | sort -n | tail -n $(($ITERS / 2)) | head -n 1 > $RESULTS_DIR/latency-gv-fork-median.dat # Median value.
-    cat $RESULTS_DIR/latency-gv-isolate.dat | tail -n 25 | sort -n | tail -n $(($ITERS / 2)) | head -n 1 > $RESULTS_DIR/latency-gv-isolate-median.dat # Median value.
 }
 
 mvn package
@@ -226,6 +301,8 @@ isolate_latency
 isolate_rss
 gv_latency
 gv_rss
+graalvisor_rss_latency isolate
+graalvisor_rss_latency process
 hotspot_rss_latency
 nativeimage_rss_latency
 node_rss_latency
