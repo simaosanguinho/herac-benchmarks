@@ -9,9 +9,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -33,9 +37,8 @@ import java.util.stream.Collectors;
 public class DatasetProcessor {
 
     private static final String DELIMITER = ",";
-    private static final int MEMORY_INDEX = 0;
-    private static final int END_INDEX = 1;
     private static final int MINUTES_COLUMN_OFFSET = 3;
+    private static final int MOST_ACTIVE_USERS = 100;
 
     public static void main(String[] args) {
         String datasetId = args[0];
@@ -51,6 +54,7 @@ public class DatasetProcessor {
      */
     private static void process(String datasetId, int firstMinute, int lastMinute, int maxMemory) {
         List<Invocation> invocations = new LinkedList<>();
+        Map<String, Owner> owners = new HashMap<>(2048);
 
         /* Read data from the CSV file, generate timestamps for the desired time frame */
         try {
@@ -70,12 +74,15 @@ public class DatasetProcessor {
                     ++skipped;
                     continue;
                 }
+
                 int memory = FunctionInfoStorage.MEMORIES.get(app);
                 int duration = FunctionInfoStorage.DURATIONS.get(function);
 
                 int currentMinute = firstMinute;
+                int invocationCount = 0;
                 while (currentMinute <= lastMinute) {
                     int invocationsForMinute = Integer.parseInt(splitRow[currentMinute + MINUTES_COLUMN_OFFSET]);
+                    invocationCount += invocationsForMinute;
                     int minBeginningMs = (currentMinute - 1) * 60000;
                     int minEndMs = minBeginningMs + 60000;
                     for (int i = 0; i < invocationsForMinute; ++i) {
@@ -84,48 +91,71 @@ public class DatasetProcessor {
                     }
                     ++currentMinute;
                 }
+                if (invocationCount > 0) {
+                    if (!owners.containsKey(owner)) {
+                        owners.put(owner, new Owner(owner));
+                    }
+                    Owner currentOwner = owners.get(owner);
+                    currentOwner.addFunction(function);
+                    currentOwner.addInvocations(invocationCount);
+                }
             }
             System.out.println("Skipped " + skipped + " functions due to lack of information.");
             br.close();
         } catch(IOException ioe) {
             ioe.printStackTrace();
         }
+        System.out.println("Number of owners in total: " + owners.size());
 
         /* At this point, we have the unordered list of all invocations */
-        Collections.sort(invocations, (o1, o2) -> o1.getTimestamp() - o2.getTimestamp());
+        Collections.sort(invocations, Comparator.comparingInt(Invocation::getTimestamp));
+        System.out.println("Finished sorting.");
+
+        // TODO: optimize this call
+        // PlottingUtils.printTraceSimulation(invocations, "paper_data.txt", false);
+
+        /* get top X users based on number of functions */
+        Set<String> selectedOwners = owners.values().stream().sorted(Comparator.comparingInt(Owner::getFunctions).reversed())
+                .limit(MOST_ACTIVE_USERS).map(Owner::getOwnerHash).collect(Collectors.toSet());
+        System.out.println("Number of invocations before remove: " + invocations.size());
+        invocations.removeIf(i -> !selectedOwners.contains(i.getOwner()));
+        System.out.println("Number of invocations after remove: " + invocations.size());
+
         downscaleByMemory(invocations, maxMemory);
+
+        PlottingUtils.printTraceSimulation(invocations, "internal_data.txt", true);
         /* Now we have ordered and downscaled list of all invocations that we can write as a result */
         List<String> acceptedInvocations = new LinkedList<>();
         acceptedInvocations.add("HashOwner,HashFunction,AverageAllocatedMb,AverageDuration,Timestamp");
         acceptedInvocations.addAll(invocations.stream().map(Invocation::toString).collect(Collectors.toList()));
 
         Path resultFile = Paths.get("output", String.format("result_%s.csv", datasetId));
-        try {
-            Files.write(resultFile, acceptedInvocations, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        writeToFile(acceptedInvocations, resultFile);
     }
 
     private static void downscaleByMemory(List<Invocation> invocations, int maxMemory) {
-        List<int[]> activeFunctions = new LinkedList<>();
+        List<Invocation> activeInvocations = new LinkedList<>();
         ListIterator<Invocation> iter = invocations.listIterator();
         while (iter.hasNext()) {
             Invocation currentInvocation = iter.next();
+            int currentInvocationTimestamp = currentInvocation.getTimestamp();
 
-            int timestamp = currentInvocation.getTimestamp();
-            int memory = currentInvocation.getMemory();
-            int end = timestamp + currentInvocation.getDuration();
+            activeInvocations.removeIf(f -> currentInvocationTimestamp >= f.getEndTimestamp());
+            int currentConsumption = activeInvocations.stream().mapToInt(Invocation::getMemory).sum();
 
-            activeFunctions.removeIf(f -> timestamp >= f[END_INDEX]);
-            int currentConsumption = activeFunctions.stream().mapToInt(f -> f[MEMORY_INDEX]).sum();
-
-            if (currentConsumption + memory <= maxMemory) {
-                activeFunctions.add(new int[] {memory, end});
+            if (currentConsumption + currentInvocation.getMemory() <= maxMemory) {
+                activeInvocations.add(currentInvocation);
             } else {
                 iter.remove();
             }
         }
     }
 
+    public static void writeToFile(List<String> data, Path file) {
+        try {
+            Files.write(file, data, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

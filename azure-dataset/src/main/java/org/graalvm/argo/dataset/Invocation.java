@@ -6,6 +6,7 @@ public class Invocation {
     private final int memory;
     private final int duration;
     private final int timestamp;
+    private final int endTimestamp;
 
     public Invocation(String owner, String function, int memory, int duration, int timestamp) {
         this.owner = owner;
@@ -13,6 +14,7 @@ public class Invocation {
         this.memory = memory;
         this.duration = duration;
         this.timestamp = timestamp;
+        this.endTimestamp = timestamp + duration;
     }
 
     public String getOwner() {
@@ -33,6 +35,10 @@ public class Invocation {
 
     public int getTimestamp() {
         return timestamp;
+    }
+
+    public int getEndTimestamp() {
+        return endTimestamp;
     }
 
     @Override
