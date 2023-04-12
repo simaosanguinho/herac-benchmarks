@@ -1,11 +1,12 @@
 #!/bin/bash
 
-VBENCH_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 ITERS=10
-JAR=$VBENCH_HOME/target/isolate-benchmark-0.1-jar-with-dependencies.jar
+JAR=$DIR/target/isolate-benchmark-0.1-jar-with-dependencies.jar
 DOCKER_IMG=ghcr.io/graalvm/graalvm-ce:latest
-RESULTS_DIR=$VBENCH_HOME/results
+RESULTS_DIR=$DIR/results
 
+# TODO - update instructions to use the bridge.
 # IP of your local host.
 TAP_GW=194.210.229.99
 
@@ -20,8 +21,8 @@ if [[ -z "${ARGO_HOME}" ]]; then
         exit 1
 fi
 
-if [[ -z "${GRAALVM_HOME}" ]]; then
-        echo "GRAALVM_HOME is not defined. Existing..."
+if [[ -z "${JAVA_HOME}" ]]; then
+        echo "JAVA_HOME is not defined. Existing..."
         exit 1
 fi
 
@@ -32,6 +33,29 @@ function log_rss {
     done
 }
 
+function parent_child_memory {
+    parent_pid=$1
+
+    total_rss=0
+    total_pss=0
+
+    parent_rss=$(ps -q $parent_pid -o rss=)
+    parent_pss=$(cat /proc/$parent_pid/smaps | grep "^Pss:" | awk '{ sum += $2 } END { print sum }')
+    total_rss=$((total_rss + parent_rss))
+    total_pss=$((total_pss + parent_pss))
+
+    for child_pid in $(ps -o pid --no-headers --ppid $parent_pid)
+    do
+        child_rss=$(ps -q $child_pid -o rss=)
+    child_pss=$(cat /proc/$child_pid/smaps | grep "^Pss:" | awk '{ sum += $2 } END { print sum }')
+    total_rss=$((total_rss + child_rss))
+    total_pss=$((total_pss + child_pss))
+    done
+
+    echo "RSS $total_rss PSS $total_pss"
+}
+
+# TODO - do not depend on argo resources
 function get_kernel {
     emulator=$1
     if [ "$emulator" = "firecracker" ]; then
@@ -41,6 +65,7 @@ function get_kernel {
     fi
 }
 
+# TODO - update, do not benchmark niuk. Benchmark directly firecracker and qemu.
 function vm_rss {
     emulator=$1
     get_kernel $emulator
@@ -50,19 +75,19 @@ function vm_rss {
     cd results/rss-$emulator
     rm rss-*.dat &> /dev/null
 
-    $GRAALVM_HOME/bin/native-image -cp $JAR Sleep sleep-benchmark
+    $JAVA_HOME/bin/native-image -cp $JAR Sleep sleep-benchmark
 
-    $ARGO_HOME/niuk/build_niuk.sh $GRAALVM_HOME $PWD/sleep-benchmark $PWD/sleep-benchmark.img
+    $ARGO_HOME/niuk/build_niuk.sh $JAVA_HOME $PWD/sleep-benchmark $PWD/sleep-benchmark.img
 
     sudo bash $ARGO_HOME/lambda-manager/src/scripts/create_taps.sh ttap $TAP_IP
 
     $ARGO_HOME/niuk/run_niuk.sh \
-	--vmm $emulator \
-	--disk $PWD/sleep-benchmark.img \
-	--kernel $kernel \
-	--memory 512 --cpu 1 \
-	--ip $TAP_IP --gateway $TAP_GW --mask $TAP_MASK --tap ttap \
-	--console &> emulator.log &
+    --vmm $emulator \
+    --disk $PWD/sleep-benchmark.img \
+    --kernel $kernel \
+    --memory 512 --cpu 1 \
+    --ip $TAP_IP --gateway $TAP_GW --mask $TAP_MASK --tap ttap \
+    --console &> emulator.log &
 
     # Note: give it time for the vm to be launched.
     sleep 1
@@ -82,6 +107,7 @@ function vm_rss {
     cd - &> /dev/null
 }
 
+# TODO - update
 function vm_latency {
     emulator=$1
     get_kernel $emulator
@@ -91,9 +117,9 @@ function vm_latency {
     cd results/latency-$emulator
     rm latency-*.dat &> /dev/null
 
-    $GRAALVM_HOME/bin/native-image -cp $JAR Time2 time-benchmark
+    $JAVA_HOME/bin/native-image -cp $JAR Time2 time-benchmark
 
-    $ARGO_HOME/niuk/build_niuk.sh $GRAALVM_HOME $PWD/time-benchmark $PWD/time-benchmark.img
+    $ARGO_HOME/niuk/build_niuk.sh $JAVA_HOME $PWD/time-benchmark $PWD/time-benchmark.img
 
     sudo bash $ARGO_HOME/lambda-manager/src/scripts/create_taps.sh ttap $TAP_IP
 
@@ -122,6 +148,46 @@ function vm_latency {
     done
     sudo bash $ARGO_HOME/lambda-manager/src/scripts/remove_taps.sh ttap
 
+    cd - &> /dev/null
+}
+
+function firecracker_snapshot_rss_latency {
+    # Use a temporary directory.
+    rm -r $DIR/results/firecracker-snapshot &> /dev/null
+    mkdir $DIR/results/firecracker-snapshot&> /dev/null
+    cd $DIR/results/firecracker-snapshot
+    ip=172.18.0.2
+
+    for i in $(seq 1 $ITERS)
+    do
+        echo "(iter $i) Starting vm..."
+        $DIR/../demos/firecracker/start-vm.sh $ip &> start-vm-$i-a.log &
+        sleep 1
+	echo "(iter $i) Configuring vm..."
+        $DIR/../demos/firecracker/config-vm.sh $ip &> config-vm-$i.log
+        sleep 1
+	echo "(iter $i) Snapshotting vm..."
+        $DIR/../demos/firecracker/snapshot-vm.sh $ip &> snapshot-vm-$i.log
+        sleep 1
+	echo "(iter $i) Stopping vm..."
+        $DIR/../demos/firecracker/stop-vm.sh $ip &> stop-vm-$i-a.log
+        sleep 1
+	echo "(iter $i) Starting vm..."
+        $DIR/../demos/firecracker/start-vm.sh $ip &> start-vm-$i-b.log &
+        sleep 1
+	echo "(iter $i) Restoring vm..."
+        $DIR/../demos/firecracker/restore-vm.sh $ip &> restore-vm-$i.log
+        sleep 1
+	echo "(iter $i) Tracking memory..."
+        pid=$(sudo fuser $DIR/../demos/firecracker/$ip/firecracker.socket 2>&1 | grep firecracker.socket | awk '{print $2}')
+        log_rss $pid $DIR/results/firecracker-snapshot/rss-firecracker-snapshot-$i.dat &> /dev/null &
+        sleep 5
+	echo "(iter $i) Stopping vm..."
+        $DIR/../demos/firecracker/stop-vm.sh $ip &> stop-vm-$i-b.log
+        sleep 1
+	echo "(iter $i) Deleting vm..."
+        $DIR/../demos/firecracker/delete-vm.sh $ip &> delete-vm-$i.log
+    done
     cd - &> /dev/null
 }
 
@@ -172,48 +238,95 @@ function cpython_rss_latency {
     done
 }
 
-function nativeimage_rss_latency {
-    rm -f $RESULTS_DIR/*-ni.dat
-    $GRAALVM_HOME/bin/native-image -cp $JAR Sleep target/sleep-benchmark
-    target/sleep-benchmark &
-    log_rss $! $RESULTS_DIR/rss-ni.dat &> /dev/null
-    $GRAALVM_HOME/bin/native-image -cp $JAR Time target/time-benchmark
+function graalvisor_rss_latency {
+    rm $RESULTS_DIR/*-graalvisor.dat
     for i in $(seq 1 $ITERS)
     do
-        target/time-benchmark $(($(date +%s%N)/1000000)) >> $RESULTS_DIR/latency-ni.dat
+        export lambda_timestamp="$(date +%s%N | cut -b1-13)"
+        $ARGO_HOME/graalvisor/build/native-image/polyglot-proxy &>> $RESULTS_DIR/latency-graalvisor.dat &
+        pid=$!
+        log_rss $! $RESULTS_DIR/rss-graalvisor.dat &> /dev/null &
+        sleep 5
+        kill $pid
     done
 }
 
-function isolate_latency {
-    $GRAALVM_HOME/bin/native-image -H:+SpawnIsolates -cp $JAR IsolateBenchmark target/isolate-benchmark
-    rm -f $RESULTS_DIR/*-isolate.dat
-    $VBENCH_HOME/target/isolate-benchmark $ITERS >> $RESULTS_DIR/latency-isolate.dat
-}
+function graalvisor_sandbox_rss_latency {
 
-function isolate_rss {
-    echo "1024" > $RESULTS_DIR/rss-isolate.dat # Note, this value comes from isolate-scalability.
-}
+    function build_ni_so {
+        $JAVA_HOME/bin/native-image -cp $JAR:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
+                -DGraalVisorGuest=true \
+                -Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
+                --initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
+                -H:ConfigurationFileDirectories=../../src/main/resources/ni-agent-config \
+                --shared \
+                -H:Name=libapp
+    }
 
-function gv_rss {
-    echo "1549" > $RESULTS_DIR/rss-gv-fork.dat # Note, this value comes from gv-scalability.
-    echo "1549" > $RESULTS_DIR/rss-gv-isolate.dat # Note, this value comes from gv-scalability.
-}
+    function measure_memory {
+        # Launch graalvisor
+        $ARGO_HOME/graalvisor/build/native-image/polyglot-proxy &> memory.log &
+        pid=$!
 
-function gv_latency {
-    # Building gv host
-    cd gv-host
-    ./build_script.sh
+        # Register application.
+        curl -s -X POST 127.0.0.1:8080/register?name=sleep\&entryPoint=Sleep\&language=java\&sandbox=$sandbox -H 'Content-Type: application/json' --data-binary @libapp.so &> memory-app.log
+
+        # Measuring RSS and PSS (in case of process sandbox).
+        for i in $(seq 1 $ITERS)
+        do
+            bmem=$(parent_child_memory $pid)
+            curl -s -X POST 127.0.0.1:8080 -H 'Content-Type: application/json' -d '{"name":"sleep","async":"false","cached":"false","arguments":"{\"millis\":\"2000\"}"}' &>> memory-app.log &
+            curl_pid=$!
+
+            # Let the request get started.
+            sleep 1
+
+            amem=$(parent_child_memory $pid)
+            brss=$(echo $bmem | awk '{print $2}')
+            arss=$(echo $amem | awk '{print $2}')
+            bpss=$(echo $bmem | awk '{print $4}')
+            apss=$(echo $amem | awk '{print $4}')
+            echo "RSS memory=$((arss - brss))" >> rss-graalsivor.dat
+            echo "PSS memory=$((apss - bpss))" >> pss-graalsivor.dat
+            wait $curl_pid
+        done
+
+        # Kill graalvisor
+        kill $pid &> /dev/null
+    }
+
+    function measure_latency {
+        # Launch graalvisor
+        $ARGO_HOME/graalvisor/build/native-image/polyglot-proxy &> latency.log &
+        pid=$!
+
+        # Register application.
+        curl -s -X POST 127.0.0.1:8080/register?name=time\&entryPoint=Time\&language=java\&sandbox=$sandbox -H 'Content-Type: application/json' --data-binary @libapp.so &> latency-app.log
+
+        # Measuring latency.
+        for i in $(seq 1 $ITERS)
+        do
+            curl -s -X POST 127.0.0.1:8080 -H 'Content-Type: application/json' -d '{"name":"time","async":"false","cached":"false","arguments":"{\"stime\":\"0\"}"}' &>> latency-app.log
+        done
+
+        # Kill graalvisor
+        kill $pid &> /dev/null
+    }
+
+    sandbox=$1
+
+    # Use a temporary directory.
+    rm -r $DIR/results/graalvisor-$sandbox &> /dev/null
+    mkdir $DIR/results/graalvisor-$sandbox &> /dev/null
+    cd $DIR/results/graalvisor-$sandbox
+
+    # Build application into a shared library.
+    build_ni_so
+
+    measure_latency
+    measure_memory
+
     cd - &> /dev/null
-    # Building gv guest
-    cd gv-guest
-    ./build_script.sh
-    cd - &> /dev/null
-    # Call host and pass guest as an argument
-    ITERS=100
-    gv-host/build/graalvisorhost false $ITERS gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark > $RESULTS_DIR/latency-gv-isolate.dat
-    gv-host/build/graalvisorhost true  $ITERS gv-guest/build/graalvisorguest.so GraalvisorGuestIsolateBenchmark > $RESULTS_DIR/latency-gv-fork.dat
-    cat $RESULTS_DIR/latency-gv-fork.dat    | tail -n 25 | sort -n | tail -n $(($ITERS / 2)) | head -n 1 > $RESULTS_DIR/latency-gv-fork-median.dat # Median value.
-    cat $RESULTS_DIR/latency-gv-isolate.dat | tail -n 25 | sort -n | tail -n $(($ITERS / 2)) | head -n 1 > $RESULTS_DIR/latency-gv-isolate-median.dat # Median value.
 }
 
 mvn package
@@ -221,12 +334,11 @@ vm_rss firecracker
 vm_latency firecracker
 vm_rss qemu
 vm_latency qemu
+firecracker_snapshot_rss_latency
 docker_rss_latency
-isolate_latency
-isolate_rss
-gv_latency
-gv_rss
+graalvisor_rss_latency
+graalvisor_sandbox_rss_latency process
+graalvisor_sandbox_rss_latency process
 hotspot_rss_latency
-nativeimage_rss_latency
 node_rss_latency
 cpython_rss_latency
