@@ -53,7 +53,6 @@ x = [elem/1000 for elem in x]
 
 matplotlib.rcParams.update({'font.size': 16})
 plt.rcParams["figure.figsize"] = (10, 4)
-#plt.rcParams["figure.figsize"] = (8, 5.5)
 plt.xlabel('Time (seconds)')
 plt.ylabel('# Functions, Users, Invocations')
 plt.plot(x, activeFunctions,       linewidth=3, label='Active Functions')
