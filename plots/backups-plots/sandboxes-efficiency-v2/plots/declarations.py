@@ -2,19 +2,19 @@
 
 benchmark_labels = [
     "jv/hw",
-    "jv/hashing",
+    "jv/hash",
     "jv/rest",
     "jv/video",
     "jv/classify",
     "js/html",
-    "js/uploader",
+    "js/upload",
     "js/thumbnail",
     "js/hw",
     "py/hw",
     "py/html",
     "py/thumbnail",
-    "py/uploader",
-    "py/compression",
+    "py/upload",
+    "py/compress",
     "py/video",
 #    "py/mst", # TODO - need to run for openwhisk
 ]
