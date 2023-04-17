@@ -70,7 +70,7 @@ ax.bar(x + 2*width,           photons_tput_avg.values(),   yerr=photons_tput_std
 ax.bar(snapshot_x  + 3*width, snapshot_tput_avg.values(),  yerr=snapshot_tput_std.values(),  width=width, hatch='/', label='VM Snapshot', alpha=0.75)
 ax.bar(openwhisk_x + 4*width, openwhisk_tput_avg.values(), yerr=openwhisk_tput_std.values(), width=width, hatch='-', label='OpenWhisk',  alpha=0.75)
 
-ax.set_ylabel('Throughput')
+ax.set_ylabel('Throughput (ops/s)')
 ax.set_xticks(x, benchmark_labels)
 ax.set_axisbelow(True)
 plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
