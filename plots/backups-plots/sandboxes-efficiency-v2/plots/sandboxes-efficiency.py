@@ -56,7 +56,7 @@ for idx, path in enumerate(isolate_benchmark_path):
         snapshot_x[idx]  -= width
         openwhisk_x[idx] -= width
 
-plt.rcParams.update({'font.size': 16})
+plt.rcParams.update({'font.size': 12})
 fig, ax = plt.subplots()
 ax.bar(x + 0*width,           isolate_eff_avg.values(),   yerr=isolate_eff_std.values(),   width=width, hatch='*', label='Graalvisor',  alpha=0.75)
 ax.bar(x + 1*width,           process_eff_avg.values(),   yerr=process_eff_std.values(),   width=width, hatch='.', label='Forking',     alpha=0.75)
@@ -64,18 +64,18 @@ ax.bar(x + 2*width,           photons_eff_avg.values(),   yerr=photons_eff_std.v
 ax.bar(snapshot_x  + 3*width, snapshot_eff_avg.values(),  yerr=snapshot_eff_std.values(),  width=width, hatch='/', label='VM Snapshot', alpha=0.75)
 ax.bar(openwhisk_x + 4*width, openwhisk_eff_avg.values(), yerr=openwhisk_eff_std.values(), width=width, hatch='-', label='OpenWhisk',   alpha=0.75)
 
-ax.set_ylabel('Efficiency')
+ax.set_ylabel('Efficiency (ops/GB-sec)')
 ax.set_xticks(x, benchmark_labels)
 ax.set_axisbelow(True)
 plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
 plt.xticks(rotation = 35)
 ax.set_yscale('log')
-ax.set_ylim(ymin=0.1, ymax=1000000)
+#ax.set_ylim(ymin=0.1, ymax=1000000)
 ax.set_xlim(xmin=-.25, xmax=14.7)
 fig.set_figwidth(15)
-fig.set_figheight(4)
+fig.set_figheight(3)
 
-ax.legend(ncol=5, loc='upper center')
+#ax.legend(ncol=5, loc='upper center')
 plt.savefig("sandboxes-efficiency.pdf", bbox_inches='tight')
 plt.savefig("sandboxes-efficiency.png", bbox_inches='tight')
 plt.show()
