@@ -10,36 +10,37 @@ Server Hostname:        172.18.0.2
 Server Port:            8080
 
 Document Path:          /
-Document Length:        71 bytes
+Document Length:        72 bytes
 
 Concurrency Level:      1
-Time taken for tests:   4.557 seconds
+Time taken for tests:   5.951 seconds
 Complete requests:      10
-Failed requests:        0
-Total transferred:      1660 bytes
+Failed requests:        9
+   (Connect: 0, Receive: 0, Length: 9, Exceptions: 0)
+Total transferred:      1661 bytes
 Total body sent:        3970
-HTML transferred:       710 bytes
-Requests per second:    2.19 [#/sec] (mean)
-Time per request:       455.650 [ms] (mean)
-Time per request:       455.650 [ms] (mean, across all concurrent requests)
-Transfer rate:          0.36 [Kbytes/sec] received
-                        0.85 kb/s sent
-                        1.21 kb/s total
+HTML transferred:       711 bytes
+Requests per second:    1.68 [#/sec] (mean)
+Time per request:       595.150 [ms] (mean)
+Time per request:       595.150 [ms] (mean, across all concurrent requests)
+Transfer rate:          0.27 [Kbytes/sec] received
+                        0.65 kb/s sent
+                        0.92 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
 Connect:        0    0   0.1      0       0
-Processing:   336  455 114.6    411     740
-Waiting:      336  455 114.6    411     740
-Total:        336  456 114.6    411     740
+Processing:   393  595 582.3    410    2251
+Waiting:      393  595 582.3    410    2251
+Total:        393  595 582.4    410    2251
 
 Percentage of the requests served within a certain time (ms)
-  50%    411
-  66%    465
-  75%    476
-  80%    538
-  90%    740
-  95%    740
-  98%    740
-  99%    740
- 100%    740 (longest request)
+  50%    410
+  66%    411
+  75%    413
+  80%    470
+  90%   2251
+  95%   2251
+  98%   2251
+  99%   2251
+ 100%   2251 (longest request)

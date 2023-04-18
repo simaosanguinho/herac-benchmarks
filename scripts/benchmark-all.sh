@@ -31,7 +31,7 @@ function efficiency {
             export WMULTIPLIER=1; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
             # Note: there is a bug in gv, it can't run 2 parallel calls to classify.
             # Since the workload is throughput intensive, having a second one would keep the same throughput so it is fine...
-	    export WMULTIPLIER=25; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1; unset WMULTIPLIER
+	    export WMULTIPLIER=5; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1; unset WMULTIPLIER
             export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 8; unset WMULTIPLIER
         }
 
@@ -60,7 +60,7 @@ function efficiency {
         for sandbox in "isolate" "runtime" "process"
         do
             export SANDBOX=$sandbox
-            efficiency_gv_java_single
+            #efficiency_gv_java_single
             efficiency_gv_java
             unset SANDBOX
         done
@@ -132,8 +132,8 @@ function efficiency {
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
             export VM_MEM=2048
             export CGROUP_CPU_QUOTA=50000 # 1 core?
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify test 1"
-            # TODO - there is a bug here! The benchmark crashed!
+            # Tensorflow cannot be loaded two! We use test 0 because of that.
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify test 0"
             export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1; unset WMULTIPLIER
             unset CGROUP_CPU_QUOTA
             unset VM_MEM
@@ -307,7 +307,7 @@ function efficiency {
         $(DIR)/benchmark-cruntime.sh vm ph_java_filehashing benchmark 8
         $(DIR)/benchmark-cruntime.sh vm ph_java_httprequest benchmark 8
         export WMULTIPLIER=2; $(DIR)/benchmark-cruntime.sh vm ph_java_videoprocessing benchmark 2; unset WMULTIPLIER
-        export WMULTIPLIER=5;$(DIR)/benchmark-cruntime.sh vm ph_java_classify benchmark 1; unset WMULTIPLIER
+        export WMULTIPLIER=10;$(DIR)/benchmark-cruntime.sh vm ph_java_classify benchmark 1; unset WMULTIPLIER
     }
 
     export ITERATIONS=5
