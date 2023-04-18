@@ -172,6 +172,15 @@ function cr_javascript_thumbnail {
     echo '{ "value": { "url": "http://'$IP':8000/snap.png" } }' > $RUN_POST
 }
 
+function gv_java_genericapp {
+    APP_LANG=java
+    APP_NAME=gv-genericapp
+    APP_MAIN=com.genericapp.GenericApp
+    APP_SO=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/build/libgenericapp.so
+    curl -s -X POST $ip:8080/register?name=genericapp\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+    echo '{"name":"genericapp","async":"false","arguments":"{\"memory\":\"4000000\",\"duration\":\"1000\"}"}' > $APP_POST
+}
+
 function gv_java_sleep {
     APP_LANG=java
     APP_NAME=gv-sleep
