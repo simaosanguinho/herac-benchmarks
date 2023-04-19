@@ -45,10 +45,11 @@ function process_dataset {
 
         # This is just to adjust the start of the requests with the beginning of the hour
         time_to_sleep=$(python3 -c "print((($Timestamp - $current_timestamp) % 3600000) / 1000)")
+        allocated_memory=$(python3 -c "print(int(($AverageAllocatedMb * 1024 * 1024) * 0.05))")
         current_timestamp=$Timestamp
         sleep $time_to_sleep
         # TODO: try with real trace values
-        curl -s -X POST $LAMBDA_MANAGER_ADDRESS/$HashOwner/$HashFunction -H 'Content-Type: application/json' --data '{"memory":"128000","sleep":"'$AverageDuration'"}' &
+        curl -s -X POST $LAMBDA_MANAGER_ADDRESS/$HashOwner/$HashFunction -H 'Content-Type: application/json' --data '{"memory":"'$allocated_memory'","duration":"'$AverageDuration'"}' &
     done
     wait
 
@@ -103,30 +104,30 @@ ACTIVE_USERS_METRICS_FILENAME=active_users.txt
 THROUGHPUT_METRICS_FILENAME=throughput.txt
 
 if [[ "$MODE" = "gv" ]]; then
-    FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/gv-sleep/build/libsleep.so
-    FUNCTION_NAME=gvsleepbench
-    FUNCTION_ENTRY_POINT=com.sleep.Sleep
+    FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/gv-genericapp/build/libgenericapp.so
+    FUNCTION_NAME=gvgenericappbench
+    FUNCTION_ENTRY_POINT=com.genericapp.GenericApp
     FUNCTION_RUNTIME=docker.io%2Fsergiyivan%2Flarge-scale-experiment:graalvisor
     FUNCTION_ISOLATION=false
     INVOCATION_COLLOCATION=true
 elif [[ "$MODE" = "gv-fork" ]]; then
-    FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/gv-sleep/build/libsleep.so
-    FUNCTION_NAME=gvsleepbench
-    FUNCTION_ENTRY_POINT=com.sleep.Sleep
+    FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/gv-genericapp/build/libgenericapp.so
+    FUNCTION_NAME=gvgenericappbench
+    FUNCTION_ENTRY_POINT=com.genericapp.GenericApp
     FUNCTION_RUNTIME=docker.io%2Fsergiyivan%2Flarge-scale-experiment:graalvisor
     FUNCTION_ISOLATION=true
     INVOCATION_COLLOCATION=true
     GV_SANDBOX=process
 elif [[ "$MODE" = "cr" ]]; then
-    FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/cr-sleep/init.json
-    FUNCTION_NAME=crsleepbench
+    FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/cr-genericapp/init.json
+    FUNCTION_NAME=crgenericappbench
     FUNCTION_ENTRY_POINT=Main
     FUNCTION_RUNTIME=docker.io%2Fopenwhisk%2Fjava8action:latest
     FUNCTION_ISOLATION=false  # We don't care about this value for OpenWhisk as functions are isolated there by default
     INVOCATION_COLLOCATION=false
 elif [[ "$MODE" = "ph" ]]; then
-    FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/cr-sleep/init.json
-    FUNCTION_NAME=phsleepbench
+    FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/cr-genericapp/init.json
+    FUNCTION_NAME=phgenericappbench
     FUNCTION_ENTRY_POINT=Main
     FUNCTION_RUNTIME=docker.io%2Fsergiyivan%2Flarge-scale-experiment:photons
     FUNCTION_ISOLATION=false  # We don't care about this value for Photons as functions are isolated there by default
