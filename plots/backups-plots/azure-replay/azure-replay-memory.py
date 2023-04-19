@@ -21,7 +21,7 @@ plt.plot(cr,      linestyle = "-",  marker = "x", markersize = 10, markevery=10,
 plt.xlabel("Time (s)")
 plt.ylabel("Memory (GBs)")
 plt.grid()
-plt.legend(ncol=2, loc='lower right')
+#plt.legend(ncol=2, loc='lower right')
 plt.tight_layout()
 plt.savefig("azure-replay-memory.pdf")
 plt.savefig("azure-replay-memory.png")
