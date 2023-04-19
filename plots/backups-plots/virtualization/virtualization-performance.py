@@ -58,8 +58,8 @@ plt.plot(memQemu, latQemu, marker='p', markersize=10, markerfacecolor="green", m
 plt.plot(memFun, latFun,   marker='o', markersize=10, markerfacecolor="orange", markeredgecolor="orange")
 
 plt.annotate('Graalvisor Isolate', xy=(x[0] + .125, y[0] - 0.1))
-plt.annotate('Function Fork', xy=(x[1] + 1, y[1]))
-plt.annotate('Function Snapshot', xy=(x[2] + 4.5, y[2]))
+plt.annotate('Graalvisor Fork', xy=(x[1] + 1, y[1]))
+plt.annotate('Firecracker Snapshot', xy=(x[2] + 4.5, y[2]))
 plt.annotate('Graalvisor', xy=(x[3] + 4.5, y[3]))
 plt.annotate('CPython', xy=(x[4] - 7, y[4] - 2))
 plt.annotate('NodeJS', xy=(x[5] - 27.5, y[5] - 2.5))
