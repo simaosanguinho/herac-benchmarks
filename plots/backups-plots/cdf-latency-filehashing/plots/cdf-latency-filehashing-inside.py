@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 
 def read_benchmark_latency(path):
@@ -24,6 +25,9 @@ y_gv = np.arange(len(gv)) / float(len(gv))
 y_cr[-1] = 1
 y_gv[-1] = 1
 
+matplotlib.rcParams.update({'font.size': 16})
+plt.rcParams["figure.figsize"] = (10, 4)
+
 fig = plt.figure()
 plt.plot(x_cr, y_cr, marker='o', label='OpenWisk JVM')
 plt.plot(x_gv, y_gv, marker='x', label='Graalvisor')
@@ -33,14 +37,16 @@ plt.ylabel('Cumulative Distribution Function')
 plt.xlabel('Request Latency (us)')
 plt.legend()
 
-# ../results/java/gv-file-hashing-svm/lambda.rss
-# ../results/java/gv-file-hashing-niuk/lambda.rss
-# Taken by hand by running docker run and curling.
-# ../results/java/cr-file-hashing/lambda.rss
-#y = [71836, 179380, 46872, 223460 ]
-#ax1 = fig.add_axes([0.55, 0.3, 0.3, 0.4])
-#ax1.set_ylabel('Memory Footprint (KBs)')
-#ax1.bar(['GV', 'GV VM', 'JVM', 'JVM VM'], y, width = .4)
+# RSS results taken from docker stats while sleep infinity between each round.
+# Measure memory does not work yet with container backend so we had to measure manually.
+rss_gv = np.array([14.5, 10.6, 12.57, 12.57, 14.58])
+rss_cr = np.array([23.8, 26.3, 23.76, 24.23, 23.79])
+rss_avg  = [rss_gv.mean(), rss_cr.mean()]
+rss_std  = [rss_gv.std(), rss_cr.std()]
+ax1 = fig.add_axes([0.55, 0.3, 0.3, 0.4])
+ax1.set_ylabel('Memory (MBs)')
+ax1.bar(['GV', 'JVM'], rss_avg, yerr=rss_std, width = .4)
 
+plt.savefig("cdf-latency-filehashing.pdf", bbox_inches='tight')
+plt.savefig("cdf-latency-filehashing.png", bbox_inches='tight')
 plt.show()
-plt.savefig("cdf-latency-filehashing.pdf")
