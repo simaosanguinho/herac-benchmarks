@@ -5,8 +5,10 @@ function DIR {
 }
 
 function cdf_latency_filehashing {
-    $(DIR)/benchmark-cruntime.sh   vm   cr_java_filehashing test
-    $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing test
+    export ITERATIONS=5
+    $(DIR)/benchmark-cruntime.sh   container cr_java_filehashing test 25
+    $(DIR)/benchmark-graalvisor.sh container gv_java_filehashing test 25
+    unset ITERATIONS
 }
 
 # Memory (fixed HW resources of 1 core and 2GB of memory, measure ops/s/mb)
