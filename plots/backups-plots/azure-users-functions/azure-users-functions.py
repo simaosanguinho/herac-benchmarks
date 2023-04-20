@@ -60,7 +60,7 @@ plt.plot(x[::500], activeUsers[::500],           linewidth=3, linestyle=":",    
 plt.plot(x[::500], runningInvocations[::500],    linewidth=3, label='Invocations')
 plt.plot(x[::500], cachedActiveUsers[::500],     linewidth=3, marker="x", markersize=25, markevery=10, label='Cached Users')
 plt.plot(x[::500], cachedActiveFunctions[::500], linewidth=3, linestyle="--",                          label='Cached Functions')
-plt.grid()
+plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
 plt.yscale('log', base=10)
 plt.ylim(ymin=0)
 plt.xlim(xmin=0, xmax=600)
