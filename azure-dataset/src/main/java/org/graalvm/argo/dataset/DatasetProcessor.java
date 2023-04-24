@@ -154,7 +154,7 @@ public class DatasetProcessor {
             int currentInvocationTimestamp = currentInvocation.getTimestamp();
 
             activeInvocations.removeIf(f -> currentInvocationTimestamp >= f.getEndTimestamp());
-            long currentInvokes = activeInvocations.stream().count();
+            long currentInvokes = activeInvocations.size();
 
             if (currentInvokes + 1 <= maxConcInv) {
                 activeInvocations.add(currentInvocation);
