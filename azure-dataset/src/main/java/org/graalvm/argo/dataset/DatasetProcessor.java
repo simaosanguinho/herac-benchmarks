@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -47,10 +48,10 @@ public class DatasetProcessor {
         Option output = new Option("t", "trace", true, "Output invocation trace file path.");
         output.setRequired(true);
         options.addOption(output);
-        Option firstMinute = new Option("b", "bmin", true, "First minute to include from the trace.");
+        Option firstMinute = new Option("b", "bmin", true, "First minute to include from the trace ([1,1440]).");
         firstMinute.setRequired(false);
         options.addOption(firstMinute);
-        Option lastMinute = new Option("e", "emin", true, "Last minute to include from the trace.");
+        Option lastMinute = new Option("e", "emin", true, "Last minute to include from the trace ([1,1440]).");
         lastMinute.setRequired(false);
         options.addOption(lastMinute);
         Option maxMemory = new Option("m", "mem", true, "Maximum memory (in MBs) used by generated trace.");
@@ -74,8 +75,8 @@ public class DatasetProcessor {
             CommandLine cmd = new DefaultParser().parse(options, args);
             String day = cmd.getOptionValue("day");
             String outputFilePath = cmd.getOptionValue("trace");
-            int firstMinute = Integer.parseInt(cmd.getOptionValue("bmin", "721"));
-            int lastMinute = Integer.parseInt(cmd.getOptionValue("emin", "730"));
+            int firstMinute = Integer.parseInt(cmd.getOptionValue("bmin", "701")); // Old values: 721
+            int lastMinute = Integer.parseInt(cmd.getOptionValue("emin", "710")); // Old values: 730
             int maxMemory = Integer.parseInt(cmd.getOptionValue("mem", "0"));
             int maxUsers = Integer.parseInt(cmd.getOptionValue("users", "0"));
             int maxConcInv = Integer.parseInt(cmd.getOptionValue("cinv", "0"));
@@ -212,10 +213,15 @@ public class DatasetProcessor {
 
     /* Remove invocations that are not from the N first functions that appear in the trace. */
     private static void downscaleByFunctions(int maxFunctions) {
-        Set<String> selectedFunctions = invocations.stream().
-                map(i -> i.getFunction()).distinct().
-                limit(maxFunctions).
-                collect(Collectors.toSet());
+        Set<String> selectedFunctions = new HashSet<>();
+        Map<String, Long> invocationsFunction = invocations.stream()
+                .collect(Collectors.groupingBy(Invocation::getFunction, Collectors.counting()));
+        int skipFunctions = (invocationsFunction.size() - maxFunctions) / 2;
+        invocationsFunction.entrySet().stream()
+                 .sorted(Map.Entry.comparingByValue())
+                 .skip(skipFunctions)
+                 .limit(maxFunctions)
+                 .forEach(entry -> selectedFunctions.add(entry.getKey()));
         invocations.removeIf(i -> !selectedFunctions.contains(i.getFunction()));
     }
 
