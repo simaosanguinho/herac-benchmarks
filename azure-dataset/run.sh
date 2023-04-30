@@ -24,7 +24,10 @@ MAX_MEMORY=$4
 MAX_USERS=$5
 MAX_CINV=$6
 
+JAR=build/libs/azure-dataset-1.0-all.jar
+MAIN=org.graalvm.argo.dataset.DatasetProcessor
+
 echo -e "${GREEN}Processing the Azure dataset...${NC}"
-$JAVA_HOME/bin/java -cp build/classes/java/main org.graalvm.argo.dataset.DatasetProcessor $DAY_ID $FIRST_MIN $LAST_MIN $MAX_MEMORY $MAX_USERS $MAX_CINV
+$JAVA_HOME/bin/java -cp $JAR $MAIN $@
 echo -e "${GREEN}Processing the Azure dataset...done${NC}"
 echo -e "${GREEN}Check the ./output directory for the results.${NC}"
