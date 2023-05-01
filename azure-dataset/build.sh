@@ -10,7 +10,7 @@ cd "$DIR" || {
 }
 
 echo -e "${GREEN}Building Azure dataset processing tool...${NC}"
-./gradlew clean assemble
+./gradlew clean shadowJar
 echo -e "${GREEN}Building Azure dataset processing tool...done${NC}"
 
 # $JAVA_HOME/bin/native-image -jar build/libs/azure-dataset-1.0-SNAPSHOT.jar dataset-processor
