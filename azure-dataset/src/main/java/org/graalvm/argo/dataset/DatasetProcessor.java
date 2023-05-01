@@ -27,7 +27,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /**
- * This is class generates an invocation trace from the azure dataset. Given an
+ * This class generates an invocation trace from the azure dataset. Given an
  * input day and a set of parameters such as max memory, max functions, and max
  * users, this class will generate a file with one invocation per file
  * respecting the given parameters.
