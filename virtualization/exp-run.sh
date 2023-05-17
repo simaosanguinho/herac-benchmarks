@@ -66,13 +66,6 @@ function get_kernel {
     fi
 }
 
-function generate_scratch_image {
-    cd src/main/docker
-    $JAVA_HOME/bin/native-image -cp $JAR --static Time2 time
-    docker build --rm -t $DOCKER_SCRATCH_IMG .
-    cd - &> /dev/null
-}
-
 # TODO - update, do not benchmark niuk. Benchmark directly firecracker and qemu.
 function vm_rss {
     emulator=$1
@@ -213,6 +206,15 @@ function docker_rss_latency {
 }
 
 function docker_scratch_latency {
+
+    function generate_scratch_image {
+        cd src/main/docker
+        $JAVA_HOME/bin/native-image -cp $JAR --static Time2 time
+        docker build --rm -t $DOCKER_SCRATCH_IMG .
+        cd - &> /dev/null
+    }
+
+    generate_scratch_image
     rm -f $RESULTS_DIR/*-scratch.dat
     for i in $(seq 1 $ITERS)
     do
@@ -220,7 +222,7 @@ function docker_scratch_latency {
         latency=$(docker run --rm $DOCKER_SCRATCH_IMG)
         tf=$(echo $latency | grep "\[ms since epoch\]" | awk '{print $NF}' | tr -d '\t\n\r')
         tt=$(($tf - $ts))
-        echo $tt >> $RESULTS_DIR/latency-scratch.dat
+        echo $tt >> $RESULTS_DIR/latency-docker-scratch.dat
     done
 }
 
@@ -350,7 +352,6 @@ function graalvisor_sandbox_rss_latency {
 }
 
 mvn package
-generate_scratch_image
 vm_rss firecracker
 vm_latency firecracker
 vm_rss qemu
