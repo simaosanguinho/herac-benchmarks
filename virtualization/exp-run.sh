@@ -4,6 +4,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 ITERS=10
 JAR=$DIR/target/isolate-benchmark-0.1-jar-with-dependencies.jar
 DOCKER_IMG=ghcr.io/graalvm/graalvm-ce:latest
+DOCKER_SCRATCH_IMG=scratch-latency-emulator
 RESULTS_DIR=$DIR/results
 
 # TODO - update instructions to use the bridge.
@@ -204,6 +205,27 @@ function docker_rss_latency {
     done
 }
 
+function docker_scratch_latency {
+
+    function generate_scratch_image {
+        cd src/main/docker
+        $JAVA_HOME/bin/native-image -cp $JAR --static Time2 time
+        docker build --rm -t $DOCKER_SCRATCH_IMG .
+        cd - &> /dev/null
+    }
+
+    generate_scratch_image
+    rm -f $RESULTS_DIR/*-scratch.dat
+    for i in $(seq 1 $ITERS)
+    do
+        ts=$(($(date +%s%N) / 1000000))
+        latency=$(docker run --rm $DOCKER_SCRATCH_IMG)
+        tf=$(echo $latency | grep "\[ms since epoch\]" | awk '{print $NF}' | tr -d '\t\n\r')
+        tt=$(($tf - $ts))
+        echo $tt >> $RESULTS_DIR/latency-docker-scratch.dat
+    done
+}
+
 function hotspot_rss_latency {
     rm -f $RESULTS_DIR/*-hotspot.dat
     java -cp $JAR Sleep &
@@ -342,3 +364,4 @@ graalvisor_sandbox_rss_latency process
 hotspot_rss_latency
 node_rss_latency
 cpython_rss_latency
+docker_scratch_latency
