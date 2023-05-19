@@ -4,7 +4,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 ITERS=10
 JAR=$DIR/target/isolate-benchmark-0.1-jar-with-dependencies.jar
 DOCKER_IMG=ghcr.io/graalvm/graalvm-ce:latest
-DOCKER_SCRATCH_IMG=scratch-latency-emulator
+DOCKER_SCRATCH_IMG=scratch-ni
 RESULTS_DIR=$DIR/results
 
 # TODO - update instructions to use the bridge.
@@ -164,29 +164,29 @@ function firecracker_snapshot_rss_latency {
         echo "(iter $i) Starting vm..."
         $DIR/../demos/firecracker/start-vm.sh $ip &> start-vm-$i-a.log &
         sleep 1
-	echo "(iter $i) Configuring vm..."
+    echo "(iter $i) Configuring vm..."
         $DIR/../demos/firecracker/config-vm.sh $ip &> config-vm-$i.log
         sleep 1
-	echo "(iter $i) Snapshotting vm..."
+    echo "(iter $i) Snapshotting vm..."
         $DIR/../demos/firecracker/snapshot-vm.sh $ip &> snapshot-vm-$i.log
         sleep 1
-	echo "(iter $i) Stopping vm..."
+    echo "(iter $i) Stopping vm..."
         $DIR/../demos/firecracker/stop-vm.sh $ip &> stop-vm-$i-a.log
         sleep 1
-	echo "(iter $i) Starting vm..."
+    echo "(iter $i) Starting vm..."
         $DIR/../demos/firecracker/start-vm.sh $ip &> start-vm-$i-b.log &
         sleep 1
-	echo "(iter $i) Restoring vm..."
+    echo "(iter $i) Restoring vm..."
         $DIR/../demos/firecracker/restore-vm.sh $ip &> restore-vm-$i.log
         sleep 1
-	echo "(iter $i) Tracking memory..."
+    echo "(iter $i) Tracking memory..."
         pid=$(sudo fuser $DIR/../demos/firecracker/$ip/firecracker.socket 2>&1 | grep firecracker.socket | awk '{print $2}')
         log_rss $pid $DIR/results/firecracker-snapshot/rss-firecracker-snapshot-$i.dat &> /dev/null &
         sleep 5
-	echo "(iter $i) Stopping vm..."
+    echo "(iter $i) Stopping vm..."
         $DIR/../demos/firecracker/stop-vm.sh $ip &> stop-vm-$i-b.log
         sleep 1
-	echo "(iter $i) Deleting vm..."
+    echo "(iter $i) Deleting vm..."
         $DIR/../demos/firecracker/delete-vm.sh $ip &> delete-vm-$i.log
     done
     cd - &> /dev/null
@@ -194,7 +194,7 @@ function firecracker_snapshot_rss_latency {
 
 function docker_rss_latency {
     rm -f $RESULTS_DIR/*-docker.dat
-    docker run $DOCKER_IMG sleep 10 &> /dev/null &
+    docker run --rm $DOCKER_IMG sleep 10 &> /dev/null &
     log_rss $! $RESULTS_DIR/rss-docker.dat &> /dev/null
     for i in $(seq 1 $ITERS)
     do
@@ -202,27 +202,66 @@ function docker_rss_latency {
         tf=$(docker run --rm $DOCKER_IMG date +%s%N)
         tt=$((($tf - $ts) / 1000000))
         echo $tt >> $RESULTS_DIR/latency-docker.dat
+
+        ts=$(date +%s%N)
+        did=$(docker create $DOCKER_IMG date +%s%N)
+        tf=$(date +%s%N)
+        tt=$((($tf - $ts) / 1000000))
+        echo $tt >> $RESULTS_DIR/latency-create-docker.dat
+
+        ts=$(date +%s%N)
+        tf=$(docker start -i $did)
+        tt=$((($tf - $ts) / 1000000))
+        echo $tt >> $RESULTS_DIR/latency-start-docker.dat
+
+        ts=$(date +%s%N)
+        docker rm $did
+        tf=$(date +%s%N)
+        tt=$((($tf - $ts) / 1000000))
+        echo $tt >> $RESULTS_DIR/latency-rm-docker.dat
     done
 }
 
-function docker_scratch_latency {
+function docker_scratch_rss_latency {
 
     function generate_scratch_image {
         cd src/main/docker
         $JAVA_HOME/bin/native-image -cp $JAR --static Time2 time
+        $JAVA_HOME/bin/native-image -cp $JAR --static Sleep sleep
         docker build --rm -t $DOCKER_SCRATCH_IMG .
+        rm sleep time *.build_artifacts.txt
         cd - &> /dev/null
     }
 
     generate_scratch_image
     rm -f $RESULTS_DIR/*-scratch.dat
+    docker run --rm $DOCKER_SCRATCH_IMG /sleep &> /dev/null &
+    log_rss $! $RESULTS_DIR/rss-docker-scratch.dat &> /dev/null
     for i in $(seq 1 $ITERS)
     do
         ts=$(($(date +%s%N) / 1000000))
-        latency=$(docker run --rm $DOCKER_SCRATCH_IMG)
+        latency=$(docker run --rm $DOCKER_SCRATCH_IMG /time)
         tf=$(echo $latency | grep "\[ms since epoch\]" | awk '{print $NF}' | tr -d '\t\n\r')
         tt=$(($tf - $ts))
         echo $tt >> $RESULTS_DIR/latency-docker-scratch.dat
+
+        ts=$(date +%s%N)
+        did=$(docker create $DOCKER_SCRATCH_IMG /time)
+        tf=$(date +%s%N)
+        tt=$((($tf - $ts) / 1000000))
+        echo $tt >> $RESULTS_DIR/latency-create-docker-scratch.dat
+
+        ts=$(($(date +%s%N) / 1000000))
+        latency=$(docker start -i $did)
+        tf=$(echo $latency | grep "\[ms since epoch\]" | awk '{print $NF}' | tr -d '\t\n\r')
+        tt=$(($tf - $ts))
+        echo $tt >> $RESULTS_DIR/latency-start-docker-scratch.dat
+
+        ts=$(date +%s%N)
+        docker rm $did
+        tf=$(date +%s%N)
+        tt=$((($tf - $ts) / 1000000))
+        echo $tt >> $RESULTS_DIR/latency-rm-docker-scratch.dat
     done
 }
 
@@ -358,10 +397,10 @@ vm_rss qemu
 vm_latency qemu
 firecracker_snapshot_rss_latency
 docker_rss_latency
+docker_scratch_rss_latency
 graalvisor_rss_latency
 graalvisor_sandbox_rss_latency process
 graalvisor_sandbox_rss_latency process
 hotspot_rss_latency
 node_rss_latency
 cpython_rss_latency
-docker_scratch_latency
