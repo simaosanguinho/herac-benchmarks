@@ -222,7 +222,7 @@ function docker_rss_latency {
     done
 }
 
-function docker_scratch_latency {
+function docker_scratch_rss_latency {
 
     function generate_scratch_image {
         cd src/main/docker
@@ -397,7 +397,7 @@ vm_rss qemu
 vm_latency qemu
 firecracker_snapshot_rss_latency
 docker_rss_latency
-docker_scratch_latency
+docker_scratch_rss_latency
 graalvisor_rss_latency
 graalvisor_sandbox_rss_latency process
 graalvisor_sandbox_rss_latency process
