@@ -202,6 +202,23 @@ function docker_rss_latency {
         tf=$(docker run --rm $DOCKER_IMG date +%s%N)
         tt=$((($tf - $ts) / 1000000))
         echo $tt >> $RESULTS_DIR/latency-docker.dat
+
+        ts=$(date +%s%N)
+        did=$(docker create $DOCKER_IMG date +%s%N)
+        tf=$(date +%s%N)
+        tt=$((($tf - $ts) / 1000000))
+        echo $tt >> $RESULTS_DIR/latency-create-docker.dat
+
+        ts=$(date +%s%N)
+        tf=$(docker start -i $did)
+        tt=$((($tf - $ts) / 1000000))
+        echo $tt >> $RESULTS_DIR/latency-start-docker.dat
+
+        ts=$(date +%s%N)
+        docker rm $did
+        tf=$(date +%s%N)
+        tt=$((($tf - $ts) / 1000000))
+        echo $tt >> $RESULTS_DIR/latency-rm-docker.dat
     done
 }
 
@@ -227,6 +244,24 @@ function docker_scratch_latency {
         tf=$(echo $latency | grep "\[ms since epoch\]" | awk '{print $NF}' | tr -d '\t\n\r')
         tt=$(($tf - $ts))
         echo $tt >> $RESULTS_DIR/latency-docker-scratch.dat
+
+        ts=$(date +%s%N)
+        did=$(docker create $DOCKER_SCRATCH_IMG /time)
+        tf=$(date +%s%N)
+        tt=$((($tf - $ts) / 1000000))
+        echo $tt >> $RESULTS_DIR/latency-create-docker-scratch.dat
+
+        ts=$(($(date +%s%N) / 1000000))
+        latency=$(docker start -i $did)
+        tf=$(echo $latency | grep "\[ms since epoch\]" | awk '{print $NF}' | tr -d '\t\n\r')
+        tt=$(($tf - $ts))
+        echo $tt >> $RESULTS_DIR/latency-start-docker-scratch.dat
+
+        ts=$(date +%s%N)
+        docker rm $did
+        tf=$(date +%s%N)
+        tt=$((($tf - $ts) / 1000000))
+        echo $tt >> $RESULTS_DIR/latency-rm-docker-scratch.dat
     done
 }
 
