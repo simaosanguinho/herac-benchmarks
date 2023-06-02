@@ -12,7 +12,7 @@ function build_ni_app {
 	cd build
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
-		-cp libs/genericapp-1.0-all.jar\
+		-cp libs/genericapp-1.0-all.jar \
 		-DGraalVisorGuest=true \
 		-Dcom.oracle.svm.graalvisor.libraryPath=resources/main/com.oracle.svm.graalvisor.headers \
 		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
@@ -50,5 +50,3 @@ fi
 #run_app
 #build_ni_app
 build_graalvisor_app
-
-echo BENCHMARK_PATH=$(DIR)/build/libs/genericapp-1.0.jar
