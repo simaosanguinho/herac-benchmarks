@@ -16,7 +16,7 @@ VM_TAP=tap$VM_IP
 
 # We need to recreate the network setup (see config-vm.sh).
 sudo ip tuntap add dev "$VM_TAP" mode tap
-sudo brctl addif docker0 $VM_TAP
+sudo brctl addif docker0 $VM_TAP # TODO - update on both ends!
 sudo ip link set dev "$VM_TAP" up
 
 curl --unix-socket $VM_SOCKET -i \
