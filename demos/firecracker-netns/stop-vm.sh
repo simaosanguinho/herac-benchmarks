@@ -4,7 +4,7 @@
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 if [ -z "$2" ]; then
-    echo "Syntax: ./config-vm.sh <clone id> <vm ip>"
+    echo "Syntax: ./stop-vm.sh <clone id> <vm ip>"
     echo "Clone id should an integer higher than zero which is not being used by another clone vm."
     echo "Please use a free IP 172.18.[0,255].[3,255]. The IP will be used to create a firecracker directory and to route requests to the vm."
     exit 0
