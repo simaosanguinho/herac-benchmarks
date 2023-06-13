@@ -1,12 +1,11 @@
 package org.graalvm.argo.dataset;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -27,12 +26,10 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /**
- * This class generates an invocation trace from the azure dataset. Given an
- * input day and a set of parameters such as max memory, max functions, and max
- * users, this class will generate a file with one invocation per file
- * respecting the given parameters.
+ * This class generates an invocation trace from the azure dataset. Given a set
+ * of options, it will generate a file with one invocation per line.
  */
-public class DatasetProcessor {
+public class InvocationTraceGenerator {
 
     public static final String DELIMITER = ",";
     private static final int MINUTES_COLUMN_OFFSET = 3;
@@ -75,8 +72,8 @@ public class DatasetProcessor {
             CommandLine cmd = new DefaultParser().parse(options, args);
             String day = cmd.getOptionValue("day");
             String outputFilePath = cmd.getOptionValue("trace");
-            int firstMinute = Integer.parseInt(cmd.getOptionValue("bmin", "701")); // Old values: 721
-            int lastMinute = Integer.parseInt(cmd.getOptionValue("emin", "710")); // Old values: 730
+            int firstMinute = Integer.parseInt(cmd.getOptionValue("bmin", "701"));
+            int lastMinute = Integer.parseInt(cmd.getOptionValue("emin", "710"));
             int maxMemory = Integer.parseInt(cmd.getOptionValue("mem", "0"));
             int maxUsers = Integer.parseInt(cmd.getOptionValue("users", "0"));
             int maxConcInv = Integer.parseInt(cmd.getOptionValue("cinv", "0"));
@@ -109,16 +106,24 @@ public class DatasetProcessor {
                 System.out.println("Number of invocations *after* filter by memory: " + invocations.size());
             }
 
-            /* Now we have ordered and downscaled list of all invocations that we can write as a result */
-            List<String> acceptedInvocations = new LinkedList<>();
-            acceptedInvocations.add("HashOwner,HashFunction,AverageAllocatedMb,AverageDuration,Timestamp");
-            acceptedInvocations.addAll(invocations.stream().map(Invocation::toString).collect(Collectors.toList()));
+            System.out.println("Final number of invocations: " + invocations.size());
+            writeInvocationsToFile(outputFilePath);
 
-            Files.write(Paths.get(outputFilePath), acceptedInvocations, StandardCharsets.UTF_8);
         } catch (ParseException e) {
             System.out.println(e.getMessage());
             new HelpFormatter().printHelp("utility-name", options);
             return;
+        }
+    }
+
+    private static void writeInvocationsToFile(String outputFilePath) throws Exception {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath, false))) {
+            writer.write("HashOwner,HashFunction,AverageAllocatedMb,AverageDuration,Timestamp");
+            writer.newLine();
+            for (Invocation invocation : invocations) {
+                writer.write(invocation.toString());
+                writer.newLine();
+            }
         }
     }
 
