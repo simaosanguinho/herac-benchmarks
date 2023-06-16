@@ -75,5 +75,5 @@ plt.annotate("Function Invocation (p50)", xy=(memFun[0] - 123.5, latFun[0] - 100
 #plt.fill_between([100, 200], [1, 1], [1000, 1000])
 
 plt.savefig('virtualization-performance.pdf')
-plt.savefig('virtualization-performance.png')
+plt.savefig('virtualization-performance.png', dpi=300)
 #plt.show()

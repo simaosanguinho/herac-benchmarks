@@ -38,7 +38,7 @@ def plot_invocations(userfile, funcfile, outprefix):
     plt.xlim(xmax=1000)
     plt.legend(loc='lower right')
     plt.savefig(outprefix + '.pdf', bbox_inches='tight')
-    plt.savefig(outprefix + '.png', bbox_inches='tight')
+    plt.savefig(outprefix + '.png', bbox_inches='tight', dpi=300)
     plt.clf()
 
 plot_invocations('avg_user_invocations_d01.dat', 'avg_func_invocations_d01.dat', 'azure-cdf-invocations-d01')
