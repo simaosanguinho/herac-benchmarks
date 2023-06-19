@@ -7,8 +7,8 @@ function run_hotspot {
 		-Dcom.oracle.svm.graalvisor.polyglotengine.language=python \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/python/main.py \
-                -cp build/libs/helloworld-1.0-all.jar \
-                com.helloworld.HelloWorld
+                -cp build/libs/sleep-1.0-all.jar \
+                com.sleep.Sleep
 }
 
 function build_ni {
@@ -16,23 +16,23 @@ function build_ni {
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
 		--enable-url-protocols=http \
-		-cp libs/helloworld-1.0-all.jar \
+		-cp libs/sleep-1.0-all.jar \
 		-DGraalVisorGuest=true \
 		-Dcom.oracle.svm.graalvisor.libraryPath=resources/main/com.oracle.svm.graalvisor.headers \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.language=python \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/python/main.py \
-		--initialize-at-build-time=com.helloworld.HelloWorld \
+		--initialize-at-build-time=com.sleep.Sleep \
 		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
 		-H:ConfigurationFileDirectories=../ni-agent-config \
 		--language:python \
 		-H:+ReportExceptionStackTraces \
 		$NI_BIN_OPTS \
-		-H:Name=libhelloworld
+		-H:Name=libsleep
 }
 
 function build_ni_standalone {
-	NI_BIN_OPTS="com.helloworld.HelloWorld"
+	NI_BIN_OPTS="com.sleep.Sleep"
 	build_ni
 }
 
