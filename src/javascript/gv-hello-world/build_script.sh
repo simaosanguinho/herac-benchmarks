@@ -55,8 +55,36 @@ fi
 
 ./gradlew clean shadowJar assemble
 
-#run_hotspot
-#build_ni_standalone
-build_ni_sharedlibrary
+TARGET=$1
+if [ ! -z "$TARGET" ]
+then
+        $TARGET
+	exit 0
+else
+	read -p "Run benchmark on hotspot (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                run_hotspot
+                exit 0
+        fi
+	read -p "Build standalone Native Image (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                build_ni_standalone
+                exit 0
+        fi
+	read -p "Build shared library Native Image (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                build_ni_sharedlibrary
+                exit 0
+        fi
+fi
 
-echo BENCHMARK_PATH=$DIR/build/libs/helloworld-1.0.jar
+if command -v notify-send &> /dev/null
+then
+    notify-send "Finished building benchmark!"
+fi
