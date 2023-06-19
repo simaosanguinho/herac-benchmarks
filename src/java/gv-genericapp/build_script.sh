@@ -1,14 +1,14 @@
 #!/bin/bash
 
-function DIR {
-	echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+function run_hotspot {
+        $JAVA_HOME/bin/java \
+                -cp build/libs/genericapp-1.0-all.jar \
+                com.genericapp.GenericApp $((100*1024*1024)) 5000
 }
 
-function run_app {
-	/usr/bin/time -v $JAVA_HOME/bin/java -cp build/libs/genericapp-1.0-all.jar com.genericapp.GenericApp $((100*1024*1024)) 5000
-}
-
-function build_ni_app {
+function build_ni {
 	cd build
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
@@ -16,22 +16,20 @@ function build_ni_app {
 		-DGraalVisorGuest=true \
 		-Dcom.oracle.svm.graalvisor.libraryPath=resources/main/com.oracle.svm.graalvisor.headers \
 		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
-		-H:+ReportExceptionStackTraces \
-		com.genericapp.GenericApp
-}
-
-function build_graalvisor_app {
-	cd build
-	$JAVA_HOME/bin/native-image \
-		--no-fallback \
-		-cp libs/genericapp-1.0-all.jar\
-		-DGraalVisorGuest=true \
-		-Dcom.oracle.svm.graalvisor.libraryPath=resources/main/com.oracle.svm.graalvisor.headers \
-		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
 		-H:ConfigurationFileDirectories=../ni-agent-config \
 		-H:+ReportExceptionStackTraces \
-		--shared \
+		$NI_BIN_OPTS \
 		-H:Name=libgenericapp
+}
+
+function build_ni_standalone {
+	NI_BIN_OPTS="com.genericapp.GenericApp"
+	build_ni
+}
+
+function build_ni_sharedlibrary {
+	NI_BIN_OPTS="--shared"
+	build_ni
 }
 
 if [ -z "$ARGO_HOME" ]
@@ -47,6 +45,37 @@ then
 fi
 
 ./gradlew clean shadowJar assemble
-#run_app
-#build_ni_app
-build_graalvisor_app
+
+TARGET=$1
+if [ ! -z "$TARGET" ]
+then
+        $TARGET
+	exit 0
+else
+	read -p "Run benchmark on hotspot (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                run_hotspot
+                exit 0
+        fi
+	read -p "Build standalone Native Image (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                build_ni_standalone
+                exit 0
+        fi
+	read -p "Build shared library Native Image (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                build_ni_sharedlibrary
+                exit 0
+        fi
+fi
+
+if command -v notify-send &> /dev/null
+then
+    notify-send "Finished building benchmark!"
+fi

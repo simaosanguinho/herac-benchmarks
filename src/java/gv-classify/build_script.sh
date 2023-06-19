@@ -1,10 +1,8 @@
 #!/bin/bash
 
-function DIR {
-	echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
-}
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
-function run_agent {
+function run_hotspot {
 	rm -rf config-dir
 	$JAVA_HOME/bin/java \
 		-Djava.awt.headless=true \
@@ -13,7 +11,7 @@ function run_agent {
 		com.classify.Classify
 }
 
-function build_graalvisor_app {
+function build_ni {
 	cd build
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
@@ -25,12 +23,64 @@ function build_graalvisor_app {
 		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
 		-H:ConfigurationFileDirectories=../ni-agent-config,../config-dir \
 		-H:+ReportExceptionStackTraces \
-		--shared \
+		$NI_BIN_OPTS \
 		-H:Name=libclassify
 }
 
-./gradlew clean shadowJar assemble
-#run_agent
-build_graalvisor_app
+function build_ni_standalone {
+	NI_BIN_OPTS="com.classify.Classify"
+	build_ni
+}
 
-echo BENCHMARK_PATH=$(DIR)/build/libs/videoprocessing-1.0.jar
+function build_ni_sharedlibrary {
+	NI_BIN_OPTS="--shared"
+	build_ni
+}
+
+if [ -z "$ARGO_HOME" ]
+then
+        echo "Please set ARGO_HOME first. It should point to a checkout of github.com/graalvm/argo."
+        exit 1
+fi
+
+if [ -z "$JAVA_HOME" ]
+then
+        echo "Please set JAVA_HOME first. It should be a GraalVM with native-image available."
+        exit 1
+fi
+
+./gradlew clean shadowJar assemble
+
+TARGET=$1
+if [ ! -z "$TARGET" ]
+then
+        $TARGET
+	exit 0
+else
+	read -p "Run benchmark on hotspot (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                run_hotspot
+                exit 0
+        fi
+	read -p "Build standalone Native Image (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                build_ni_standalone
+                exit 0
+        fi
+	read -p "Build shared library Native Image (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                build_ni_sharedlibrary
+                exit 0
+        fi
+fi
+
+if command -v notify-send &> /dev/null
+then
+    notify-send "Finished building benchmark!"
+fi
