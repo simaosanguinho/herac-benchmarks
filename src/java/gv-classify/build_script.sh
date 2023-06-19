@@ -79,8 +79,3 @@ else
                 exit 0
         fi
 fi
-
-if command -v notify-send &> /dev/null
-then
-    notify-send "Finished building benchmark!"
-fi
