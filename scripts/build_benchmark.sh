@@ -1,9 +1,14 @@
 #!/bin/bash
 
-# This script builds the benchmark with argo-builder container.
+# This script builds the benchmark with argo-builder container or locally.
 # The absolute path to the build script is specified as the first parameter.
+# The build mode (local or container) is specified as the second parameter.
 #
 # Example usage: build_benchmark.sh /absolute/path/to/gv-hello-world/build_script.sh
+#
+# The env varialble BENCHMARK_BUILD_MODE is used to decice if the build script 
+# is called on the local environment or inside the argo build container. It can
+# take two values: local and container.
 #
 # This script assumes that the user has the argo-builder container
 # locally. It can be built by running $ARGO_HOME/builder/build.sh.
@@ -26,11 +31,35 @@ BENCHMARK_BUILD_SCRIPT=$1
 if [ -z "$BENCHMARK_BUILD_SCRIPT" ]
 then
     echo "Path to the build script is not present."
+    echo "Example usage: build_benchmark.sh /absolute/path/to/gv-hello-world/build_script.sh"
     exit 1
 fi
 
-BENCHMARK_SCRIPT_BASENAME="$(basename -- $BENCHMARK_BUILD_SCRIPT)"
-BENCHMARK_HOME="$(dirname -- $BENCHMARK_BUILD_SCRIPT)"
+if [ -z "$BENCHMARK_BUILD_MODE" ]
+then
+    echo "Warning: build mode is not present. Defaultin to local build mode."
+    BENCHMARK_BUILD_MODE="local"
+fi
 
-docker run -it -v $JAVA_HOME:/jvm -v $ARGO_HOME:/argo -v $BENCHMARK_HOME:/benchmark-home -w /benchmark-home --rm argo-builder /benchmark-home/$BENCHMARK_SCRIPT_BASENAME
-sudo chown -R $USER:$USER $BENCHMARK_HOME/build
+# This will remove the benchmark build script from $@ so that we can pass it.
+shift
+
+if [ "$BENCHMARK_BUILD_MODE" == "container" ]; then
+    BENCHMARK_SCRIPT_BASENAME="$(basename -- $BENCHMARK_BUILD_SCRIPT)"
+    BENCHMARK_HOME="$(dirname -- $BENCHMARK_BUILD_SCRIPT)"
+    docker run \
+        -it --rm \
+        -v $JAVA_HOME:/jvm \
+        -v $ARGO_HOME:/argo \
+        -v $BENCHMARK_HOME:/benchmark-home \
+        -w /benchmark-home \
+        argo-builder \
+        /benchmark-home/$BENCHMARK_SCRIPT_BASENAME $@
+    sudo chown -R $USER:$USER $BENCHMARK_HOME
+elif [ "$BENCHMARK_BUILD_MODE" == "local" ]; then
+        bash $BENCHMARK_BUILD_SCRIPT $@
+else
+    echo "Invalid build mode."
+    echo "Example usage: build_benchmark.sh /absolute/path/to/gv-hello-world/build_script.sh"
+    exit 1
+fi

@@ -16,9 +16,9 @@ function build_ni {
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
 		--enable-url-protocols=http \
-		-cp libs/uploader-1.0-all.jar \
+		-cp libs/uploader-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
 		-DGraalVisorGuest=true \
-		-Dcom.oracle.svm.graalvisor.libraryPath=resources/main/com.oracle.svm.graalvisor.headers \
+		-Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.language=js \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/javascript/main.js \
@@ -53,10 +53,37 @@ then
         exit 1
 fi
 
+# Move into the script directory.
+cd $DIR
+
+# Build.
 ./gradlew clean shadowJar assemble
 
-#run_hotspot
-#build_ni_standalone
-build_ni_sharedlibrary
-
-echo BENCHMARK_PATH=$DIR/build/libs/uploader-1.0.jar
+TARGET=$1
+if [ ! -z "$TARGET" ]
+then
+        $TARGET
+	exit 0
+else
+	read -p "Run benchmark on hotspot (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                run_hotspot
+                exit 0
+        fi
+	read -p "Build standalone Native Image (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                build_ni_standalone
+                exit 0
+        fi
+	read -p "Build shared library Native Image (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                build_ni_sharedlibrary
+                exit 0
+        fi
+fi

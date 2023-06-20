@@ -1,21 +1,35 @@
 #!/bin/bash
 
-function DIR {
-	echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+function run_hotspot {
+        $JAVA_HOME/bin/java \
+                -cp build/libs/hello-world-1.0-all.jar \
+                com.hello_world.HelloWorld
 }
 
-function build_graalvisor_app {
+function build_ni {
 	cd build
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
-		-cp libs/hello-world-1.0-all.jar\
+		-cp libs/hello-world-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
 		-DGraalVisorGuest=true \
-		-Dcom.oracle.svm.graalvisor.libraryPath=resources/main/com.oracle.svm.graalvisor.headers \
+		-Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
 		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
 		-H:ConfigurationFileDirectories=../ni-agent-config \
 		-H:+ReportExceptionStackTraces \
-		--shared \
+		$NI_BIN_OPTS \
 		-H:Name=libhelloworld
+}
+
+function build_ni_standalone {
+	NI_BIN_OPTS="com.hello_world.HelloWorld"
+	build_ni
+}
+
+function build_ni_sharedlibrary {
+	NI_BIN_OPTS="--shared"
+	build_ni
 }
 
 if [ -z "$ARGO_HOME" ]
@@ -30,8 +44,37 @@ then
         exit 1
 fi
 
+# Move into the script directory.
+cd $DIR
+
+# Build.
 ./gradlew clean shadowJar assemble
 
-build_graalvisor_app
-
-echo BENCHMARK_PATH=$(DIR)/build/libs/hello-world-1.0.jar
+TARGET=$1
+if [ ! -z "$TARGET" ]
+then
+        $TARGET
+	exit 0
+else
+	read -p "Run benchmark on hotspot (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                run_hotspot
+                exit 0
+        fi
+	read -p "Build standalone Native Image (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                build_ni_standalone
+                exit 0
+        fi
+	read -p "Build shared library Native Image (y or Y, everything else as no)? " -n 1 -r
+        echo # move to a new line
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+                build_ni_sharedlibrary
+                exit 0
+        fi
+fi
