@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # This script builds the benchmark with argo-builder container or locally.
-# The absolute path to the build script is specified as the first parameter.
+# The path to the build script is specified as the first parameter.
 # The build mode (local or container) is specified as the second parameter.
 #
-# Example usage: build_benchmark.sh /absolute/path/to/gv-hello-world/build_script.sh
+# Example usage: build_benchmark.sh /path/to/gv-hello-world/build_script.sh
 #
 # The env varialble BENCHMARK_BUILD_MODE is used to decice if the build script 
 # is called on the local environment or inside the argo build container. It can
@@ -31,8 +31,10 @@ BENCHMARK_BUILD_SCRIPT=$1
 if [ -z "$BENCHMARK_BUILD_SCRIPT" ]
 then
     echo "Path to the build script is not present."
-    echo "Example usage: build_benchmark.sh /absolute/path/to/gv-hello-world/build_script.sh"
+    echo "Example usage: build_benchmark.sh /path/to/gv-hello-world/build_script.sh"
     exit 1
+else
+    BENCHMARK_BUILD_SCRIPT=$(realpath $BENCHMARK_BUILD_SCRIPT)
 fi
 
 if [ -z "$BENCHMARK_BUILD_MODE" ]
@@ -60,6 +62,6 @@ elif [ "$BENCHMARK_BUILD_MODE" == "local" ]; then
         bash $BENCHMARK_BUILD_SCRIPT $@
 else
     echo "Invalid build mode."
-    echo "Example usage: build_benchmark.sh /absolute/path/to/gv-hello-world/build_script.sh"
+    echo "Example usage: build_benchmark.sh /path/to/gv-hello-world/build_script.sh"
     exit 1
 fi

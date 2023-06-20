@@ -109,6 +109,7 @@ do
     # Run...
     run
     # Preparing results directory
+    # TODO - include backend in name.
     results_dir=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$mode-$workload-$VM_CPU-$VM_MEM/$iter
     mkdir -p $results_dir &> /dev/null
     cp $tmpdir/{*.log,*.rss} $results_dir &> /dev/null
