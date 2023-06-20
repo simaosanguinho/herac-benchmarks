@@ -44,6 +44,10 @@ then
         exit 1
 fi
 
+# Move into the script directory.
+cd $DIR
+
+# Build.
 mvn clean package
 
 TARGET=$1

@@ -17,9 +17,9 @@ function build_ni {
 		--no-fallback \
 		--enable-url-protocols=http \
 		-Djava.awt.headless=true \
-		-cp libs/classify-1.0-all.jar\
+		-cp libs/classify-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
 		-DGraalVisorGuest=true \
-		-Dcom.oracle.svm.graalvisor.libraryPath=resources/main/com.oracle.svm.graalvisor.headers \
+		-Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
 		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
 		-H:ConfigurationFileDirectories=../ni-agent-config,../config-dir \
 		-H:+ReportExceptionStackTraces \
@@ -49,6 +49,10 @@ then
         exit 1
 fi
 
+# Move into the script directory.
+cd $DIR
+
+# Build.
 ./gradlew clean shadowJar assemble
 
 TARGET=$1
