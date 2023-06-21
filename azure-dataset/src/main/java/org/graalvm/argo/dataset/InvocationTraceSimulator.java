@@ -6,9 +6,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
@@ -25,8 +27,9 @@ import org.apache.commons.cli.ParseException;
  */
 public class InvocationTraceSimulator {
 
-    private static final String AGGREGATED_INVOCATION_DATA = "%d %d %d %d %d %d %d %d";
+    private static final String AGGREGATED_INVOCATION_DATA = "%d %d %d %d %d %d %d %d %d";
     private static final List<Invocation> INVOCATIONS = new LinkedList<>();
+    private static final long MAX_FOOTPRINT = Integer.MAX_VALUE; // TODO this should be given as a percentage?
 
     private static Options prepareOptions() {
         Options options = new Options();
@@ -36,7 +39,7 @@ public class InvocationTraceSimulator {
         Option output = new Option("o", "output", true, "Output file path.");
         output.setRequired(true);
         options.addOption(output);
-        Option keepalive = new Option("k", "keealive", true, "Function keep alive time.");
+        Option keepalive = new Option("k", "keepalive", true, "Function keep alive time.");
         keepalive.setRequired(false);
         options.addOption(keepalive);
         return options;
@@ -76,13 +79,26 @@ public class InvocationTraceSimulator {
         Set<Invocation> activeInvocations = new HashSet<>();
         List<String> aggregatedInvocationData = new LinkedList<>();
         int lastTimestamp = 0;
-        System.out.println("Simulating trace with " + INVOCATIONS.size() + " invocations");
+        System.out.println("Simulating trace with " + INVOCATIONS.size() + " invocations and keepalive of " + keepAlive);
+        long coldStarts = 0;
         int invocationsProcessed = 0;
 
         for (Invocation currentInvocation : INVOCATIONS) {
             int currentInvocationTimestamp = currentInvocation.getTimestamp();
-            activeInvocations.removeIf(f -> currentInvocationTimestamp >= f.getEndTimestamp() + keepAlive);
+
+            // We try to find an inactive invocation that can be replaced with the new one. Finding means a warm start. Otherwise, a cold start.
+            Optional<Invocation> reused = activeInvocations.parallelStream().filter(i -> i.getEndTimestamp() > currentInvocationTimestamp).filter(i -> i.getFunction().equals(currentInvocation.getFunction())).findFirst();
+            if (reused.isPresent()) {
+                activeInvocations.remove(reused.get());
+            } else {
+                coldStarts++;
+            }
+
+            // Add invocation to array of active invocations.
             activeInvocations.add(currentInvocation);
+
+            // Remove invocations that have past their keep alive time.
+            activeInvocations.removeIf(f -> currentInvocationTimestamp >= f.getEndTimestamp() + keepAlive);
 
             if (currentInvocationTimestamp - lastTimestamp > 1000) {
                 /* Gather aggregated invocation data for plot at most once per second.*/
@@ -96,12 +112,29 @@ public class InvocationTraceSimulator {
 
                 long cachedUsers = totalUsers - runningUsers;
                 long cachedFunctions = totalFunctions - runningFunctions;
-                // To calculate the size of our cache we are assuming that we can assume that we only keep one lambda live for each function.
-                // Then, we multiply the avg footprint of each function and we sum. The result is an estimate of our cache footprint.
-                long cachedInvocationsFootprint = cachedFunctions * 125; // TODO - we need to fix this. 125 is the avg of all functions...
+                long cachedInvocationsFootprint = activeInvocations.parallelStream().filter(i -> i.getEndTimestamp() < currentInvocationTimestamp).mapToInt(Invocation::getMemory).sum(); // * FUNCTION_FOOTPRINT;
 
-                aggregatedInvocationData.add(String.format(AGGREGATED_INVOCATION_DATA, currentInvocationTimestamp, runningUsers, runningFunctions, cachedUsers, cachedFunctions, runningInvocations, runningInvocationsFootprint, cachedInvocationsFootprint));
+                // Calculate if we are over the cache footprint limit.
+                long over = cachedInvocationsFootprint - MAX_FOOTPRINT;
+
+                // If we are over, iterate over cached invocations and evict until we are under the limit.
+                if (over > 0) {
+                    List<Invocation> evicted = new ArrayList<>();
+                    for (Invocation invocation : activeInvocations) {
+                        if (invocation.getEndTimestamp() < currentInvocationTimestamp) {
+                            over = over - invocation.getMemory();
+                            evicted.add(invocation);
+                            if (over <= 0) {
+                                break;
+                            }
+                        }
+                    }
+                    activeInvocations.removeAll(evicted);
+                }
+
+                aggregatedInvocationData.add(String.format(AGGREGATED_INVOCATION_DATA, currentInvocationTimestamp, runningUsers, runningFunctions, cachedUsers, cachedFunctions, runningInvocations, runningInvocationsFootprint, cachedInvocationsFootprint, coldStarts));
                 lastTimestamp = currentInvocationTimestamp;
+                coldStarts = 0;
             }
 
             if (invocationsProcessed % 10000 == 0) {
