@@ -1,5 +1,6 @@
 backup/
+results-netns/
 results-cgroup/
 results-chroot/
-run-cgroup.pdf
-run-chroot.pdf
+*.pdf
+*.png

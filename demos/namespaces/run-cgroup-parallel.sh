@@ -6,7 +6,7 @@ sudo -l &> /dev/null
 rm -r results-cgroup/ &> /dev/null
 mkdir results-cgroup/
 
-for c in 1 2 4 8 16 32
+for c in 1 2 4 8
 do
 	for iter in $(seq 5)
 	do

@@ -21,7 +21,7 @@ end=$(date +%s%N)
 echo "Cgroup setup took $((($end - $start)/1000)) us"
 
 # Launch benchmark
-dd if=/dev/zero of=/dev/null bs=1M count=10000 &> /tmp/trash-$CGROUP &
+sleep 1 &
 
 # Add benchmark to cgroup
 start=$(date +%s%N)
@@ -37,6 +37,3 @@ start=$(date +%s%N)
 rmdir /sys/fs/cgroup/$CGROUP
 end=$(date +%s%N)
 echo "Removing cgroup took $((($end - $start)/1000)) us"
-
-# Removing created file
-rm /tmp/trash-$CGROUP
