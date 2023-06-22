@@ -1,5 +1,7 @@
 package org.graalvm.argo.dataset;
 
+import java.util.Comparator;
+
 public class Invocation {
     private final String owner;
     private final String function;
@@ -44,5 +46,15 @@ public class Invocation {
     @Override
     public String toString() {
         return String.format("%s,%s,%d,%d,%d", owner, function, memory, duration, timestamp);
+    }
+
+    public static Comparator<Invocation> comparator() {
+        return new Comparator<Invocation>() {
+
+            @Override
+            public int compare(Invocation o1, Invocation o2) {
+                return o1.endTimestamp - o2.endTimestamp;
+            }
+        };
     }
 }
