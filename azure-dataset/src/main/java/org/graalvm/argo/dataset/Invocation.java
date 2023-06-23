@@ -3,11 +3,17 @@ package org.graalvm.argo.dataset;
 import java.util.Comparator;
 
 public class Invocation {
+    // Function owner identifier.
     private final String owner;
+    // Function identifier.
     private final String function;
+    // Memory footprint in MBs.
     private final int memory;
+    // Function execution time in ms.
     private final int duration;
+    // Function start timestamp in ms.
     private final int timestamp;
+    // Function finish timestamp in ms.
     private final int endTimestamp;
 
     public Invocation(String owner, String function, int memory, int duration, int timestamp) {
