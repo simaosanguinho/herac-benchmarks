@@ -35,9 +35,6 @@ public class InvocationTraceSimulator {
         Option keepalive = new Option("k", "keepalive", true, "Function keep alive time in milliseconds.");
         keepalive.setRequired(false);
         options.addOption(keepalive);
-        Option cachesize = new Option("c", "cachesize", true, "Size of the functio cache in MBs.");
-        cachesize.setRequired(false);
-        options.addOption(cachesize);
         return options;
     }
 
@@ -48,15 +45,14 @@ public class InvocationTraceSimulator {
             String inputfile = cmd.getOptionValue("input");
             String outputfile = cmd.getOptionValue("output", null);
             int keepalive = Integer.parseInt(cmd.getOptionValue("keepalive", "600000"));
-            int cachesize = Integer.parseInt(cmd.getOptionValue("cachesize", "0"));
             List<Invocation> invocations = loadInvocations(inputfile, outputfile, keepalive);
-            List<OutputEntry> output = simulateInvocations(invocations, keepalive, cachesize, SAMPLE_INTERVAL);
+            List<OutputEntry> output = simulateInvocations(invocations, keepalive, SAMPLE_INTERVAL);
 
             for (OutputEntry entry : output) {
                 System.out.println(entry);
             }
         } catch (ParseException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             new HelpFormatter().printHelp("utility-name", options);
             return;
         }
@@ -137,7 +133,7 @@ public class InvocationTraceSimulator {
                 cachedInvocationsFootprint));
     }
 
-    public static List<OutputEntry> simulateInvocations(List<Invocation> invocations, int keepalive, int cachesize, int interval) throws Exception {
+    public static List<OutputEntry> simulateInvocations(List<Invocation> invocations, int keepalive, int interval) throws Exception {
         TreeSet<Invocation> activeInvocations = new TreeSet<Invocation>(Invocation.comparator());
         List<OutputEntry> statistics = new LinkedList<>();
         int invocationsProcessed = 0;
@@ -146,7 +142,7 @@ public class InvocationTraceSimulator {
         int lastInvocationsProcessed = 0;
         int coldStarts = 0;
 
-        System.out.println("Simulating trace with " + invocations.size() + " invocations and keepalive of " + keepalive);
+        System.err.println("Simulating trace with " + invocations.size() + " invocations and keepalive of " + keepalive);
         for (Invocation currentInvocation : invocations) {
             currentTimestamp = currentInvocation.getTimestamp();
 
@@ -166,25 +162,6 @@ public class InvocationTraceSimulator {
             invocationsProcessed++;
 
             if (currentTimestamp - previousTimestamp > interval) {
-/*
-                // Calculate if we are over the cache footprint limit.
-                long over = cachedInvocationsFootprint - cachesize;
-
-                // If we are over, iterate over cached invocations and evict until we are under the limit.
-                if (over > 0) {
-                    List<Invocation> evicted = new ArrayList<>();
-                    for (Invocation invocation : activeInvocations) {
-                        if (invocation.getEndTimestamp() < currentInvocationTimestamp) {
-                            over = over - invocation.getMemory();
-                            evicted.add(invocation);
-                            if (over <= 0) {
-                                break;
-                            }
-                        }
-                    }
-                    activeInvocations.removeAll(evicted);
-                }
-*/
                 // Calculate and update statistics.
                 updateStatistics(activeInvocations, statistics, currentTimestamp, previousTimestamp, lastInvocationsProcessed, coldStarts, invocationsProcessed);
 

@@ -52,7 +52,7 @@ public class OutputEntry {
             int cachedUsers,
             int cachedFunctions,
             int cachedInvocationsFootprint) {
-        return String.format("time %s; invocations %s cold %s; running users %s functions %s invocations %s footprint %s; cached users %s functions %s footprint %s",
+        return String.format("time %s | invocations %s cold %s | running users %s functions %s invocations %s footprint %s | cached users %s functions %s footprint %s",
                 timestamp, invocationsProcessed, coldStarts, runningUsers, runningFunctions, runningInvocations, runningInvocationsFootprint, cachedUsers, cachedFunctions, cachedInvocationsFootprint);
     }
 

@@ -18,30 +18,32 @@ def read_stdin_xy():
   reader = csv.reader(io.StringIO(input), delimiter=' ')
 
   x = []
-  yActiveUsers = []
-  yActiveFunctions = []
-  yCachedActiveUsers = []
-  yCachedActiveFunctions = []
+  yInvocations = []
+  yColdstarts = []
+  yRunningUsers = []
+  yRunningFunctions = []
   yRunningInvocations = []
+  yRunningFootprint = []
+  yCachedUsers = []
+  yCachedFunctions = []
+  yCachedFootprint = []
 
   # For each line, split and add to x and or y.
   for cols in reader:
     try:
-      xentry = float(cols[0])
-      activeUsersEntry = float(cols[1])
-      activeFunctionsEntry = float(cols[2])
-      cachedActiveUsersEntry = float(cols[3])
-      cachedActiveFunctionsEntry = float(cols[4])
-      runningInvocationsEntry = float(cols[5])
-      x.append(xentry)
-      yActiveUsers.append(activeUsersEntry)
-      yActiveFunctions.append(activeFunctionsEntry)
-      yCachedActiveUsers.append(cachedActiveUsersEntry)
-      yCachedActiveFunctions.append(cachedActiveFunctionsEntry)
-      yRunningInvocations.append(runningInvocationsEntry)
+      x.append(float(cols[1]))
+      yInvocations.append(float(cols[4]))
+      yColdstarts.append(float(cols[6]))
+      yRunningUsers.append(float(cols[10]))
+      yRunningFunctions.append(float(cols[12]))
+      yRunningInvocations.append(float(cols[14]))
+      yRunningFootprint.append(float(cols[16]))
+      yCachedUsers.append(float(cols[20]))
+      yCachedFunctions.append(float(cols[22]))
+      yCachedFootprint.append(float(cols[24]))
     except Exception as e:
-      print("Warning ignoring " + str(cols))
-  return x, yActiveUsers, yActiveFunctions, yCachedActiveUsers, yCachedActiveFunctions, yRunningInvocations
+      print("Warning ignoring " + e)
+  return x, yInvocations, yColdstarts, yRunningUsers, yRunningFunctions, yRunningInvocations, yRunningFootprint, yCachedUsers, yCachedFunctions, yCachedFootprint
 
 
 parser = argparse.ArgumentParser(description='Plot two-dimensional datapoints.')
@@ -52,18 +54,24 @@ parser.add_argument('-ymax', '--ymax', required=False)
 
 args = parser.parse_args()
 
-x, activeUsers, activeFunctions, cachedActiveUsers, cachedActiveFunctions, runningInvocations = read_stdin_xy()
+x, yInvocations, yColdstarts, yRunningUsers, yRunningFunctions, yRunningInvocations, yRunningFootprint, yCachedUsers, yCachedFunctions, yCachedFootprint = read_stdin_xy()
+
+# Adjust startin point.
 first = x[0]
 x = [elem - first for elem in x]
 
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
 
-ax1.scatter(x, activeUsers, s=1, label='Users')
-ax1.scatter(x, activeFunctions, s=1, label='Functions')
-ax1.scatter(x, cachedActiveUsers, s=1, label='Cached users')
-ax1.scatter(x, cachedActiveFunctions, s=1, label='Cached functions')
-ax1.scatter(x, runningInvocations, s=1, label='Invocations')
+ax1.scatter(x, yInvocations, s=1, label='Invocations')
+ax1.scatter(x, yColdstarts, s=1, label='Cold starts')
+ax1.scatter(x, yRunningUsers, s=1, label='Running users')
+ax1.scatter(x, yRunningFunctions, s=1, label='Running functions')
+ax1.scatter(x, yRunningInvocations, s=1, label='Running invocations')
+ax1.scatter(x, yRunningFootprint, s=1, label='Running Footprint') # TODO - show on another axis
+ax1.scatter(x, yCachedUsers, s=1, label='Cached users')
+ax1.scatter(x, yCachedFunctions, s=1, label='Cached functions')
+ax1.scatter(x, yCachedFootprint, s=1, label='Cached footprint') # TODO - show on another axis
 
 plt.legend(loc='upper left')
 
