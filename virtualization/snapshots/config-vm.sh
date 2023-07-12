@@ -3,8 +3,8 @@
 # Inspired by: https://github.com/firecracker-microvm/firecracker/blob/main/docs/snapshotting/network-for-clones.md
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
-if [ -z "$2" ]; then # TODO - can we take a thrid argument (the directory from which to clone?)
-    echo "Syntax: ./config-vm.sh <clone id> <vm ip> [<snapshot vm ip>]"
+if [ -z "$3" ]; then
+    echo "Syntax: ./config-vm.sh <clone id> <vm ip> <vm image name>"
     echo "Clone id should an integer higher than zero which is not being used by another clone vm."
     echo "Please use a free IP 172.18.[0,255].[3,255]. The IP will be used to create a firecracker directory and to route requests to the vm."
     echo "The snapshot vm ip will be used to find the vm directory where the snapshot resides."
@@ -17,8 +17,8 @@ CLONE_ID=$1
 # VM ip accessible to the outside (unique).
 PUBLIC_VM_IP=$2
 
-# Old VM from which we will restore. This argument is optional. If not set, we launch a new VM.
-OLD_VM_IP=$3
+# Image to be used (graalvisor, hotspot, hotspot-agent).
+IMAGE_NAME=$3
 
 # ID of the vm (based on the public ip).
 VM_ID=$(echo $PUBLIC_VM_IP | tr . -)
@@ -49,15 +49,18 @@ function load_new {
     KERNEL=/hello-vmlinux.bin
 
     # Root filesystem to be used in the VM.
-    sudo cp $DIR/hello-rootfs.ext4 $VM_DIR/
-    ROOTFS=/hello-rootfs.ext4
+    sudo cp $DIR/$IMAGE_NAME/$IMAGE_NAME.img $VM_DIR/
+    ROOTFS=/$IMAGE_NAME.img
 
     # VM memory and core config (memory in MB and number of vcores).
-    VM_MEM=64
+    VM_MEM=256
     VM_CPU=1
 
     # Kernel arguments (including network configuration).
-    KERNEL_BOOT_ARGS="ro console=ttyS0 noapic reboot=k panic=1 pci=off nomodules random.trust_cpu=on ip=$VM_TAP_IP::$HOST_TAP_IP:$TAP_MASK_LONG::$VM_DEV:off"
+    IMAGE_PATH_ON_DISK="/init"
+    KERNEL_CONSOLE_ARGS='console=ttyS0'
+    args="LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib"
+    KERNEL_BOOT_ARGS="init=$IMAGE_PATH_ON_DISK quiet rw tsc=reliable ipv6.disable=1 ip=$VM_TAP_IP::$HOST_TAP_IP:$TAP_MASK_LONG::$VM_DEV:none::: nomodule $KERNEL_CONSOLE_ARGS reboot=k panic=1 pci=off $args"
 
     # Configures kernel its arguments.
     sudo curl --unix-socket $VM_SOCKET \
@@ -101,27 +104,6 @@ function load_new {
         -X PUT "http://localhost/actions" \
         -d "{
         \"action_type\": \"InstanceStart\"
-        }"
-}
-
-function load_snapshot {
-    # Snapshot file paths (files insire the chroot).
-    VM_SNAP_FILE=snapshot_file
-    VM_SNAP_MEM=mem_file
-
-    # Copy snapshot (and disk) from the old vm directory.
-    sudo cp -r $DIR/$OLD_VM_IP/root/hello-rootfs.ext4 $VM_DIR
-    sudo cp -r $DIR/$OLD_VM_IP/root/hello-vmlinux.bin $VM_DIR
-    sudo cp -r $DIR/$OLD_VM_IP/root/mem_file          $VM_DIR
-    sudo cp -r $DIR/$OLD_VM_IP/root/snapshot_file     $VM_DIR
-
-    sudo curl --unix-socket $VM_SOCKET -i \
-        -X PUT "http://localhost/snapshot/load" \
-        -d "{
-        \"snapshot_path\": \"$VM_SNAP_FILE\",
-        \"mem_file_path\": \"$VM_SNAP_MEM\",
-        \"enable_diff_snapshots\": false,
-        \"resume_vm\": true
         }"
 }
 
@@ -173,16 +155,15 @@ sudo ip netns exec ns$CLONE_ID iptables -t nat -A PREROUTING -i $VM_NS_VETH -d $
 sudo ip route add $PUBLIC_VM_IP via $VM_NS_VETH_IP
 
 # Directory where the socket and logs of the vm will be placed (the link is created to avoid long paths).
-VM_DIR=$DIR/$PUBLIC_VM_IP/root
+VM_DIR=$DIR/$IMAGE_NAME/$PUBLIC_VM_IP/root
 rm $VM_DIR &> /dev/null
-sudo ln -s $DIR/$PUBLIC_VM_IP/firecracker-v1.1.0-x86_64/$VM_ID/root $VM_DIR
+sudo ln -s $DIR/$IMAGE_NAME/$PUBLIC_VM_IP/firecracker/$VM_ID/root $VM_DIR
 
-# Socket that will be used to control the vm.
-VM_SOCKET=$VM_DIR/firecracker.socket
-
-if [ -z $OLD_VM_IP ];
-then
-    load_new
-else
-    load_snapshot
+# TODO: this is a dirty hack to avoid having socket path too long.
+if [ ! -L /tmp/snapshots ]; then
+    ln -s $DIR /tmp/snapshots
 fi
+# Socket that will be used to control the vm.
+VM_SOCKET=/tmp/snapshots/$IMAGE_NAME/$PUBLIC_VM_IP/root/firecracker.socket
+
+load_new
