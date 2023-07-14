@@ -18,46 +18,18 @@ public class OutputEntry {
     protected int cachedFunctions;
     protected int cachedInvocationsFootprint;
 
-    public OutputEntry(
-            int timestamp,
-            int invocationsProcessed,
-            int coldStarts,
-            int runningUsers,
-            int runningFunctions,
-            int runningInvocations,
-            int runningInvocationsFootprint,
-            int cachedUsers,
-            int cachedFunctions,
-            int cachedInvocationsFootprint) {
-        this.timestamp = timestamp;
-        this.invocationsProcessed = invocationsProcessed;
-        this.coldStarts = coldStarts;
-        this.runningUsers = runningUsers;
-        this.runningFunctions = runningFunctions;
-        this.runningInvocations = runningInvocations;
-        this.runningInvocationsFootprint = runningInvocationsFootprint;
-        this.cachedUsers = cachedUsers;
-        this.cachedFunctions = cachedFunctions;
-        this.cachedInvocationsFootprint = cachedInvocationsFootprint;
-    }
-
-    public static String toString(
-            int timestamp,
-            int invocationsProcessed,
-            int coldStarts,
-            int runningUsers,
-            int runningFunctions,
-            int runningInvocations,
-            int runningInvocationsFootprint,
-            int cachedUsers,
-            int cachedFunctions,
-            int cachedInvocationsFootprint) {
-        return String.format("time %s | invocations %s cold %s | running users %s functions %s invocations %s footprint %s | cached users %s functions %s footprint %s",
-                timestamp, invocationsProcessed, coldStarts, runningUsers, runningFunctions, runningInvocations, runningInvocationsFootprint, cachedUsers, cachedFunctions, cachedInvocationsFootprint);
-    }
-
     @Override
     public String toString() {
-        return toString(timestamp, invocationsProcessed, coldStarts, runningUsers, runningFunctions, runningInvocations, runningInvocationsFootprint, cachedUsers, cachedFunctions, cachedInvocationsFootprint);
+        return String.format("time %s | invocations %s cold %s | running users %s functions %s invocations %s footprint %s | cached users %s functions %s footprint %s",
+                timestamp,
+                invocationsProcessed,
+                coldStarts,
+                runningUsers,
+                runningFunctions,
+                runningInvocations,
+                runningInvocationsFootprint,
+                cachedUsers,
+                cachedFunctions,
+                cachedInvocationsFootprint);
     }
 }

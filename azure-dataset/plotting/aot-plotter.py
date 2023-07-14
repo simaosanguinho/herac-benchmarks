@@ -27,6 +27,8 @@ def read_stdin_xy():
   yCachedUsers = []
   yCachedFunctions = []
   yCachedFootprint = []
+  yOptimizedColdstarts = []
+  yRunningOptimizedFunctions = []
 
   # For each line, split and add to x and or y.
   for cols in reader:
@@ -41,9 +43,11 @@ def read_stdin_xy():
       yCachedUsers.append(float(cols[20]))
       yCachedFunctions.append(float(cols[22]))
       yCachedFootprint.append(float(cols[24]))
+      yOptimizedColdstarts.append(float(cols[27]))
+      yRunningOptimizedFunctions.append(float(cols[29]))
     except Exception as e:
       print("Warning ignoring " + e)
-  return x, yInvocations, yColdstarts, yRunningUsers, yRunningFunctions, yRunningInvocations, yRunningFootprint, yCachedUsers, yCachedFunctions, yCachedFootprint
+  return x, yInvocations, yColdstarts, yRunningUsers, yRunningFunctions, yRunningInvocations, yRunningFootprint, yCachedUsers, yCachedFunctions, yCachedFootprint, yOptimizedColdstarts, yRunningOptimizedFunctions
 
 
 parser = argparse.ArgumentParser(description='Plot two-dimensional datapoints.')
@@ -54,7 +58,7 @@ parser.add_argument('-ymax', '--ymax', required=False)
 
 args = parser.parse_args()
 
-x, yInvocations, yColdstarts, yRunningUsers, yRunningFunctions, yRunningInvocations, yRunningFootprint, yCachedUsers, yCachedFunctions, yCachedFootprint = read_stdin_xy()
+x, yInvocations, yColdstarts, yRunningUsers, yRunningFunctions, yRunningInvocations, yRunningFootprint, yCachedUsers, yCachedFunctions, yCachedFootprint, yOptimizedColdstarts, yRunningOptimizedFunctions = read_stdin_xy()
 
 # Adjust startin point.
 first = x[0]
@@ -65,8 +69,10 @@ ax1 = fig.add_subplot(111)
 
 ax1.scatter(x, yInvocations, s=1, label='Invocations')
 ax1.scatter(x, yColdstarts, s=1, label='Cold starts')
+ax1.scatter(x, yOptimizedColdstarts, s=1, label='Optimized cold starts')
 ax1.scatter(x, yRunningUsers, s=1, label='Running users')
 ax1.scatter(x, yRunningFunctions, s=1, label='Running functions')
+ax1.scatter(x, yRunningOptimizedFunctions, s=1, label='Running optimized functions')
 ax1.scatter(x, yRunningInvocations, s=1, label='Running invocations')
 ax1.scatter(x, yRunningFootprint, s=1, label='Running Footprint') # TODO - show on another axis
 ax1.scatter(x, yCachedUsers, s=1, label='Cached users')

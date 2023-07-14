@@ -16,6 +16,11 @@ repositories {
 
 dependencies {
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.5.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jar {

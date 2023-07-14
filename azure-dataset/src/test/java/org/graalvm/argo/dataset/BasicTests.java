@@ -5,9 +5,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class BasicTests {
+
+    private static InvocationTraceSimulator simulator;
+
+    @BeforeAll
+    static void init() {
+        simulator = new InvocationTraceSimulator();
+    }
 
     private static void printOutput(List<OutputEntry> output) {
         for (OutputEntry entry : output) {
@@ -20,7 +28,7 @@ class BasicTests {
         List<Invocation> invocations = new ArrayList<>();
         // Ownser, Function, Memory, Duration, Timestamp.
         invocations.add(new Invocation("owner1", "function1", 128, 50, 100));
-        List<OutputEntry> output = InvocationTraceSimulator.simulateInvocations(invocations, 600000, 1024, 1000);
+        List<OutputEntry> output = simulator.simulateInvocations(invocations, 600000, 1000);
         assertNotNull(output);
         printOutput(output);
         assert(output.size() == 1);
@@ -42,7 +50,7 @@ class BasicTests {
         List<Invocation> invocations = new ArrayList<>();
         invocations.add(new Invocation("owner1", "function1", 128, 50, 100));
         invocations.add(new Invocation("owner1", "function1", 128, 50, 125));
-        List<OutputEntry> output = InvocationTraceSimulator.simulateInvocations(invocations, 600000, 1024, 1000);
+        List<OutputEntry> output = simulator.simulateInvocations(invocations, 600000, 1000);
         assertNotNull(output);
         printOutput(output);
         assert(output.size() == 1);
@@ -66,7 +74,7 @@ class BasicTests {
         List<Invocation> invocations = new ArrayList<>();
         invocations.add(new Invocation("owner1", "function1", 128, 50, 100));
         invocations.add(new Invocation("owner1", "function2", 128, 50, 125));
-        List<OutputEntry> output = InvocationTraceSimulator.simulateInvocations(invocations, 600000, 1024, 1000);
+        List<OutputEntry> output = simulator.simulateInvocations(invocations, 600000, 1000);
         assertNotNull(output);
         printOutput(output);
         assert(output.size() == 1);
@@ -89,7 +97,7 @@ class BasicTests {
         List<Invocation> invocations = new ArrayList<>();
         invocations.add(new Invocation("owner1", "function1", 128, 50, 100));
         invocations.add(new Invocation("owner2", "function2", 128, 50, 125));
-        List<OutputEntry> output = InvocationTraceSimulator.simulateInvocations(invocations, 600000, 1024, 1000);
+        List<OutputEntry> output = simulator.simulateInvocations(invocations, 600000, 1000);
         assertNotNull(output);
         printOutput(output);
         assert(output.size() == 1);
@@ -112,7 +120,7 @@ class BasicTests {
         List<Invocation> invocations = new ArrayList<>();
         invocations.add(new Invocation("owner1", "function1", 128, 50, 100));
         invocations.add(new Invocation("owner1", "function1", 128, 50, 200));
-        List<OutputEntry> output = InvocationTraceSimulator.simulateInvocations(invocations, 600000, 1024, 1000);
+        List<OutputEntry> output = simulator.simulateInvocations(invocations, 600000, 1000);
         assertNotNull(output);
         printOutput(output);
         assert(output.size() == 1);
@@ -135,7 +143,7 @@ class BasicTests {
         List<Invocation> invocations = new ArrayList<>();
         invocations.add(new Invocation("owner1", "function1", 128, 50, 100));
         invocations.add(new Invocation("owner1", "function2", 128, 50, 200));
-        List<OutputEntry> output = InvocationTraceSimulator.simulateInvocations(invocations, 600000, 1024, 1000);
+        List<OutputEntry> output = simulator.simulateInvocations(invocations, 600000, 1000);
         assertNotNull(output);
         printOutput(output);
         assert(output.size() == 1);
@@ -159,7 +167,7 @@ class BasicTests {
         invocations.add(new Invocation("owner1", "function1", 128, 50, 100));
         invocations.add(new Invocation("owner1", "function2", 128, 50, 200));
         invocations.add(new Invocation("owner1", "function1", 128, 50, 300));
-        List<OutputEntry> output = InvocationTraceSimulator.simulateInvocations(invocations, 600000, 1024, 1000);
+        List<OutputEntry> output = simulator.simulateInvocations(invocations, 600000, 1000);
         assertNotNull(output);
         printOutput(output);
         assert(output.size() == 1);

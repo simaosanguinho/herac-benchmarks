@@ -8,6 +8,6 @@ cd "$DIR" || {
 }
 
 JAR=$DIR/build/libs/azure-dataset-1.0-all.jar
-MAIN=org.graalvm.argo.dataset.InvocationTraceSimulator
+MAIN=org.graalvm.argo.dataset.SimulatorEntryPoint
 
 $JAVA_HOME/bin/java -Xmx16g -cp $JAR $MAIN $@

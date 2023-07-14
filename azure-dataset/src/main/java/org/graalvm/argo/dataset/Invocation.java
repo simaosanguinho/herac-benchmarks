@@ -8,7 +8,7 @@ public class Invocation {
     // Function identifier.
     private final String function;
     // Memory footprint in MBs.
-    private final int memory;
+    protected int memory;
     // Function execution time in ms.
     private final int duration;
     // Function start timestamp in ms.
