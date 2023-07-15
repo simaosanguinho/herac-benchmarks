@@ -53,6 +53,9 @@ then
         exit 1
 fi
 
+# Move into the script directory.
+cd $DIR
+
 ./gradlew clean shadowJar assemble
 
 TARGET=$1

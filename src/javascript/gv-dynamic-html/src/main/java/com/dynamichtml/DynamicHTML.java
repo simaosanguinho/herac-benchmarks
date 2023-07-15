@@ -78,7 +78,7 @@ public class DynamicHTML extends PolyglotHostAccess {
 
     public static void main(String[] args) {
         HashMap<String, Object> output = new HashMap<>();
-        output.put("url", "http://192.168.12.57:8000/template.html");
+        output.put("url", "http://127.0.0.1:8000/template.html");
         output.put("username", "rbruno");
         output.put("nsize", "10");
         output = main(output);
