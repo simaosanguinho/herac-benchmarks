@@ -19,10 +19,8 @@ def dna(fasta_url):
             }
     }
 
-def main(args):
+def main(fasta_url):
     try:
-        return {"result": dna(args['fasta_url'])}
+        return {"result": dna(fasta_url)}
     except Exception as e:
         return {"result": str(e)}
-
-#print(main({"fasta_url": "http://localhost:8000/bacillus_subtilis.fasta"}))

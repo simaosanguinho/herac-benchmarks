@@ -7,11 +7,11 @@ from torchvision.models import resnet50
 
 model = None
 
-def classify(restnet_url, img_url):
+def classify(resnet_url, img_url):
     global model
     if not model:
         with open("/tmp/resnet50-19c8e357.pth", 'wb') as ofile:
-            response = requests.get(restnet_url)
+            response = requests.get(resnet_url)
             ofile.write(response.content)
 
         model_process_begin = datetime.datetime.now()
@@ -56,8 +56,9 @@ def classify(restnet_url, img_url):
 
 def main(args):
     try:
-        return {"result": classify(args['restnet_url'], args['img_url'])}
+        resnet_url, img_url = args.split(";")
+        return {"result": classify(resnet_url, img_url)}
     except Exception as e:
         return {"result": str(e)}
 
-#print(main({"restnet_url": "http://localhost:8000/resnet50-19c8e357.pth", "img_url": "http://localhost:8000/snap.png"}))
+#print(main("http://localhost:8000/resnet50-19c8e357.pth;http://localhost:8000/snap.png"))
