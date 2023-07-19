@@ -20,37 +20,26 @@ function process_dataset {
     function_isolation=$7
     gv_sandbox=$8  # should be the last parameter since it can be empty
 
-    # This will be used as a set to know which functions have already been uploaded
-    declare -A setUploadedOwners
+    AZURE_EXECUTOR_JAR=$(DIR)/../azure-dataset/build/libs/azure-dataset-1.0-all.jar
+    AZURE_EXECUTOR_ENTRYPOINT=org.graalvm.argo.dataset.execution.ExecutorEntryPoint
 
-    current_timestamp=0
-    tail -n +2 $csv_file |
-    while IFS=, read -r HashOwner HashFunction AverageAllocatedMb AverageDuration Timestamp
-    do
-        if [ -z "${setUploadedOwners[$HashFunction]}" ]
-        then
-            # Upload function for current owner and set as uploaded to prevent uploading it more than once
-            query_parameters="username=$HashOwner&function_name=$HashFunction"
-            query_parameters="$query_parameters&function_language=java&function_entry_point=$function_entry_point"
-            query_parameters="$query_parameters&function_memory=128&function_runtime=$function_runtime"
-            query_parameters="$query_parameters&function_isolation=$function_isolation&invocation_collocation=$invocation_collocation"
-            if [ -n "$gv_sandbox" ]
-            then
-                query_parameters="$query_parameters&gv_sandbox=$gv_sandbox"
-            fi
+    GV_SANDBOX_OPTION=
+    if [ -n "$gv_sandbox" ]
+    then
+        GV_SANDBOX_OPTION="--gvSandbox $gv_sandbox"
+    fi
 
-            curl -s -X POST $LAMBDA_MANAGER_ADDRESS/upload_function?"$query_parameters" -H 'Content-Type: application/octet-stream' --data-binary @"$function_code" > /dev/null
-            setUploadedOwners["$HashFunction"]=1
-        fi
+    time $JAVA_HOME/bin/java -cp $AZURE_EXECUTOR_JAR $AZURE_EXECUTOR_ENTRYPOINT \
+        --input $csv_file \
+        --functionCode $function_code \
+        --functionLanguage java \
+        --functionEntryPoint $function_entry_point \
+        --functionMemory 128 \
+        --functionRuntime $function_runtime \
+        --invocationCollocation $invocation_collocation \
+        --functionIsolation $function_isolation \
+        $GV_SANDBOX_OPTION
 
-        # This is just to adjust the start of the requests with the beginning of the hour
-        time_to_sleep=$(python3 -c "print((($Timestamp - $current_timestamp) % 3600000) / 1000)")
-        allocated_memory=$(python3 -c "print(int(($AverageAllocatedMb * 1024 * 1024) * 0.05))")
-        current_timestamp=$Timestamp
-        sleep $time_to_sleep
-        # TODO: try with real trace values
-        curl -s -X POST $LAMBDA_MANAGER_ADDRESS/$HashOwner/$HashFunction -H 'Content-Type: application/json' --data '{"memory":"'$allocated_memory'","duration":"'$AverageDuration'"}' &
-    done
     wait
 
     sleep 60
@@ -107,14 +96,14 @@ if [[ "$MODE" = "gv" ]]; then
     FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/gv-genericapp/build/libgenericapp.so
     FUNCTION_NAME=gvgenericappbench
     FUNCTION_ENTRY_POINT=com.genericapp.GenericApp
-    FUNCTION_RUNTIME=docker.io%2Fsergiyivan%2Flarge-scale-experiment:graalvisor
+    FUNCTION_RUNTIME=graalvisor
     FUNCTION_ISOLATION=false
     INVOCATION_COLLOCATION=true
 elif [[ "$MODE" = "gv-fork" ]]; then
     FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/gv-genericapp/build/libgenericapp.so
     FUNCTION_NAME=gvgenericappbench
     FUNCTION_ENTRY_POINT=com.genericapp.GenericApp
-    FUNCTION_RUNTIME=docker.io%2Fsergiyivan%2Flarge-scale-experiment:graalvisor
+    FUNCTION_RUNTIME=graalvisor
     FUNCTION_ISOLATION=true
     INVOCATION_COLLOCATION=true
     GV_SANDBOX=process

@@ -8,7 +8,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class Sleep {
 
-    static HashMap<String, Object> output = new HashMap<>();
+    static Map<String, Object> output = new HashMap<>();
 
     static byte[] buffer;
 
@@ -27,14 +27,14 @@ public class Sleep {
         }
     }
 
-    public static HashMap<String, Object> main(HashMap<String, Object> input) {
+    public static Map<String, Object> main(Map<String, Object> input) {
         memory(Integer.parseInt((String)input.get("memory")));
         sleep(Long.parseLong((String)input.get("sleep")));
         return output;
     }
 
     public static void main(String[] args) {
-        HashMap<String, Object> output = new HashMap<>();
+        Map<String, Object> output = new HashMap<>();
         output.put("memory", "1024");
         output.put("sleep", "1000");
         output = main(output);
