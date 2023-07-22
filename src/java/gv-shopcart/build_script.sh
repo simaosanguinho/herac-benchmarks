@@ -13,6 +13,7 @@ function build_ni {
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
 		-cp shopcart-0.3.6.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
+		--add-exports org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk=ALL-UNNAMED \
 		-DGraalVisorGuest=true \
 		-Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
 		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
@@ -48,7 +49,10 @@ fi
 cd $DIR
 
 # Build.
+BACKUP_JAVA_HOME=$JAVA_HOME
+unset JAVA_HOME
 mvn clean package
+export JAVA_HOME=$BACKUP_JAVA_HOME
 
 TARGET=$1
 if [ ! -z "$TARGET" ]

@@ -6,7 +6,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import javax.xml.bind.DatatypeConverter;
+import java.math.BigInteger;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -30,7 +30,7 @@ public class FileHashing {
 
         byte[] bytes = downloadBytes((String)args.get("url"));
         try {
-			output.put("hash", DatatypeConverter.printHexBinary(MessageDigest.getInstance("MD5").digest(bytes)));
+			output.put("hash", String.format("%032X", new BigInteger(1, MessageDigest.getInstance("MD5").digest(bytes))));
 		} catch (NoSuchAlgorithmException e) {
 			output.put("hash", e.getMessage());
 			e.printStackTrace();
