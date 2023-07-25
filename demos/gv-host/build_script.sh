@@ -11,7 +11,6 @@ if [[ -z "${JAVA_HOME}" ]]; then
 fi
 
 function build_graalvisor_host {
-	source $ARGO_HOME/lambda-manager/src/scripts/environment.sh
 	cd build
 	$JAVA_HOME/bin/native-image \
 		-H:+ReportExceptionStackTraces \
