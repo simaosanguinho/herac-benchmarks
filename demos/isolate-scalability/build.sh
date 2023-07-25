@@ -5,8 +5,12 @@ if [[ -z "${ARGO_HOME}" ]]; then
 	exit 1
 fi
 
+if [[ -z "${JAVA_HOME}" ]]; then
+	echo "JAVA_HOME is not defined. Existing..."
+	exit 1
+fi
+
 ./gradlew clean shadowJar assemble
-source $ARGO_HOME/lambda-manager/src/scripts/environment.sh
 cd build
 $JAVA_HOME/bin/native-image \
 	-H:ReservedAuxiliaryImageBytes=0 \
