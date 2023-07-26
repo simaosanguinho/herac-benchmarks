@@ -3,6 +3,7 @@
 # Getting the local default ip used to connect to the internet.
 IP=$(ip route get 8.8.8.8 | grep -oP  'src \K\S+')
 
+# TODO - share with build_benchmarks.sh
 GV_BENCHMARKS="$GV_BENCHMARKS gv_java_sleep"
 GV_BENCHMARKS="$GV_BENCHMARKS gv_python_sleep"
 GV_BENCHMARKS="$GV_BENCHMARKS gv_javascript_sleep"
@@ -478,23 +479,3 @@ function gv_python_warble {
     curl -s -X POST $ip:8080/register?name=warble\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
     echo $'{"name":"warble","async":"false","arguments":"[\'-v\',\'{PRINT(\\"test\\")}\']"}' > $APP_POST
 }
-
-# Old, Jar-based benchmarks.
-function java_hw {
-    APP_LANG=java
-    APP_NAME=gv-hello-world
-    APP_JAR=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/build/libs/hello-world-1.0.jar
-    APP_MAIN=com.hello_world.HelloWorld
-    APP_CONFIG=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/ni-agent-config
-    echo '{"name":"hw","async":"true","arguments":""}' > $APP_POST
-}
-
-function java_sleep {
-    APP_LANG=java
-    APP_NAME=sleep
-    APP_JAR=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/build/libs/sleep-1.0.jar
-    APP_MAIN=com.sleep.Sleep
-    APP_CONFIG=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/ni-agent-config
-    echo '{"name":"com.sleep.Sleep","async":"true","arguments":"{\"memory\":\"128\",\"sleep\":\"1000\"}"}' > $APP_POST
-}
-

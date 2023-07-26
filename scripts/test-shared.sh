@@ -210,7 +210,9 @@ function start_svm {
     #sudo perf stat -e cache-misses,context-switches,branch-misses,page-faults ./app
     #strace -o $tmpdir/strace.log -f ./app
     #strace -f ./app
-    ./app
+    ./app &
+    echo -n "$!" > "$tmpdir/lambda.pid"
+    wait
 }
 
 function snapshot_niuk {

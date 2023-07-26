@@ -76,10 +76,13 @@ function run {
     if [ "$backend" == "container" ]; then
         PID=$(docker inspect --format '{{ .State.Pid }}' gcontainer)
     elif [ "$backend" == "svm" ]; then
-        PID=$(sudo fuser -v -n tcp 8080 2>&1 | grep 8080/tcp | awk '{print $3}')
+        PID=$(cat $tmpdir/lambda.pid)
     elif [ "$backend" == "niuk" ]; then
         PID=$(sudo fuser /tmp/testtap.socket 2>&1 | grep testtap.socket | awk '{print $2}') &> /dev/null
     fi
+
+    # Write lambda pid to file.
+    echo -n "$PID" > $tmpdir/lambda.pid
 
     # Log memory.
     log_rss $PID $tmpdir/lambda.rss &
@@ -118,6 +121,7 @@ then
 fi
 
 echo "Running environment=$backend; sandbox=$SANDBOX; app=$app; mode=$mode; workload=$workload; cpu=$VM_CPU; mem=$VM_MEM"
+echo "Logs available at $tmpdir..."
 
 # Writing post file to disk
 APP_POST=$tmpdir/payload.post
@@ -134,5 +138,5 @@ do
     results_dir=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$backend-$SANDBOX-$mode-$workload-$VM_CPU-$VM_MEM/$iter
     mkdir -p $results_dir &> /dev/null
     cp $tmpdir/{*.log,*.rss} $results_dir &> /dev/null
-    echo "Check logs (iteration $iter): $results_dir/lambda.log"
+    echo "Saved logs (iteration $iter): $results_dir/lambda.log"
 done
