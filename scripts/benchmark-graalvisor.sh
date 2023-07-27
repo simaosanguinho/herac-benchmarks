@@ -4,8 +4,8 @@ function DIR {
     echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
-source $(DIR)/test-shared.sh
-source $(DIR)/test-benchmark.sh
+source $(DIR)/shared.sh
+source $(DIR)/benchmarks.sh
 
 if [ "$#" -ne 4 ]; then
     echo "Syntax: <svm|container|niuk> <app> <mode> <# of tests or concurrency level>"
@@ -65,7 +65,7 @@ function run {
         ip=127.0.0.1
         start_svm &> $tmpdir/lambda.log &
     elif [ "$backend" == "niuk" ]; then
-        # Note: ip is already set when loading test-shared.sh
+        # Note: ip is already set when loading shared.sh
         start_niuk &> $tmpdir/lambda.log &
     fi
 

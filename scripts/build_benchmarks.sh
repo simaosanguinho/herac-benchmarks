@@ -3,6 +3,7 @@
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 LOG=$DIR/build_benchmarks.log
 
+JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-sleep"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-hello-world"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-shopcart"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-file-hashing"

@@ -4,8 +4,8 @@ function DIR {
     echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
-source $(DIR)/test-shared.sh
-source $(DIR)/test-benchmark.sh
+source $(DIR)/shared.sh
+source $(DIR)/benchmarks.sh
 
 if [ "$#" -ne 4 ]; then
     echo "Syntax: <container|vm> <app> <mode> <# of tests or concurrency level>"
