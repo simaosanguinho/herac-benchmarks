@@ -4,6 +4,28 @@ function DIR {
     echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
+source $(DIR)/benchmarks.sh
+
+# TODO - change niuk to microvm.
+function test_gv_benchmarks {
+    for benchmark in $GV_BENCHMARKS
+    do
+        for backend in "svm" #"container" "niuk"
+        do
+            for sandbox in "default" "runtime" "process"
+            do
+                if [ "$sandbox" == "default" ]; then
+                    unset SANDBOX
+                else
+                    export SANDBOX=$sandbox;
+                fi
+                $(DIR)/benchmark-graalvisor.sh svm $benchmark test 1
+           done
+        done
+    done
+    unset SANDBOX
+}
+
 function cdf_latency_filehashing {
     export ITERATIONS=5
     $(DIR)/benchmark-cruntime.sh   container cr_java_filehashing test 25
@@ -382,8 +404,13 @@ function startup_latency {
     startup_latency_cr
 }
 
+# TODO - port python and javascript sleep to new test format.
+# TODO - renames:
+# benchmark-all.sh to run-experiment.sh
+# TODO - ask which experiment to run. Run one experiment and then exit.
 #cdf_latency_filehashing
 #warm_latency
-efficiency
+#efficiency
 #startup_latency
+test_gv_benchmarks
 
