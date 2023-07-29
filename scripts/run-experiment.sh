@@ -6,11 +6,10 @@ function DIR {
 
 source $(DIR)/benchmarks.sh
 
-# TODO - change niuk to microvm.
 function test_gv_benchmarks {
     for benchmark in $GV_BENCHMARKS
     do
-        for backend in "svm" #"container" "niuk"
+        for backend in "svm" "container" "niuk"
         do
             for sandbox in "default" "runtime" "process"
             do
@@ -19,7 +18,7 @@ function test_gv_benchmarks {
                 else
                     export SANDBOX=$sandbox;
                 fi
-                $(DIR)/benchmark-graalvisor.sh svm $benchmark test 1
+                $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 1 | grep "\"result\""
            done
         done
     done
@@ -403,10 +402,9 @@ function startup_latency {
     startup_latency_gv
     startup_latency_cr
 }
-
+# TODO - add a README.md: build graalvisor-lib, graalvisor, container and vm images. All with support for Truffle languages
+# TODO - change niuk to vm.
 # TODO - port python and javascript sleep to new test format.
-# TODO - renames:
-# benchmark-all.sh to run-experiment.sh
 # TODO - ask which experiment to run. Run one experiment and then exit.
 #cdf_latency_filehashing
 #warm_latency

@@ -78,7 +78,7 @@ function run {
     elif [ "$backend" == "svm" ]; then
         PID=$(cat $tmpdir/lambda.pid)
     elif [ "$backend" == "niuk" ]; then
-        PID=$(sudo fuser /tmp/testtap.socket 2>&1 | grep testtap.socket | awk '{print $2}') &> /dev/null
+        PID=$(cat $tmpdir/lambda.pid)
     fi
 
     # Write lambda pid to file.
