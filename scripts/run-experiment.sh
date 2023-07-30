@@ -404,11 +404,44 @@ function startup_latency {
 }
 # TODO - add a README.md: build graalvisor-lib, graalvisor, container and vm images. All with support for Truffle languages
 # TODO - change niuk to vm.
-# TODO - port python and javascript sleep to new test format.
-# TODO - ask which experiment to run. Run one experiment and then exit.
-#cdf_latency_filehashing
-#warm_latency
-#efficiency
-#startup_latency
-test_gv_benchmarks
+
+read -p "Run basic graalvisor tests (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    test_gv_benchmarks
+    exit 0
+fi
+
+read -p "Run cdf latency experiment (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    cdf_latency_filehashing
+    exit 0
+fi
+
+read -p "Run warm latency experiment (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    warm_latency
+    exit 0
+fi
+
+read -p "Run startup latency experiment (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    startup_latency
+    exit 0
+fi
+
+read -p "Run efficiency experiment (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    efficiency
+    exit 0
+fi
 
