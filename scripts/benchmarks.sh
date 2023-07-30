@@ -214,10 +214,10 @@ function cr_java_sleep {
 }
 
 function gv_python_sleep {
-    APP_LANG=python
-    APP_NAME=gv-sleep
-    APP_MAIN=main
-    APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/sleep.py
+    APP_LANG=java
+    APP_NAME=gv-py-sleep
+    APP_MAIN=com.sleep.Sleep
+    APP_SCRIPT=$BENCHMARKS_HOME/src/python/gv-sleep/build/libsleep.so
     curl -s -X POST $ip:8080/register?name=sleep\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
     echo '{"name":"sleep","async":"false","arguments":"1"}' > $APP_POST
 }
@@ -231,12 +231,12 @@ function cr_python_sleep {
 }
 
 function gv_javascript_sleep {
-    APP_LANG=javascript
-    APP_NAME=gv-sleep
-    APP_MAIN=main
-    APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/sleep.js
+    APP_LANG=java
+    APP_NAME=gv-js-sleep
+    APP_MAIN=com.sleep.Sleep
+    APP_SCRIPT=$BENCHMARKS_HOME/src/javascript/gv-sleep/build/libsleep.so
     curl -s -X POST $ip:8080/register?name=sleep\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-    echo '{"name":"sleep","async":"false","arguments":"1000"}' > $APP_POST
+    echo '{"name":"sleep","async":"false","arguments":"{\"time\":\"1\"}"}' > $APP_POST
 }
 
 function cr_javascript_sleep {
