@@ -9,7 +9,7 @@ source $(DIR)/benchmarks.sh
 function test_gv_benchmarks {
     for benchmark in $GV_BENCHMARKS
     do
-        for backend in "svm" "container" "niuk"
+        for backend in "svm" "container" "vm"
         do
             for sandbox in "default" "runtime" "process"
             do
@@ -39,43 +39,43 @@ function efficiency {
     function efficiency_gv {
 
          function efficiency_gv_java_single {
-            export WMULTIPLIER=10000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 1; unset WMULTIPLIER
-            export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 1; unset WMULTIPLIER
-            export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 1; unset WMULTIPLIER
-            export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
-            export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1; unset WMULTIPLIER
-            export WMULTIPLIER=10000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 1; unset WMULTIPLIER
+            export WMULTIPLIER=10000; $(DIR)/benchmark-graalvisor.sh vm gv_java_hw benchmark 1; unset WMULTIPLIER
+            export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh vm gv_java_filehashing benchmark 1; unset WMULTIPLIER
+            export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh vm gv_java_httprequest benchmark 1; unset WMULTIPLIER
+            export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh vm gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
+            export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh vm gv_java_classify benchmark 1; unset WMULTIPLIER
+            export WMULTIPLIER=10000; $(DIR)/benchmark-graalvisor.sh vm gv_java_shopcart benchmark 1; unset WMULTIPLIER
         }
 
         function efficiency_gv_java {
-            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 8; unset WMULTIPLIER
-            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 8; unset WMULTIPLIER
-            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 8; unset WMULTIPLIER
-            export WMULTIPLIER=1; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
+            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh vm gv_java_hw benchmark 8; unset WMULTIPLIER
+            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh vm gv_java_filehashing benchmark 8; unset WMULTIPLIER
+            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh vm gv_java_httprequest benchmark 8; unset WMULTIPLIER
+            export WMULTIPLIER=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
             # Note: there is a bug in gv, it can't run 2 parallel calls to classify.
             # Since the workload is throughput intensive, having a second one would keep the same throughput so it is fine...
-	    export WMULTIPLIER=5; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1; unset WMULTIPLIER
-            export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 8; unset WMULTIPLIER
+	    export WMULTIPLIER=5; $(DIR)/benchmark-graalvisor.sh vm gv_java_classify benchmark 1; unset WMULTIPLIER
+            export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh vm gv_java_shopcart benchmark 8; unset WMULTIPLIER
         }
 
         function efficiency_gv_javascript {
-            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw benchmark 8
-            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_dynamichtml benchmark 8
-            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader benchmark 8
-            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_thumbnail benchmark 4
+            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_hw benchmark 8
+            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_dynamichtml benchmark 8
+            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_uploader benchmark 8
+            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_thumbnail benchmark 4
         }
 
         function efficiency_gv_python {
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_hw benchmark 8
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_hw benchmark 8
             export WMULTIPLIER=5;
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_dynamichtml benchmark 4
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_thumbnail benchmark 2
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_uploader benchmark 4
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_compression benchmark 4
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_dynamichtml benchmark 4
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_thumbnail benchmark 2
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_uploader benchmark 4
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_compression benchmark 4
             export WMULTIPLIER=2;
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_videoprocessing benchmark 2
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_videoprocessing benchmark 2
             export WMULTIPLIER=50;
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_mst benchmark 2
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_mst benchmark 2
             unset WMULTIPLIER
         }
 
@@ -114,29 +114,29 @@ function efficiency {
             # Hello world
             export SNAPSHOT=$snapshots/hw
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw test 1"
-            export WMULTIPLIER=2000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_hw benchmark 1; unset WMULTIPLIER
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_hw test 1"
+            export WMULTIPLIER=2000; $(DIR)/benchmark-graalvisor.sh vm gv_java_hw benchmark 1; unset WMULTIPLIER
             unset SNAPSHOT
 
             # File hashing
             export SNAPSHOT=$snapshots/fh
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing test 1"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_java_filehashing benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_filehashing test 1"
+            $(DIR)/benchmark-graalvisor.sh vm gv_java_filehashing benchmark 1
             unset SNAPSHOT
 
             # Http request
             export SNAPSHOT=$snapshots/rest
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest test 1"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_java_httprequest benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_httprequest test 1"
+            $(DIR)/benchmark-graalvisor.sh vm gv_java_httprequest benchmark 1
             unset SNAPSHOT
 
             # Shopcart
             export SNAPSHOT=$snapshots/shopcart
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart test 1"
-            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh niuk gv_java_shopcart benchmark 1; unset WMULTIPLIER
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_shopcart test 1"
+            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh vm gv_java_shopcart benchmark 1; unset WMULTIPLIER
             unset SNAPSHOT
 
             # Video processing
@@ -144,8 +144,8 @@ function efficiency {
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
             export VM_MEM=1024
             export CGROUP_CPU_QUOTA=50000 # .5 cores
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing test 1"
-            export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh niuk gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_videoprocessing test 1"
+            export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh vm gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
             unset CGROUP_CPU_QUOTA
             unset VM_MEM
             unset SNAPSHOT
@@ -156,8 +156,8 @@ function efficiency {
             export VM_MEM=2048
             export CGROUP_CPU_QUOTA=50000 # 1 core?
             # Tensorflow cannot be loaded two! We use test 0 because of that.
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify test 0"
-            export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh niuk gv_java_classify benchmark 1; unset WMULTIPLIER
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_classify test 0"
+            export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh vm gv_java_classify benchmark 1; unset WMULTIPLIER
             unset CGROUP_CPU_QUOTA
             unset VM_MEM
             unset SNAPSHOT
@@ -174,22 +174,22 @@ function efficiency {
             # Hello world
             export SNAPSHOT=$snapshots/hw
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw test 100"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_hw benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_javascript_hw test 100"
+            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_hw benchmark 1
             unset SNAPSHOT
 
             # Dynamic HTML
             export SNAPSHOT=$snapshots/html
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_dynamichtml test 100"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_dynamichtml benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_javascript_dynamichtml test 100"
+            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_dynamichtml benchmark 1
             unset SNAPSHOT
 
             # Uploader
             export SNAPSHOT=$snapshots/uploader
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader test 100"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_uploader benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_javascript_uploader test 100"
+            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_uploader benchmark 1
             unset SNAPSHOT
 
             # Thumbnail
@@ -197,8 +197,8 @@ function efficiency {
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
             export VM_MEM=512
             export CGROUP_CPU_QUOTA=25000 # .25 cores
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_thumbnail test 100"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_javascript_thumbnail benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_javascript_thumbnail test 100"
+            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_thumbnail benchmark 1
             unset CGROUP_CPU_QUOTA
             unset VM_MEM
             unset SNAPSHOT
@@ -213,8 +213,8 @@ function efficiency {
             export VM_MEM=256
             export CGROUP_CPU_QUOTA=12500 # .125 cores
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_python_hw test 100"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_hw benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_hw test 100"
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_hw benchmark 1
             unset CGROUP_CPU_QUOTA
             unset VM_MEM
             unset SNAPSHOT
@@ -227,22 +227,22 @@ function efficiency {
             # Dynamic html
             export SNAPSHOT=$snapshots/html
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_python_dynamichtml test $WMULTIPLIER"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_dynamichtml benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_dynamichtml test $WMULTIPLIER"
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_dynamichtml benchmark 1
             unset SNAPSHOT
 
             # Uploader
             export SNAPSHOT=$snapshots/uploader
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_python_uploader test $WMULTIPLIER"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_uploader benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_uploader test $WMULTIPLIER"
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_uploader benchmark 1
             unset SNAPSHOT
 
             # Compression
             export SNAPSHOT=$snapshots/compression
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_python_compression test $WMULTIPLIER"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_compression benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_compression test $WMULTIPLIER"
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_compression benchmark 1
             unset SNAPSHOT
 
             # VM memory, cgroup cpu quota for the following benchmarks.
@@ -252,16 +252,16 @@ function efficiency {
             # Thumbnail
             export SNAPSHOT=$snapshots/thumbnail
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_python_thumbnail test $WMULTIPLIER"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_thumbnail benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_thumbnail test $WMULTIPLIER"
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_thumbnail benchmark 1
             unset SNAPSHOT
 
             # MST
             export SNAPSHOT=$snapshots/mst
             export WMULTIPLIER=50
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_python_mst test $WMULTIPLIER"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_mst benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_mst test $WMULTIPLIER"
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_mst benchmark 1
 
             # Video processing
             export SNAPSHOT=$snapshots/video
@@ -269,8 +269,8 @@ function efficiency {
             export CGROUP_CPU_QUOTA=100000 # 1 core
             export VM_MEM=2048
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh niuk gv_python_videoprocessing test $WMULTIPLIER"
-            $(DIR)/benchmark-graalvisor.sh niuk gv_python_videoprocessing benchmark 1
+            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_videoprocessing test $WMULTIPLIER"
+            $(DIR)/benchmark-graalvisor.sh vm gv_python_videoprocessing benchmark 1
             unset SNAPSHOT
 
             unset SNAPSHOT
@@ -354,7 +354,7 @@ function efficiency {
 function startup_latency {
 
     function startup_latency_gv {
-        for mode in svm niuk;
+        for mode in svm vm;
         do
             for i in $(seq 1 10);
             do
@@ -402,9 +402,8 @@ function startup_latency {
     startup_latency_gv
     startup_latency_cr
 }
-# TODO - add a README.md: build graalvisor-lib, graalvisor, container and vm images. All with support for Truffle languages
-# TODO - change niuk to vm.
 
+# TODO - add a README.md: build graalvisor-lib, graalvisor, container and vm images. All with support for Truffle languages
 read -p "Run basic graalvisor tests (y or Y, everything else as no)? " -n 1 -r
 echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]

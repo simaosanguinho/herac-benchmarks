@@ -168,12 +168,12 @@ function remove_tap {
     sudo ip link delete $tap
 }
 
-function start_niuk {
+function start_vm {
     create_tap
     socket=$tmpdir/lambda.socket
     if [ ! -z "$SNAPSHOT" ] && [ -f "$SNAPSHOT.snap" ]
     then
-        restore_niuk \
+        restore_vm \
             $socket \
             $SNAPSHOT.snap \
             $SNAPSHOT.mem \
@@ -259,12 +259,12 @@ function start_svm {
     wait
 }
 
-function snapshot_niuk {
+function snapshot_vm {
     vm_socket=$1
     snapshot_file=$2
     memory_file=$3
     disk_file=$4
-    echo "Snapshotting niuk..."
+    echo "Snapshotting vm..."
     sudo curl -s --unix-socket $vm_socket -i \
         -X PATCH "http://localhost/vm" \
         -d "{ \"state\": \"Paused\" }"
@@ -282,15 +282,15 @@ function snapshot_niuk {
     sudo curl -s --unix-socket $vm_socket -i \
         -X PATCH "http://localhost/vm" \
         -d "{ \"state\": \"Resumed\" }"
-    echo "Snapshotting niuk... done!"
+    echo "Snapshotting vm... done!"
 }
 
-function restore_niuk {
+function restore_vm {
     vm_socket=$1
     snapshot_file=$2
     memory_file=$3
     disk_file=$4
-    echo "Restoring niuk..."
+    echo "Restoring vm..."
     sudo firecracker --api-sock $vm_socket &
 
     cp $disk_file $tmpdir/graalvisor.img
@@ -303,13 +303,13 @@ function restore_niuk {
             \"enable_diff_snapshots\": false,
             \"resume_vm\": true
         }"
-    echo "Restoring niuk... done!"
+    echo "Restoring vm... done!"
 }
 
-function stop_niuk {
+function stop_vm {
     if [ ! -z "$SNAPSHOT" ] && [ ! -f "$SNAPSHOT.snap" ]
     then
-        snapshot_niuk \
+        snapshot_vm \
             $tmpdir/lambda.socket \
             $SNAPSHOT.snap \
             $SNAPSHOT.mem \
