@@ -4,12 +4,12 @@ function DIR {
     echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
-source $(DIR)/test-shared.sh
-source $(DIR)/test-benchmark.sh
+source $(DIR)/shared.sh
+source $(DIR)/benchmarks.sh
 
 if [ "$#" -ne 4 ]; then
-    echo "Syntax: <svm|container|niuk> <app> <mode> <# of tests or concurrency level>"
-    echo "Available backends: svm (Native Image), container (Docker container), niuk (Firecracker VM)."
+    echo "Syntax: <svm|container|vm> <app> <mode> <# of tests or concurrency level>"
+    echo "Available backends: svm (Native Image), container (Docker container), vm (Firecracker VM)."
     echo "Available apps: $GV_BENCHMARKS"
     echo "Available modes: test benchmark. Test will perform a number of requests. Benchmark will use apache bench with the desired concurrency level."
     echo "Example: benchmark-graalvisor.sh svm gv_java_hw test 1"
@@ -22,8 +22,8 @@ if [ "$#" -ne 4 ]; then
     echo "- CGROUP=<name> - name of the cgroup to use. A directory with that name will be created under /sys/fs/cgroup. Defaults to empty which leads to no CGROUP being used;"
     echo "- CGROUP_CPU_QUOTA=<number> - CPU quota for a 100ms period. A quota 100000 means using a full core. Only used if CGROUP is set. Defaults to 100000 (full core)."
     echo "- CGROUP_MEM=<number> - memory limit in MBs configued in the CGROUP. Only used if CGROUP is set. Defaults to 2048MBs."
-    echo "- VM_CPU=<number> - number of cores that the VM will create internally (only used in niuk mode). Defaults to 1;"
-    echo "- VM_MEM=<number> - memory given to the VM (only used in niuk mode). Defaults to 2048;"
+    echo "- VM_CPU=<number> - number of cores that the VM will create internally (only used in vm mode). Defaults to 1;"
+    echo "- VM_MEM=<number> - memory given to the VM (only used in vm mode). Defaults to 2048;"
     echo "- PIN_CORE=<boolean> - if true, will pin the process to core 0. Defaults to false;"
     echo "- DISABLE_TURBO=<boolean> - if true, will disable turbo boost. Defaults to false;"
     exit 1
@@ -64,9 +64,9 @@ function run {
     elif [ "$backend" == "svm" ]; then
         ip=127.0.0.1
         start_svm &> $tmpdir/lambda.log &
-    elif [ "$backend" == "niuk" ]; then
-        # Note: ip is already set when loading test-shared.sh
-        start_niuk &> $tmpdir/lambda.log &
+    elif [ "$backend" == "vm" ]; then
+        # Note: ip is already set when loading shared.sh
+        start_vm &> $tmpdir/lambda.log &
     fi
 
     # Let the lambda start.
@@ -76,10 +76,13 @@ function run {
     if [ "$backend" == "container" ]; then
         PID=$(docker inspect --format '{{ .State.Pid }}' gcontainer)
     elif [ "$backend" == "svm" ]; then
-        PID=$(sudo fuser -v -n tcp 8080 2>&1 | grep 8080/tcp | awk '{print $3}')
-    elif [ "$backend" == "niuk" ]; then
-        PID=$(sudo fuser /tmp/testtap.socket 2>&1 | grep testtap.socket | awk '{print $2}') &> /dev/null
+        PID=$(cat $tmpdir/lambda.pid)
+    elif [ "$backend" == "vm" ]; then
+        PID=$(cat $tmpdir/lambda.pid)
     fi
+
+    # Write lambda pid to file.
+    echo -n "$PID" > $tmpdir/lambda.pid
 
     # Log memory.
     log_rss $PID $tmpdir/lambda.rss &
@@ -98,8 +101,8 @@ function run {
         stop_container
     elif [ "$backend" == "svm" ]; then
         stop_svm
-    elif [ "$backend" == "niuk" ]; then
-        stop_niuk
+    elif [ "$backend" == "vm" ]; then
+        stop_vm
     fi
     wait
 
@@ -118,6 +121,7 @@ then
 fi
 
 echo "Running environment=$backend; sandbox=$SANDBOX; app=$app; mode=$mode; workload=$workload; cpu=$VM_CPU; mem=$VM_MEM"
+echo "Logs available at $tmpdir..."
 
 # Writing post file to disk
 APP_POST=$tmpdir/payload.post
@@ -134,5 +138,5 @@ do
     results_dir=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$backend-$SANDBOX-$mode-$workload-$VM_CPU-$VM_MEM/$iter
     mkdir -p $results_dir &> /dev/null
     cp $tmpdir/{*.log,*.rss} $results_dir &> /dev/null
-    echo "Check logs (iteration $iter): $results_dir/lambda.log"
+    echo "Saved logs (iteration $iter): $results_dir/lambda.log"
 done

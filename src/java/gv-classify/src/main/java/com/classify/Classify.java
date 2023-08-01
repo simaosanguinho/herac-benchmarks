@@ -1,5 +1,6 @@
 package com.classify;
 
+import java.util.concurrent.ThreadLocalRandom;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +18,7 @@ import javax.imageio.ImageIO;
 public class Classify {
 
     public static InceptionImageClassifier classifier = null;
+    public static String TMP_IMG_PATH = String.format("/tmp/img-%d.jpg", ThreadLocalRandom.current().nextInt(0, 1024 + 1));
 
     public static byte[] fromInputStream(InputStream is) throws Exception {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -57,7 +59,6 @@ public class Classify {
     
     public static HashMap<String, Object> main(Map<String, Object> args) {
         HashMap<String, Object> output = new HashMap<>();
-
         try {
            	if (classifier == null) {
                 classifier = new InceptionImageClassifier();
@@ -67,11 +68,11 @@ public class Classify {
     			classifier.load_labels(new FileInputStream(("/tmp/imagenet_comp_graph_label_strings.txt")));
             }
            	
-            try (FileOutputStream stream = new FileOutputStream("/tmp/image.jpg")) {
+            try (FileOutputStream stream = new FileOutputStream(TMP_IMG_PATH)) {
                 stream.write(downloadBytes((String)args.get("image_url")));
             }
 
-			output.put("prediction", classifier.predict_image(ImageIO.read(new FileInputStream("/tmp/image.jpg"))));
+			output.put("prediction", classifier.predict_image(ImageIO.read(new FileInputStream(TMP_IMG_PATH))));
 		} catch (Throwable e) {
 			output.put("exception", e.getMessage());
 			e.printStackTrace();

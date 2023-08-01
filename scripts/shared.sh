@@ -8,10 +8,10 @@ BENCHMARKS_HOME=$(DIR)/..
 tmpdir=/tmp/test-proxy
 
 # Network setup for the test.
-gateway=172.18.0.1
+gateway=172.172.0.1
 mask=255.255.0.0
 smask=16
-ip=172.18.0.2
+ip=172.172.0.2
 tap=testtap
 bridge=testbridge
 
@@ -21,7 +21,6 @@ if [ -z "${ARGO_HOME}" ]; then
     exit 1
 else
     CRUNTIME_HOME=$ARGO_HOME/lambda-manager/src/scripts/cruntime
-    NIUK_HOME=$ARGO_HOME/niuk
     GRAALVISOR_HOME=$ARGO_HOME/graalvisor
     RES_HOME=$ARGO_HOME/resources
 fi
@@ -169,32 +168,77 @@ function remove_tap {
     sudo ip link delete $tap
 }
 
-function start_niuk {
+function start_vm {
     create_tap
+    socket=$tmpdir/lambda.socket
     if [ ! -z "$SNAPSHOT" ] && [ -f "$SNAPSHOT.snap" ]
     then
-        restore_niuk \
-            /tmp/testtap.socket \
+        restore_vm \
+            $socket \
             $SNAPSHOT.snap \
             $SNAPSHOT.mem \
             $SNAPSHOT.disk
 
     else
-        cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy.img $tmpdir
+        cp $ARGO_HOME/images/graalvisor/graalvisor.img $tmpdir
         cd $tmpdir
+        mac=`printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))`
         proxy_args="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
-        sudo bash $NIUK_HOME/run_niuk.sh \
-            --vmm firecracker \
-            --disk $tmpdir/polyglot-proxy.img \
-            --kernel $RES_HOME/hello-vmlinux.bin \
-            --memory $VM_MEM \
-            --cpu $VM_CPU \
-            --ip $ip \
-            --gateway $gateway \
-            --mask $mask \
-            --tap $tap \
-            --console \
-            $proxy_args
+        rootfs=$tmpdir/graalvisor.img
+        kernel=$RES_HOME/hello-vmlinux.bin
+        # Kernel opts example: https://github.com/firecracker-microvm/firecracker-demo/blob/main/start-firecracker.sh
+        kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$ip::$gateway:$mask::eth0:none::: nomodule console=ttyS0 reboot=k panic=1 pci=off $proxy_args"
+
+        # Start firecracker.
+        sudo firecracker --api-sock $socket &
+        sudo ps --ppid $! -o pid= > $tmpdir/lambda.pid
+        echo "$ip" > $tmpdir/lambda.ip
+
+        # Configures kernel its arguments.
+        sudo curl -s --unix-socket $socket -i \
+            -X PUT "http://localhost/boot-source" \
+            --data "{
+                \"kernel_image_path\": \"${kernel}\",
+                \"boot_args\": \"${kopts}\"
+            }"
+
+        # Configures the rootfs.
+        sudo curl -s --unix-socket $socket -i \
+            -X PUT "http://localhost/drives/rootfs" \
+            -d "{
+                \"drive_id\": \"rootfs\",
+                \"path_on_host\": \"${rootfs}\",
+                \"is_root_device\": true,
+                \"is_read_only\": false
+            }"
+
+        # Confiures resources.
+        sudo curl -s --unix-socket $socket -i \
+            -X PUT "http://localhost/machine-config" \
+            --data "{
+                \"vcpu_count\": ${VM_CPU},
+                \"mem_size_mib\": ${VM_MEM},
+                \"track_dirty_pages\": false
+            }"
+
+        # Confiures network.
+        sudo curl -s --unix-socket $socket -i \
+            -X PUT 'http://localhost/network-interfaces/eth0' \
+            -d "{
+                \"iface_id\": \"eth0\",
+                \"guest_mac\": \"${mac}\",
+                \"host_dev_name\": \"${tap}\"
+            }"
+
+        # Launches vm.
+        sudo curl -s --unix-socket $socket -i \
+            -X PUT "http://localhost/actions" \
+            -d "{
+                \"action_type\": \"InstanceStart\"
+            }"
+
+        # What for the vm to terminate.
+        wait
     fi
 }
 
@@ -210,15 +254,17 @@ function start_svm {
     #sudo perf stat -e cache-misses,context-switches,branch-misses,page-faults ./app
     #strace -o $tmpdir/strace.log -f ./app
     #strace -f ./app
-    ./app
+    ./app &
+    echo -n "$!" > "$tmpdir/lambda.pid"
+    wait
 }
 
-function snapshot_niuk {
+function snapshot_vm {
     vm_socket=$1
     snapshot_file=$2
     memory_file=$3
     disk_file=$4
-    echo "Snapshotting niuk..."
+    echo "Snapshotting vm..."
     sudo curl -s --unix-socket $vm_socket -i \
         -X PATCH "http://localhost/vm" \
         -d "{ \"state\": \"Paused\" }"
@@ -231,23 +277,23 @@ function snapshot_niuk {
             \"mem_file_path\": \"$memory_file\"
         }"
 
-    cp $tmpdir/polyglot-proxy.img $disk_file
+    cp $tmpdir/graalvisor.img $disk_file
 
     sudo curl -s --unix-socket $vm_socket -i \
         -X PATCH "http://localhost/vm" \
         -d "{ \"state\": \"Resumed\" }"
-    echo "Snapshotting niuk... done!"
+    echo "Snapshotting vm... done!"
 }
 
-function restore_niuk {
+function restore_vm {
     vm_socket=$1
     snapshot_file=$2
     memory_file=$3
     disk_file=$4
-    echo "Restoring niuk..."
+    echo "Restoring vm..."
     sudo firecracker --api-sock $vm_socket &
 
-    cp $disk_file $tmpdir/polyglot-proxy.img
+    cp $disk_file $tmpdir/graalvisor.img
 
     sudo curl -s --unix-socket $vm_socket -i \
         -X PUT "http://localhost/snapshot/load" \
@@ -257,20 +303,19 @@ function restore_niuk {
             \"enable_diff_snapshots\": false,
             \"resume_vm\": true
         }"
-    echo "Restoring niuk... done!"
+    echo "Restoring vm... done!"
 }
 
-function stop_niuk {
+function stop_vm {
     if [ ! -z "$SNAPSHOT" ] && [ ! -f "$SNAPSHOT.snap" ]
     then
-        snapshot_niuk \
-            /tmp/testtap.socket \
+        snapshot_vm \
+            $tmpdir/lambda.socket \
             $SNAPSHOT.snap \
             $SNAPSHOT.mem \
             $SNAPSHOT.disk
     fi
     sudo kill $PID
-    sudo rm /tmp/testtap.socket
     remove_tap
 }
 

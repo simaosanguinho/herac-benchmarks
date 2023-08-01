@@ -1,7 +1,9 @@
 #!/bin/bash
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+LOG=$DIR/build_benchmarks.log
 
+JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-sleep"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-hello-world"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-shopcart"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-file-hashing"
@@ -50,13 +52,6 @@ JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS javascript/cr-dynamic-html"
 JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS javascript/cr-uploader"
 JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS javascript/cr-sleep"
 
-BUILD_SET="$BUILD_SET $JV_GV_BENCHMARKS"
-BUILD_SET="$BUILD_SET $JV_CR_BENCHMARKS"
-BUILD_SET="$BUILD_SET $PY_GV_BENCHMARKS"
-BUILD_SET="$BUILD_SET $PY_CR_BENCHMARKS"
-BUILD_SET="$BUILD_SET $JS_GV_BENCHMARKS"
-BUILD_SET="$BUILD_SET $JS_CR_BENCHMARKS"
-
 if [ -z "$ARGO_HOME" ]
 then
         echo "Please set ARGO_HOME first. It should point to a checkout of github.com/graalvm/argo."
@@ -69,14 +64,57 @@ then
         exit 1
 fi
 
+BUILD_SET=""
+read -p "Build Graalvisor's Java benchmarks (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_SET="$BUILD_SET $JV_GV_BENCHMARKS"
+fi
+read -p "Build Graalvisor's Python benchmarks (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_SET="$BUILD_SET $PY_GV_BENCHMARKS"
+fi
+read -p "Build Graalvisor's JavaScript benchmarks (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_SET="$BUILD_SET $JS_GV_BENCHMARKS"
+fi
+read -p "Build OpenWhisk's Java benchmarks (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_SET="$BUILD_SET $JV_CR_BENCHMARKS"
+fi
+read -p "Build OpenWhisk's Python benchmarks (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_SET="$BUILD_SET $PY_CR_BENCHMARKS"
+fi
+read -p "Build OpenWhisk's JavaScript benchmarks (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    BUILD_SET="$BUILD_SET $JS_CR_BENCHMARKS"
+fi
+
+rm $LOG &> /dev/null
 for benchmark in $BUILD_SET
 do
-	build_script=$DIR/../src/$benchmark/build_script.sh
-	if [ -f "$build_script" ]; then
-		echo "Building $benchmark..."
-		$DIR/build_benchmark.sh $build_script $@
-		echo "Building $benchmark... done!"
+    build_script=$DIR/../src/$benchmark/build_script.sh
+    if [ -f "$build_script" ]; then
+        echo -n "Building $benchmark..."
+        if [[ $benchmark == *"/gv-"* ]]; then
+            $DIR/build_benchmark.sh $build_script build_ni_sharedlibrary 2>&1 | tee -a $LOG | grep -q "Finished generating" || echo "Failed to build $benchmark!"
 	else
-		echo "$build_script/build_script.sh DOES NOT exist, skipping."
-	fi
+            $DIR/build_benchmark.sh $build_script 2>&1 >> $LOG
+        fi
+        echo "done!"
+    else
+        echo "$build_script/build_script.sh DOES NOT exist, skipping."
+    fi
 done
