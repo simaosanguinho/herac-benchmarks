@@ -27,7 +27,7 @@ public class InvocationTraceExecutor {
 
     // HashOwner,HashFunction,AverageAllocatedMb,AverageDuration,Timestamp
     public void execute(String invocationsFilePath) {
-        Set<String> uploadedFunctions = new HashSet<>();
+        uploadFunctions(invocationsFilePath);
         try (BufferedReader br = new BufferedReader(new FileReader(invocationsFilePath))) {
             String line;
             String[] splitRow;
@@ -41,8 +41,6 @@ public class InvocationTraceExecutor {
                 int duration = Integer.valueOf(splitRow[3]);
                 int timestamp = Integer.valueOf(splitRow[4]);
 
-                ensureUploaded(uploadedFunctions, owner, function);
-
                 waitForInvocation(currentTimestamp, timestamp);
                 currentTimestamp = timestamp;
 
@@ -50,6 +48,23 @@ public class InvocationTraceExecutor {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void uploadFunctions(String invocationsFilePath) {
+        Set<String> uploadedFunctions = new HashSet<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(invocationsFilePath))) {
+            String line;
+            String[] splitRow;
+            br.readLine(); // To skip the header
+            while ((line = br.readLine()) != null) {
+                splitRow = line.split(InvocationTraceGenerator.DELIMITER);
+                String owner = splitRow[0];
+                String function = splitRow[1];
+                ensureUploaded(uploadedFunctions, owner, function);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
