@@ -45,8 +45,11 @@ then
         exit 1
 fi
 
+# Build graalvisor lib.
+bash $ARGO_HOME/graalvisor-lib/build.sh
+
 # Move into the script directory.
-cd $DIR
+cd $DIR &> /dev/null
 
 # Build.
 BACKUP_JAVA_HOME=$JAVA_HOME

@@ -7,7 +7,27 @@ function DIR {
 source $(DIR)/benchmarks.sh
 
 function test_gv_benchmarks {
-    for benchmark in $GV_BENCHMARKS
+    TEST_SET=""
+    read -p "Test Graalvisor's Java benchmarks (y or Y, everything else as no)? " -n 1 -r
+    echo    # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        TEST_SET="$TEST_SET $JV_GV_BENCHMARKS"
+    fi
+    read -p "Test Graalvisor's Python benchmarks (y or Y, everything else as no)? " -n 1 -r
+    echo    # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        TEST_SET="$TEST_SET $PY_GV_BENCHMARKS"
+    fi
+    read -p "Test Graalvisor's JavaScript benchmarks (y or Y, everything else as no)? " -n 1 -r
+    echo    # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        TEST_SET="$TEST_SET $JS_GV_BENCHMARKS"
+    fi
+
+    for benchmark in $TEST_SET
     do
         for backend in "svm" "container" "vm"
         do
@@ -403,7 +423,6 @@ function startup_latency {
     startup_latency_cr
 }
 
-# TODO - add a README.md: build graalvisor-lib, graalvisor, container and vm images. All with support for Truffle languages
 read -p "Run basic graalvisor tests (y or Y, everything else as no)? " -n 1 -r
 echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]

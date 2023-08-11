@@ -61,4 +61,5 @@ def main(args):
     except Exception as e:
         return {"result": str(e)}
 
-#print(main("http://localhost:8000/resnet50-19c8e357.pth;http://localhost:8000/snap.png"))
+# This pre-load is necessary because of some strange bug that only happens when you compile NI as a lib.
+print(main("http://172.172.0.1:8000/resnet50-19c8e357.pth;http://localhost:8000/snap.png"))

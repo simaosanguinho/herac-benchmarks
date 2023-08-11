@@ -25,6 +25,8 @@ if [ -z "$JAVA_HOME" ]
 then
     echo "Please set JAVA_HOME first. It should be a GraalVM with native-image available."
     exit 1
+else
+    eval $(echo "export $(cat $JAVA_HOME/release | grep GRAALVM_VERSION=)")
 fi
 
 BENCHMARK_BUILD_SCRIPT=$1
@@ -45,6 +47,17 @@ fi
 
 # This will remove the benchmark build script from $@ so that we can pass it.
 shift
+
+# Some benchmarks cannot still be compiled with GraalVM 23 (Java 17).
+if [[ $BENCHMARK_BUILD_SCRIPT == *"/java/gv-classify"* ]]; then
+    if [[ $GRAALVM_VERSION == *"23.0.0"* ]]; then
+        export JAVA_HOME=$JAVA11_HOME
+    fi
+elif [[ $BENCHMARK_BUILD_SCRIPT == *"/javascript/gv-thumbnail"* ]]; then
+    if [[ $GRAALVM_VERSION == *"23.0.0"* ]]; then
+        export JAVA_HOME=$JAVA11_HOME
+    fi
+fi
 
 if [ "$BENCHMARK_BUILD_MODE" == "container" ]; then
     BENCHMARK_SCRIPT_BASENAME="$(basename -- $BENCHMARK_BUILD_SCRIPT)"

@@ -22,10 +22,10 @@ JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_videoprocessing"    # 1024 MB
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_sleep"
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_hw"               # 256 MB
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_mst"              # 512 MB
-# TODO - add python BFS
-# TODO - add python PageRank
-# TODO - add python DNA
-# TODO - add python classify
+PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_bfs"              # 512 MB?
+PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_pagerank"         # 512 MB?
+PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_dna"              # 512 MB?
+PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_classify"         # 512 MB?
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_dynamichtml"      # 256 MB
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_compression"      # 512 MB
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_thumbnail"        # 256 MB
@@ -402,6 +402,42 @@ function gv_python_mst {
     APP_SO=$BENCHMARKS_HOME/src/python/gv-mst/build/libmst.so
     curl -s -X POST $ip:8080/register?name=mst\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
     echo '{"name":"mst","async":"false","arguments":"{\"size\":\"100\"}"}' > $APP_POST
+}
+
+function gv_python_bfs {
+    APP_LANG=java
+    APP_NAME=gv-py-bfs
+    APP_MAIN=com.bfs.BFS
+    APP_SO=$BENCHMARKS_HOME/src/python/gv-bfs/build/libbfs.so
+    curl -s -X POST $ip:8080/register?name=bfs\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+    echo '{"name":"bfs","async":"false","arguments":"{\"size\":\"100\"}"}' > $APP_POST
+}
+
+function gv_python_pagerank {
+    APP_LANG=java
+    APP_NAME=gv-py-pagerank
+    APP_MAIN=com.pr.PageRank
+    APP_SO=$BENCHMARKS_HOME/src/python/gv-pagerank/build/libpr.so
+    curl -s -X POST $ip:8080/register?name=pagerank\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+    echo '{"name":"pagerank","async":"false","arguments":"{\"size\":\"10\"}"}' > $APP_POST
+}
+
+function gv_python_dna {
+    APP_LANG=java
+    APP_NAME=gv-py-dna
+    APP_MAIN=com.dna.DNA
+    APP_SO=$BENCHMARKS_HOME/src/python/gv-dna/build/libdna.so
+    curl -s -X POST $ip:8080/register?name=dna\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+    echo '{"name":"dna","async":"false","arguments":"{\"fasta_url\":\"http://'$IP':'$PORT'/bacillus_subtilis.fasta\"}"}' > $APP_POST
+}
+
+function gv_python_classify {
+    APP_LANG=java
+    APP_NAME=gv-py-classify
+    APP_MAIN=com.classify.Classify
+    APP_SO=$BENCHMARKS_HOME/src/python/gv-classify/build/libclassify.so
+    curl -s -X POST $ip:8080/register?name=classify\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
+    echo '{"name":"classify","async":"false","arguments":"{\"restnet_url\":\"http://'$IP':'$PORT'/resnet50-19c8e357.pth\",\"img_url\":\"http://'$IP':'$PORT'/snap.png\"}"}' > $APP_POST
 }
 
 function cr_python_mst {
