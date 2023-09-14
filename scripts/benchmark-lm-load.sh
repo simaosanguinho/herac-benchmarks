@@ -34,7 +34,7 @@ function process_dataset {
         --functionCode $function_code \
         --functionLanguage java \
         --functionEntryPoint $function_entry_point \
-        --functionMemory 128 \
+        --functionMemory 16 \
         --functionRuntime $function_runtime \
         --invocationCollocation $invocation_collocation \
         --functionIsolation $function_isolation \

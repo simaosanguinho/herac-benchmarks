@@ -6,11 +6,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-RESULTS_FILE_UNOPTIMIZED = "../results/simulation_d02_unoptimized_keepalive_10min.txt"
-RESULTS_FILE_OPTIMIZED = "../results/simulation_d02_10inv_per_1min_keepalive_10min.txt"
+RESULTS_FILE_UNOPTIMIZED = "../results/simulation_d02_keepalive_10min_duration_30min_unoptimized.txt"
+RESULTS_FILE_OPTIMIZED = "../results/simulation_d02_keepalive_10min_duration_30min.txt"
 
-unoptimized = np.array(results.read_column(RESULTS_FILE_UNOPTIMIZED, 20))
-optimized = np.array(results.read_column(RESULTS_FILE_OPTIMIZED, 20))
+unoptimized = np.array(results.read_column(RESULTS_FILE_UNOPTIMIZED, 16))
+optimized = np.array(results.read_column(RESULTS_FILE_OPTIMIZED, 16))
 
 diff = unoptimized - optimized
 

@@ -30,7 +30,7 @@ ni_tput = [
     results.get_benchmark_metric(THROUGHPUT_METRIC, bench_results_petclinic_ni),
     results.get_benchmark_metric(THROUGHPUT_METRIC, bench_results_shopcart_ni)]
 
-plt.rcParams.update({'font.size': 13})
+plt.rcParams.update({'font.size': 13, 'text.usetex': True, 'font.family': 'sans-serif', 'font.sans-serif': 'Helvetica'})
 fig, ax = plt.subplots()
 ax.bar(x + 0*width, jvm_tput, width=width, hatch='*', label='JVM',           alpha=0.75)
 ax.bar(x + 1*width, ni_tput,  width=width, hatch='O', label='Native Image',  alpha=0.75)
@@ -39,7 +39,7 @@ ax.set_ylabel('Startup throughput (ops/s)')
 ax.set_xticks([position + width/2 for position in x], benchmark_labels)
 ax.set_axisbelow(True)
 plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
-plt.xticks(rotation = 35)
+# plt.xticks(rotation = 35)
 # plt.tick_params(
 #     axis='x',          # changes apply to the x-axis
 #     which='both',      # both major and minor ticks are affected

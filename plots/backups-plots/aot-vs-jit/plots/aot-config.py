@@ -74,7 +74,7 @@ resource_complexity = [
     petclinic_config_complexity[5],
     shopcart_config_complexity[5]]
 
-plt.rcParams.update({'font.size': 24})
+plt.rcParams.update({'font.size': 24, 'text.usetex': True, 'font.family': 'sans-serif', 'font.sans-serif': 'Helvetica'})
 fig, ax = plt.subplots()
 ax.bar(x + 0*width, proxy_complexity,              width=width, hatch='/', label='Proxy',              alpha=0.75)
 ax.bar(x + 1*width, predefined_classes_complexity, width=width, hatch='O', label='Predefined Classes', alpha=0.75)
@@ -86,7 +86,7 @@ ax.set_ylabel('Configuration fields')
 ax.set_xticks([position + width*2 for position in x], benchmark_labels)
 ax.set_axisbelow(True)
 plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
-plt.xticks(rotation = 35)
+# plt.xticks(rotation = 35)
 # plt.tick_params(
 #     axis='x',          # changes apply to the x-axis
 #     which='both',      # both major and minor ticks are affected
@@ -95,10 +95,10 @@ plt.xticks(rotation = 35)
 #     labelbottom=False) # labels along the bottom edge are off
 
 ax.set_yscale('log')
-ax.set_ylim(ymin=0.1, ymax=500000)
+ax.set_ylim(ymin=0.1, ymax=1800000)
 # ax.set_xlim(xmin=-.25, xmax=14.7)
 fig.set_figwidth(15)
-fig.set_figheight(7)
+fig.set_figheight(5)
 
 ax.legend(ncol=3, loc='upper center')
 plt.savefig("aot-config.pdf", bbox_inches='tight')
