@@ -21,7 +21,6 @@ if [ "$#" -ne 4 ]; then
     echo "- WARMUP=<number> - number of warmup requests sent to graalvisor. Only used in benchmark mode. Defaults to zero;"
     echo "- CGROUP=<name> - name of the cgroup to use. A directory with that name will be created under /sys/fs/cgroup. Defaults to empty which leads to no CGROUP being used;"
     echo "- CGROUP_CPU_QUOTA=<number> - CPU quota for a 100ms period. A quota 100000 means using a full core. Only used if CGROUP is set. Defaults to 100000 (full core)."
-    echo "- CGROUP_MEM=<number> - memory limit in MBs configued in the CGROUP. Only used if CGROUP is set. Defaults to 2048MBs."
     echo "- VM_CPU=<number> - number of cores that the VM will create internally (only used in vm mode). Defaults to 1;"
     echo "- VM_MEM=<number> - memory given to the VM (only used in vm mode). Defaults to 2048;"
     echo "- PIN_CORE=<boolean> - if true, will pin the process to core 0. Defaults to false;"
@@ -58,25 +57,25 @@ function test {
 
 function run {
     # Setting up environment.
-    if [ "$backend" == "container" ]; then
-        ip=127.0.0.1
-        start_container &> $tmpdir/lambda.log &
-    elif [ "$backend" == "svm" ]; then
+    if [ "$backend" == "svm" ]; then
         ip=127.0.0.1
         start_svm &> $tmpdir/lambda.log &
+    elif [ "$backend" == "container" ]; then
+        ip=127.0.0.1
+        start_gv_container &> $tmpdir/lambda.log &
     elif [ "$backend" == "vm" ]; then
         # Note: ip is already set when loading shared.sh
-        start_vm &> $tmpdir/lambda.log &
+        start_gv_vm &> $tmpdir/lambda.log &
     fi
 
     # Let the lambda start.
     wait_port $ip 8080
 
     # Get PID of lambda.
-    if [ "$backend" == "container" ]; then
-        PID=$(docker inspect --format '{{ .State.Pid }}' gcontainer)
-    elif [ "$backend" == "svm" ]; then
+    if [ "$backend" == "svm" ]; then
         PID=$(cat $tmpdir/lambda.pid)
+    elif [ "$backend" == "container" ]; then
+        PID=$(docker inspect --format '{{ .State.Pid }}' bcontainer)
     elif [ "$backend" == "vm" ]; then
         PID=$(cat $tmpdir/lambda.pid)
     fi
@@ -97,10 +96,10 @@ function run {
     $mode | tee -a $tmpdir/app.log
 
     # Teardown the lambda.
-    if [ "$backend" == "container" ]; then
-        stop_container
-    elif [ "$backend" == "svm" ]; then
+    if [ "$backend" == "svm" ]; then
         stop_svm
+    elif [ "$backend" == "container" ]; then
+        stop_container
     elif [ "$backend" == "vm" ]; then
         stop_vm
     fi

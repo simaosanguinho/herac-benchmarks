@@ -4,30 +4,28 @@ function DIR {
     echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
-BENCHMARKS_HOME=$(DIR)/..
-tmpdir=/tmp/test-proxy
-
-# Network setup for the test.
-gateway=172.172.0.1
-mask=255.255.0.0
-smask=16
-ip=172.172.0.2
-tap=testtap
-bridge=testbridge
-
 # Preparing global paths.
+BENCHMARKS_HOME=$(DIR)/..
 if [ -z "${ARGO_HOME}" ]; then
     echo "ARGO_HOME is not defined. Existing..."
     exit 1
-else
-    CRUNTIME_HOME=$ARGO_HOME/lambda-manager/src/scripts/cruntime
-    GRAALVISOR_HOME=$ARGO_HOME/graalvisor
-    RES_HOME=$ARGO_HOME/resources
 fi
 if [ -z "${JAVA_HOME}" ]; then
         echo "JAVA_HOME is not defined. Existing..."
         exit 1
 fi
+GRAALVISOR_HOME=$ARGO_HOME/graalvisor
+RES_HOME=$ARGO_HOME/resources
+tmpdir=/tmp/test-proxy # TODO - move to caps?
+
+# VM network setup for the test.
+socket=$tmpdir/lambda.socket
+gateway=172.172.0.1 # TODO - move to caps?
+mask=255.255.0.0
+smask=16
+ip=172.172.0.2
+tap=testtap
+bridge=testbridge
 
 # Default values.
 if [ -z "${VM_MEM}" ]; then
@@ -41,9 +39,6 @@ if [ -z "${VM_CPU}" ]; then
 fi
 if [ -z "${CGROUP_CPU_QUOTA}" ]; then
     CGROUP_CPU_QUOTA=100000
-fi
-if [ -z "${CGROUP_MEM}" ]; then
-    CGROUP_MEM=2048
 fi
 if [ -z "${ITERATIONS}" ]; then
     ITERATIONS=1
@@ -98,7 +93,6 @@ function pin_core {
 }
 
 function create_cgroup {
-    # TODO - also set a limit for memory based on CGROUP_MEM.
     period=100000
     if [ -d "/sys/fs/cgroup/unified" ]; then
         sudo mkdir /sys/fs/cgroup/cpu/$CGROUP
@@ -169,81 +163,94 @@ function remove_tap {
 }
 
 function start_vm {
+    rootfs=$1
+    kernel=$2
+    kops=$3
+
+    # Copy rootfs to tmp dir.
+    cp $rootfs $tmpdir/rootfs.img
+
+    # Generate a mac for the vm.
+    mac=`printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))`
+
+    # Start firecracker.
+    sudo firecracker --api-sock $socket &
+    sudo ps --ppid $! -o pid= > $tmpdir/lambda.pid
+    echo "$ip" > $tmpdir/lambda.ip
+
+    # Configures kernel its arguments.
+    sudo curl -s --unix-socket $socket -i \
+        -X PUT "http://localhost/boot-source" \
+        --data "{
+            \"kernel_image_path\": \"${kernel}\",
+            \"boot_args\": \"${kopts}\"
+        }"
+
+    # Configures the rootfs.
+    sudo curl -s --unix-socket $socket -i \
+        -X PUT "http://localhost/drives/rootfs" \
+        -d "{
+            \"drive_id\": \"rootfs\",
+            \"path_on_host\": \"${tmpdir}/rootfs.img\",
+            \"is_root_device\": true,
+            \"is_read_only\": false
+        }"
+
+    # Confiures resources.
+    sudo curl -s --unix-socket $socket -i \
+        -X PUT "http://localhost/machine-config" \
+        --data "{
+            \"vcpu_count\": ${VM_CPU},
+            \"mem_size_mib\": ${VM_MEM},
+            \"track_dirty_pages\": false
+        }"
+
+    # Confiures network.
+    sudo curl -s --unix-socket $socket -i \
+        -X PUT 'http://localhost/network-interfaces/eth0' \
+        -d "{
+            \"iface_id\": \"eth0\",
+            \"guest_mac\": \"${mac}\",
+            \"host_dev_name\": \"${tap}\"
+        }"
+
+    # Launches vm.
+    sudo curl -s --unix-socket $socket -i \
+        -X PUT "http://localhost/actions" \
+        -d "{
+            \"action_type\": \"InstanceStart\"
+        }"
+
+    # What for the vm to terminate.
+    wait
+}
+
+function start_gv_vm {
     create_tap
-    socket=$tmpdir/lambda.socket
     if [ ! -z "$SNAPSHOT" ] && [ -f "$SNAPSHOT.snap" ]
     then
-        restore_vm \
-            $socket \
-            $SNAPSHOT.snap \
-            $SNAPSHOT.mem \
-            $SNAPSHOT.disk
-
+        restore_vm $socket $SNAPSHOT.snap $SNAPSHOT.mem $SNAPSHOT.disk
     else
-        cp $ARGO_HOME/images/graalvisor/graalvisor.img $tmpdir
-        cd $tmpdir
-        mac=`printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))`
-        proxy_args="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
-        rootfs=$tmpdir/graalvisor.img
-        kernel=$RES_HOME/hello-vmlinux.bin
+        gvargs="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
         # Kernel opts example: https://github.com/firecracker-microvm/firecracker-demo/blob/main/start-firecracker.sh
-        kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$ip::$gateway:$mask::eth0:none::: nomodule console=ttyS0 reboot=k panic=1 pci=off $proxy_args"
+        kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$ip::$gateway:$mask::eth0:none::: nomodule console=ttyS0 reboot=k panic=1 pci=off $gvargs"
 
-        # Start firecracker.
-        sudo firecracker --api-sock $socket &
-        sudo ps --ppid $! -o pid= > $tmpdir/lambda.pid
-        echo "$ip" > $tmpdir/lambda.ip
-
-        # Configures kernel its arguments.
-        sudo curl -s --unix-socket $socket -i \
-            -X PUT "http://localhost/boot-source" \
-            --data "{
-                \"kernel_image_path\": \"${kernel}\",
-                \"boot_args\": \"${kopts}\"
-            }"
-
-        # Configures the rootfs.
-        sudo curl -s --unix-socket $socket -i \
-            -X PUT "http://localhost/drives/rootfs" \
-            -d "{
-                \"drive_id\": \"rootfs\",
-                \"path_on_host\": \"${rootfs}\",
-                \"is_root_device\": true,
-                \"is_read_only\": false
-            }"
-
-        # Confiures resources.
-        sudo curl -s --unix-socket $socket -i \
-            -X PUT "http://localhost/machine-config" \
-            --data "{
-                \"vcpu_count\": ${VM_CPU},
-                \"mem_size_mib\": ${VM_MEM},
-                \"track_dirty_pages\": false
-            }"
-
-        # Confiures network.
-        sudo curl -s --unix-socket $socket -i \
-            -X PUT 'http://localhost/network-interfaces/eth0' \
-            -d "{
-                \"iface_id\": \"eth0\",
-                \"guest_mac\": \"${mac}\",
-                \"host_dev_name\": \"${tap}\"
-            }"
-
-        # Launches vm.
-        sudo curl -s --unix-socket $socket -i \
-            -X PUT "http://localhost/actions" \
-            -d "{
-                \"action_type\": \"InstanceStart\"
-            }"
-
-        # What for the vm to terminate.
-        wait
+        start_vm $ARGO_HOME/images/graalvisor/graalvisor.img $RES_HOME/hello-vmlinux.bin $kopts
     fi
 }
 
-function start_container {
-    docker run --rm --name=gcontainer --network host -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="8080" -e JAVA_HOME="/jvm" graalvisor:latest
+function start_ow_vm {
+    create_tap
+    kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$ip::$gateway:$mask::eth0:none::: nomodule console=ttyS0 reboot=k panic=1 pci=off"
+    start_vm $ARGO_HOME/images/java-openwhisk/java-openwhisk.img $RES_HOME/hello-vmlinux.bin $kopts
+}
+
+function start_gv_container {
+    docker run --rm --name=bcontainer --network host -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="8080" -e JAVA_HOME="/jvm" graalvisor:latest
+}
+
+function start_ow_container {
+    docker run --rm --name=bcontainer --network host $IMG
 }
 
 function start_svm {
@@ -277,7 +284,7 @@ function snapshot_vm {
             \"mem_file_path\": \"$memory_file\"
         }"
 
-    cp $tmpdir/graalvisor.img $disk_file
+    cp $tmpdir/rootfs.img $disk_file
 
     sudo curl -s --unix-socket $vm_socket -i \
         -X PATCH "http://localhost/vm" \
@@ -293,7 +300,7 @@ function restore_vm {
     echo "Restoring vm..."
     sudo firecracker --api-sock $vm_socket &
 
-    cp $disk_file $tmpdir/graalvisor.img
+    cp $disk_file $tmpdir/rootfs.img
 
     sudo curl -s --unix-socket $vm_socket -i \
         -X PUT "http://localhost/snapshot/load" \
@@ -320,7 +327,7 @@ function stop_vm {
 }
 
 function stop_container {
-    docker kill gcontainer
+    docker kill bcontainer
 }
 
 function stop_svm {
