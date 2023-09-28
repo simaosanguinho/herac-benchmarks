@@ -39,18 +39,18 @@ function benchmark {
     fi
 
     if [ ! -z "$WARMUP" ]; then
-            ab -p $APP_POST -T application/json -c 1 -n $WARMUP http://$ip:8080/warmup &> $tmpdir/ab-warmup.log
+            ab -p $APP_POST -T application/json -c 1 -n $WARMUP http://$IP:8080/warmup &> $TDIR/ab-warmup.log
     fi
 
-    ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$ip:8080/ &> $tmpdir/ab-init.log
-    ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$ip:8080/ &> $tmpdir/ab.log
+    ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:8080/ &> $TDIR/ab-init.log
+    ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:8080/ &> $TDIR/ab.log
 }
 
 function test {
     for i in $(seq 1 $workload)
     do
         pretime
-        curl -s -X POST $ip:8080 -H 'Content-Type: application/json' -d $(cat $APP_POST)
+        curl -s -X POST $IP:8080 -H 'Content-Type: application/json' -d $(cat $APP_POST)
         postime
     done
 }
@@ -58,33 +58,33 @@ function test {
 function run {
     # Setting up environment.
     if [ "$backend" == "svm" ]; then
-        ip=127.0.0.1
-        start_svm &> $tmpdir/lambda.log &
+        IP=127.0.0.1
+        start_svm &> $TDIR/lambda.log &
     elif [ "$backend" == "container" ]; then
-        ip=127.0.0.1
-        start_gv_container &> $tmpdir/lambda.log &
+        IP=127.0.0.1
+        start_gv_container &> $TDIR/lambda.log &
     elif [ "$backend" == "vm" ]; then
         # Note: ip is already set when loading shared.sh
-        start_gv_vm &> $tmpdir/lambda.log &
+        start_gv_vm &> $TDIR/lambda.log &
     fi
 
     # Let the lambda start.
-    wait_port $ip 8080
+    wait_port $IP 8080
 
     # Get PID of lambda.
     if [ "$backend" == "svm" ]; then
-        PID=$(cat $tmpdir/lambda.pid)
+        PID=$(cat $TDIR/lambda.pid)
     elif [ "$backend" == "container" ]; then
         PID=$(docker inspect --format '{{ .State.Pid }}' bcontainer)
     elif [ "$backend" == "vm" ]; then
-        PID=$(cat $tmpdir/lambda.pid)
+        PID=$(cat $TDIR/lambda.pid)
     fi
 
     # Write lambda pid to file.
-    echo -n "$PID" > $tmpdir/lambda.pid
+    echo -n "$PID" > $TDIR/lambda.pid
 
     # Log memory.
-    log_rss $PID $tmpdir/lambda.rss &
+    log_rss $PID $TDIR/lambda.rss &
 
     # Prepares the local resources (cgroups, core pinning, turbo boost).
     prepare_resources
@@ -93,7 +93,7 @@ function run {
     $app
 
     # Run test/benchmark.
-    $mode | tee -a $tmpdir/app.log
+    $mode | tee -a $TDIR/app.log
 
     # Teardown the lambda.
     if [ "$backend" == "svm" ]; then
@@ -120,14 +120,14 @@ then
 fi
 
 echo "Running environment=$backend; sandbox=$SANDBOX; app=$app; mode=$mode; workload=$workload; cpu=$VM_CPU; mem=$VM_MEM"
-echo "Logs available at $tmpdir..."
+echo "Logs available at $TDIR..."
 
 # Writing post file to disk
-APP_POST=$tmpdir/payload.post
+APP_POST=$TDIR/payload.post
 
 # Preparing working directory
-sudo rm -r $tmpdir/ &> /dev/null
-mkdir $tmpdir &> /dev/null
+sudo rm -r $TDIR/ &> /dev/null
+mkdir $TDIR &> /dev/null
 
 for iter in $(seq 1 $ITERATIONS)
 do
@@ -136,6 +136,6 @@ do
     # Preparing results directory
     results_dir=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$backend-$SANDBOX-$mode-$workload-$VM_CPU-$VM_MEM/$iter
     mkdir -p $results_dir &> /dev/null
-    cp $tmpdir/{*.log,*.rss} $results_dir &> /dev/null
+    cp $TDIR/{*.log,*.rss} $results_dir &> /dev/null
     echo "Saved logs (iteration $iter): $results_dir/lambda.log"
 done

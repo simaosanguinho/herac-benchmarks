@@ -16,16 +16,16 @@ if [ -z "${JAVA_HOME}" ]; then
 fi
 GRAALVISOR_HOME=$ARGO_HOME/graalvisor
 RES_HOME=$ARGO_HOME/resources
-tmpdir=/tmp/test-proxy # TODO - move to caps?
+TDIR=/tmp/test-proxy
 
 # VM network setup for the test.
-socket=$tmpdir/lambda.socket
-gateway=172.172.0.1 # TODO - move to caps?
-mask=255.255.0.0
-smask=16
-ip=172.172.0.2
-tap=testtap
-bridge=testbridge
+SOCKET=$TDIR/lambda.socket
+GATEWAY=172.172.0.1
+MASK=255.255.0.0
+SMASK=16
+IP=172.172.0.2
+TAP=testtap
+BRIDGE=testbridge
 
 # Default values.
 if [ -z "${VM_MEM}" ]; then
@@ -118,48 +118,48 @@ function destroy_cgroup {
 function prepare_resources {
     if [ ! -z "$CGROUP" ]
     then
-        create_cgroup &>> $tmpdir/resources.log
+        create_cgroup &>> $TDIR/resources.log
     fi
     if [ "$PIN_CORE" = "true" ]
     then
-        pin_core &>> $tmpdir/resources.log
+        pin_core &>> $TDIR/resources.log
     fi
     if [ "$DISABLE_TURBO" = "true" ]
     then
-        disable_turbo_boost &>> $tmpdir/resources.log
+        disable_turbo_boost &>> $TDIR/resources.log
     fi
 }
 
 function teardown_resources {
     if [ ! -z "$CGROUP" ]
     then
-        destroy_cgroup &>> $tmpdir/resources.log
+        destroy_cgroup &>> $TDIR/resources.log
     fi
     if [ "$DISABLE_TURBO" = "true" ]
     then
-        enable_turbo_boost &>> $tmpdir/resources.log
+        enable_turbo_boost &>> $TDIR/resources.log
     fi
 }
 
 function create_tap {
     # Create bridge if not already created
-    if [ ! -d "/sys/class/net/$bridge" ]; then
+    if [ ! -d "/sys/class/net/$BRIDGE" ]; then
         defaultdevice=$(ip route get 8.8.8.8 | grep -Po '(?<=(dev ))(\S+)')
-        sudo ip link add name $bridge type bridge
-        sudo ip addr add $gateway/$smask brd + dev $bridge
-        sudo ip link set dev $bridge up
-        sudo iptables -A FORWARD -o $bridge -j ACCEPT
-        sudo iptables -A FORWARD -i $bridge -j ACCEPT
+        sudo ip link add name $BRIDGE type bridge
+        sudo ip addr add $GATEWAY/$SMASK brd + dev $BRIDGE
+        sudo ip link set dev $BRIDGE up
+        sudo iptables -A FORWARD -o $BRIDGE -j ACCEPT
+        sudo iptables -A FORWARD -i $BRIDGE -j ACCEPT
         sudo iptables -t nat -A POSTROUTING -o $defaultdevice -j MASQUERADE
         sudo iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
     fi
-    sudo ip tuntap add dev $tap mode tap
-    sudo brctl addif $bridge $tap
-    sudo ip link set dev $tap up
+    sudo ip tuntap add dev $TAP mode tap
+    sudo brctl addif $BRIDGE $TAP
+    sudo ip link set dev $TAP up
 }
 
 function remove_tap {
-    sudo ip link delete $tap
+    sudo ip link delete $TAP
 }
 
 function start_vm {
@@ -168,18 +168,18 @@ function start_vm {
     kops=$3
 
     # Copy rootfs to tmp dir.
-    cp $rootfs $tmpdir/rootfs.img
+    cp $rootfs $TDIR/rootfs.img
 
     # Generate a mac for the vm.
     mac=`printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))`
 
     # Start firecracker.
-    sudo firecracker --api-sock $socket &
-    sudo ps --ppid $! -o pid= > $tmpdir/lambda.pid
-    echo "$ip" > $tmpdir/lambda.ip
+    sudo firecracker --api-sock $SOCKET &
+    sudo ps --ppid $! -o pid= > $TDIR/lambda.pid
+    echo "$IP" > $TDIR/lambda.ip
 
     # Configures kernel its arguments.
-    sudo curl -s --unix-socket $socket -i \
+    sudo curl -s --unix-socket $SOCKET -i \
         -X PUT "http://localhost/boot-source" \
         --data "{
             \"kernel_image_path\": \"${kernel}\",
@@ -187,17 +187,17 @@ function start_vm {
         }"
 
     # Configures the rootfs.
-    sudo curl -s --unix-socket $socket -i \
+    sudo curl -s --unix-socket $SOCKET -i \
         -X PUT "http://localhost/drives/rootfs" \
         -d "{
             \"drive_id\": \"rootfs\",
-            \"path_on_host\": \"${tmpdir}/rootfs.img\",
+            \"path_on_host\": \"${TDIR}/rootfs.img\",
             \"is_root_device\": true,
             \"is_read_only\": false
         }"
 
     # Confiures resources.
-    sudo curl -s --unix-socket $socket -i \
+    sudo curl -s --unix-socket $SOCKET -i \
         -X PUT "http://localhost/machine-config" \
         --data "{
             \"vcpu_count\": ${VM_CPU},
@@ -206,16 +206,16 @@ function start_vm {
         }"
 
     # Confiures network.
-    sudo curl -s --unix-socket $socket -i \
+    sudo curl -s --unix-socket $SOCKET -i \
         -X PUT 'http://localhost/network-interfaces/eth0' \
         -d "{
             \"iface_id\": \"eth0\",
             \"guest_mac\": \"${mac}\",
-            \"host_dev_name\": \"${tap}\"
+            \"host_dev_name\": \"${TAP}\"
         }"
 
     # Launches vm.
-    sudo curl -s --unix-socket $socket -i \
+    sudo curl -s --unix-socket $SOCKET -i \
         -X PUT "http://localhost/actions" \
         -d "{
             \"action_type\": \"InstanceStart\"
@@ -229,11 +229,11 @@ function start_gv_vm {
     create_tap
     if [ ! -z "$SNAPSHOT" ] && [ -f "$SNAPSHOT.snap" ]
     then
-        restore_vm $socket $SNAPSHOT.snap $SNAPSHOT.mem $SNAPSHOT.disk
+        restore_vm $SOCKET $SNAPSHOT.snap $SNAPSHOT.mem $SNAPSHOT.disk
     else
         gvargs="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
         # Kernel opts example: https://github.com/firecracker-microvm/firecracker-demo/blob/main/start-firecracker.sh
-        kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$ip::$gateway:$mask::eth0:none::: nomodule console=ttyS0 reboot=k panic=1 pci=off $gvargs"
+        kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$IP::$GATEWAY:$MASK::eth0:none::: nomodule console=ttyS0 reboot=k panic=1 pci=off $gvargs"
 
         start_vm $ARGO_HOME/images/graalvisor/graalvisor.img $RES_HOME/hello-vmlinux.bin $kopts
     fi
@@ -241,7 +241,7 @@ function start_gv_vm {
 
 function start_ow_vm {
     create_tap
-    kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$ip::$gateway:$mask::eth0:none::: nomodule console=ttyS0 reboot=k panic=1 pci=off"
+    kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$IP::$GATEWAY:$MASK::eth0:none::: nomodule console=ttyS0 reboot=k panic=1 pci=off"
     start_vm $ARGO_HOME/images/java-openwhisk/java-openwhisk.img $RES_HOME/hello-vmlinux.bin $kopts
 }
 
@@ -254,15 +254,15 @@ function start_ow_container {
 }
 
 function start_svm {
-    cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy $tmpdir/app
-    cd $tmpdir
+    cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy $TDIR/app
+    cd $TDIR
     export lambda_timestamp="$(date +%s%N | cut -b1-13)"
     export lambda_port="8080"
     #sudo perf stat -e cache-misses,context-switches,branch-misses,page-faults ./app
-    #strace -o $tmpdir/strace.log -f ./app
+    #strace -o $TDIR/strace.log -f ./app
     #strace -f ./app
     ./app &
-    echo -n "$!" > "$tmpdir/lambda.pid"
+    echo -n "$!" > "$TDIR/lambda.pid"
     wait
 }
 
@@ -284,7 +284,7 @@ function snapshot_vm {
             \"mem_file_path\": \"$memory_file\"
         }"
 
-    cp $tmpdir/rootfs.img $disk_file
+    cp $TDIR/rootfs.img $disk_file
 
     sudo curl -s --unix-socket $vm_socket -i \
         -X PATCH "http://localhost/vm" \
@@ -300,7 +300,7 @@ function restore_vm {
     echo "Restoring vm..."
     sudo firecracker --api-sock $vm_socket &
 
-    cp $disk_file $tmpdir/rootfs.img
+    cp $disk_file $TDIR/rootfs.img
 
     sudo curl -s --unix-socket $vm_socket -i \
         -X PUT "http://localhost/snapshot/load" \
@@ -316,11 +316,7 @@ function restore_vm {
 function stop_vm {
     if [ ! -z "$SNAPSHOT" ] && [ ! -f "$SNAPSHOT.snap" ]
     then
-        snapshot_vm \
-            $tmpdir/lambda.socket \
-            $SNAPSHOT.snap \
-            $SNAPSHOT.mem \
-            $SNAPSHOT.disk
+        snapshot_vm $SOCKET $SNAPSHOT.snap $SNAPSHOT.mem $SNAPSHOT.disk
     fi
     sudo kill $PID
     remove_tap

@@ -384,6 +384,7 @@ function startup_latency {
         done
     }
 
+    # TODO - update, we no longer have firecracker-containerd
     function startup_latency_cr {
         if [[ -z "${FIRECRACKER_CONTAINERD_HOME}" ]]; then
             echo "FIRECRACKER_CONTAINERD_HOME is not defined."

@@ -35,14 +35,14 @@ function benchmark {
         WMULTIPLIER=256
     fi
 
-    ab -p $RUN_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$ip:8080/run &> $tmpdir/ab.log
+    ab -p $RUN_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$IP:8080/run &> $TDIR/ab.log
 }
 
 function test {
     for i in $(seq 1 $workload)
     do
         pretime
-        curl -s -X POST $ip:8080/run -H 'Content-Type: application/json' -d @$RUN_POST
+        curl -s -X POST $IP:8080/run -H 'Content-Type: application/json' -d @$RUN_POST
         postime
     done
 }
@@ -50,37 +50,37 @@ function test {
 function run {
     # Setting up environment.
     if [ "$backend" == "container" ]; then
-        ip=127.0.0.1
-        start_ow_container &> $tmpdir/lambda.log &
+        IP=127.0.0.1
+        start_ow_container &> $TDIR/lambda.log &
     elif [ "$backend" == "vm" ]; then
         # Note: ip is already set when loading shared.sh
-        start_ow_vm &> $tmpdir/lambda.log &
+        start_ow_vm &> $TDIR/lambda.log &
     fi
 
     # Let the lambda start.
-    wait_port $ip 8080
+    wait_port $IP 8080
 
     # Get PID of lambda.
     if [ "$backend" == "container" ]; then
         PID=$(docker inspect --format '{{ .State.Pid }}' bcontainer)
     elif [ "$backend" == "vm" ]; then
-        PID=$(cat $tmpdir/lambda.pid)
+        PID=$(cat $TDIR/lambda.pid)
     fi
 
     # Write lambda pid to file.
-    echo -n "$PID" > $tmpdir/lambda.pid
+    echo -n "$PID" > $TDIR/lambda.pid
 
     # Log memory.
-    log_rss $PID $tmpdir/lambda.rss &
+    log_rss $PID $TDIR/lambda.rss &
 
     # Prepares the local resources (cgroups, core pinning, turbo boost).
     prepare_resources
 
     # Load function to benchmark
-    curl -s -X POST $ip:8080/init -H 'Content-Type: application/json' -d @$INIT_POST
+    curl -s -X POST $IP:8080/init -H 'Content-Type: application/json' -d @$INIT_POST
 
     # Run test/benchmark.
-    $mode | tee -a $tmpdir/app.log
+    $mode | tee -a $TDIR/app.log
 
     # Teardown the lambda.
     if [ "$backend" == "container" ]; then
@@ -97,8 +97,8 @@ function run {
 echo "Running environment=$backend; app=$app; mode=$mode; workload=$workload; cpu=$VM_CPU; mem=$VM_MEM"
 
 # Preparing working directory
-sudo rm -r $tmpdir/ &> /dev/null
-mkdir $tmpdir &> /dev/null
+sudo rm -r $TDIR/ &> /dev/null
+mkdir $TDIR &> /dev/null
 
 # Load function to benchmark
 $app
@@ -110,6 +110,6 @@ do
     # Preparing results directory
     results_dir=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$backend-$mode-$workload-$VM_CPU-$VM_MEM/$iter
     mkdir -p $results_dir &> /dev/null
-    cp $tmpdir/{*.log,*.rss} $results_dir &> /dev/null
+    cp $TDIR/{*.log,*.rss} $results_dir &> /dev/null
     echo "Saved logs (iteration $iter): $results_dir/lambda.log"
 done
