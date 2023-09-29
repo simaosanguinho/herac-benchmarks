@@ -14,3 +14,6 @@ def main(args):
         return {"result": dynamic_html(args['url'], args['username'], args['nsize'])}
     except Exception as e:
         return {"result": str(e)}
+
+# For local testing.
+#print(main({"url": "http://localhost:8000/template.html", "username":"rbruno", "nsize":"10"}))

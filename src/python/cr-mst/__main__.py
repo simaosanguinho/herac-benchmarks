@@ -30,3 +30,6 @@ def main(args):
         return {"result": mst(args['size'])}
     except Exception as e:
         return {"result": str(e)}
+
+# For local testing.
+#print(main({"size": "10"}))

@@ -60,4 +60,5 @@ def main(args):
     except Exception as e:
         return {"result": str(e)}
 
+# For local testing.
 #print(main({"restnet_url": "http://localhost:8000/resnet50-19c8e357.pth", "img_url": "http://localhost:8000/snap.png"}))
