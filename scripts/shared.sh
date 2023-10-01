@@ -233,7 +233,7 @@ function start_gv_vm {
     else
         gvargs="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
         # Kernel opts example: https://github.com/firecracker-microvm/firecracker-demo/blob/main/start-firecracker.sh
-        kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$IP::$GATEWAY:$MASK::eth0:none::: nomodule console=ttyS0 reboot=k panic=1 pci=off $gvargs"
+        kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$IP::$GATEWAY:$MASK::eth0:none::: nomodule random.trust_cpu=on console=ttyS0 reboot=k panic=1 pci=off $gvargs"
 
         start_vm $ARGO_HOME/images/graalvisor/graalvisor.img $RES_HOME/hello-vmlinux.bin $kopts
     fi
@@ -241,8 +241,8 @@ function start_gv_vm {
 
 function start_ow_vm {
     create_tap
-    kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$IP::$GATEWAY:$MASK::eth0:none::: nomodule console=ttyS0 reboot=k panic=1 pci=off"
-    start_vm $ARGO_HOME/images/java-openwhisk/java-openwhisk.img $RES_HOME/hello-vmlinux.bin $kopts
+    kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$IP::$GATEWAY:$MASK::eth0:none::: nomodule random.trust_cpu=on console=ttyS0 reboot=k panic=1 pci=off"
+    start_vm $ARGO_HOME/images/$APP_LANG-openwhisk/$APP_LANG-openwhisk.img $RES_HOME/hello-vmlinux.bin $kopts
 }
 
 function start_gv_container {
@@ -318,7 +318,7 @@ function stop_vm {
     then
         snapshot_vm $SOCKET $SNAPSHOT.snap $SNAPSHOT.mem $SNAPSHOT.disk
     fi
-    sudo kill $PID
+    sudo kill $(cat $TDIR/lambda.pid)
     remove_tap
 }
 
@@ -327,6 +327,6 @@ function stop_container {
 }
 
 function stop_svm {
-    sudo kill $PID
+    sudo kill $(cat $TDIR/lambda.pid)
 }
 
