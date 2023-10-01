@@ -81,6 +81,7 @@ function gv_java_shopcart {
 }
 
 function cr_java_hw {
+    IMG=docker.io/openwhisk/java8action:latest
     APP_LANG=java
     APP_NAME=cr-hello-world
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -116,6 +117,7 @@ function gv_javascript_hw {
 }
 
 function cr_javascript_hw {
+    IMG=docker.io/openwhisk/action-nodejs-v12:latest
     APP_LANG=javascript
     APP_NAME=cr-hello-world
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -142,6 +144,7 @@ function gv_python_hw {
 }
 
 function cr_python_hw {
+    IMG=docker.io/openwhisk/action-python-v3.9:latest
     APP_LANG=python
     APP_NAME=cr-hello-world
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -158,6 +161,7 @@ function gv_python_thumbnail {
 }
 
 function cr_python_thumbnail {
+    IMG=docker.io/openwhisk/action-python-v3.9:latest
     APP_LANG=python
     APP_NAME=cr-thumbnail
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -175,6 +179,7 @@ function gv_javascript_thumbnail {
 }
 
 function cr_javascript_thumbnail {
+    IMG=docker.io/openwhisk/action-nodejs-v12:latest
     APP_LANG=javascript
     APP_NAME=cr-thumbnail
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -201,6 +206,7 @@ function gv_java_sleep {
 }
 
 function cr_java_sleep {
+    IMG=docker.io/openwhisk/java8action:latest
     APP_LANG=java
     APP_NAME=cr-sleep
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -217,6 +223,7 @@ function gv_python_sleep {
 }
 
 function cr_python_sleep {
+    IMG=docker.io/openwhisk/action-python-v3.9:latest
     APP_LANG=python
     APP_NAME=cr-sleep
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -233,6 +240,7 @@ function gv_javascript_sleep {
 }
 
 function cr_javascript_sleep {
+    IMG=docker.io/openwhisk/action-nodejs-v12:latest
     APP_LANG=javascript
     APP_NAME=cr-sleep
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -249,6 +257,7 @@ function gv_java_filehashing {
 }
 
 function cr_java_filehashing {
+    IMG=docker.io/openwhisk/java8action:latest
     APP_LANG=java
     APP_NAME=cr-file-hashing
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -276,6 +285,7 @@ function gv_java_httprequest {
 }
 
 function cr_java_httprequest {
+    IMG=docker.io/openwhisk/java8action:latest
     APP_LANG=java
     APP_NAME=cr-httprequest
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -303,6 +313,7 @@ function gv_java_videoprocessing {
 }
 
 function cr_java_videoprocessing {
+    IMG=docker.io/openwhisk/java8action:latest
     APP_LANG=java
     APP_NAME=cr-video-processing
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -330,6 +341,7 @@ function gv_python_videoprocessing {
 }
 
 function cr_python_videoprocessing {
+    IMG=docker.io/openwhisk/action-python-v3.9:latest
     APP_LANG=python
     APP_NAME=cr-video-processing
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -347,6 +359,7 @@ function gv_java_classify {
 }
 
 function cr_java_classify {
+    IMG=docker.io/openwhisk/java8action:latest
     APP_LANG=java
     APP_NAME=cr-classify
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -374,6 +387,7 @@ function gv_python_compression {
 }
 
 function cr_python_compression {
+    IMG=docker.io/openwhisk/action-python-v3.9:latest
     APP_LANG=python
     APP_NAME=cr-compression
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -427,6 +441,7 @@ function gv_python_classify {
 }
 
 function cr_python_mst {
+    IMG=docker.io/openwhisk/action-python-v3.9:latest
     APP_LANG=python
     APP_NAME=cr-mst
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -444,6 +459,7 @@ function gv_javascript_dynamichtml {
 }
 
 function cr_javascript_dynamichtml {
+    IMG=docker.io/openwhisk/action-nodejs-v12:latest
     APP_LANG=javascript
     APP_NAME=cr-dynamic-html
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -461,6 +477,7 @@ function gv_python_dynamichtml {
 }
 
 function cr_python_dynamichtml {
+    IMG=docker.io/openwhisk/action-python-v3.9:latest
     APP_LANG=python
     APP_NAME=cr-dynamic-html
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -478,6 +495,7 @@ function gv_python_uploader {
 }
 
 function cr_python_uploader {
+    IMG=docker.io/openwhisk/action-python-v3.9:latest
     APP_LANG=python
     APP_NAME=cr-uploader
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
@@ -495,6 +513,7 @@ function gv_javascript_uploader {
 }
 
 function cr_javascript_uploader {
+    IMG=docker.io/openwhisk/action-nodejs-v12:latest
     APP_LANG=javascript
     APP_NAME=cr-uploader
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
