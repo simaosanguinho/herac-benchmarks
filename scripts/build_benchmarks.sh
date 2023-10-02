@@ -5,40 +5,44 @@ LOG=$DIR/build_benchmarks.log
 
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-sleep"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-hello-world"
-JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-shopcart"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-file-hashing"
-JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-classify"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-httprequest"
+JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-classify"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-video-processing"
+JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-shopcart"
 
-JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS java/cr-file-hashing"
+JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS java/cr-sleep"
 JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS java/cr-hello-world"
+JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS java/cr-file-hashing"
 JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS java/cr-httprequest"
 JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS java/cr-classify"
-JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS java/cr-sleep"
 JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS java/cr-video-processing"
 
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-sleep"
+PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-thumbnail"
+PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-compression"
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-hello-world"
+PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-dynamic-html"
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-mst"
+PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-uploader"
+PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-video-processing"
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-bfs"
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-pagerank"
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-dna"
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-classify"
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-dynamic-html"
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-compression"
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-thumbnail"
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-video-processing"
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS python/gv-uploader"
 
+PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-sleep"
 PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-thumbnail"
 PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-compression"
 PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-hello-world"
 PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-dynamic-html"
 PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-mst"
 PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-uploader"
-PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-sleep"
 PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-video-processing"
+PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-bfs"
+PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-pagerank"
+PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-dna"
+PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS python/cr-classify"
 
 JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS javascript/gv-sleep"
 JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS javascript/gv-hello-world"
@@ -110,7 +114,7 @@ do
         echo -n "Building $benchmark..."
         if [[ $benchmark == *"/gv-"* ]]; then
             $DIR/build_benchmark.sh $build_script build_ni_sharedlibrary 2>&1 | tee -a $LOG | grep -q "Finished generating" || echo "Failed to build $benchmark!"
-	else
+        else
             $DIR/build_benchmark.sh $build_script 2>&1 >> $LOG
         fi
         echo "done!"

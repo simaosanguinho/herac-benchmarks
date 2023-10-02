@@ -41,3 +41,6 @@ def main(args):
         return {"result": thumbnail(args['url'])}
     except Exception as e:
         return {"result": str(e)}
+
+# For local testing.
+#print(main({"url": "http://localhost:8000/snap.png"}))

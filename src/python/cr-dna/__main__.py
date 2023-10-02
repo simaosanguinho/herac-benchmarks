@@ -25,4 +25,5 @@ def main(args):
     except Exception as e:
         return {"result": str(e)}
 
+# For local testing.
 #print(main({"fasta_url": "http://localhost:8000/bacillus_subtilis.fasta"}))

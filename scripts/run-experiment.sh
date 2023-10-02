@@ -45,6 +45,36 @@ function test_gv_benchmarks {
     unset SANDBOX
 }
 
+function test_ow_benchmarks {
+    TEST_SET=""
+    read -p "Test OpenWhisk's Java benchmarks (y or Y, everything else as no)? " -n 1 -r
+    echo    # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        TEST_SET="$TEST_SET $JV_CR_BENCHMARKS"
+    fi
+    read -p "Test OpenWhisk's Python benchmarks (y or Y, everything else as no)? " -n 1 -r
+    echo    # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        TEST_SET="$TEST_SET $PY_CR_BENCHMARKS"
+    fi
+    read -p "Test OpenWhisk's JavaScript benchmarks (y or Y, everything else as no)? " -n 1 -r
+    echo    # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        TEST_SET="$TEST_SET $JS_CR_BENCHMARKS"
+    fi
+
+    for benchmark in $TEST_SET
+    do
+        for backend in "container" "vm"
+        do
+            $(DIR)/benchmark-cruntime.sh $backend $benchmark test 1
+        done
+    done
+}
+
 function cdf_latency_filehashing {
     export ITERATIONS=5
     $(DIR)/benchmark-cruntime.sh   container cr_java_filehashing test 25
@@ -384,6 +414,7 @@ function startup_latency {
         done
     }
 
+    # TODO - update, we no longer have firecracker-containerd
     function startup_latency_cr {
         if [[ -z "${FIRECRACKER_CONTAINERD_HOME}" ]]; then
             echo "FIRECRACKER_CONTAINERD_HOME is not defined."
@@ -431,6 +462,13 @@ then
     exit 0
 fi
 
+read -p "Run basic openwhisk tests (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    test_ow_benchmarks
+    exit 0
+fi
 read -p "Run cdf latency experiment (y or Y, everything else as no)? " -n 1 -r
 echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]

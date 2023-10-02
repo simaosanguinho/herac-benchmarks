@@ -10,3 +10,6 @@ def main(args):
         return { "result": uploader(args['url']).status_code }
     except Exception as e:
         return {"result": str(e)}
+
+# For local testing.
+#print(main({"url": "http://localhost:8000/snap.png"}))

@@ -21,3 +21,6 @@ def main(args):
         return {"result": compression(args['url'])}
     except Exception as e:
         return {"result": str(e)}
+
+# For local testing.
+#print(main({"url": "http://localhost:8000/snap.png"}))

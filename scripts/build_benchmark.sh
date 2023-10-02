@@ -6,7 +6,7 @@
 #
 # Example usage: build_benchmark.sh /path/to/gv-hello-world/build_script.sh
 #
-# The env varialble BENCHMARK_BUILD_MODE is used to decice if the build script 
+# The env varialble BENCHMARK_BUILD_MODE is used to decice if the build script
 # is called on the local environment or inside the argo build container. It can
 # take two values: local and container.
 #
@@ -57,6 +57,11 @@ elif [[ $BENCHMARK_BUILD_SCRIPT == *"/javascript/gv-thumbnail"* ]]; then
     if [[ $GRAALVM_VERSION == *"23.0.0"* ]]; then
         export JAVA_HOME=$JAVA11_HOME
     fi
+fi
+
+# Java openwhisk benchmarks needs to be compiled with Java 8.
+if [[ $BENCHMARK_BUILD_SCRIPT == *"java/cr-"* ]]; then
+    export JAVA_HOME=$JAVA8_HOME
 fi
 
 if [ "$BENCHMARK_BUILD_MODE" == "container" ]; then

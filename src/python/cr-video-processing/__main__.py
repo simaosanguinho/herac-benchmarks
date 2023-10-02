@@ -51,4 +51,5 @@ def main(args):
     except Exception as e:
         return {"result": str(e)}
 
-#print(main({"ffmpeg_url": "http://localhost:8000/ffmpeg", "video_url": "http://127.0.0.1:8000/file_example_MP4_480_1_5MG.mp4"}))
+# For local testing.
+#print(main({"ffmpeg_url": "http://localhost:8000/ffmpeg", "video_url": "http://127.0.0.1:8000/video.mp4"}))
