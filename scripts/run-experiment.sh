@@ -102,9 +102,7 @@ function efficiency {
             export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh vm gv_java_filehashing benchmark 8; unset WMULTIPLIER
             export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh vm gv_java_httprequest benchmark 8; unset WMULTIPLIER
             export WMULTIPLIER=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
-            # Note: there is a bug in gv, it can't run 2 parallel calls to classify.
-            # Since the workload is throughput intensive, having a second one would keep the same throughput so it is fine...
-	    export WMULTIPLIER=5; $(DIR)/benchmark-graalvisor.sh vm gv_java_classify benchmark 1; unset WMULTIPLIER
+            export WMULTIPLIER=5; $(DIR)/benchmark-graalvisor.sh vm gv_java_classify benchmark 1; unset WMULTIPLIER
             export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh vm gv_java_shopcart benchmark 8; unset WMULTIPLIER
         }
 
@@ -130,24 +128,14 @@ function efficiency {
         }
 
         # All gv benchmarks run on a single core.
-        for sandbox in "isolate" "runtime" "process"
-        do
-            export SANDBOX=$sandbox
-            #efficiency_gv_java_single
-            efficiency_gv_java
-            unset SANDBOX
-        done
-        for sandbox in "context" "process"
-        do
-            export SANDBOX=$sandbox
-            # Used only for process sandbox, ignored for context.
-            export WARMUP=1
-            efficiency_gv_javascript
-            efficiency_gv_python
-            unset WARMUP
-            unset SANDBOX
-        done
-
+        export SANDBOX=isolate; efficiency_gv_java
+        export SANDBOX=process; efficiency_gv_java
+        export WARMUP=1; export SANDBOX=context; efficiency_gv_javascript
+        export WARMUP=1; export SANDBOX=context; efficiency_gv_python
+        export WARMUP=1; export SANDBOX=process; efficiency_gv_javascript
+        export WARMUP=1; export SANDBOX=process; efficiency_gv_python
+        unset WARMUP
+        unset SANDBOX
     }
 
     # Graalvisor with vm snapshotting
@@ -388,6 +376,7 @@ function efficiency {
     export PIN_CORE="true"
     # Disabling turbo will make some benchmarks more stable. However, it will make everything much slower.
     export DISABLE_TURBO="false"
+    export EXPERIMENT="test-exp"
 
     efficiency_gv
     efficiency_gv_snapshot
@@ -399,6 +388,7 @@ function efficiency {
     unset CGROUP
     unset PIN_CORE
     unset DISABLE_TURBO
+    unset EXPERIMENT
 }
 
 function startup_latency {
@@ -414,7 +404,6 @@ function startup_latency {
         done
     }
 
-    # TODO - update, we no longer have firecracker-containerd
     function startup_latency_cr {
         if [[ -z "${FIRECRACKER_CONTAINERD_HOME}" ]]; then
             echo "FIRECRACKER_CONTAINERD_HOME is not defined."
@@ -474,14 +463,6 @@ echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
     cdf_latency_filehashing
-    exit 0
-fi
-
-read -p "Run warm latency experiment (y or Y, everything else as no)? " -n 1 -r
-echo    # move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-    warm_latency
     exit 0
 fi
 

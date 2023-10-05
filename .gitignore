@@ -5,6 +5,7 @@ run.json
 /results/benchmark
 # Python caches
 __pycache__
+*.pyc
 # Ignore logs, pdfs, and pngs
 /plots/*.log
 /plots/*.pdf
