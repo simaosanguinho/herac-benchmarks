@@ -37,7 +37,7 @@ def process_result(path):
     # Memory samples (rss in kbs) of each iteration.
     mem = []
 
-    for file in os.scandir('../results/' + path):
+    for file in os.scandir('results/' + path): # TODO - check how this would work.
         if file.is_dir():
             mem.extend(read_benchmark_memory(file.path))
             tput.extend(read_benchmark_throughput(file.path))

@@ -1,89 +1,98 @@
 #!/usr/bin/python
 
-import results
+# So that we can generate plots in a non UI-based environment.
+import matplotlib as mpl
+mpl.use('Agg')
+
 import matplotlib.pyplot as plt
 import numpy as np
 
-benchmark_labels = [
-    "jv/hw",
-#    "java/sleep",
-    "jv/hashing",
-    "jv/rest",
-    "jv/video",
-    "jv/classify"
-]
+declarations = __import__("sandboxes-declarations")
+results = __import__("sandboxes-utils") # TODO - rename to utils
 
-isolate_benchmark_path = [
-    "java/gv-hello-world-niuk-isolate-benchmark-8-1-2048",
-#    "java/gv-sleep-niuk-benchmark-10-1-2048",
-    "java/gv-file-hashing-niuk-isolate-benchmark-8-1-2048",
-    "java/gv-httprequest-niuk-isolate-benchmark-8-1-2048",
-    "java/gv-video-processing-niuk-isolate-benchmark-2-1-2048",
-    "java/gv-classify-niuk-isolate-benchmark-1-1-2048",
-]
-
-runtime_benchmark_path = [
-    "java/gv-hello-world-niuk-runtime-benchmark-8-1-2048",
-#    "java/gv-sleep-niuk-benchmark-10-1-2048",
-    "java/gv-file-hashing-niuk-runtime-benchmark-8-1-2048",
-    "java/gv-httprequest-niuk-runtime-benchmark-8-1-2048",
-    "java/gv-video-processing-niuk-runtime-benchmark-2-1-2048",
-    "java/gv-classify-niuk-runtime-benchmark-1-1-2048",
-]
-
-process_benchmark_path = [
-    "java/gv-hello-world-niuk-process-benchmark-8-1-2048",
-#    "java/gv-sleep-niuk-benchmark-10-1-2048",
-    "java/gv-file-hashing-niuk-process-benchmark-8-1-2048",
-    "java/gv-httprequest-niuk-process-benchmark-8-1-2048",
-    "java/gv-video-processing-niuk-process-benchmark-2-1-2048",
-    "java/gv-classify-niuk-process-benchmark-1-1-2048",
-]
+benchmark_labels = declarations.benchmark_labels
+isolate_benchmark_path = declarations.isolate_benchmark_path
+process_benchmark_path = declarations.process_benchmark_path
+openwhisk_benchmark_path = declarations.openwhisk_benchmark_path
+photons_benchmark_path = declarations.photons_benchmark_path
+snapshot_benchmark_path = declarations.snapshot_benchmark_path
 
 # Efficiency in ops/s/gb.
 isolate_eff_avg = {}
 isolate_eff_std = {}
-runtime_eff_avg = {}
-runtime_eff_std = {}
 process_eff_avg = {}
 process_eff_std = {}
+openwhisk_eff_avg = {}
+openwhisk_eff_std = {}
+photons_eff_avg = {}
+photons_eff_std = {}
+snapshot_eff_avg = {}
+snapshot_eff_std = {}
 
-for path in isolate_benchmark_path:
-    isolate_eff_avg[path] = results.process_result(path)["eff_avg"]
-    isolate_eff_std[path] = results.process_result(path)["eff_std"]
-for path in runtime_benchmark_path:
-    runtime_eff_avg[path] = results.process_result(path)["eff_avg"]
-    runtime_eff_std[path] = results.process_result(path)["eff_std"]
-for path in process_benchmark_path:
-    process_eff_avg[path] = results.process_result(path)["eff_avg"]
-    process_eff_std[path] = results.process_result(path)["eff_std"]
-
-# Normalization to isolate.
-for path in process_benchmark_path:
-    process_eff_avg[path] = process_eff_avg[path] / isolate_eff_avg[path.replace("-process-", "-isolate-")]
-    process_eff_std[path] = process_eff_std[path] / isolate_eff_avg[path.replace("-process-", "-isolate-")]
-for path in runtime_benchmark_path:
-    runtime_eff_avg[path] = runtime_eff_avg[path] / isolate_eff_avg[path.replace("-runtime-", "-isolate-")]
-    runtime_eff_std[path] = runtime_eff_std[path] / isolate_eff_avg[path.replace("-runtime-", "-isolate-")]
-for path in isolate_benchmark_path:
-    isolate_eff_std[path] = isolate_eff_std[path] / isolate_eff_avg[path]
-    isolate_eff_avg[path] = 1
+# Processing results.
+for idx, path in enumerate(isolate_benchmark_path):
+    isolate_eff_avg[idx] = results.process_result(path)["eff_avg"]
+    isolate_eff_std[idx] = results.process_result(path)["eff_std"]
+for idx, path in enumerate(process_benchmark_path):
+    process_eff_avg[idx] = results.process_result(path)["eff_avg"]
+    process_eff_std[idx] = results.process_result(path)["eff_std"]
+for idx, path in enumerate(openwhisk_benchmark_path):
+    openwhisk_eff_avg[idx] = results.process_result(path)["eff_avg"]
+    openwhisk_eff_std[idx] = results.process_result(path)["eff_std"]
+for idx, path in enumerate(photons_benchmark_path):
+    photons_eff_avg[idx] = results.process_result(path)["eff_avg"]
+    photons_eff_std[idx] = results.process_result(path)["eff_std"]
+for idx, path in enumerate(snapshot_benchmark_path):
+    snapshot_eff_avg[idx] = results.process_result(path)["eff_avg"]
+    snapshot_eff_std[idx] = results.process_result(path)["eff_std"]
 
 x = np.arange(len(benchmark_labels))
+# Snapshot and openwhisk have special x values to avoid a gap when photons doesn't have a value.
+snapshot_x  = np.arange(len(benchmark_labels), dtype=np.float32)
+openwhisk_x = np.arange(len(benchmark_labels), dtype=np.float32)
 width = 0.15
 
-fig, ax = plt.subplots()
-ax.bar(x - width, isolate_eff_avg.values(), yerr=isolate_eff_std.values(), width=width, hatch='//', label='Isolate', alpha=0.75)
-ax.bar(x        , runtime_eff_avg.values(), yerr=runtime_eff_std.values(), width=width, hatch='..', label='Runtime', alpha=0.75)
-ax.bar(x + width, process_eff_avg.values(), yerr=process_eff_std.values(), width=width, hatch='.', label='Process', alpha=0.75)
+# Normalization to isolate.
+for idx, path in enumerate(process_benchmark_path):
+    process_eff_avg[idx] = process_eff_avg[idx] / isolate_eff_avg[idx]
+    process_eff_std[idx] = process_eff_std[idx] / isolate_eff_avg[idx]
+for idx, path in enumerate(openwhisk_benchmark_path):
+    openwhisk_eff_avg[idx] = openwhisk_eff_avg[idx] / isolate_eff_avg[idx]
+    openwhisk_eff_std[idx] = openwhisk_eff_std[idx] / isolate_eff_avg[idx]
+for idx, path in enumerate(photons_benchmark_path):
+    photons_eff_avg[idx] = photons_eff_avg[idx] / isolate_eff_avg[idx]
+    photons_eff_std[idx] = photons_eff_std[idx] / isolate_eff_avg[idx]
+for idx, path in enumerate(snapshot_benchmark_path):
+    snapshot_eff_avg[idx] = snapshot_eff_avg[idx] / isolate_eff_avg[idx]
+    snapshot_eff_std[idx] = snapshot_eff_std[idx] / isolate_eff_avg[idx]
+for idx, path in enumerate(isolate_benchmark_path):
+    isolate_eff_std[idx] = isolate_eff_std[idx] / isolate_eff_avg[idx]
+    isolate_eff_avg[idx] = 1
+    # Filling Photons values with zeroes for missing (java) benchmarks.
+    if idx not in photons_eff_avg:
+        photons_eff_avg[idx] = 0
+        photons_eff_std[idx] = 0
+        snapshot_x[idx]  -= width
+        openwhisk_x[idx] -= width
 
-ax.set_ylabel('Tput/Mem norm. to Isolate')
-ax.set_xticks(x, benchmark_labels)
-ax.legend(ncol=3)
+plt.rcParams.update({'font.size': 16})
+fig, ax = plt.subplots()
+ax.bar(x + 0*width,           isolate_eff_avg.values(),   yerr=isolate_eff_std.values(),   width=width, hatch='*', label='Graalvisor',  alpha=0.75)
+ax.bar(x + 1*width,           process_eff_avg.values(),   yerr=process_eff_std.values(),   width=width, hatch='.', label='Forking',     alpha=0.75)
+ax.bar(x + 2*width,           photons_eff_avg.values(),   yerr=photons_eff_std.values(),   width=width, hatch='O', label='Photons',     alpha=0.75)
+ax.bar(snapshot_x  + 3*width, snapshot_eff_avg.values(),  yerr=snapshot_eff_std.values(),  width=width, hatch='/', label='VM Snapshot', alpha=0.75)
+ax.bar(openwhisk_x + 4*width, openwhisk_eff_avg.values(), yerr=openwhisk_eff_std.values(), width=width, hatch='-', label='OpenWhisk',   alpha=0.75)
+
+ax.set_ylabel('Efficiency norm. to Isolate')
+ax.set_xticks(x)
+ax.set_xticklabels(benchmark_labels)
 ax.set_axisbelow(True)
 plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
 plt.xticks(rotation = 35)
-fig.set_figwidth(10)
-fig.set_figheight(6)
+ax.set_xlim(xmin=-.25, xmax=14.7)
+fig.set_figwidth(15)
+fig.set_figheight(4)
+
+ax.legend(ncol=5, loc='upper center')
 plt.savefig("sandboxes-efficiency-norm.pdf", bbox_inches='tight')
-plt.show()
+plt.savefig("sandboxes-efficiency-norm.png", bbox_inches='tight')

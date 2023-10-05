@@ -58,30 +58,16 @@ snapshot_x  = np.arange(len(benchmark_labels), dtype=np.float32)
 openwhisk_x = np.arange(len(benchmark_labels), dtype=np.float32)
 width = 0.15
 
-# Normalization to isolate.
-for idx, path in enumerate(process_benchmark_path):
-        process_mem_avg[idx] = process_mem_avg[idx] / isolate_mem_avg[idx]
-        process_mem_std[idx] = process_mem_std[idx] / isolate_mem_avg[idx]
-for idx, path in enumerate(openwhisk_benchmark_path):
-        openwhisk_mem_avg[idx] = openwhisk_mem_avg[idx] / isolate_mem_avg[idx]
-        openwhisk_mem_std[idx] = openwhisk_mem_std[idx] / isolate_mem_avg[idx]
-for idx, path in enumerate(photons_benchmark_path):
-    photons_mem_avg[idx] = photons_mem_avg[idx] / isolate_mem_avg[idx]
-    photons_mem_std[idx] = photons_mem_std[idx] / isolate_mem_avg[idx]
-for idx, path in enumerate(snapshot_benchmark_path):
-    snapshot_mem_avg[idx] = snapshot_mem_avg[idx] / isolate_mem_avg[idx]
-    snapshot_mem_std[idx] = snapshot_mem_std[idx] / isolate_mem_avg[idx]
+# Filling Photons values with zeroes for missing (java) benchmarks.
+# We also adapt the x values for snapshot and openwhisk for avoid a gap when photons has no value.
 for idx, path in enumerate(isolate_benchmark_path):
-    isolate_mem_std[idx] = isolate_mem_std[idx] / isolate_mem_avg[idx]
-    isolate_mem_avg[idx] = 1
-    # Filling Photons values with zeroes for missing (java) benchmarks.
     if idx not in photons_mem_avg:
         photons_mem_avg[idx] = 0
         photons_mem_std[idx] = 0
         snapshot_x[idx]  -= width
         openwhisk_x[idx] -= width
 
-plt.rcParams.update({'font.size': 16})
+plt.rcParams.update({'font.size': 12})
 fig, ax = plt.subplots()
 ax.bar(x + 0*width,           isolate_mem_avg.values(),   yerr=isolate_mem_std.values(),   width=width, hatch='*', label='Graalvisor', alpha=0.75)
 ax.bar(x + 1*width,           process_mem_avg.values(),   yerr=process_mem_std.values(),   width=width, hatch='.', label='Forking',  alpha=0.75)
@@ -89,16 +75,21 @@ ax.bar(x + 2*width,           photons_mem_avg.values(),   yerr=photons_mem_std.v
 ax.bar(snapshot_x  + 3*width, snapshot_mem_avg.values(),  yerr=snapshot_mem_std.values(),  width=width, hatch='/', label='VM Snapshot', alpha=0.75)
 ax.bar(openwhisk_x + 4*width, openwhisk_mem_avg.values(), yerr=openwhisk_mem_std.values(), width=width, hatch='-', label='OpenWhisk',  alpha=0.75)
 
-ax.set_ylabel('Memory norm. to Isolate')
-ax.set_xticks(x)
-ax.set_xticklabels(benchmark_labels)
-ax.set_axisbelow(True)
+ax.set_ylabel('Memory (GBs)')
 plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
+plt.tick_params(
+    axis='x',          # changes apply to the x-axis
+    which='both',      # both major and minor ticks are affected
+    bottom=False,      # ticks along the bottom edge are off
+    top=False,         # ticks along the top edge are off
+    labelbottom=False) # labels along the bottom edge are off
+ax.set_axisbelow(True)
 plt.xticks(rotation = 35)
+ax.set_ylim(ymax=2.1)
 ax.set_xlim(xmin=-.25, xmax=14.7)
 fig.set_figwidth(15)
-fig.set_figheight(4)
+fig.set_figheight(3)
 
-ax.legend(ncol=5, loc='upper center')
-plt.savefig("sandboxes-memory-norm.pdf", bbox_inches='tight')
-plt.savefig("sandboxes-memory-norm.png", bbox_inches='tight')
+#ax.legend(ncol=5, loc='upper center')
+plt.savefig("sandboxes-memory.pdf", bbox_inches='tight')
+plt.savefig("sandboxes-memory.png", bbox_inches='tight')
