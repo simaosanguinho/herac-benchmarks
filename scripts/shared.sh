@@ -319,6 +319,7 @@ function stop_vm {
         snapshot_vm $SOCKET $SNAPSHOT.snap $SNAPSHOT.mem $SNAPSHOT.disk
     fi
     sudo kill $(cat $TDIR/lambda.pid)
+    sudo rm -f $SOCKET
     remove_tap
 }
 
