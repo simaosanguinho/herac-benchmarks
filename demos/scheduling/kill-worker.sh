@@ -4,6 +4,15 @@ function DIR {
     echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
+function destroy_cgroup {
+    WORKER_ID=$1
+    if [ -d "/sys/fs/cgroup/unified" ]; then
+        sudo rmdir /sys/fs/cgroup/cpu/$WORKER_ID
+    else
+        sudo rmdir /sys/fs/cgroup/$WORKER_ID
+    fi
+}
+
 if [ -z "$1" ]
 then
     echo "No argument supplied."
@@ -29,4 +38,4 @@ umount $JAIL/lib64
 umount $JAIL/graalvisor
 
 # Delete cgroup.
-rmdir /sys/fs/cgroup/$WORKER_ID
+destroy_cgroup $WORKER_ID

@@ -4,6 +4,23 @@ function DIR {
     echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
+function setup_cgroup {
+    CPU_PERIOD=100000
+    CPU_QUOTA=25000
+    WORKER_ID=$1
+    WORKER_PID=$2
+    if [ -d "/sys/fs/cgroup/unified" ]; then
+        sudo mkdir /sys/fs/cgroup/cpu/$WORKER_ID
+        sudo echo "$CPU_PERIOD" >> /sys/fs/cgroup/cpu/$WORKER_ID/cpu.cfs_period_us
+        sudo echo "$CPU_QUOTA"  >> /sys/fs/cgroup/cpu/$WORKER_ID/cpu.cfs_quota_us
+        sudo echo $WORKER_PID   >> /sys/fs/cgroup/cpu/$WORKER_ID/cgroup.procs
+    else
+        sudo mkdir /sys/fs/cgroup/$WORKER_ID
+        sudo echo "$CPU_QUOTA $CPU_PERIOD" >> /sys/fs/cgroup/$WORKER_ID/cpu.max
+        sudo echo $WORKER_PID              >> /sys/fs/cgroup/$WORKER_ID/cgroup.procs
+    fi
+}
+
 if [ -z "$1" ]
 then
     echo "No worker id supplied."
@@ -31,10 +48,6 @@ mount --bind -o ro /lib                  $JAIL/lib
 mount --bind -o ro /lib64                $JAIL/lib64
 mount --bind -o ro $ARGO_HOME/graalvisor $JAIL/graalvisor
 
-# Create cgroup.
-mkdir /sys/fs/cgroup/$WORKER_ID
-echo "25000 100000" >> /sys/fs/cgroup/$WORKER_ID/cpu.max # .25 core
-
 # Launch worker.
 export lambda_port=$WORKER_PORT
 chroot $JAIL /graalvisor/build/native-image/polyglot-proxy &> $JAIL.log &
@@ -42,5 +55,5 @@ chroot $JAIL /graalvisor/build/native-image/polyglot-proxy &> $JAIL.log &
 # Save pid.
 echo $! > $JAIL.pid
 
-# Add pid to cgroup.
-cat $JAIL.pid >> /sys/fs/cgroup/$WORKER_ID/cgroup.procs
+# Setup cgroup.
+setup_cgroup $WORKER_ID $(cat $JAIL.pid)

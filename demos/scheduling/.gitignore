@@ -1,3 +1,4 @@
 results/
 workers/
-scheduling.png
+*.png
+*.post
