@@ -10,8 +10,8 @@ results = {}
 
 def load_results(exp_number):
     experiment_results = []
-    for filename in os.listdir(results_dir + '/' + exp_number):
-        with open(results_dir + '/' + exp_number + '/' + filename) as file:
+    for filename in os.listdir(results_dir + '/' + str(exp_number)):
+        with open(results_dir + '/' + str(exp_number) + '/' + filename) as file:
             for line in file:
                 if "result" not in line:
                     continue
@@ -19,15 +19,18 @@ def load_results(exp_number):
                 element = float(line.rstrip().split(":")[2].replace('}', ''))
                 # Convert from us to ms.
                 element = element / 1000
+                # Remove sleep 1 second latency
+                element = element - 1000 # TODO - fixme?
                 experiment_results.append(element)
     results[exp_number] = experiment_results
 
-for experiment in os.listdir(results_dir):
+# Experiments (x-axis)
+experiments = [int(x) for x in os.listdir(results_dir)]
+experiments.sort()
+
+for experiment in experiments:
     load_results(experiment)
 
-# Experiments (x-axis)
-experiments = list(results.keys())
-experiments.sort()
 
 # Average values (y-axis)
 averages = [statistics.mean(results[experiment]) for experiment in experiments]
@@ -41,7 +44,12 @@ plt.plot(experiments, p90, label='P90')
 p99 = [numpy.percentile(numpy.array(results[experiment]), 99) for experiment in experiments]
 plt.plot(experiments, p99, label='P99')
 
+# 99th percentile (y-axis)
+p999 = [numpy.percentile(numpy.array(results[experiment]), 99.9) for experiment in experiments]
+plt.plot(experiments, p999, label='P99.9')
+
+plt.ylim(0)
 plt.xlabel('Concurrent sandboxes')
-plt.ylabel('Latency (ms)')
+plt.ylabel('Overhead (latency in ms)')
 plt.legend()
 plt.savefig("scheduling.png", bbox_inches='tight')
