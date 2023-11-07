@@ -45,7 +45,7 @@ do
     load_worker $WORKER_ID $WORKER_PORT &> $(DIR)/workers/$WORKER_ID.load &
 done
 
-sleep 10
+sleep 30
 
 for id in $(seq $WORKERS)
 do
