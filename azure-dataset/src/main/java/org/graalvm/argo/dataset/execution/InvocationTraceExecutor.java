@@ -37,9 +37,9 @@ public class InvocationTraceExecutor {
                 splitRow = line.split(InvocationTraceGenerator.DELIMITER);
                 String owner = splitRow[0];
                 String function = splitRow[1];
-                int allocatedMemoryMb = Integer.valueOf(splitRow[2]);
-                int duration = Integer.valueOf(splitRow[3]);
-                int timestamp = Integer.valueOf(splitRow[4]);
+                int allocatedMemoryMb = Integer.parseInt(splitRow[2]);
+                int duration = Integer.parseInt(splitRow[3]);
+                int timestamp = Integer.parseInt(splitRow[4]);
 
                 waitForInvocation(currentTimestamp, timestamp);
                 currentTimestamp = timestamp;
@@ -68,14 +68,14 @@ public class InvocationTraceExecutor {
         }
     }
 
-    private void ensureUploaded(Set<String> uploadedFunctions, String owner, String function) {
+    protected void ensureUploaded(Set<String> uploadedFunctions, String owner, String function) {
         if (!uploadedFunctions.contains(function)) {
             uploadFunction(owner, function);
             uploadedFunctions.add(function);
         }
     }
 
-    private void waitForInvocation(int currentTimestamp, int invocationTimestamp) {
+    protected void waitForInvocation(int currentTimestamp, int invocationTimestamp) {
         int timeToSleep = (invocationTimestamp - currentTimestamp) % MS_IN_HOUR;
         if (timeToSleep != 0) {
             try {
@@ -86,7 +86,7 @@ public class InvocationTraceExecutor {
         }
     }
 
-    private void uploadFunction(String owner, String function) {
+    public void uploadFunction(String owner, String function) {
         String queryParameters = "username=" + owner + "&function_name=" + function +
                 "&function_language=" + config.functionLanguage + "&function_entry_point=" + config.functionEntryPoint +
                 "&function_memory=" + config.functionMemory + "&function_runtime=" + config.functionRuntime +
@@ -99,7 +99,7 @@ public class InvocationTraceExecutor {
         }
     }
 
-    private void invokeFunction(String owner, String function, int allocatedMemoryMb, int duration, int timestamp) {
+    public void invokeFunction(String owner, String function, int allocatedMemoryMb, int duration, int timestamp) {
         int memoryToAllocate = (int) (allocatedMemoryMb * BYTES_IN_MB * MEMORY_COEFFICIENT);
         byte[] data = ("{\"memory\":\"" + memoryToAllocate + "\",\"duration\":\"" + duration + "\"}").getBytes(StandardCharsets.UTF_8);
         if (config.isDebugMode()) {

@@ -6,6 +6,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.graalvm.argo.dataset.execution.mw.MultiWorkerInvocationTraceExecutor;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,7 +31,8 @@ public class ExecutorEntryPoint {
             byte[] functionCode = Files.readAllBytes(Paths.get(functionCodeFilePath));
             String lambdaManagerAddress = cmd.getOptionValue("lambdaManagerAddress", "localhost:30009");
             ExecutorConfiguration config = new ExecutorConfiguration(functionCode, functionLanguage, functionEntryPoint, functionMemory, functionRuntime, invocationCollocation, functionIsolation, gvSandbox, debug, lambdaManagerAddress);
-            InvocationTraceExecutor executor = new InvocationTraceExecutor(config);
+            boolean multiWorker = cmd.hasOption("multiWorker");
+            InvocationTraceExecutor executor = multiWorker ? new MultiWorkerInvocationTraceExecutor(config) : new InvocationTraceExecutor(config);
             executor.execute(inputFilePath);
         } catch (ParseException e) {
             System.out.println(e.getMessage());
@@ -75,6 +77,9 @@ public class ExecutorEntryPoint {
         Option lambdaManagerAddress = new Option("lm", "lambdaManagerAddress", true, "Full address of the lambda manager.");
         lambdaManagerAddress.setRequired(false);
         options.addOption(lambdaManagerAddress);
+        Option multiWorker = new Option("mw", "multiWorker", false, "Experimental support for top-level simulating scheduler.");
+        multiWorker.setRequired(false);
+        options.addOption(multiWorker);
         return options;
     }
 
