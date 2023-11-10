@@ -8,9 +8,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.graalvm.argo.dataset.execution.mw.MultiWorkerInvocationTraceExecutor;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 
 public class ExecutorEntryPoint {
 
@@ -28,7 +26,7 @@ public class ExecutorEntryPoint {
             String functionIsolation = cmd.getOptionValue("functionIsolation");
             String gvSandbox = cmd.getOptionValue("gvSandbox");
             boolean debug = cmd.hasOption("debug");
-            byte[] functionCode = Files.readAllBytes(Paths.get(functionCodeFilePath));
+            byte[] functionCode = functionCodeFilePath.getBytes(StandardCharsets.UTF_8);
             String lambdaManagerAddress = cmd.getOptionValue("lambdaManagerAddress", "localhost:30009");
             ExecutorConfiguration config = new ExecutorConfiguration(functionCode, functionLanguage, functionEntryPoint, functionMemory, functionRuntime, invocationCollocation, functionIsolation, gvSandbox, debug, lambdaManagerAddress);
             boolean multiWorker = cmd.hasOption("multiWorker");
@@ -37,7 +35,7 @@ public class ExecutorEntryPoint {
         } catch (ParseException e) {
             System.out.println(e.getMessage());
             new HelpFormatter().printHelp("utility-name", options);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

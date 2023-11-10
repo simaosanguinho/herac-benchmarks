@@ -49,32 +49,10 @@ function process_dataset {
 }
 
 
-function log_metrics {
-    response=$(curl -s --max-time 60 $LAMBDA_MANAGER_ADDRESS/metrics)
-    echo "$response" | grep system_footprint | awk '{print $2}' >> $FOOTPRINT_METRICS_FILENAME
-    echo "$response" | grep cold_start_latency_max | awk '{print $2}' >> $MAX_LATENCY_METRICS_FILENAME
-    echo "$response" | grep cold_start_latency_avg | awk '{print $2}' >> $AVG_LATENCY_METRICS_FILENAME
-    echo "$response" | grep open_requests | awk '{print $2}' >> $OPEN_REQUESTS_METRICS_FILENAME
-    echo "$response" | grep active_lambdas | awk '{print $2}' >> $ACTIVE_LAMBDAS_METRICS_FILENAME
-    echo "$response" | grep active_users | awk '{print $2}' >> $ACTIVE_USERS_METRICS_FILENAME
-    echo "$response" | grep throughput | awk '{print $2}' >> $THROUGHPUT_METRICS_FILENAME
-}
-
-
-function start_metrics_scraper {
-    alive=true
-    while [ "$alive" = "true" ]
-    do
-        alive=false
-        log_metrics &
-
-        sleep 1
-
-        if ps -p $FUNCTION_PID > /dev/null
-        then
-            alive=true
-        fi
-    done
+function wait_port {
+    host=$1
+    port=$2
+    while ! nc -z $host $port; do echo "Waiting for $host:$port"; sleep 1; done
 }
 
 
@@ -83,14 +61,10 @@ DATASET_FILE=$2
 ARGO_HOME=$(DIR)/../../argo/
 RUN_HOME=$ARGO_HOME/run/bin
 LAMBDA_MANAGER_CONFIG=$ARGO_HOME/run/configs/manager/default-lambda-manager.json
-LAMBDA_MANAGER_ADDRESS=localhost:30009
-FOOTPRINT_METRICS_FILENAME=footprint.txt
-MAX_LATENCY_METRICS_FILENAME=max_latency.txt
-AVG_LATENCY_METRICS_FILENAME=avg_latency.txt
-OPEN_REQUESTS_METRICS_FILENAME=open_requests.txt
-ACTIVE_LAMBDAS_METRICS_FILENAME=active_lambdas.txt
-ACTIVE_USERS_METRICS_FILENAME=active_users.txt
-THROUGHPUT_METRICS_FILENAME=throughput.txt
+LAMBDA_MANAGER_HOST=localhost
+LAMBDA_MANAGER_PORT=30009
+LAMBDA_MANAGER_ADDRESS="$LAMBA_MANAGER_HOST:$LAMBDA_MANAGER_PORT"
+
 
 if [[ "$MODE" = "gv" ]]; then
     FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/gv-genericapp/build/libgenericapp.so
@@ -129,21 +103,11 @@ fi
 
 # Deploy lambda manager and wait for it to launch
 $RUN_HOME/run deploy lm &
-sleep 5
+wait_port $LAMBA_MANAGER_HOST $LAMBDA_MANAGER_PORT
 
 # Configure lambda manager
 curl -s -X POST $LAMBDA_MANAGER_ADDRESS/configure_manager -H 'Content-Type: application/json' --data-binary @"$LAMBDA_MANAGER_CONFIG"
 
-echo -n "" > $FOOTPRINT_METRICS_FILENAME
-echo -n "" > $MAX_LATENCY_METRICS_FILENAME
-echo -n "" > $AVG_LATENCY_METRICS_FILENAME
-echo -n "" > $OPEN_REQUESTS_METRICS_FILENAME
-echo -n "" > $ACTIVE_LAMBDAS_METRICS_FILENAME
-echo -n "" > $ACTIVE_USERS_METRICS_FILENAME
-echo -n "" > $THROUGHPUT_METRICS_FILENAME
-
 process_dataset $DATASET_FILE $FUNCTION_CODE $FUNCTION_NAME $FUNCTION_ENTRY_POINT $FUNCTION_RUNTIME $INVOCATION_COLLOCATION $FUNCTION_ISOLATION $GV_SANDBOX &
-FUNCTION_PID=$!
-start_metrics_scraper &
 
 wait

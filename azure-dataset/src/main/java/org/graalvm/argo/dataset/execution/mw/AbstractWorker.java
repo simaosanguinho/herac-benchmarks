@@ -1,65 +1,31 @@
 package org.graalvm.argo.dataset.execution.mw;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractWorker {
 
     protected final Set<String> owners;
     protected final Set<String> functions;
+    private final int maxAllowedMemory;
 
-    int totalRequests = 0;
-    int maxConc = 0;
-    int maxMem = 0;
-    /**
-     * The first element of the int array is the end timestamp,
-     * and the second element is the allocated memory value.
-     */
-    private final TreeSet<int[]> activeInvocations;
-    private int memoryUtilization;
+    protected int totalRequests = 0;
+    protected int maxExperiencedConcurrency = 0;
+    protected int maxExperiencedMemoryUtilization = 0;
 
-    protected AbstractWorker() {
+    protected AtomicInteger memoryUtilization;
+
+    protected AbstractWorker(int maxAllowedMemory) {
         this.owners = new HashSet<>();
         this.functions = new HashSet<>();
-        /* Compare by end timestamp. */
-        this.activeInvocations = new TreeSet<>(Comparator.comparingInt(a -> a[0]));
-        this.memoryUtilization = 0;
+        this.maxAllowedMemory = maxAllowedMemory;
+        this.memoryUtilization = new AtomicInteger(0);
     }
 
-    public void ensureUploaded(String owner, String function) {
-        if (!functions.contains(function)) {
-            owners.add(owner);
-            functions.add(function);
-        }
-    }
+    public abstract void ensureUploaded(String owner, String function);
 
-    public void acceptFunctionInvocation(String owner, String function, int allocatedMemoryMb, int duration, int timestamp) {
-        evictTimedOutInvocations(timestamp);
-        activeInvocations.add(new int[] {timestamp + duration, allocatedMemoryMb});
-        memoryUtilization += allocatedMemoryMb;
-
-        int currConc = activeInvocations.size();
-        if (currConc > maxConc) {
-            maxConc = currConc;
-        }
-        if (memoryUtilization > maxMem) {
-            maxMem = memoryUtilization;
-        }
-
-        ++totalRequests;
-    }
-
-    private void evictTimedOutInvocations(int currentTimestamp) {
-        Iterator<int[]> itr = activeInvocations.iterator();
-        while (itr.hasNext()) {
-            int[] invocationRecord = itr.next();
-            if (currentTimestamp >= invocationRecord[0]) {
-                memoryUtilization -= invocationRecord[1];
-                itr.remove();
-            } else {
-                break;
-            }
-        }
-    }
+    public abstract void acceptFunctionInvocation(String owner, String function, int allocatedMemoryMb, int duration, int timestamp);
 
     public boolean hasFunctionRegistered(String function) {
         return functions.contains(function);
@@ -70,7 +36,11 @@ public abstract class AbstractWorker {
     }
 
     public int getCurrentMemoryUtilization() {
-        return memoryUtilization;
+        return memoryUtilization.get();
+    }
+
+    public boolean canAccommodateRequest(int invocationMemory) {
+        return memoryUtilization.get() + invocationMemory <= maxAllowedMemory;
     }
 
     public void printStatistics() {
@@ -78,8 +48,8 @@ public abstract class AbstractWorker {
         System.out.println("Registered functions: " + functions.size());
         System.out.println("Registered owners:    " + owners.size());
         System.out.println("Total requests:       " + totalRequests);
-        System.out.println("Max memory:           " + maxMem);
-        System.out.println("Max concurrency:      " + maxConc);
+        System.out.println("Max memory:           " + maxExperiencedMemoryUtilization);
+        System.out.println("Max concurrency:      " + maxExperiencedConcurrency);
         System.out.println("###################################");
     }
 }

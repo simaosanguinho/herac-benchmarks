@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class InvocationTraceExecutor {
 
@@ -44,7 +45,7 @@ public class InvocationTraceExecutor {
                 waitForInvocation(currentTimestamp, timestamp);
                 currentTimestamp = timestamp;
 
-                invokeFunction(owner, function, allocatedMemoryMb, duration, timestamp);
+                invokeFunction(owner, function, allocatedMemoryMb, duration, timestamp, System.out::println);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,14 +100,13 @@ public class InvocationTraceExecutor {
         }
     }
 
-    public void invokeFunction(String owner, String function, int allocatedMemoryMb, int duration, int timestamp) {
+    public void invokeFunction(String owner, String function, int allocatedMemoryMb, int duration, int timestamp, Consumer<String> asyncConsumer) {
         int memoryToAllocate = (int) (allocatedMemoryMb * BYTES_IN_MB * MEMORY_COEFFICIENT);
         byte[] data = ("{\"memory\":\"" + memoryToAllocate + "\",\"duration\":\"" + duration + "\"}").getBytes(StandardCharsets.UTF_8);
         if (config.isDebugMode()) {
             System.out.println("Sending request with timestamp: " + timestamp);
         } else {
-            NetworkUtils.sendPost(config.getLambdaManagerAddress(), "/" + owner + "/" + function, "application/json; charset=UTF-8", data, true);
+            NetworkUtils.sendPost(config.getLambdaManagerAddress(), "/" + owner + "/" + function, "application/json; charset=UTF-8", data, true, asyncConsumer);
         }
     }
-
 }

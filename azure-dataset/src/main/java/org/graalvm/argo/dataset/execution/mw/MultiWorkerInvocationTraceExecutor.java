@@ -7,21 +7,21 @@ import org.graalvm.argo.dataset.execution.InvocationTraceExecutor;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Comparator;
 
 public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor {
 
-    private final static int WORKER_COUNT = 80;
+    private final static int WORKER_COUNT = 800;
+    private final static int MAX_MEMORY_PER_WORKER_MB = 98304;
 
     private final AbstractWorker[] workers;
+    private int overalloc = 0;
 
     public MultiWorkerInvocationTraceExecutor(ExecutorConfiguration config) {
         super(config);
         workers = new AbstractWorker[WORKER_COUNT];
-//        workers[0] = new RealWorker(this);
+//        workers[0] = new RealWorker(MAX_MEMORY_PER_WORKER, this);
         for (int i = 0; i < WORKER_COUNT; ++i) {
-            workers[i] = new FakeWorker();
+            workers[i] = new FakeWorker(MAX_MEMORY_PER_WORKER_MB);
         }
     }
 
@@ -40,7 +40,7 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
                 int duration = Integer.parseInt(splitRow[3]);
                 int timestamp = Integer.parseInt(splitRow[4]);
 
-                AbstractWorker worker = schedule(owner, function);
+                AbstractWorker worker = schedule(owner, function, allocatedMemoryMb);
                 worker.ensureUploaded(owner, function);
                 waitForInvocation(currentTimestamp, timestamp);
                 currentTimestamp = timestamp;
@@ -53,27 +53,40 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
         for (AbstractWorker w : workers) {
             w.printStatistics();
         }
+        System.out.println("Overallocated " + overalloc + " requests.");
     }
 
-    private AbstractWorker schedule(String owner, String function) {
+    private AbstractWorker schedule(String owner, String function, int invocationMemory) {
         AbstractWorker result = null;
         for (AbstractWorker w : workers) {
-            if (w.hasFunctionRegistered(function)) {
+            if (w.canAccommodateRequest(invocationMemory) && w.hasFunctionRegistered(function)) {
                 result = w;
                 break;
             }
         }
         if (result == null) {
             for (AbstractWorker w : workers) {
-                if (w.hasOwnerRegistered(owner)) {
+                if (w.canAccommodateRequest(invocationMemory) && w.hasOwnerRegistered(owner)) {
                     result = w;
                     break;
                 }
             }
         }
         if (result == null) {
-            Arrays.sort(workers, Comparator.comparing(AbstractWorker::getCurrentMemoryUtilization));
-            result = workers[0];
+            result = findLeastUtilized();
+            if (!result.canAccommodateRequest(invocationMemory)) {
+                overalloc++;
+            }
+        }
+        return result;
+    }
+
+    private AbstractWorker findLeastUtilized() {
+        AbstractWorker result = workers[0];
+        for (int i = 1; i < workers.length; ++i) {
+            if (workers[i].getCurrentMemoryUtilization() < result.getCurrentMemoryUtilization()) {
+                result = workers[i];
+            }
         }
         return result;
     }
