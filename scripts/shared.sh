@@ -299,6 +299,8 @@ function restore_vm {
     disk_file=$4
     echo "Restoring vm..."
     sudo firecracker --api-sock $vm_socket &
+    sudo ps --ppid $! -o pid= > $TDIR/lambda.pid
+    echo "$IP" > $TDIR/lambda.ip
 
     cp $disk_file $TDIR/rootfs.img
 

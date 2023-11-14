@@ -248,8 +248,8 @@ function efficiency {
 
             # Hello world
             export SNAPSHOT=$snapshots/hw
-            export VM_MEM=256
-            export CGROUP_CPU_QUOTA=12500 # .125 cores
+            export VM_MEM=512
+            export CGROUP_CPU_QUOTA=25000 # .25 cores
             sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
             bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_hw test 100"
             $(DIR)/benchmark-graalvisor.sh vm gv_python_hw benchmark 1
