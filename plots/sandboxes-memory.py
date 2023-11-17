@@ -1,14 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
-# So that we can generate plots in a non UI-based environment.
-import matplotlib as mpl
-mpl.use('Agg')
-
+import declarations
+import results
 import matplotlib.pyplot as plt
 import numpy as np
-
-declarations = __import__("sandboxes-declarations")
-results = __import__("sandboxes-utils") # TODO - rename to utils
 
 benchmark_labels = declarations.benchmark_labels
 isolate_benchmark_path = declarations.isolate_benchmark_path
@@ -76,7 +71,7 @@ ax.bar(snapshot_x  + 3*width, snapshot_mem_avg.values(),  yerr=snapshot_mem_std.
 ax.bar(openwhisk_x + 4*width, openwhisk_mem_avg.values(), yerr=openwhisk_mem_std.values(), width=width, hatch='-', label='OpenWhisk',  alpha=0.75)
 
 ax.set_ylabel('Memory (GBs)')
-plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
+#ax.set_xticks(x, benchmark_labels)
 plt.tick_params(
     axis='x',          # changes apply to the x-axis
     which='both',      # both major and minor ticks are affected
@@ -84,12 +79,13 @@ plt.tick_params(
     top=False,         # ticks along the top edge are off
     labelbottom=False) # labels along the bottom edge are off
 ax.set_axisbelow(True)
+plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
 plt.xticks(rotation = 35)
 ax.set_ylim(ymax=2.1)
 ax.set_xlim(xmin=-.25, xmax=14.7)
 fig.set_figwidth(15)
 fig.set_figheight(3)
 
-#ax.legend(ncol=5, loc='upper center')
+ax.legend(ncol=5, loc='upper center')
 plt.savefig("sandboxes-memory.pdf", bbox_inches='tight')
 plt.savefig("sandboxes-memory.png", bbox_inches='tight')

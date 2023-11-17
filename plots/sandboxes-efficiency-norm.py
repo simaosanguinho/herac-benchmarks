@@ -1,14 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
-# So that we can generate plots in a non UI-based environment.
-import matplotlib as mpl
-mpl.use('Agg')
-
+import declarations
+import results
 import matplotlib.pyplot as plt
 import numpy as np
-
-declarations = __import__("sandboxes-declarations")
-results = __import__("sandboxes-utils") # TODO - rename to utils
 
 benchmark_labels = declarations.benchmark_labels
 isolate_benchmark_path = declarations.isolate_benchmark_path
@@ -84,8 +79,7 @@ ax.bar(snapshot_x  + 3*width, snapshot_eff_avg.values(),  yerr=snapshot_eff_std.
 ax.bar(openwhisk_x + 4*width, openwhisk_eff_avg.values(), yerr=openwhisk_eff_std.values(), width=width, hatch='-', label='OpenWhisk',   alpha=0.75)
 
 ax.set_ylabel('Efficiency norm. to Isolate')
-ax.set_xticks(x)
-ax.set_xticklabels(benchmark_labels)
+ax.set_xticks(x, benchmark_labels)
 ax.set_axisbelow(True)
 plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
 plt.xticks(rotation = 35)
