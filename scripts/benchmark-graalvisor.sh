@@ -143,7 +143,12 @@ do
     # Run...
     run
     # Preparing results directory
-    results_dir=$results_prefix/$APP_LANG/$APP_NAME-$backend-$SANDBOX-$mode-$workload-$VM_CPU-$VM_MEM/$iter
+    if [ ! -z "$SNAPSHOT" ]
+    then
+        results_dir=$results_prefix/$APP_LANG/$APP_NAME-$backend-snapshot-$SANDBOX-$mode-$workload-$VM_CPU-$VM_MEM/$iter
+    else
+        results_dir=$results_prefix/$APP_LANG/$APP_NAME-$backend-$SANDBOX-$mode-$workload-$VM_CPU-$VM_MEM/$iter
+    fi
     mkdir -p $results_dir &> /dev/null
     cp $TDIR/{*.log,*.rss} $results_dir &> /dev/null
     echo "Saved logs (iteration $iter): $results_dir/lambda.log"
