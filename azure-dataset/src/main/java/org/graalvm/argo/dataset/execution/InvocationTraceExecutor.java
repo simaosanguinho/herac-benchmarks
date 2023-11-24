@@ -17,7 +17,7 @@ public class InvocationTraceExecutor {
     /**
      * Empirical value used to calculate request-specific memory consumption.
      */
-    private static final double MEMORY_COEFFICIENT = 0.05;
+    private static final double MEMORY_COEFFICIENT = 0.0001;
 
     private final ExecutorConfiguration config;
 
@@ -102,6 +102,7 @@ public class InvocationTraceExecutor {
 
     public void invokeFunction(String owner, String function, int allocatedMemoryMb, int duration, int timestamp, Consumer<String> asyncConsumer) {
         int memoryToAllocate = (int) (allocatedMemoryMb * BYTES_IN_MB * MEMORY_COEFFICIENT);
+        duration = duration > 10000 ? 10000 : duration;
         byte[] data = ("{\"memory\":\"" + memoryToAllocate + "\",\"duration\":\"" + duration + "\"}").getBytes(StandardCharsets.UTF_8);
         if (config.isDebugMode()) {
             System.out.println("Sending request with timestamp: " + timestamp);

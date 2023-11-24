@@ -1,5 +1,6 @@
 package org.graalvm.argo.dataset.execution.mw;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,7 +12,6 @@ public abstract class AbstractWorker {
     private final int maxAllowedMemory;
 
     protected int totalRequests = 0;
-    protected int maxExperiencedConcurrency = 0;
     protected int maxExperiencedMemoryUtilization = 0;
 
     protected AtomicInteger memoryUtilization;
@@ -25,7 +25,7 @@ public abstract class AbstractWorker {
 
     public abstract void ensureUploaded(String owner, String function);
 
-    public abstract void acceptFunctionInvocation(String owner, String function, int allocatedMemoryMb, int duration, int timestamp);
+    public abstract void acceptFunctionInvocation(String owner, String function, int allocatedMemoryMb, int duration, int timestamp) throws IOException;
 
     public boolean hasFunctionRegistered(String function) {
         return functions.contains(function);
@@ -49,7 +49,6 @@ public abstract class AbstractWorker {
         System.out.println("Registered owners:    " + owners.size());
         System.out.println("Total requests:       " + totalRequests);
         System.out.println("Max memory:           " + maxExperiencedMemoryUtilization);
-        System.out.println("Max concurrency:      " + maxExperiencedConcurrency);
         System.out.println("###################################");
     }
 }

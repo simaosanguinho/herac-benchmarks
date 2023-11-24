@@ -5,23 +5,36 @@ import org.graalvm.argo.dataset.execution.ExecutorConfiguration;
 import org.graalvm.argo.dataset.execution.InvocationTraceExecutor;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
 public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor {
 
-    private final static int WORKER_COUNT = 800;
+    private final static int WORKER_COUNT = 100;
     private final static int MAX_MEMORY_PER_WORKER_MB = 98304;
 
     private final AbstractWorker[] workers;
     private int overalloc = 0;
+    private final static int REAL_WORKER_INDEX = 95;
+    private final static String REAL_WORKER_TRACE_OUTPUT = "/tmp/lse_trace.csv";
 
     public MultiWorkerInvocationTraceExecutor(ExecutorConfiguration config) {
         super(config);
         workers = new AbstractWorker[WORKER_COUNT];
-//        workers[0] = new RealWorker(MAX_MEMORY_PER_WORKER, this);
         for (int i = 0; i < WORKER_COUNT; ++i) {
             workers[i] = new FakeWorker(MAX_MEMORY_PER_WORKER_MB);
+        }
+        insertRealWorker();
+    }
+
+    private void insertRealWorker() {
+        try {
+            File outputTraceFile = new File(REAL_WORKER_TRACE_OUTPUT);
+            outputTraceFile.createNewFile();
+            workers[REAL_WORKER_INDEX] = new RealWorker(MAX_MEMORY_PER_WORKER_MB, this, outputTraceFile);
+        } catch (IOException e) {
+            System.err.println("Couldn't create a real worker: " + e.getMessage());
         }
     }
 
@@ -54,6 +67,12 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
             w.printStatistics();
         }
         System.out.println("Overallocated " + overalloc + " requests.");
+        System.out.println("Real node stats:");
+        workers[REAL_WORKER_INDEX].printStatistics();
+        if (workers[REAL_WORKER_INDEX] instanceof RealWorker) {
+            ((RealWorker) workers[REAL_WORKER_INDEX]).close();
+        }
+        MockNetworkUtils.shutdown();
     }
 
     private AbstractWorker schedule(String owner, String function, int invocationMemory) {

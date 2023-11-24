@@ -27,8 +27,7 @@ public class NetworkUtils {
                     .thenAccept(asyncConsumer);
         } else {
             try {
-                HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-                System.out.println(response.body());
+                HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }

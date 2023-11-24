@@ -34,15 +34,16 @@ function process_dataset {
         --functionCode $function_code \
         --functionLanguage java \
         --functionEntryPoint $function_entry_point \
-        --functionMemory 16 \
+        --functionMemory 2 \
         --functionRuntime $function_runtime \
         --invocationCollocation $invocation_collocation \
         --functionIsolation $function_isolation \
-        $GV_SANDBOX_OPTION
+        # --multiWorker \
+        $GV_SANDBOX_OPTION > /tmp/lse_executor.log
 
     wait
 
-    sleep 60
+    sleep 10
     echo "Finished benchmark execution. Stopping the lambda manager..."
     echo "--- Execute this command to kill LM: ---"
     echo "sudo kill $(sudo lsof -i -P -n | grep LISTEN | grep 30009 | awk '{print $2}')"
@@ -63,7 +64,7 @@ RUN_HOME=$ARGO_HOME/run/bin
 LAMBDA_MANAGER_CONFIG=$ARGO_HOME/run/configs/manager/default-lambda-manager.json
 LAMBDA_MANAGER_HOST=localhost
 LAMBDA_MANAGER_PORT=30009
-LAMBDA_MANAGER_ADDRESS="$LAMBA_MANAGER_HOST:$LAMBDA_MANAGER_PORT"
+LAMBDA_MANAGER_ADDRESS="$LAMBDA_MANAGER_HOST:$LAMBDA_MANAGER_PORT"
 
 
 if [[ "$MODE" = "gv" ]]; then
@@ -103,7 +104,7 @@ fi
 
 # Deploy lambda manager and wait for it to launch
 $RUN_HOME/run deploy lm &
-wait_port $LAMBA_MANAGER_HOST $LAMBDA_MANAGER_PORT
+wait_port $LAMBDA_MANAGER_HOST $LAMBDA_MANAGER_PORT
 
 # Configure lambda manager
 curl -s -X POST $LAMBDA_MANAGER_ADDRESS/configure_manager -H 'Content-Type: application/json' --data-binary @"$LAMBDA_MANAGER_CONFIG"
