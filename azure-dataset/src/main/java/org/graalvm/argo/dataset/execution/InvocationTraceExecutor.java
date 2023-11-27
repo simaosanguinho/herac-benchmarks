@@ -84,8 +84,10 @@ public class InvocationTraceExecutor {
 
     public void uploadFunction(String owner, String function, FunctionLanguage language) {
         ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language);
+        // Graalvisor Python/JavaScript benchmarks have Java wrappers.
+        FunctionLanguage actualLanguage = Environment.GRAALVISOR_RUNTIME.equals(config.functionRuntime) ? FunctionLanguage.JAVA : language;
         String queryParameters = "username=" + owner + "&function_name=" + function +
-                "&function_language=" + language + "&function_entry_point=" + functionConfig.entryPoint +
+                "&function_language=" + actualLanguage + "&function_entry_point=" + functionConfig.entryPoint +
                 "&function_memory=" + config.functionMemory + "&function_runtime=" + config.functionRuntime +
                 "&function_isolation=" + config.functionIsolation + "&invocation_collocation=" + config.invocationCollocation;
         if (config.gvSandbox != null) {
