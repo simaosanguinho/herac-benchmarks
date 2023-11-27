@@ -1,11 +1,11 @@
 package org.graalvm.argo.dataset.execution;
 
 import org.graalvm.argo.dataset.InvocationTraceGenerator;
+import org.graalvm.argo.dataset.multilang.FunctionLanguage;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -13,11 +13,6 @@ import java.util.function.Consumer;
 public class InvocationTraceExecutor {
 
     private static final int MS_IN_HOUR = 3600000;
-    private static final int BYTES_IN_MB = 1048576;
-    /**
-     * Empirical value used to calculate request-specific memory consumption.
-     */
-    private static final double MEMORY_COEFFICIENT = 0.0001;
 
     private final ExecutorConfiguration config;
 
@@ -38,14 +33,13 @@ public class InvocationTraceExecutor {
                 splitRow = line.split(InvocationTraceGenerator.DELIMITER);
                 String owner = splitRow[0];
                 String function = splitRow[1];
-                int allocatedMemoryMb = Integer.parseInt(splitRow[2]);
-                int duration = Integer.parseInt(splitRow[3]);
                 int timestamp = Integer.parseInt(splitRow[4]);
+                FunctionLanguage language = FunctionLanguage.fromString(splitRow[5]);
 
                 waitForInvocation(currentTimestamp, timestamp);
                 currentTimestamp = timestamp;
 
-                invokeFunction(owner, function, allocatedMemoryMb, duration, timestamp, System.out::println);
+                invokeFunction(owner, function, timestamp, language, System.out::println);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -62,16 +56,17 @@ public class InvocationTraceExecutor {
                 splitRow = line.split(InvocationTraceGenerator.DELIMITER);
                 String owner = splitRow[0];
                 String function = splitRow[1];
-                ensureUploaded(uploadedFunctions, owner, function);
+                FunctionLanguage language = FunctionLanguage.fromString(splitRow[5]);
+                ensureUploaded(uploadedFunctions, owner, function, language);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    protected void ensureUploaded(Set<String> uploadedFunctions, String owner, String function) {
+    protected void ensureUploaded(Set<String> uploadedFunctions, String owner, String function, FunctionLanguage language) {
         if (!uploadedFunctions.contains(function)) {
-            uploadFunction(owner, function);
+            uploadFunction(owner, function, language);
             uploadedFunctions.add(function);
         }
     }
@@ -87,23 +82,23 @@ public class InvocationTraceExecutor {
         }
     }
 
-    public void uploadFunction(String owner, String function) {
+    public void uploadFunction(String owner, String function, FunctionLanguage language) {
+        ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language);
         String queryParameters = "username=" + owner + "&function_name=" + function +
-                "&function_language=" + config.functionLanguage + "&function_entry_point=" + config.functionEntryPoint +
+                "&function_language=" + language + "&function_entry_point=" + functionConfig.entryPoint +
                 "&function_memory=" + config.functionMemory + "&function_runtime=" + config.functionRuntime +
                 "&function_isolation=" + config.functionIsolation + "&invocation_collocation=" + config.invocationCollocation;
         if (config.gvSandbox != null) {
             queryParameters = queryParameters + "&gv_sandbox=" + config.gvSandbox;
         }
         if (!config.isDebugMode()) {
-            NetworkUtils.sendPost(config.getLambdaManagerAddress(), "/upload_function?" + queryParameters, "application/octet-stream", config.functionCode, false);
+            NetworkUtils.sendPost(config.getLambdaManagerAddress(), "/upload_function?" + queryParameters, "application/octet-stream", functionConfig.code, false);
         }
     }
 
-    public void invokeFunction(String owner, String function, int allocatedMemoryMb, int duration, int timestamp, Consumer<String> asyncConsumer) {
-        int memoryToAllocate = (int) (allocatedMemoryMb * BYTES_IN_MB * MEMORY_COEFFICIENT);
-        duration = duration > 10000 ? 10000 : duration;
-        byte[] data = ("{\"memory\":\"" + memoryToAllocate + "\",\"duration\":\"" + duration + "\"}").getBytes(StandardCharsets.UTF_8);
+    public void invokeFunction(String owner, String function, int timestamp, FunctionLanguage language, Consumer<String> asyncConsumer) {
+        ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language);
+        byte[] data = functionConfig.payload;
         if (config.isDebugMode()) {
             System.out.println("Sending request with timestamp: " + timestamp);
         } else {

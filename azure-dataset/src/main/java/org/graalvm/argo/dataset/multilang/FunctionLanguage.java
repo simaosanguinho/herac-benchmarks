@@ -1,9 +1,9 @@
 package org.graalvm.argo.dataset.multilang;
 
 public enum FunctionLanguage {
-    JAVA("JAVA"),
-    JAVASCRIPT("JAVASCRIPT"),
-    PYTHON("PYTHON");
+    JAVA("java"),
+    JAVASCRIPT("javascript"),
+    PYTHON("python");
 
     private final String language;
 
@@ -11,13 +11,13 @@ public enum FunctionLanguage {
         this.language = language;
     }
 
-    public static FunctionLanguage fromString(String text) throws Exception {
+    public static FunctionLanguage fromString(String text) {
         for (FunctionLanguage b : FunctionLanguage.values()) {
             if (b.language.equalsIgnoreCase(text)) {
                 return b;
             }
         }
-        throw new Exception("Function language not found: " + text);
+        throw new IllegalStateException("Function language not found: " + text);
     }
 
     @Override

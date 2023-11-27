@@ -77,11 +77,19 @@ public class LanguageRandomizer {
                 result.put(functionEntry.getKey(), FunctionLanguage.JAVA);
             }
         }
+        printStatistics(invocationsNumber, result);
+        return result;
+    }
+
+    private static void printStatistics(int invocationsNumber, Map<String, FunctionLanguage> result) {
         System.out.println("Total invocations: " + invocationsNumber);
         System.out.println("Expected number of JS invocations: " + (int) (invocationsNumber * ((double) JAVASCRIPT_PERC / 100)));
         System.out.println("Expected number of PY invocations: " + (int) (invocationsNumber * ((double) PYTHON_PERC / 100)));
         System.out.println("Expected number of JV invocations: " + (int) (invocationsNumber * ((double) JAVA_PERC / 100)));
-        return result;
+        Map<FunctionLanguage, Long> collected = result.entrySet().stream().collect(Collectors.groupingBy(Map.Entry::getValue, Collectors.counting()));
+        System.out.println("Number of JS functions: " + collected.get(FunctionLanguage.JAVASCRIPT));
+        System.out.println("Number of PY functions: " + collected.get(FunctionLanguage.PYTHON));
+        System.out.println("Number of JV functions: " + collected.get(FunctionLanguage.JAVA));
     }
 
     private static List<Invocation> getInvocations(String inputFilePath) {

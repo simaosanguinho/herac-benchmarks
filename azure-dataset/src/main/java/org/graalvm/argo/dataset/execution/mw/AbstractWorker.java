@@ -1,5 +1,7 @@
 package org.graalvm.argo.dataset.execution.mw;
 
+import org.graalvm.argo.dataset.multilang.FunctionLanguage;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,9 +25,9 @@ public abstract class AbstractWorker {
         this.memoryUtilization = new AtomicInteger(0);
     }
 
-    public abstract void ensureUploaded(String owner, String function);
+    public abstract void ensureUploaded(String owner, String function, FunctionLanguage language);
 
-    public abstract void acceptFunctionInvocation(String owner, String function, int allocatedMemoryMb, int duration, int timestamp) throws IOException;
+    public abstract void acceptFunctionInvocation(String owner, String function, int allocatedMemoryMb, int duration, int timestamp, FunctionLanguage language) throws IOException;
 
     public boolean hasFunctionRegistered(String function) {
         return functions.contains(function);

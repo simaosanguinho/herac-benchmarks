@@ -3,6 +3,7 @@ package org.graalvm.argo.dataset.execution.mw;
 import org.graalvm.argo.dataset.InvocationTraceGenerator;
 import org.graalvm.argo.dataset.execution.ExecutorConfiguration;
 import org.graalvm.argo.dataset.execution.InvocationTraceExecutor;
+import org.graalvm.argo.dataset.multilang.FunctionLanguage;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -52,13 +53,14 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
                 int allocatedMemoryMb = Integer.parseInt(splitRow[2]);
                 int duration = Integer.parseInt(splitRow[3]);
                 int timestamp = Integer.parseInt(splitRow[4]);
+                FunctionLanguage language = FunctionLanguage.fromString(splitRow[5]);
 
                 AbstractWorker worker = schedule(owner, function, allocatedMemoryMb);
-                worker.ensureUploaded(owner, function);
+                worker.ensureUploaded(owner, function, language);
                 waitForInvocation(currentTimestamp, timestamp);
                 currentTimestamp = timestamp;
 
-                worker.acceptFunctionInvocation(owner, function, allocatedMemoryMb, duration, timestamp);
+                worker.acceptFunctionInvocation(owner, function, allocatedMemoryMb, duration, timestamp, language);
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -12,13 +12,10 @@ function DIR {
 
 function process_dataset {
     csv_file=$1
-    function_code=$2
-    function_name=$3
-    function_entry_point=$4
-    function_runtime=$5
-    invocation_collocation=$6
-    function_isolation=$7
-    gv_sandbox=$8  # should be the last parameter since it can be empty
+    function_runtime=$2
+    invocation_collocation=$3
+    function_isolation=$4
+    gv_sandbox=$5  # should be the last parameter since it can be empty
 
     AZURE_EXECUTOR_JAR=$(DIR)/../azure-dataset/build/libs/azure-dataset-1.0-all.jar
     AZURE_EXECUTOR_ENTRYPOINT=org.graalvm.argo.dataset.execution.ExecutorEntryPoint
@@ -31,9 +28,6 @@ function process_dataset {
 
     time $JAVA_HOME/bin/java -cp $AZURE_EXECUTOR_JAR $AZURE_EXECUTOR_ENTRYPOINT \
         --input $csv_file \
-        --functionCode $function_code \
-        --functionLanguage java \
-        --functionEntryPoint $function_entry_point \
         --functionMemory 2 \
         --functionRuntime $function_runtime \
         --invocationCollocation $invocation_collocation \
@@ -68,36 +62,27 @@ LAMBDA_MANAGER_ADDRESS="$LAMBDA_MANAGER_HOST:$LAMBDA_MANAGER_PORT"
 
 
 if [[ "$MODE" = "gv" ]]; then
-    FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/gv-genericapp/build/libgenericapp.so
-    FUNCTION_NAME=gvgenericappbench
-    FUNCTION_ENTRY_POINT=com.genericapp.GenericApp
     FUNCTION_RUNTIME=graalvisor
     FUNCTION_ISOLATION=false
     INVOCATION_COLLOCATION=true
-elif [[ "$MODE" = "gv-fork" ]]; then
-    FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/gv-genericapp/build/libgenericapp.so
-    FUNCTION_NAME=gvgenericappbench
-    FUNCTION_ENTRY_POINT=com.genericapp.GenericApp
+elif [[ "$MODE" = "gv-sf" ]]; then
     FUNCTION_RUNTIME=graalvisor
     FUNCTION_ISOLATION=true
     INVOCATION_COLLOCATION=true
-    GV_SANDBOX=process
-elif [[ "$MODE" = "cr" ]]; then
-    FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/cr-genericapp/init.json
-    FUNCTION_NAME=crgenericappbench
-    FUNCTION_ENTRY_POINT=Main
-    FUNCTION_RUNTIME=docker.io%2Fopenwhisk%2Fjava8action:latest
-    FUNCTION_ISOLATION=false  # We don't care about this value for OpenWhisk as functions are isolated there by default
+elif [[ "$MODE" = "gv-si" ]]; then
+    FUNCTION_RUNTIME=graalvisor
+    FUNCTION_ISOLATION=true
     INVOCATION_COLLOCATION=false
-elif [[ "$MODE" = "ph" ]]; then
-    FUNCTION_CODE=$ARGO_HOME/../benchmarks/src/java/cr-genericapp/init.json
-    FUNCTION_NAME=phgenericappbench
-    FUNCTION_ENTRY_POINT=Main
-    FUNCTION_RUNTIME=docker.io%2Fsergiyivan%2Flarge-scale-experiment:photons
-    FUNCTION_ISOLATION=false  # We don't care about this value for Photons as functions are isolated there by default
-    INVOCATION_COLLOCATION=true
+elif [[ "$MODE" = "ow" ]]; then
+    FUNCTION_RUNTIME=openwhisk
+    FUNCTION_ISOLATION=true
+    INVOCATION_COLLOCATION=false
+elif [[ "$MODE" = "ow-uber" ]]; then
+    FUNCTION_RUNTIME=openwhisk_uber
+    FUNCTION_ISOLATION=true
+    INVOCATION_COLLOCATION=false
 else
-    echo "Syntax: <gv|cr|ph> /path/to/dataset/directory"
+    echo "Syntax: <mode> </path/to/dataset/directory>"
 	exit 1
 fi
 
@@ -109,6 +94,6 @@ wait_port $LAMBDA_MANAGER_HOST $LAMBDA_MANAGER_PORT
 # Configure lambda manager
 curl -s -X POST $LAMBDA_MANAGER_ADDRESS/configure_manager -H 'Content-Type: application/json' --data-binary @"$LAMBDA_MANAGER_CONFIG"
 
-process_dataset $DATASET_FILE $FUNCTION_CODE $FUNCTION_NAME $FUNCTION_ENTRY_POINT $FUNCTION_RUNTIME $INVOCATION_COLLOCATION $FUNCTION_ISOLATION $GV_SANDBOX &
+process_dataset $DATASET_FILE $FUNCTION_RUNTIME $INVOCATION_COLLOCATION $FUNCTION_ISOLATION $GV_SANDBOX &
 
 wait

@@ -17,18 +17,14 @@ public class ExecutorEntryPoint {
         try {
             CommandLine cmd = new DefaultParser().parse(options, args);
             String inputFilePath = cmd.getOptionValue("input");
-            String functionCodeFilePath = cmd.getOptionValue("functionCode");
-            String functionLanguage = cmd.getOptionValue("functionLanguage");
-            String functionEntryPoint = cmd.getOptionValue("functionEntryPoint");
             String functionMemory = cmd.getOptionValue("functionMemory");
             String functionRuntime = cmd.getOptionValue("functionRuntime");
             String invocationCollocation = cmd.getOptionValue("invocationCollocation");
             String functionIsolation = cmd.getOptionValue("functionIsolation");
             String gvSandbox = cmd.getOptionValue("gvSandbox");
             boolean debug = cmd.hasOption("debug");
-            byte[] functionCode = functionCodeFilePath.getBytes(StandardCharsets.UTF_8);
             String lambdaManagerAddress = cmd.getOptionValue("lambdaManagerAddress", "localhost:30009");
-            ExecutorConfiguration config = new ExecutorConfiguration(functionCode, functionLanguage, functionEntryPoint, functionMemory, functionRuntime, invocationCollocation, functionIsolation, gvSandbox, debug, lambdaManagerAddress);
+            ExecutorConfiguration config = new ExecutorConfiguration(functionMemory, functionRuntime, invocationCollocation, functionIsolation, gvSandbox, debug, lambdaManagerAddress);
             boolean multiWorker = cmd.hasOption("multiWorker");
             InvocationTraceExecutor executor = multiWorker ? new MultiWorkerInvocationTraceExecutor(config) : new InvocationTraceExecutor(config);
             executor.execute(inputFilePath);
@@ -45,15 +41,6 @@ public class ExecutorEntryPoint {
         Option input = new Option("i", "input", true, "Input invocation trace file path.");
         input.setRequired(true);
         options.addOption(input);
-        Option functionCode = new Option("fc", "functionCode", true, "Function code file path.");
-        functionCode.setRequired(true);
-        options.addOption(functionCode);
-        Option functionLanguage = new Option("fl", "functionLanguage", true, "Function language.");
-        functionLanguage.setRequired(true);
-        options.addOption(functionLanguage);
-        Option functionEntryPoint = new Option("fep", "functionEntryPoint", true, "Function entry point.");
-        functionEntryPoint.setRequired(true);
-        options.addOption(functionEntryPoint);
         Option functionMemory = new Option("fm", "functionMemory", true, "Function memory.");
         functionMemory.setRequired(true);
         options.addOption(functionMemory);

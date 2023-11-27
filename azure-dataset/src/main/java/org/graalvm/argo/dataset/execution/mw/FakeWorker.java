@@ -1,12 +1,14 @@
 package org.graalvm.argo.dataset.execution.mw;
 
+import org.graalvm.argo.dataset.multilang.FunctionLanguage;
+
 public class FakeWorker extends AbstractWorker {
 
     public FakeWorker(int maxAllowedMemory) {
         super(maxAllowedMemory);
     }
 
-    public void ensureUploaded(String owner, String function) {
+    public void ensureUploaded(String owner, String function, FunctionLanguage language) {
         if (!functions.contains(function)) {
             owners.add(owner);
             functions.add(function);
@@ -14,7 +16,7 @@ public class FakeWorker extends AbstractWorker {
     }
 
     @Override
-    public void acceptFunctionInvocation(String owner, String function, int allocatedMemoryMb, int duration, int timestamp) {
+    public void acceptFunctionInvocation(String owner, String function, int allocatedMemoryMb, int duration, int timestamp, FunctionLanguage language) {
         int currentMemoryUtilization = memoryUtilization.addAndGet(allocatedMemoryMb);
         MockNetworkUtils.sendPost(new InvocationCallback(this, allocatedMemoryMb, duration));
 
