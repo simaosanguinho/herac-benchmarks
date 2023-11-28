@@ -41,12 +41,12 @@ public class ExecutorConfiguration {
             // Add function configs for Graalvisor.
             javaConfig = new FunctionConfiguration(Environment.GV_JV_FILEHASHING_CODE, Environment.GV_JV_FILEHASHING_ENTRYPOINT, Environment.JV_FILEHASHING_PARAMETERS);
             javaScriptConfig = new FunctionConfiguration(Environment.GV_JS_DYNAMICHTML_CODE, Environment.GV_JS_DYNAMICHTML_ENTRYPOINT, Environment.JS_DYNAMICHTML_PARAMETERS);
-            pythonConfig = new FunctionConfiguration(Environment.GV_PY_COMPRESSION_CODE, Environment.GV_PY_COMPRESSION_ENTRYPOINT, Environment.PY_COMPRESSION_PARAMETERS);
+            pythonConfig = new FunctionConfiguration(Environment.GV_PY_HELLOWORLD_CODE, Environment.GV_PY_HELLOWORLD_ENTRYPOINT, Environment.PY_HELLOWORLD_PARAMETERS);
         } else {
             // Add function configs for OpenWhisk.
             javaConfig = new FunctionConfiguration(Environment.OW_JV_FILEHASHING_CODE, Environment.OW_JV_FILEHASHING_ENTRYPOINT, Environment.JV_FILEHASHING_PARAMETERS);
             javaScriptConfig = new FunctionConfiguration(Environment.OW_JS_DYNAMICHTML_CODE, Environment.OW_JS_DYNAMICHTML_ENTRYPOINT, Environment.JS_DYNAMICHTML_PARAMETERS);
-            pythonConfig = new FunctionConfiguration(Environment.OW_PY_COMPRESSION_CODE, Environment.OW_PY_COMPRESSION_ENTRYPOINT, Environment.PY_COMPRESSION_PARAMETERS);
+            pythonConfig = new FunctionConfiguration(Environment.OW_PY_HELLOWORLD_CODE, Environment.OW_PY_HELLOWORLD_ENTRYPOINT, Environment.PY_HELLOWORLD_PARAMETERS);
         }
         functionConfigs.put(FunctionLanguage.JAVA, javaConfig);
         functionConfigs.put(FunctionLanguage.JAVASCRIPT, javaScriptConfig);
