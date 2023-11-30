@@ -41,6 +41,7 @@ function process_dataset {
     echo "Finished benchmark execution. Stopping the lambda manager..."
     echo "--- Execute this command to kill LM: ---"
     echo "sudo kill $(sudo lsof -i -P -n | grep LISTEN | grep 30009 | awk '{print $2}')"
+    sudo kill $(sudo lsof -i -P -n | grep LISTEN | grep 30009 | awk '{print $2}')
 }
 
 
