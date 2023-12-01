@@ -1,28 +1,26 @@
 package org.graalvm.argo.dataset.execution.mw;
 
+import org.graalvm.argo.dataset.execution.mw.memory.AbstractMemoryManager;
 import org.graalvm.argo.dataset.multilang.FunctionLanguage;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractWorker {
 
     protected final Set<String> owners;
     protected final Set<String> functions;
-    private final int maxAllowedMemory;
 
     protected int totalRequests = 0;
     protected int maxExperiencedMemoryUtilization = 0;
 
-    protected AtomicInteger memoryUtilization;
+    protected AbstractMemoryManager memoryManager;
 
-    protected AbstractWorker(int maxAllowedMemory) {
+    protected AbstractWorker(AbstractMemoryManager memoryManager) {
         this.owners = new HashSet<>();
         this.functions = new HashSet<>();
-        this.maxAllowedMemory = maxAllowedMemory;
-        this.memoryUtilization = new AtomicInteger(0);
+        this.memoryManager = memoryManager;
     }
 
     public abstract void ensureUploaded(String owner, String function, FunctionLanguage language);
@@ -38,11 +36,15 @@ public abstract class AbstractWorker {
     }
 
     public int getCurrentMemoryUtilization() {
-        return memoryUtilization.get();
+        int currentMemoryUtilization = memoryManager.getCurrentMemoryConsumption();
+        if (currentMemoryUtilization > maxExperiencedMemoryUtilization) {
+            maxExperiencedMemoryUtilization = currentMemoryUtilization;
+        }
+        return currentMemoryUtilization;
     }
 
-    public boolean canAccommodateRequest(int invocationMemory) {
-        return memoryUtilization.get() + invocationMemory <= maxAllowedMemory;
+    public boolean canAccommodateRequest(String owner, String function, int memory) {
+        return memoryManager.canAccommodateRequest(owner, function, memory);
     }
 
     public void printStatistics() {

@@ -3,6 +3,10 @@ package org.graalvm.argo.dataset.execution.mw;
 import org.graalvm.argo.dataset.InvocationTraceGenerator;
 import org.graalvm.argo.dataset.execution.ExecutorConfiguration;
 import org.graalvm.argo.dataset.execution.InvocationTraceExecutor;
+import org.graalvm.argo.dataset.execution.mw.memory.MemoryManagerFactories.AbstractMemoryManagerFactory;
+import org.graalvm.argo.dataset.execution.mw.memory.MemoryManagerFactories.SingleInvocationMemoryManagerFactory;
+import org.graalvm.argo.dataset.execution.mw.memory.MemoryManagerFactories.OwnerCollocationMemoryManagerFactory;
+import org.graalvm.argo.dataset.execution.mw.memory.MemoryManagerFactories.SingleFunctionMemoryManagerFactory;
 import org.graalvm.argo.dataset.multilang.FunctionLanguage;
 
 import java.io.BufferedReader;
@@ -10,30 +14,42 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor {
+import static org.graalvm.argo.dataset.execution.Environment.WORKER_COUNT;
+import static org.graalvm.argo.dataset.execution.Environment.REAL_WORKER_INDEX;
+import static org.graalvm.argo.dataset.execution.Environment.REAL_WORKER_TRACE_OUTPUT;
 
-    private final static int WORKER_COUNT = 100;
-    private final static int MAX_MEMORY_PER_WORKER_MB = 98304;
+public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor {
 
     private final AbstractWorker[] workers;
     private int overalloc = 0;
-    private final static int REAL_WORKER_INDEX = 95;
-    private final static String REAL_WORKER_TRACE_OUTPUT = "/tmp/lse_trace.csv";
 
     public MultiWorkerInvocationTraceExecutor(ExecutorConfiguration config) {
         super(config);
+        AbstractMemoryManagerFactory factory = getMemoryManagerFactory(config);
         workers = new AbstractWorker[WORKER_COUNT];
         for (int i = 0; i < WORKER_COUNT; ++i) {
-            workers[i] = new FakeWorker(MAX_MEMORY_PER_WORKER_MB);
+            workers[i] = new FakeWorker(factory.createMemoryManager());
         }
-        insertRealWorker();
+        insertRealWorker(factory);
     }
 
-    private void insertRealWorker() {
+    private AbstractMemoryManagerFactory getMemoryManagerFactory(ExecutorConfiguration config) {
+        if (Boolean.TRUE.equals(config.invocationCollocation)) {
+            if (Boolean.TRUE.equals(config.functionIsolation)) {
+                return new SingleFunctionMemoryManagerFactory();
+            } else {
+                return new OwnerCollocationMemoryManagerFactory();
+            }
+        } else {
+            return new SingleInvocationMemoryManagerFactory();
+        }
+    }
+
+    private void insertRealWorker(AbstractMemoryManagerFactory factory) {
         try {
             File outputTraceFile = new File(REAL_WORKER_TRACE_OUTPUT);
             outputTraceFile.createNewFile();
-            workers[REAL_WORKER_INDEX] = new RealWorker(MAX_MEMORY_PER_WORKER_MB, this, outputTraceFile);
+            workers[REAL_WORKER_INDEX] = new RealWorker(factory.createMemoryManager(), this, outputTraceFile);
         } catch (IOException e) {
             System.err.println("Couldn't create a real worker: " + e.getMessage());
         }
@@ -50,17 +66,17 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
                 splitRow = line.split(InvocationTraceGenerator.DELIMITER);
                 String owner = splitRow[0];
                 String function = splitRow[1];
-                int allocatedMemoryMb = Integer.parseInt(splitRow[2]);
                 int duration = Integer.parseInt(splitRow[3]);
                 int timestamp = Integer.parseInt(splitRow[4]);
                 FunctionLanguage language = FunctionLanguage.fromString(splitRow[5]);
+                int functionMemory = config.getFunctionConfiguration(language).memory;
 
-                AbstractWorker worker = schedule(owner, function, allocatedMemoryMb);
+                AbstractWorker worker = schedule(owner, function, functionMemory);
                 worker.ensureUploaded(owner, function, language);
                 waitForInvocation(currentTimestamp, timestamp);
                 currentTimestamp = timestamp;
 
-                worker.acceptFunctionInvocation(owner, function, allocatedMemoryMb, duration, timestamp, language);
+                worker.acceptFunctionInvocation(owner, function, functionMemory, duration, timestamp, language);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,14 +96,14 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
     private AbstractWorker schedule(String owner, String function, int invocationMemory) {
         AbstractWorker result = null;
         for (AbstractWorker w : workers) {
-            if (w.canAccommodateRequest(invocationMemory) && w.hasFunctionRegistered(function)) {
+            if (w.canAccommodateRequest(owner, function, invocationMemory) && w.hasFunctionRegistered(function)) {
                 result = w;
                 break;
             }
         }
         if (result == null) {
             for (AbstractWorker w : workers) {
-                if (w.canAccommodateRequest(invocationMemory) && w.hasOwnerRegistered(owner)) {
+                if (w.canAccommodateRequest(owner, function, invocationMemory) && w.hasOwnerRegistered(owner)) {
                     result = w;
                     break;
                 }
@@ -95,7 +111,7 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
         }
         if (result == null) {
             result = findLeastUtilized();
-            if (!result.canAccommodateRequest(invocationMemory)) {
+            if (!result.canAccommodateRequest(owner, function, invocationMemory)) {
                 overalloc++;
             }
         }

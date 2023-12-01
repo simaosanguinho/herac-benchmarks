@@ -8,10 +8,9 @@ import java.util.Map;
 
 public class ExecutorConfiguration {
 
-    final String functionMemory;
     final String functionRuntime;
-    final String invocationCollocation;
-    final String functionIsolation;
+    public final String invocationCollocation;
+    public final String functionIsolation;
     final String gvSandbox;
     /**
      * If true, then print timestamps instead of issuing requests.
@@ -21,8 +20,7 @@ public class ExecutorConfiguration {
 
     private final Map<FunctionLanguage, FunctionConfiguration> functionConfigs;
 
-    ExecutorConfiguration(String functionMemory, String functionRuntime, String invocationCollocation, String functionIsolation, String gvSandbox, boolean debug, String lambdaManagerAddress) {
-        this.functionMemory = functionMemory;
+    ExecutorConfiguration(String functionRuntime, String invocationCollocation, String functionIsolation, String gvSandbox, boolean debug, String lambdaManagerAddress) {
         this.functionRuntime = functionRuntime;
         this.invocationCollocation = invocationCollocation;
         this.functionIsolation = functionIsolation;
@@ -39,14 +37,14 @@ public class ExecutorConfiguration {
         FunctionConfiguration pythonConfig;
         if (Environment.GRAALVISOR_RUNTIME.equals(this.functionRuntime)) {
             // Add function configs for Graalvisor.
-            javaConfig = new FunctionConfiguration(Environment.GV_JV_FILEHASHING_CODE, Environment.GV_JV_FILEHASHING_ENTRYPOINT, Environment.JV_FILEHASHING_PARAMETERS);
-            javaScriptConfig = new FunctionConfiguration(Environment.GV_JS_DYNAMICHTML_CODE, Environment.GV_JS_DYNAMICHTML_ENTRYPOINT, Environment.JS_DYNAMICHTML_PARAMETERS);
-            pythonConfig = new FunctionConfiguration(Environment.GV_PY_HELLOWORLD_CODE, Environment.GV_PY_HELLOWORLD_ENTRYPOINT, Environment.PY_HELLOWORLD_PARAMETERS);
+            javaConfig = new FunctionConfiguration(Environment.GV_JV_FILEHASHING_CODE, Environment.GV_JV_FILEHASHING_ENTRYPOINT, Environment.JV_FILEHASHING_PARAMETERS, Environment.JV_FILEHASHING_MEMORY);
+            javaScriptConfig = new FunctionConfiguration(Environment.GV_JS_DYNAMICHTML_CODE, Environment.GV_JS_DYNAMICHTML_ENTRYPOINT, Environment.JS_DYNAMICHTML_PARAMETERS, Environment.JS_DYNAMICHTML_MEMORY);
+            pythonConfig = new FunctionConfiguration(Environment.GV_PY_HELLOWORLD_CODE, Environment.GV_PY_HELLOWORLD_ENTRYPOINT, Environment.PY_HELLOWORLD_PARAMETERS, Environment.PY_HELLOWORLD_MEMORY);
         } else {
             // Add function configs for OpenWhisk.
-            javaConfig = new FunctionConfiguration(Environment.OW_JV_FILEHASHING_CODE, Environment.OW_JV_FILEHASHING_ENTRYPOINT, Environment.JV_FILEHASHING_PARAMETERS);
-            javaScriptConfig = new FunctionConfiguration(Environment.OW_JS_DYNAMICHTML_CODE, Environment.OW_JS_DYNAMICHTML_ENTRYPOINT, Environment.JS_DYNAMICHTML_PARAMETERS);
-            pythonConfig = new FunctionConfiguration(Environment.OW_PY_HELLOWORLD_CODE, Environment.OW_PY_HELLOWORLD_ENTRYPOINT, Environment.PY_HELLOWORLD_PARAMETERS);
+            javaConfig = new FunctionConfiguration(Environment.OW_JV_FILEHASHING_CODE, Environment.OW_JV_FILEHASHING_ENTRYPOINT, Environment.JV_FILEHASHING_PARAMETERS, Environment.JV_FILEHASHING_MEMORY);
+            javaScriptConfig = new FunctionConfiguration(Environment.OW_JS_DYNAMICHTML_CODE, Environment.OW_JS_DYNAMICHTML_ENTRYPOINT, Environment.JS_DYNAMICHTML_PARAMETERS, Environment.JS_DYNAMICHTML_MEMORY);
+            pythonConfig = new FunctionConfiguration(Environment.OW_PY_HELLOWORLD_CODE, Environment.OW_PY_HELLOWORLD_ENTRYPOINT, Environment.PY_HELLOWORLD_PARAMETERS, Environment.PY_HELLOWORLD_MEMORY);
         }
         functionConfigs.put(FunctionLanguage.JAVA, javaConfig);
         functionConfigs.put(FunctionLanguage.JAVASCRIPT, javaScriptConfig);
@@ -65,16 +63,18 @@ public class ExecutorConfiguration {
         return functionConfigs.get(language);
     }
 
-    class FunctionConfiguration {
+    public class FunctionConfiguration {
         // Contains path to the code instead of the code itself due to LocalFunctionStorage in Lambda Manager.
         final byte[] code;
         final String entryPoint;
         final byte[] payload;
+        public final int memory;
 
-        private FunctionConfiguration(String code, String entryPoint, String payload) {
+        private FunctionConfiguration(String code, String entryPoint, String payload, int memory) {
             this.code = code.getBytes(StandardCharsets.UTF_8);
             this.entryPoint = entryPoint;
             this.payload = payload.getBytes(StandardCharsets.UTF_8);
+            this.memory = memory;
         }
     }
 }

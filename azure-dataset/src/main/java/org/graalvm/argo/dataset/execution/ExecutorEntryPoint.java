@@ -8,8 +8,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.graalvm.argo.dataset.execution.mw.MultiWorkerInvocationTraceExecutor;
 
-import java.nio.charset.StandardCharsets;
-
 public class ExecutorEntryPoint {
 
     public static void main(String[] args) {
@@ -17,14 +15,13 @@ public class ExecutorEntryPoint {
         try {
             CommandLine cmd = new DefaultParser().parse(options, args);
             String inputFilePath = cmd.getOptionValue("input");
-            String functionMemory = cmd.getOptionValue("functionMemory");
             String functionRuntime = cmd.getOptionValue("functionRuntime");
             String invocationCollocation = cmd.getOptionValue("invocationCollocation");
             String functionIsolation = cmd.getOptionValue("functionIsolation");
             String gvSandbox = cmd.getOptionValue("gvSandbox");
             boolean debug = cmd.hasOption("debug");
             String lambdaManagerAddress = cmd.getOptionValue("lambdaManagerAddress", "localhost:30009");
-            ExecutorConfiguration config = new ExecutorConfiguration(functionMemory, functionRuntime, invocationCollocation, functionIsolation, gvSandbox, debug, lambdaManagerAddress);
+            ExecutorConfiguration config = new ExecutorConfiguration(functionRuntime, invocationCollocation, functionIsolation, gvSandbox, debug, lambdaManagerAddress);
             boolean multiWorker = cmd.hasOption("multiWorker");
             InvocationTraceExecutor executor = multiWorker ? new MultiWorkerInvocationTraceExecutor(config) : new InvocationTraceExecutor(config);
             executor.execute(inputFilePath);
@@ -41,9 +38,6 @@ public class ExecutorEntryPoint {
         Option input = new Option("i", "input", true, "Input invocation trace file path.");
         input.setRequired(true);
         options.addOption(input);
-        Option functionMemory = new Option("fm", "functionMemory", true, "Function memory.");
-        functionMemory.setRequired(true);
-        options.addOption(functionMemory);
         Option functionRuntime = new Option("fr", "functionRuntime", true, "Function runtime.");
         functionRuntime.setRequired(true);
         options.addOption(functionRuntime);

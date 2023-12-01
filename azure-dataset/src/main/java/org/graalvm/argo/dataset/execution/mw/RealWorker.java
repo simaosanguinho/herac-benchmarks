@@ -1,5 +1,6 @@
 package org.graalvm.argo.dataset.execution.mw;
 
+import org.graalvm.argo.dataset.execution.mw.memory.AbstractMemoryManager;
 import org.graalvm.argo.dataset.multilang.FunctionLanguage;
 
 import java.io.BufferedWriter;
@@ -16,8 +17,8 @@ public class RealWorker extends AbstractWorker {
 
     private final BufferedWriter bw;
 
-    protected RealWorker(int maxAllowedMemory, MultiWorkerInvocationTraceExecutor executor, File output) throws IOException {
-        super(maxAllowedMemory);
+    protected RealWorker(AbstractMemoryManager memoryManager, MultiWorkerInvocationTraceExecutor executor, File output) throws IOException {
+        super(memoryManager);
         this.bw = new BufferedWriter(new FileWriter(output));
         this.executor = executor;
         bw.write("HashOwner,HashFunction,AverageAllocatedMb,AverageDuration,Timestamp");
@@ -33,31 +34,30 @@ public class RealWorker extends AbstractWorker {
     }
 
     @Override
-    public void acceptFunctionInvocation(String owner, String function, int allocatedMemoryMb, int duration, int timestamp, FunctionLanguage language) throws IOException {
-        bw.write(String.format(TRACE_INVOCATION_RECORD, owner, function, allocatedMemoryMb, duration, timestamp, language));
+    public void acceptFunctionInvocation(String owner, String function, int functionMemory, int duration, int timestamp, FunctionLanguage language) throws IOException {
+        bw.write(String.format(TRACE_INVOCATION_RECORD, owner, function, functionMemory, duration, timestamp, language));
         bw.newLine();
-        int currentMemoryUtilization = memoryUtilization.addAndGet(allocatedMemoryMb);
-        executor.invokeFunction(owner, function, allocatedMemoryMb, language, new InvocationCallback(this, allocatedMemoryMb));
+        memoryManager.startRequest(owner, function, functionMemory);
+        executor.invokeFunction(owner, function, functionMemory, language, new InvocationCallback(this, owner, function));
 
-        if (currentMemoryUtilization > maxExperiencedMemoryUtilization) {
-            maxExperiencedMemoryUtilization = currentMemoryUtilization;
-        }
         ++totalRequests;
     }
 
     private static class InvocationCallback implements Consumer<String> {
 
         private final AbstractWorker worker;
-        private final int invocationMemory;
+        private final String owner;
+        private final String function;
 
-        private InvocationCallback(AbstractWorker worker, int invocationMemory) {
+        private InvocationCallback(AbstractWorker worker, String owner, String function) {
             this.worker = worker;
-            this.invocationMemory = invocationMemory;
+            this.owner = owner;
+            this.function = function;
         }
 
         @Override
         public void accept(String s) {
-            worker.memoryUtilization.addAndGet(-invocationMemory);
+            worker.memoryManager.finishRequest(owner, function);
         }
     }
 

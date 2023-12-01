@@ -28,7 +28,6 @@ function process_dataset {
 
     time $JAVA_HOME/bin/java -cp $AZURE_EXECUTOR_JAR $AZURE_EXECUTOR_ENTRYPOINT \
         --input $csv_file \
-        --functionMemory 2 \
         --functionRuntime $function_runtime \
         --invocationCollocation $invocation_collocation \
         --functionIsolation $function_isolation \

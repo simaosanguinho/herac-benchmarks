@@ -1,11 +1,12 @@
 package org.graalvm.argo.dataset.execution.mw;
 
+import org.graalvm.argo.dataset.execution.mw.memory.AbstractMemoryManager;
 import org.graalvm.argo.dataset.multilang.FunctionLanguage;
 
 public class FakeWorker extends AbstractWorker {
 
-    public FakeWorker(int maxAllowedMemory) {
-        super(maxAllowedMemory);
+    public FakeWorker(AbstractMemoryManager memoryManager) {
+        super(memoryManager);
     }
 
     public void ensureUploaded(String owner, String function, FunctionLanguage language) {
@@ -16,25 +17,24 @@ public class FakeWorker extends AbstractWorker {
     }
 
     @Override
-    public void acceptFunctionInvocation(String owner, String function, int allocatedMemoryMb, int duration, int timestamp, FunctionLanguage language) {
-        int currentMemoryUtilization = memoryUtilization.addAndGet(allocatedMemoryMb);
-        MockNetworkUtils.sendPost(new InvocationCallback(this, allocatedMemoryMb, duration));
+    public void acceptFunctionInvocation(String owner, String function, int functionMemory, int duration, int timestamp, FunctionLanguage language) {
+        memoryManager.startRequest(owner, function, functionMemory);
+        MockNetworkUtils.sendPost(new InvocationCallback(this, owner, function, duration));
 
-        if (currentMemoryUtilization > maxExperiencedMemoryUtilization) {
-            maxExperiencedMemoryUtilization = currentMemoryUtilization;
-        }
         ++totalRequests;
     }
 
     private static class InvocationCallback implements Runnable {
 
         private final AbstractWorker worker;
-        private final int invocationMemory;
+        private final String owner;
+        private final String function;
         private final int duration;
 
-        private InvocationCallback(AbstractWorker worker, int invocationMemory, int duration) {
+        private InvocationCallback(AbstractWorker worker, String owner, String function, int duration) {
             this.worker = worker;
-            this.invocationMemory = invocationMemory;
+            this.owner = owner;
+            this.function = function;
             this.duration = duration;
         }
 
@@ -44,7 +44,7 @@ public class FakeWorker extends AbstractWorker {
                 Thread.sleep(duration);
             } catch (InterruptedException e) {
             }
-            worker.memoryUtilization.addAndGet(-invocationMemory);
+            worker.memoryManager.finishRequest(owner, function);
         }
 
     }

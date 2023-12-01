@@ -14,7 +14,7 @@ public class InvocationTraceExecutor {
 
     private static final int MS_IN_HOUR = 3600000;
 
-    private final ExecutorConfiguration config;
+    protected final ExecutorConfiguration config;
 
 
     public InvocationTraceExecutor(ExecutorConfiguration config) {
@@ -88,7 +88,7 @@ public class InvocationTraceExecutor {
         FunctionLanguage actualLanguage = Environment.GRAALVISOR_RUNTIME.equals(config.functionRuntime) ? FunctionLanguage.JAVA : language;
         String queryParameters = "username=" + owner + "&function_name=" + function +
                 "&function_language=" + actualLanguage + "&function_entry_point=" + functionConfig.entryPoint +
-                "&function_memory=" + config.functionMemory + "&function_runtime=" + config.functionRuntime +
+                "&function_memory=" + functionConfig.memory + "&function_runtime=" + config.functionRuntime +
                 "&function_isolation=" + config.functionIsolation + "&invocation_collocation=" + config.invocationCollocation;
         if (config.gvSandbox != null) {
             queryParameters = queryParameters + "&gv_sandbox=" + config.gvSandbox;
