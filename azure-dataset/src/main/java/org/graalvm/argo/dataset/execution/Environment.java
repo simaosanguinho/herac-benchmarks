@@ -6,6 +6,9 @@ public class Environment {
     public final static int MAX_MEMORY_PER_WORKER_MB = 98304;
     public final static int REAL_WORKER_INDEX = 95;
     public final static String REAL_WORKER_TRACE_OUTPUT = "/tmp/lse_trace.csv";
+    public final static boolean COLLECT_STATISTICS = true;
+    public final static String GLOBAL_STATISTICS_OUTPUT = "/tmp/lse_statistics.json";
+    public final static int STATISTICS_INTERVAL_MS = 1000;
 
     public static final int VM_MEMORY = 512;
 

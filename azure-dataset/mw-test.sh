@@ -28,4 +28,4 @@ time $JAVA_HOME/bin/java -cp $AZURE_EXECUTOR_JAR $AZURE_EXECUTOR_ENTRYPOINT \
         --functionRuntime "graalvisor" \
         --invocationCollocation $INVOCATION_COLLOCATION \
         --functionIsolation $FUNCTION_ISOLATION \
-        --multiWorker > /tmp/mw_test_execution.log
+        --multiWorker > /tmp/mw_test_execution_$MODE.log
