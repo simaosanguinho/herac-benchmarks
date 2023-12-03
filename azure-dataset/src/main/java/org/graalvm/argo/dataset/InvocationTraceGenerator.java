@@ -117,11 +117,12 @@ public class InvocationTraceGenerator {
     }
 
     private static void writeInvocationsToFile(String outputFilePath) throws Exception {
+        int firstTimestamp = invocations.get(0).getTimestamp();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath, false))) {
             writer.write("HashOwner,HashFunction,AverageAllocatedMb,AverageDuration,Timestamp");
             writer.newLine();
             for (Invocation invocation : invocations) {
-                writer.write(invocation.toString());
+                writer.write(invocation.toString(firstTimestamp));
                 writer.newLine();
             }
         }

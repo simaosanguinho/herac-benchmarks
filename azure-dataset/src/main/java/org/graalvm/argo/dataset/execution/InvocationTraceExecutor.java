@@ -72,7 +72,7 @@ public class InvocationTraceExecutor {
     }
 
     protected void waitForInvocation(int currentTimestamp, int invocationTimestamp) {
-        int timeToSleep = (invocationTimestamp - currentTimestamp) % MS_IN_HOUR;
+        int timeToSleep = invocationTimestamp - currentTimestamp;
         if (timeToSleep != 0) {
             try {
                 Thread.sleep(timeToSleep);

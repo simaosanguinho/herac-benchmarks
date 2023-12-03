@@ -63,4 +63,8 @@ public class Invocation {
             }
         };
     }
+
+    public String toString(int firstTimestamp) {
+        return String.format("%s,%s,%d,%d,%d", owner, function, memory, duration, (timestamp - firstTimestamp));
+    }
 }
