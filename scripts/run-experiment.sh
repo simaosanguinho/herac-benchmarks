@@ -87,35 +87,6 @@ function efficiency {
 
     # Graalvisor
     function efficiency_gv {
-
-        JV_GV_BENCHMARKS=""
-        JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_hw"
-        JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_filehashing"
-        JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_httprequest"
-        JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_videoprocessing"
-        JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_classify"
-        JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_shopcart"
-
-        JS_GV_BENCHMARKS=""
-        JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_hw"
-        JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_dynamichtml"
-        JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_thumbnail"
-        JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_uploader"
-
-        PY_GV_BENCHMARKS=""
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_hw"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_dynamichtml"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_thumbnail"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_uploader"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_compression"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_videoprocessing"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_mst"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_bfs"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_pagerank"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_dna"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_classify"
-
-
         declare -A wmultiplier
         wmultiplier_table[gv_java_hw]=1000
         wmultiplier_table[gv_java_filehashing]=1000
@@ -148,7 +119,7 @@ function efficiency {
         concurrency_table[gv_python_videoprocessing]=2
         concurrency_table[gv_python_mst]=8
 
-         function efficiency_gv_java_single {
+        function efficiency_gv_java_single {
             for benchmark in $JV_GV_BENCHMARKS;
             do
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
@@ -216,34 +187,6 @@ function efficiency {
     function efficiency_gv_snapshot {
         snapshots=/tmp/snapshots
         mkdir -p $snapshots
-
-        JV_GV_BENCHMARKS=""
-        JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_hw"
-        JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_filehashing"
-        JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_httprequest"
-        JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_videoprocessing"
-        JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_classify"
-        JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_shopcart"
-
-        JS_GV_BENCHMARKS=""
-        JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_hw"
-        JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_dynamichtml"
-        JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_thumbnail"
-        JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_uploader"
-
-        PY_GV_BENCHMARKS=""
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_hw"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_dynamichtml"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_thumbnail"
-       PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_uploader"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_compression"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_videoprocessing"
-        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_mst"
-        # TODO - new benchmarks not added yet.
-#        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_bfs"
-#        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_pagerank"
-#        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_dna"
-#        PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_classify"
 
         function efficiency_gv_java {
             declare -A wmultiplier
