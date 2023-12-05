@@ -4,22 +4,25 @@
 DATA_IP=$(ip route get 8.8.8.8 | grep -oP  'src \K\S+')
 PORT=8000
 
-JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_sleep"
+JV_GV_BENCHMARKS=""
+#JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_sleep"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_hw"                 # 256 MB
-JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_shopcart"
+#JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_shopcart"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_filehashing"        # 256 MB
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_classify"           # 1024 MB
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_httprequest"        # 256 MB
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_videoprocessing"    # 1024 MB
 
+JV_CR_BENCHMARKS=""
 JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_filehashing"        # 256 MB
 JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_hw"                 # 256 MB
 JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_httprequest"        # 256 MB
 JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_classify"           # 1024 MB
-JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_sleep"
+#JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_sleep"
 JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_videoprocessing"    # 1024 MB
 
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_sleep"
+PY_GV_BENCHMARKS=""
+#PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_sleep"
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_hw"               # 256 MB
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_mst"              # 512 MB
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_bfs"              # 512 MB?
@@ -32,6 +35,7 @@ PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_thumbnail"        # 256 MB
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_videoprocessing"  # 512 MB
 PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_uploader"         # 256 MB
 
+PY_CR_BENCHMARKS=""
 PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_thumbnail"        # 256 MB
 PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_compression"      # 256 MB
 PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_hw"               # 256 MB
@@ -41,21 +45,24 @@ PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_uploader"         # 256 MB
 PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_sleep"
 PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_videoprocessing"  # 512 MB
 
-JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_sleep"
+JS_GV_BENCHMARKS=""
+#JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_sleep"
 JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_hw"           # 256 MB
 JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_dynamichtml"  # 256 MB
 JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_thumbnail"    # 512 MB
 JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_uploader"     # 256 MB
 
+JS_CR_BENCHMARKS=""
 JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_thumbnail"    # 512 MB
 JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_hw"           # 256 MB
 JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_dynamichtml"  # 256 MB
 JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_uploader"     # 256 MB
-JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_sleep"
+#JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_sleep"
 
 GV_BENCHMARKS="$JV_GV_BENCHMARKS $PY_GV_BENCHMARKS $JS_GV_BENCHMARKS"
 CR_BENCHMARKS="$JV_CR_BENCHMARKS $PY_CR_BENCHMARKS $JS_CR_BENCHMARKS"
 
+PH_BENCHMARKS=""
 PH_BENCHMARKS="$PH_BENCHMARKS gv_java_hw"                 # 256 MB
 PH_BENCHMARKS="$PH_BENCHMARKS gv_java_filehashing"        # 256 MB
 PH_BENCHMARKS="$PH_BENCHMARKS gv_java_httprequest"        # 256 MB
