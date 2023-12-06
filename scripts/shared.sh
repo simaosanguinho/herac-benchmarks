@@ -16,7 +16,8 @@ if [ -z "${JAVA_HOME}" ]; then
 fi
 GRAALVISOR_HOME=$ARGO_HOME/graalvisor
 RES_HOME=$ARGO_HOME/resources
-TDIR=/tmp/test-proxy
+TDIR=$HOME/tmp/test-proxy
+FIRECRACKER=$(which firecracker)
 
 # VM network setup for the test.
 SOCKET=$TDIR/lambda.socket
@@ -62,7 +63,7 @@ function postime {
 function log_rss {
     PID=$1
     OFILE=$2
-    sudo rm $OFILE &> /dev/null
+    rm $OFILE &> /dev/null
         while sudo kill -0 $PID &> /dev/null; do
                 ps -q $PID -o rss= >> $OFILE
                 sleep .5
@@ -174,12 +175,14 @@ function start_vm {
     mac=`printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))`
 
     # Start firecracker.
-    sudo firecracker --api-sock $SOCKET &
-    sudo ps --ppid $! -o pid= > $TDIR/lambda.pid
+    $FIRECRACKER --no-seccomp --api-sock $SOCKET &
+    echo $! > $TDIR/lambda.pid
+
+    # Set save vm ip.
     echo "$IP" > $TDIR/lambda.ip
 
     # Configures kernel its arguments.
-    sudo curl -s --unix-socket $SOCKET -i \
+    curl -s --unix-socket $SOCKET -i \
         -X PUT "http://localhost/boot-source" \
         --data "{
             \"kernel_image_path\": \"${kernel}\",
@@ -187,7 +190,7 @@ function start_vm {
         }"
 
     # Configures the rootfs.
-    sudo curl -s --unix-socket $SOCKET -i \
+    curl -s --unix-socket $SOCKET -i \
         -X PUT "http://localhost/drives/rootfs" \
         -d "{
             \"drive_id\": \"rootfs\",
@@ -197,7 +200,7 @@ function start_vm {
         }"
 
     # Confiures resources.
-    sudo curl -s --unix-socket $SOCKET -i \
+    curl -s --unix-socket $SOCKET -i \
         -X PUT "http://localhost/machine-config" \
         --data "{
             \"vcpu_count\": ${VM_CPU},
@@ -206,7 +209,7 @@ function start_vm {
         }"
 
     # Confiures network.
-    sudo curl -s --unix-socket $SOCKET -i \
+    curl -s --unix-socket $SOCKET -i \
         -X PUT 'http://localhost/network-interfaces/eth0' \
         -d "{
             \"iface_id\": \"eth0\",
@@ -215,7 +218,7 @@ function start_vm {
         }"
 
     # Launches vm.
-    sudo curl -s --unix-socket $SOCKET -i \
+    curl -s --unix-socket $SOCKET -i \
         -X PUT "http://localhost/actions" \
         -d "{
             \"action_type\": \"InstanceStart\"
@@ -234,7 +237,6 @@ function start_gv_vm {
         gvargs="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
         # Kernel opts example: https://github.com/firecracker-microvm/firecracker-demo/blob/main/start-firecracker.sh
         kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$IP::$GATEWAY:$MASK::eth0:none::: nomodule random.trust_cpu=on console=ttyS0 reboot=k panic=1 pci=off $gvargs"
-
         start_vm $ARGO_HOME/images/graalvisor/graalvisor.img $RES_HOME/hello-vmlinux.bin $kopts
     fi
 }
@@ -272,11 +274,11 @@ function snapshot_vm {
     memory_file=$3
     disk_file=$4
     echo "Snapshotting vm..."
-    sudo curl -s --unix-socket $vm_socket -i \
+    curl -s --unix-socket $vm_socket -i \
         -X PATCH "http://localhost/vm" \
         -d "{ \"state\": \"Paused\" }"
 
-    sudo curl -s --unix-socket $vm_socket -i \
+    curl -s --unix-socket $vm_socket -i \
         -X PUT "http://localhost/snapshot/create" \
         -d "{
             \"snapshot_type\": \"Full\",
@@ -286,7 +288,7 @@ function snapshot_vm {
 
     cp $TDIR/rootfs.img $disk_file
 
-    sudo curl -s --unix-socket $vm_socket -i \
+    curl -s --unix-socket $vm_socket -i \
         -X PATCH "http://localhost/vm" \
         -d "{ \"state\": \"Resumed\" }"
     echo "Snapshotting vm... done!"
@@ -298,13 +300,15 @@ function restore_vm {
     memory_file=$3
     disk_file=$4
     echo "Restoring vm..."
-    sudo firecracker --api-sock $vm_socket &
-    sudo ps --ppid $! -o pid= > $TDIR/lambda.pid
+    $FIRECRACKER --no-seccomp --api-sock $vm_socket &
+    echo $! > $TDIR/lambda.pid
+
+    # Write vm ip to file.
     echo "$IP" > $TDIR/lambda.ip
 
     cp $disk_file $TDIR/rootfs.img
 
-    sudo curl -s --unix-socket $vm_socket -i \
+    curl -s --unix-socket $vm_socket -i \
         -X PUT "http://localhost/snapshot/load" \
         -d "{
             \"snapshot_path\": \"$snapshot_file\",
@@ -320,8 +324,8 @@ function stop_vm {
     then
         snapshot_vm $SOCKET $SNAPSHOT.snap $SNAPSHOT.mem $SNAPSHOT.disk
     fi
-    sudo kill $(cat $TDIR/lambda.pid)
-    sudo rm -f $SOCKET
+    kill $(cat $TDIR/lambda.pid)
+    rm -f $SOCKET
     remove_tap
 }
 
@@ -330,6 +334,6 @@ function stop_container {
 }
 
 function stop_svm {
-    sudo kill $(cat $TDIR/lambda.pid)
+    kill $(cat $TDIR/lambda.pid)
 }
 

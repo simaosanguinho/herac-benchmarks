@@ -94,7 +94,7 @@ function run {
     $app
 
     # Run test/benchmark.
-    $mode | tee -a $TDIR/app.log
+    $mode 2>&1 | tee $TDIR/app.log
 
     # Teardown the lambda.
     if [ "$backend" == "svm" ]; then
@@ -127,7 +127,7 @@ echo "Logs available at $TDIR..."
 APP_POST=$TDIR/payload.post
 
 # Preparing working directory
-sudo rm -r $TDIR/ &> /dev/null
+rm -r $TDIR/ &> /dev/null
 mkdir $TDIR &> /dev/null
 
 # Preparing the directory path where results will be placed.

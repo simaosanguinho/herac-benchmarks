@@ -185,7 +185,7 @@ function efficiency {
 
     # Graalvisor with vm snapshotting
     function efficiency_gv_snapshot {
-        snapshots=/tmp/snapshots
+        snapshots=$HOME/tmp/snapshots
         mkdir -p $snapshots
 
         function efficiency_gv_java {
@@ -215,7 +215,6 @@ function efficiency {
                 export VM_MEM=${mem_table["$benchmark"]}
                 export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
                 export SNAPSHOT=$snapshots/$benchmark
-                sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
                 if [ $benchmark = "gv_java_classify" ];
                 then
                     # Tensorflow cannot be loaded two! We use test 0 because of that.
@@ -225,6 +224,7 @@ function efficiency {
                 fi
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
                 $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                rm $SNAPSHOT.{disk,mem,snap}  &> /dev/null
                 unset WMULTIPLIER
                 unset SNAPSHOT
                 unset CGROUP_CPU_QUOTA
@@ -249,9 +249,9 @@ function efficiency {
                 export VM_MEM=${mem_table["$benchmark"]}
                 export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
                 export SNAPSHOT=$snapshots/$benchmark
-                sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
                 bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm $benchmark test 100"
                 $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
                 unset SNAPSHOT
                 unset CGROUP_CPU_QUOTA
                 unset VM_MEM
@@ -289,10 +289,10 @@ function efficiency {
                 export VM_MEM=${mem_table["$benchmark"]}
                 export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
                 export SNAPSHOT=$snapshots/$benchmark
-                sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
                 bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm $benchmark test 100"
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
                 $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
                 unset WMULTIPLIER
                 unset SNAPSHOT
                 unset CGROUP_CPU_QUOTA
