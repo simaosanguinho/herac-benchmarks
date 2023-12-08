@@ -6,68 +6,66 @@ PORT=8000
 
 JV_GV_BENCHMARKS=""
 #JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_sleep"
-JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_hw"                 # 256 MB
 #JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_shopcart"
-JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_filehashing"        # 256 MB
-JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_classify"           # 1024 MB
-JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_httprequest"        # 256 MB
-JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_videoprocessing"    # 1024 MB
+#JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_hw"
+#JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_filehashing"
+#JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_classify"
+#JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_httprequest"
+#JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_videoprocessing"
 
 JV_CR_BENCHMARKS=""
-JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_filehashing"        # 256 MB
-JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_hw"                 # 256 MB
-JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_httprequest"        # 256 MB
-JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_classify"           # 1024 MB
 #JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_sleep"
-JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_videoprocessing"    # 1024 MB
+#JV_CR_BENCHMARKS="$JV_GV_BENCHMARKS cr_java_shopcart"
+#JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_hw"
+#JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_filehashing"
+#JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_classify"
+#JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_httprequest"
+#JV_CR_BENCHMARKS="$JV_CR_BENCHMARKS cr_java_videoprocessing"
 
 PY_GV_BENCHMARKS=""
 #PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_sleep"
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_hw"               # 256 MB
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_mst"              # 512 MB
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_bfs"              # 512 MB?
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_pagerank"         # 512 MB?
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_dna"              # 512 MB?
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_classify"         # 512 MB?
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_dynamichtml"      # 256 MB
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_compression"      # 512 MB
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_thumbnail"        # 256 MB
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_videoprocessing"  # 512 MB
-PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_uploader"         # 256 MB
+#PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_hw"
+#PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_mst"
+#PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_bfs"
+#PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_pagerank"
+#PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_dna"
+#PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_classify"
+#PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_dynamichtml"
+#PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_compression"
+#PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_thumbnail"
+#PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_videoprocessing"
+#PY_GV_BENCHMARKS="$PY_GV_BENCHMARKS gv_python_uploader"
 
 PY_CR_BENCHMARKS=""
-PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_thumbnail"        # 256 MB
-PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_compression"      # 256 MB
-PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_hw"               # 256 MB
-PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_dynamichtml"      # 256 MB
-PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_mst"              # 512 MB
-PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_uploader"         # 256 MB
-PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_sleep"
-PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_videoprocessing"  # 512 MB
+#PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_sleep"
+#PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_hw"
+#PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_mst"
+#PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_bfs"
+#PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_pagerank"
+#PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_dna"
+PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_classify"
+#PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_dynamichtml"
+#PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_compression"
+#PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_thumbnail"
+#PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_videoprocessing"
+#PY_CR_BENCHMARKS="$PY_CR_BENCHMARKS cr_python_uploader"
 
 JS_GV_BENCHMARKS=""
 #JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_sleep"
-JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_hw"           # 256 MB
-JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_dynamichtml"  # 256 MB
-JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_thumbnail"    # 512 MB
-JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_uploader"     # 256 MB
+#JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_hw"
+#JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_dynamichtml"
+#JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_thumbnail"
+#JS_GV_BENCHMARKS="$JS_GV_BENCHMARKS gv_javascript_uploader"
 
 JS_CR_BENCHMARKS=""
-JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_thumbnail"    # 512 MB
-JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_hw"           # 256 MB
-JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_dynamichtml"  # 256 MB
-JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_uploader"     # 256 MB
 #JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_sleep"
+#JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_hw"
+#JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_dynamichtml"
+#JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_thumbnail"
+#JS_CR_BENCHMARKS="$JS_CR_BENCHMARKS cr_javascript_uploader"
 
 GV_BENCHMARKS="$JV_GV_BENCHMARKS $PY_GV_BENCHMARKS $JS_GV_BENCHMARKS"
 CR_BENCHMARKS="$JV_CR_BENCHMARKS $PY_CR_BENCHMARKS $JS_CR_BENCHMARKS"
-
-PH_BENCHMARKS=""
-PH_BENCHMARKS="$PH_BENCHMARKS gv_java_hw"                 # 256 MB
-PH_BENCHMARKS="$PH_BENCHMARKS gv_java_filehashing"        # 256 MB
-PH_BENCHMARKS="$PH_BENCHMARKS gv_java_httprequest"        # 256 MB
-PH_BENCHMARKS="$PH_BENCHMARKS gv_java_videoprocessing"    # 1024 MB
-PH_BENCHMARKS="$PH_BENCHMARKS gv_java_classify"           # 1024 MB
 
 function gv_java_hw {
     APP_LANG=java
@@ -420,6 +418,15 @@ function gv_python_bfs {
     echo '{"name":"bfs","async":"false","arguments":"{\"size\":\"100\"}"}' > $APP_POST
 }
 
+function cr_python_bfs {
+    IMG=docker.io/openwhisk/action-python-v3.9:latest
+    APP_LANG=python
+    APP_NAME=cr-bfs
+    INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
+    RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
+    echo '{ "value": { "size": "100" } }' > $RUN_POST
+}
+
 function gv_python_pagerank {
     APP_LANG=java
     APP_NAME=gv-py-pagerank
@@ -427,6 +434,15 @@ function gv_python_pagerank {
     APP_SO=$BENCHMARKS_HOME/src/python/gv-pagerank/build/libpr.so
     curl -s -X POST $IP:8080/register?name=pagerank\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
     echo '{"name":"pagerank","async":"false","arguments":"{\"size\":\"10\"}"}' > $APP_POST
+}
+
+function cr_python_pagerank {
+    IMG=docker.io/openwhisk/action-python-v3.9:latest
+    APP_LANG=python
+    APP_NAME=cr-pagerank
+    INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
+    RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
+    echo '{ "value": { "size": "100" } }' > $RUN_POST
 }
 
 function gv_python_dna {
@@ -438,6 +454,15 @@ function gv_python_dna {
     echo '{"name":"dna","async":"false","arguments":"{\"fasta_url\":\"http://'$DATA_IP':'$PORT'/bacillus_subtilis.fasta\"}"}' > $APP_POST
 }
 
+function cr_python_dna {
+    IMG=docker.io/openwhisk/action-python-v3.9:latest
+    APP_LANG=python
+    APP_NAME=cr-dna
+    INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
+    RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
+    echo '{ "value": { "fasta_url": "http://'$DATA_IP':'$PORT'/bacillus_subtilis.fasta" } }' > $RUN_POST
+}
+
 function gv_python_classify {
     APP_LANG=java
     APP_NAME=gv-py-classify
@@ -445,6 +470,15 @@ function gv_python_classify {
     APP_SO=$BENCHMARKS_HOME/src/python/gv-classify/build/libclassify.so
     curl -s -X POST $IP:8080/register?name=classify\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SO
     echo '{"name":"classify","async":"false","arguments":"{\"restnet_url\":\"http://'$DATA_IP':'$PORT'/resnet50-19c8e357.pth\",\"img_url\":\"http://'$DATA_IP':'$PORT'/snap.png\"}"}' > $APP_POST
+}
+
+function cr_python_classify {
+    IMG=docker.io/openwhisk/action-python-v3.9:latest
+    APP_LANG=python
+    APP_NAME=cr-classify
+    INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
+    RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
+    echo '{ "value": { "restnet_url": "http://'$DATA_IP':'$PORT'/resnet50-19c8e357.pth", "img_url": "http://'$DATA_IP':'$PORT'/snap.png" } }' > $RUN_POST
 }
 
 function cr_python_mst {

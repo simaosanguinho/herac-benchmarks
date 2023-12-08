@@ -1,3 +1,5 @@
 #!/bin/bash
 
-cat main.js | jq -sR  '{value: {main: "main", code: .}}' > init.json
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+cat $DIR/main.js | jq -sR  '{value: {main: "main", code: .}}' > $DIR/init.json

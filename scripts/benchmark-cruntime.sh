@@ -81,7 +81,7 @@ function run {
     curl -s -X POST $IP:8080/init -H 'Content-Type: application/json' -d @$INIT_POST
 
     # Run test/benchmark.
-    $mode | tee -a $TDIR/app.log
+    $mode 2>&1 | tee -a $TDIR/app.log
 
     # Teardown the lambda.
     if [ "$backend" == "container" ]; then
@@ -96,6 +96,7 @@ function run {
 }
 
 echo "Running environment=$backend; app=$app; mode=$mode; workload=$workload; cpu=$VM_CPU; mem=$VM_MEM"
+echo "Logs available at $TDIR..."
 
 # Preparing working directory
 sudo rm -r $TDIR/ &> /dev/null
