@@ -22,6 +22,7 @@ if [ "$#" -ne 4 ]; then
     echo "- VM_MEM=<number> - memory given to the VM (only used in vm mode). Defaults to 2048;"
     echo "- PIN_CORE=<boolean> - if true, will pin the process to core 0. Defaults to false;"
     echo "- DISABLE_TURBO=<boolean> - if true, will disable turbo boost. Defaults to false;"
+    echo "- EXPERIMENT=<tag> - if set, will copy result logs into a dedicated experiment directory. Defaults to unset;"
     exit 1
 else
     backend=$1
@@ -80,7 +81,7 @@ function run {
     curl -s -X POST $IP:8080/init -H 'Content-Type: application/json' -d @$INIT_POST
 
     # Run test/benchmark.
-    $mode | tee -a $TDIR/app.log
+    $mode 2>&1 | tee -a $TDIR/app.log
 
     # Teardown the lambda.
     if [ "$backend" == "container" ]; then
@@ -95,6 +96,7 @@ function run {
 }
 
 echo "Running environment=$backend; app=$app; mode=$mode; workload=$workload; cpu=$VM_CPU; mem=$VM_MEM"
+echo "Logs available at $TDIR..."
 
 # Preparing working directory
 sudo rm -r $TDIR/ &> /dev/null
@@ -103,12 +105,20 @@ mkdir $TDIR &> /dev/null
 # Load function to benchmark
 $app
 
+# Preparing the directory path where results will be placed.
+if [ -z "$EXPERIMENT" ]
+then
+    results_prefix=$BENCHMARKS_HOME/results/benchmark
+else
+    results_prefix=$BENCHMARKS_HOME/results/experiment/$EXPERIMENT
+fi
+
 for iter in $(seq 1 $ITERATIONS)
 do
     # Run...
     run
     # Preparing results directory
-    results_dir=$BENCHMARKS_HOME/results/$APP_LANG/$APP_NAME-$backend-$mode-$workload-$VM_CPU-$VM_MEM/$iter
+    results_dir=$results_prefix/$APP_LANG/$APP_NAME-$backend-$mode-$workload-$VM_CPU-$VM_MEM/$iter
     mkdir -p $results_dir &> /dev/null
     cp $TDIR/{*.log,*.rss} $results_dir &> /dev/null
     echo "Saved logs (iteration $iter): $results_dir/lambda.log"

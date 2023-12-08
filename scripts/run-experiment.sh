@@ -85,248 +85,301 @@ function cdf_latency_filehashing {
 # Memory (fixed HW resources of 1 core and 2GB of memory, measure ops/s/mb)
 function efficiency {
 
+    declare -A wmultiplier_table
+    wmultiplier_table[gv_java_hw]=2000
+    wmultiplier_table[cr_java_hw]=2000
+    wmultiplier_table[gv_java_filehashing]=1000
+    wmultiplier_table[cr_java_filehashing]=1000
+    wmultiplier_table[gv_java_classify]=10
+    wmultiplier_table[cr_java_classify]=10
+    wmultiplier_table[gv_java_httprequest]=1000
+    wmultiplier_table[cr_java_httprequest]=1000
+    wmultiplier_table[gv_java_videoprocessing]=2
+    wmultiplier_table[cr_java_videoprocessing]=2
+
+    wmultiplier_table[gv_python_hw]=5
+    wmultiplier_table[cr_python_hw]=5
+    wmultiplier_table[gv_python_mst]=5
+    wmultiplier_table[cr_python_mst]=5
+    wmultiplier_table[gv_python_bfs]=5
+    wmultiplier_table[cr_python_bfs]=5
+    wmultiplier_table[gv_python_pagerank]=5
+    wmultiplier_table[cr_python_pagerank]=5
+    wmultiplier_table[gv_python_dna]=2
+    wmultiplier_table[cr_python_dna]=2
+    wmultiplier_table[gv_python_classify]=1
+    wmultiplier_table[cr_python_classify]=1
+    wmultiplier_table[gv_python_dynamichtml]=5
+    wmultiplier_table[cr_python_dynamichtml]=5
+    wmultiplier_table[gv_python_compression]=5
+    wmultiplier_table[cr_python_compression]=5
+    wmultiplier_table[gv_python_thumbnail]=5
+    wmultiplier_table[cr_python_thumbnail]=5
+    wmultiplier_table[gv_python_videoprocessing]=1
+    wmultiplier_table[cr_python_videoprocessing]=1
+    wmultiplier_table[gv_python_uploader]=5
+    wmultiplier_table[cr_python_uploader]=5
+
+    wmultiplier_table[gv_javascript_hw]=256
+    wmultiplier_table[cr_javascript_hw]=256
+    wmultiplier_table[gv_javascript_dynamichtml]=256
+    wmultiplier_table[cr_javascript_dynamichtml]=256
+    wmultiplier_table[gv_javascript_thumbnail]=256
+    wmultiplier_table[cr_javascript_thumbnail]=256
+    wmultiplier_table[gv_javascript_uploader]=256
+    wmultiplier_table[cr_javascript_uploader]=256
+
+    declare -A concurrency_table
+    concurrency_table[gv_java_hw]=8
+    concurrency_table[gv_java_filehashing]=8
+    concurrency_table[gv_java_classify]=1
+    concurrency_table[gv_java_httprequest]=8
+    concurrency_table[gv_java_videoprocessing]=1
+
+    concurrency_table[gv_python_hw]=8
+    concurrency_table[gv_python_mst]=4
+    concurrency_table[gv_python_bfs]=4
+    concurrency_table[gv_python_pagerank]=4
+    concurrency_table[gv_python_dna]=2
+    concurrency_table[gv_python_classify]=1
+    concurrency_table[gv_python_dynamichtml]=4
+    concurrency_table[gv_python_compression]=4
+    concurrency_table[gv_python_thumbnail]=2
+    concurrency_table[gv_python_videoprocessing]=2
+    concurrency_table[gv_python_uploader]=4
+
+    concurrency_table[gv_javascript_hw]=8
+    concurrency_table[gv_javascript_dynamichtml]=8
+    concurrency_table[gv_javascript_thumbnail]=4
+    concurrency_table[gv_javascript_uploader]=8
+
+    declare -A mem_table
+    declare -A cpu_table
+    mem_table[gv_java_hw]=256
+    mem_table[cr_java_hw]=256
+    cpu_table[gv_java_hw]=12500
+    cpu_table[cr_java_hw]=12500
+    mem_table[gv_java_filehashing]=256
+    mem_table[cr_java_filehashing]=256
+    cpu_table[gv_java_filehashing]=12500
+    cpu_table[cr_java_filehashing]=12500
+    mem_table[gv_java_classify]=2048
+    mem_table[cr_java_classify]=2048
+    cpu_table[gv_java_classify]=100000
+    cpu_table[cr_java_classify]=100000
+    mem_table[gv_java_httprequest]=256
+    mem_table[cr_java_httprequest]=256
+    cpu_table[gv_java_httprequest]=12500
+    cpu_table[cr_java_httprequest]=12500
+    mem_table[gv_java_videoprocessing]=2048
+    mem_table[cr_java_videoprocessing]=2048
+    cpu_table[gv_java_videoprocessing]=100000
+    cpu_table[cr_java_videoprocessing]=100000
+
+    mem_table[gv_python_hw]=512
+    mem_table[cr_python_hw]=256 # TODO - diff
+    cpu_table[gv_python_hw]=25000
+    cpu_table[cr_python_hw]=12500 # TODO - diff
+    mem_table[gv_python_mst]=1024
+    mem_table[cr_python_mst]=512 # TODO - diff
+    cpu_table[gv_python_mst]=50000
+    cpu_table[cr_python_mst]=25000 # TODO - diff
+    mem_table[gv_python_bfs]=1024
+    mem_table[cr_python_bfs]=512 # TODO - diff
+    cpu_table[gv_python_bfs]=50000
+    cpu_table[cr_python_bfs]=25000 # TODO - diff
+    mem_table[gv_python_pagerank]=1024
+    mem_table[cr_python_pagerank]=512 # TODO - diff
+    cpu_table[gv_python_pagerank]=50000
+    cpu_table[cr_python_pagerank]=25000 # TODO - diff
+    mem_table[gv_python_dna]=1024
+    mem_table[cr_python_dna]=1024
+    cpu_table[gv_python_dna]=50000
+    cpu_table[cr_python_dna]=50000
+    mem_table[gv_python_classify]=2048
+    mem_table[cr_python_classify]=2048
+    cpu_table[gv_python_classify]=100000
+    cpu_table[cr_python_classify]=100000
+    mem_table[gv_python_dynamichtml]=512
+    mem_table[cr_python_dynamichtml]=256 # TODO - diff
+    cpu_table[gv_python_dynamichtml]=25000
+    cpu_table[cr_python_dynamichtml]=12500 # TODO - diff
+    mem_table[gv_python_compression]=512
+    mem_table[cr_python_compression]=256 # TODO - diff
+    cpu_table[gv_python_compression]=25000
+    cpu_table[cr_python_compression]=12500 # TODO - diff
+    mem_table[gv_python_thumbnail]=1024
+    mem_table[cr_python_thumbnail]=256 # TODO - diff
+    cpu_table[gv_python_thumbnail]=50000
+    cpu_table[cr_python_thumbnail]=12500 # TODO - diff
+    mem_table[gv_python_videoprocessing]=2048
+    mem_table[cr_python_videoprocessing]=2048
+    cpu_table[gv_python_videoprocessing]=100000
+    cpu_table[cr_python_videoprocessing]=100000
+    mem_table[gv_python_uploader]=512
+    mem_table[cr_python_uploader]=256 # TODO - diff
+    cpu_table[gv_python_uploader]=25000
+    cpu_table[cr_python_uploader]=12500 # TODO - diff
+
+    mem_table[gv_javascript_hw]=256
+    mem_table[cr_javascript_hw]=256
+    cpu_table[gv_javascript_hw]=12500
+    cpu_table[cr_javascript_hw]=12500
+    mem_table[gv_javascript_dynamichtml]=256
+    mem_table[cr_javascript_dynamichtml]=256
+    cpu_table[gv_javascript_dynamichtml]=12500
+    cpu_table[cr_javascript_dynamichtml]=12500
+    mem_table[gv_javascript_thumbnail]=512
+    mem_table[cr_javascript_thumbnail]=512
+    cpu_table[gv_javascript_thumbnail]=25000
+    cpu_table[cr_javascript_thumbnail]=25000
+    mem_table[gv_javascript_uploader]=256
+    mem_table[cr_javascript_uploader]=256
+    cpu_table[gv_javascript_uploader]=12500
+    cpu_table[cr_javascript_uploader]=12500
+
+
     # Graalvisor
     function efficiency_gv {
-
-         function efficiency_gv_java_single {
-            export WMULTIPLIER=10000; $(DIR)/benchmark-graalvisor.sh vm gv_java_hw benchmark 1; unset WMULTIPLIER
-            export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh vm gv_java_filehashing benchmark 1; unset WMULTIPLIER
-            export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh vm gv_java_httprequest benchmark 1; unset WMULTIPLIER
-            export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh vm gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
-            export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh vm gv_java_classify benchmark 1; unset WMULTIPLIER
-            export WMULTIPLIER=10000; $(DIR)/benchmark-graalvisor.sh vm gv_java_shopcart benchmark 1; unset WMULTIPLIER
-        }
-
         function efficiency_gv_java {
-            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh vm gv_java_hw benchmark 8; unset WMULTIPLIER
-            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh vm gv_java_filehashing benchmark 8; unset WMULTIPLIER
-            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh vm gv_java_httprequest benchmark 8; unset WMULTIPLIER
-            export WMULTIPLIER=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
-            # Note: there is a bug in gv, it can't run 2 parallel calls to classify.
-            # Since the workload is throughput intensive, having a second one would keep the same throughput so it is fine...
-	    export WMULTIPLIER=5; $(DIR)/benchmark-graalvisor.sh vm gv_java_classify benchmark 1; unset WMULTIPLIER
-            export WMULTIPLIER=5000; $(DIR)/benchmark-graalvisor.sh vm gv_java_shopcart benchmark 8; unset WMULTIPLIER
+            for benchmark in $JV_GV_BENCHMARKS;
+            do
+                export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
+                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark ${concurrency_table["$benchmark"]}
+                unset WMULTIPLIER
+            done
         }
 
         function efficiency_gv_javascript {
-            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_hw benchmark 8
-            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_dynamichtml benchmark 8
-            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_uploader benchmark 8
-            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_thumbnail benchmark 4
+            for benchmark in $JS_GV_BENCHMARKS;
+            do
+                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark ${concurrency_table["$benchmark"]}
+            done
         }
 
         function efficiency_gv_python {
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_hw benchmark 8
-            export WMULTIPLIER=5;
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_dynamichtml benchmark 4
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_thumbnail benchmark 2
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_uploader benchmark 4
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_compression benchmark 4
-            export WMULTIPLIER=2;
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_videoprocessing benchmark 2
-            export WMULTIPLIER=50;
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_mst benchmark 2
-            unset WMULTIPLIER
+            for benchmark in $PY_GV_BENCHMARKS;
+            do
+                export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
+                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark ${concurrency_table["$benchmark"]}
+                unset WMULTIPLIER
+            done
         }
 
-        # All gv benchmarks run on a single core.
-        for sandbox in "isolate" "runtime" "process"
-        do
-            export SANDBOX=$sandbox
-            #efficiency_gv_java_single
-            efficiency_gv_java
-            unset SANDBOX
-        done
-        for sandbox in "context" "process"
-        do
-            export SANDBOX=$sandbox
-            # Used only for process sandbox, ignored for context.
-            export WARMUP=1
-            efficiency_gv_javascript
-            efficiency_gv_python
-            unset WARMUP
-            unset SANDBOX
-        done
+        export SANDBOX=isolate; efficiency_gv_java
+        export SANDBOX=process; efficiency_gv_java
+        export WARMUP=1; export SANDBOX=context; efficiency_gv_javascript
+        export WARMUP=1; export SANDBOX=context; efficiency_gv_python
+        export WARMUP=1; export SANDBOX=process; efficiency_gv_javascript
+        export WARMUP=1; export SANDBOX=process; efficiency_gv_python
+        unset WARMUP
+        unset SANDBOX
+    }
 
+    # Graalvisor with a single invocation at a time.
+    function efficiency_gv_single {
+        function efficiency_gv_java_single {
+            for benchmark in $JV_GV_BENCHMARKS;
+            do
+                export VM_MEM=${mem_table["$benchmark"]}
+                export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
+                export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
+                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                unset WMULTIPLIER
+                unset CGROUP_CPU_QUOTA
+                unset VM_MEM
+            done
+        }
+
+        function efficiency_gv_javascript_single {
+            for benchmark in $JS_GV_BENCHMARKS;
+            do
+                export VM_MEM=${mem_table["$benchmark"]}
+                export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
+                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                unset CGROUP_CPU_QUOTA
+                unset VM_MEM
+            done
+        }
+
+        function efficiency_gv_python_single {
+            for benchmark in $PY_GV_BENCHMARKS;
+            do
+                export VM_MEM=${mem_table["$benchmark"]}
+                export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
+                export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
+                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                unset WMULTIPLIER
+                unset CGROUP_CPU_QUOTA
+                unset VM_MEM
+            done
+        }
+
+        export SANDBOX=isolate; efficiency_gv_java_single
+        export WARMUP=1; export SANDBOX=context; efficiency_gv_javascript_single
+        export WARMUP=1; export SANDBOX=context; efficiency_gv_python_single
+        unset WARMUP
+        unset SANDBOX
     }
 
     # Graalvisor with vm snapshotting
     function efficiency_gv_snapshot {
+        snapshots=$HOME/tmp/snapshots
+        mkdir -p $snapshots
 
         function efficiency_gv_java {
-            snapshots=/tmp/snapshots/java
-            mkdir -p $snapshots
-
-            # VM memory and cgroup cpu quota for the following benchmarks.
-            export VM_MEM=256
-            export CGROUP_CPU_QUOTA=12500 # .125 cores
-
-            # Hello world
-            export SNAPSHOT=$snapshots/hw
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_hw test 1"
-            export WMULTIPLIER=2000; $(DIR)/benchmark-graalvisor.sh vm gv_java_hw benchmark 1; unset WMULTIPLIER
-            unset SNAPSHOT
-
-            # File hashing
-            export SNAPSHOT=$snapshots/fh
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_filehashing test 1"
-            $(DIR)/benchmark-graalvisor.sh vm gv_java_filehashing benchmark 1
-            unset SNAPSHOT
-
-            # Http request
-            export SNAPSHOT=$snapshots/rest
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_httprequest test 1"
-            $(DIR)/benchmark-graalvisor.sh vm gv_java_httprequest benchmark 1
-            unset SNAPSHOT
-
-            # Shopcart
-            export SNAPSHOT=$snapshots/shopcart
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_shopcart test 1"
-            export WMULTIPLIER=1000; $(DIR)/benchmark-graalvisor.sh vm gv_java_shopcart benchmark 1; unset WMULTIPLIER
-            unset SNAPSHOT
-
-            # Video processing
-            export SNAPSHOT=$snapshots/video
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            export VM_MEM=1024
-            export CGROUP_CPU_QUOTA=50000 # .5 cores
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_videoprocessing test 1"
-            export WMULTIPLIER=2; $(DIR)/benchmark-graalvisor.sh vm gv_java_videoprocessing benchmark 1; unset WMULTIPLIER
-            unset CGROUP_CPU_QUOTA
-            unset VM_MEM
-            unset SNAPSHOT
-
-            # Classify
-            export SNAPSHOT=$snapshots/classify
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            export VM_MEM=2048
-            export CGROUP_CPU_QUOTA=50000 # 1 core?
-            # Tensorflow cannot be loaded two! We use test 0 because of that.
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_java_classify test 0"
-            export WMULTIPLIER=10; $(DIR)/benchmark-graalvisor.sh vm gv_java_classify benchmark 1; unset WMULTIPLIER
-            unset CGROUP_CPU_QUOTA
-            unset VM_MEM
-            unset SNAPSHOT
+            for benchmark in $JV_GV_BENCHMARKS;
+            do
+                export VM_MEM=${mem_table["$benchmark"]}
+                export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
+                export SNAPSHOT=$snapshots/$benchmark
+                if [ $benchmark = "gv_java_classify" ];
+                then
+                    # Tensorflow cannot be loaded two! We use test 0 because of that.
+                    bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm $benchmark test 0"
+                else
+                    bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm $benchmark test 1"
+                fi
+                export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
+                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                rm $SNAPSHOT.{disk,mem,snap}  &> /dev/null
+                unset WMULTIPLIER
+                unset SNAPSHOT
+                unset CGROUP_CPU_QUOTA
+                unset VM_MEM
+            done
         }
 
         function efficiency_gv_javascript {
-            snapshots=/tmp/snapshots/javascript
-            mkdir -p $snapshots
-
-            # VM memory and cgroup cpu quota for the following benchmarks.
-            export VM_MEM=256
-            export CGROUP_CPU_QUOTA=12500 # .125 cores
-
-            # Hello world
-            export SNAPSHOT=$snapshots/hw
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_javascript_hw test 100"
-            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_hw benchmark 1
-            unset SNAPSHOT
-
-            # Dynamic HTML
-            export SNAPSHOT=$snapshots/html
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_javascript_dynamichtml test 100"
-            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_dynamichtml benchmark 1
-            unset SNAPSHOT
-
-            # Uploader
-            export SNAPSHOT=$snapshots/uploader
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_javascript_uploader test 100"
-            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_uploader benchmark 1
-            unset SNAPSHOT
-
-            # Thumbnail
-            export SNAPSHOT=$snapshots/thumbnail
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            export VM_MEM=512
-            export CGROUP_CPU_QUOTA=25000 # .25 cores
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_javascript_thumbnail test 100"
-            $(DIR)/benchmark-graalvisor.sh vm gv_javascript_thumbnail benchmark 1
-            unset CGROUP_CPU_QUOTA
-            unset VM_MEM
-            unset SNAPSHOT
+            for benchmark in $JS_GV_BENCHMARKS;
+            do
+                export VM_MEM=${mem_table["$benchmark"]}
+                export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
+                export SNAPSHOT=$snapshots/$benchmark
+                bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm $benchmark test 100"
+                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+                unset SNAPSHOT
+                unset CGROUP_CPU_QUOTA
+                unset VM_MEM
+            done
         }
 
         function efficiency_gv_python {
-            snapshots=/tmp/snapshots/python
-            mkdir -p $snapshots
-
-            # Hello world
-            export SNAPSHOT=$snapshots/hw
-            export VM_MEM=256
-            export CGROUP_CPU_QUOTA=12500 # .125 cores
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_hw test 100"
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_hw benchmark 1
-            unset CGROUP_CPU_QUOTA
-            unset VM_MEM
-            unset SNAPSHOT
-
-            # VM memory, cgroup cpu quota, and multiplier for the following benchmarks.
-            export VM_MEM=512
-            export CGROUP_CPU_QUOTA=25000 # .25 cores
-            export WMULTIPLIER=5
-
-            # Dynamic html
-            export SNAPSHOT=$snapshots/html
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_dynamichtml test $WMULTIPLIER"
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_dynamichtml benchmark 1
-            unset SNAPSHOT
-
-            # Uploader
-            export SNAPSHOT=$snapshots/uploader
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_uploader test $WMULTIPLIER"
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_uploader benchmark 1
-            unset SNAPSHOT
-
-            # Compression
-            export SNAPSHOT=$snapshots/compression
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_compression test $WMULTIPLIER"
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_compression benchmark 1
-            unset SNAPSHOT
-
-            # VM memory, cgroup cpu quota for the following benchmarks.
-            export VM_MEM=1024
-            export CGROUP_CPU_QUOTA=50000 # .5 cores
-
-            # Thumbnail
-            export SNAPSHOT=$snapshots/thumbnail
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_thumbnail test $WMULTIPLIER"
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_thumbnail benchmark 1
-            unset SNAPSHOT
-
-            # MST
-            export SNAPSHOT=$snapshots/mst
-            export WMULTIPLIER=50
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_mst test $WMULTIPLIER"
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_mst benchmark 1
-
-            # Video processing
-            export SNAPSHOT=$snapshots/video
-            export WMULTIPLIER=2;
-            export CGROUP_CPU_QUOTA=100000 # 1 core
-            export VM_MEM=2048
-            sudo rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
-            bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm gv_python_videoprocessing test $WMULTIPLIER"
-            $(DIR)/benchmark-graalvisor.sh vm gv_python_videoprocessing benchmark 1
-            unset SNAPSHOT
-
-            unset SNAPSHOT
-            unset WMULTIPLIER
-            unset VM_MEM
-            unset CGROUP_CPU_QUOTA
+            for benchmark in $PY_GV_BENCHMARKS;
+            do
+                export VM_MEM=${mem_table["$benchmark"]}
+                export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
+                export SNAPSHOT=$snapshots/$benchmark
+                bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm $benchmark test 100"
+                export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
+                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+                unset WMULTIPLIER
+                unset SNAPSHOT
+                unset CGROUP_CPU_QUOTA
+                unset VM_MEM
+            done
         }
 
         export SANDBOX="isolate"; efficiency_gv_java; unset SANDBOX
@@ -336,69 +389,36 @@ function efficiency {
 
     # Openwhisk runtimes
     function efficiency_cr {
-
-        # VM memory and cgroup cpu quota for the following benchmarks.
-        export VM_MEM=256
-        export CGROUP_CPU_QUOTA=12500 # .125 cores
-
-        $(DIR)/benchmark-cruntime.sh vm cr_java_hw benchmark 1
-        $(DIR)/benchmark-cruntime.sh vm cr_python_hw benchmark 1
-        $(DIR)/benchmark-cruntime.sh vm cr_javascript_hw benchmark 1
-        $(DIR)/benchmark-cruntime.sh vm cr_java_filehashing benchmark 1
-        $(DIR)/benchmark-cruntime.sh vm cr_javascript_dynamichtml benchmark 1
-        $(DIR)/benchmark-cruntime.sh vm cr_python_dynamichtml benchmark 1
-        $(DIR)/benchmark-cruntime.sh vm cr_python_thumbnail benchmark 1
-        $(DIR)/benchmark-cruntime.sh vm cr_javascript_uploader benchmark 1
-        $(DIR)/benchmark-cruntime.sh vm cr_java_httprequest benchmark 1
-        $(DIR)/benchmark-cruntime.sh vm cr_python_uploader benchmark 1
-        $(DIR)/benchmark-cruntime.sh vm cr_python_compression benchmark 1
-
-        # VM memory and cgroup cpu quota for the following benchmarks.
-        export VM_MEM=512
-        export CGROUP_CPU_QUOTA=25000 # .25 cores
-
-        $(DIR)/benchmark-cruntime.sh vm cr_python_videoprocessing benchmark 1
-        $(DIR)/benchmark-cruntime.sh vm cr_javascript_thumbnail benchmark 1
-        $(DIR)/benchmark-cruntime.sh vm cr_python_mst benchmark 1
-
-        export VM_MEM=1024
-        export CGROUP_CPU_QUOTA=50000 # .5 cores
-        $(DIR)/benchmark-cruntime.sh vm cr_java_videoprocessing benchmark 1
-        unset CGROUP_CPU_QUOTA
-        unset VM_MEM
-
-        export VM_MEM=2048
-        export CGROUP_CPU_QUOTA=100000 # 1 core
-        $(DIR)/benchmark-cruntime.sh vm cr_java_classify benchmark 1
-        unset CGROUP_CPU_QUOTA
-        unset VM_MEM
+        for benchmark in $CR_BENCHMARKS;
+        do
+            export VM_MEM=${mem_table["$benchmark"]}
+            export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
+            export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
+            $(DIR)/benchmark-cruntime.sh vm $benchmark benchmark 1
+            unset WMULTIPLIER
+            unset CGROUP_CPU_QUOTA
+            unset VM_MEM
+        done
     }
 
-    # Photons runtimes
-    function efficiency_ph {
-        $(DIR)/benchmark-cruntime.sh vm ph_java_hw benchmark 8
-        $(DIR)/benchmark-cruntime.sh vm ph_java_filehashing benchmark 8
-        $(DIR)/benchmark-cruntime.sh vm ph_java_httprequest benchmark 8
-        export WMULTIPLIER=2; $(DIR)/benchmark-cruntime.sh vm ph_java_videoprocessing benchmark 2; unset WMULTIPLIER
-        export WMULTIPLIER=10;$(DIR)/benchmark-cruntime.sh vm ph_java_classify benchmark 1; unset WMULTIPLIER
-    }
-
-    export ITERATIONS=5
+    export ITERATIONS=3 # Note: by default this should be 5.
     export CGROUP="experiments"
     export PIN_CORE="true"
     # Disabling turbo will make some benchmarks more stable. However, it will make everything much slower.
     export DISABLE_TURBO="false"
+    export EXPERIMENT="test-exp"
 
     efficiency_gv
+    efficiency_gv_single
     efficiency_gv_snapshot
     efficiency_cr
-    efficiency_ph
 
     # Clear variables.
     unset ITERATIONS
     unset CGROUP
     unset PIN_CORE
     unset DISABLE_TURBO
+    unset EXPERIMENT
 }
 
 function startup_latency {
@@ -414,7 +434,6 @@ function startup_latency {
         done
     }
 
-    # TODO - update, we no longer have firecracker-containerd
     function startup_latency_cr {
         if [[ -z "${FIRECRACKER_CONTAINERD_HOME}" ]]; then
             echo "FIRECRACKER_CONTAINERD_HOME is not defined."
@@ -474,14 +493,6 @@ echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
     cdf_latency_filehashing
-    exit 0
-fi
-
-read -p "Run warm latency experiment (y or Y, everything else as no)? " -n 1 -r
-echo    # move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-    warm_latency
     exit 0
 fi
 
