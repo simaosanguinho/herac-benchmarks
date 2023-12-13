@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import declarations
+declarations = __import__("sandboxes-declarations")
 import results
 import matplotlib.pyplot as plt
 import numpy as np
