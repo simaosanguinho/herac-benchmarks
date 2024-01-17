@@ -10,9 +10,10 @@ results = {}
 
 def load_results(exp_number):
     experiment_results = []
-    for filename in os.listdir(results_dir + '/' + str(exp_number)):
-        with open(results_dir + '/' + str(exp_number) + '/' + filename) as file:
-            for line in file:
+    errors = 0
+    with open(results_dir + '/' + str(exp_number) + '/worker.load') as file:
+        for line in file:
+            try:
                 if "result" not in line:
                     continue
                 # Line example: {"result":"{}","process time (us)":1354355}
@@ -20,9 +21,12 @@ def load_results(exp_number):
                 # Convert from us to ms.
                 element = element / 1000
                 # Remove sleep 1 second latency
-                element = element - 1000 # TODO - fixme?
+                element = element - 100 # TODO - fixme?
                 experiment_results.append(element)
+            except (ValueError, IndexError):
+                errors = errors + 1
     results[exp_number] = experiment_results
+    print("Found {} errors in experiment {}.".format(errors, exp_number))
 
 # Experiments (x-axis)
 experiments = [int(x) for x in os.listdir(results_dir)]
@@ -30,7 +34,6 @@ experiments.sort()
 
 for experiment in experiments:
     load_results(experiment)
-
 
 # Average values (y-axis)
 averages = [statistics.mean(results[experiment]) for experiment in experiments]
@@ -44,12 +47,12 @@ plt.plot(experiments, p90, label='P90')
 p99 = [numpy.percentile(numpy.array(results[experiment]), 99) for experiment in experiments]
 plt.plot(experiments, p99, label='P99')
 
-# 99th percentile (y-axis)
-p999 = [numpy.percentile(numpy.array(results[experiment]), 99.9) for experiment in experiments]
-plt.plot(experiments, p999, label='P99.9')
+# 999th percentile (y-axis)
+#p999 = [numpy.percentile(numpy.array(results[experiment]), 99.9) for experiment in experiments]
+#plt.plot(experiments, p999, label='P99.9')
 
 plt.ylim(0)
 plt.xlabel('Concurrent sandboxes')
 plt.ylabel('Overhead (latency in ms)')
 plt.legend()
-plt.savefig("scheduling.png", bbox_inches='tight')
+plt.savefig("request-latency.png", bbox_inches='tight')

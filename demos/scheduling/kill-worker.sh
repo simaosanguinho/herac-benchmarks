@@ -13,29 +13,26 @@ function destroy_cgroup {
     fi
 }
 
-if [ -z "$1" ]
-then
-    echo "No argument supplied."
-    exit 1
-else
-    WORKER_ID=$1
-fi
+function destroy_chroot {
+    JAIL=$1
+    umount $JAIL/proc
+    umount $JAIL/bin
+    umount $JAIL/usr
+    umount $JAIL/lib
+    umount $JAIL/lib64
+    umount $JAIL/graalvisor
+}
 
-JAIL=$(DIR)/workers/$WORKER_ID
+JAIL=$(DIR)/worker
 
 # Kill worker.
-kill $(cat $JAIL.pid)
+kill $(cat $JAIL/worker.pid)
 
 # Let the process terminate.
 sleep 1
 
 # Delete chroot.
-umount $JAIL/proc
-umount $JAIL/bin
-umount $JAIL/usr
-umount $JAIL/lib
-umount $JAIL/lib64
-umount $JAIL/graalvisor
+#destroy_chroot $JAIL
 
 # Delete cgroup.
-destroy_cgroup $WORKER_ID
+#destroy_cgroup $WORKER_ID

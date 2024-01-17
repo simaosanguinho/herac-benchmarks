@@ -21,39 +21,35 @@ function setup_cgroup {
     fi
 }
 
-if [ -z "$1" ]
-then
-    echo "No worker id supplied."
-    exit 1
-else
-    WORKER_ID=$1
-fi
+function setup_chroot {
+    JAIL=$1
+    mkdir $JAIL/{proc,bin,usr,lib,lib64,graalvisor}
+    mount --bind -o ro /proc                 $JAIL/proc
+    mount --bind -o ro /bin                  $JAIL/bin
+    mount --bind -o ro /usr                  $JAIL/usr
+    mount --bind -o ro /lib                  $JAIL/lib
+    mount --bind -o ro /lib64                $JAIL/lib64
+    mount --bind -o ro $ARGO_HOME/graalvisor $JAIL/graalvisor
 
-if [ -z "$2" ]
-then
-    echo "No worker port supplied."
-    exit 1
-else
-    WORKER_PORT=$2
-fi
 
-JAIL=$(DIR)/workers/$WORKER_ID
+}
+
+JAIL=$(DIR)/worker/
+mkdir $JAIL &> /dev/null
 
 # Create chroot.
-mkdir -p $JAIL/{proc,bin,usr,lib,lib64,graalvisor}
-mount --bind -o ro /proc                 $JAIL/proc
-mount --bind -o ro /bin                  $JAIL/bin
-mount --bind -o ro /usr                  $JAIL/usr
-mount --bind -o ro /lib                  $JAIL/lib
-mount --bind -o ro /lib64                $JAIL/lib64
-mount --bind -o ro $ARGO_HOME/graalvisor $JAIL/graalvisor
+#setup_chroot $JAIL
 
 # Launch worker.
-export lambda_port=$WORKER_PORT
-chroot $JAIL /graalvisor/build/native-image/polyglot-proxy &> $JAIL.log &
+export lambda_port=8080
+#chroot $JAIL /graalvisor/build/native-image/polyglot-proxy &> $JAIL.log &
+$ARGO_HOME/graalvisor/build/native-image/polyglot-proxy &> $JAIL/worker.log &
 
 # Save pid.
-echo $! > $JAIL.pid
+echo $! > $JAIL/worker.pid
+
+# Collect scheduling events
+sudo perf sched record -p $(cat $JAIL/worker.pid) --output $JAIL/worker.perf &
 
 # Setup cgroup.
-setup_cgroup $WORKER_ID $(cat $JAIL.pid)
+#setup_cgroup $WORKER_ID $(cat $JAIL.pid)
