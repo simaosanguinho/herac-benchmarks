@@ -60,6 +60,16 @@ function postime {
     printf "\nTime taken: $tt us\n"
 }
 
+function log_cpu {
+    PID=$1
+    OFILE=$2
+    rm $OFILE &> /dev/null
+        while sudo kill -0 $PID &> /dev/null; do                
+                top -bn 1 | grep "Cpu(s)" >> $OFILE
+                sleep .3
+        done
+}
+
 function log_rss {
     PID=$1
     OFILE=$2
@@ -69,6 +79,8 @@ function log_rss {
                 sleep .5
         done
 }
+
+
 
 function enable_turbo_boost {
     if [ -f "/sys/devices/system/cpu/intel_pstate/no_turbo" ]; then
