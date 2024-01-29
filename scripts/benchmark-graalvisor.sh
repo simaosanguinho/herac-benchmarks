@@ -85,13 +85,8 @@ function run {
     # Write lambda pid to file.
     echo -n "$PID" > $TDIR/lambda.pid
 
-    # Log cpu.
-    log_cpu $PID $TDIR/lambdaCPU.log &
-
-    # Log memory.
-    log_rss $PID $TDIR/lambda.rss &
-
-
+    # Log Resources (memory and CPU)
+    log_resources $PID $TDIR &
 
     # Prepares the local resources (cgroups, core pinning, turbo boost).
     prepare_resources
@@ -156,6 +151,6 @@ do
         results_dir=$results_prefix/$APP_LANG/$APP_NAME-$backend-$SANDBOX-$mode-$workload-$VM_CPU-$VM_MEM/$iter
     fi
     mkdir -p $results_dir &> /dev/null
-    cp $TDIR/{*.log,*.rss} $results_dir &> /dev/null
+    cp $TDIR/{*.log,*.rss,*.cpu} $results_dir &> /dev/null
     echo "Saved logs (iteration $iter): $results_dir/lambda.log"
 done
