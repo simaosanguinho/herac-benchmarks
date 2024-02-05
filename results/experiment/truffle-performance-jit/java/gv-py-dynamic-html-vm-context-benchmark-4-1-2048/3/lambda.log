@@ -1,0 +1,37 @@
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+2024-02-05T18:04:13.543574893 [anonymous-instance:main:WARN:src/devices/src/legacy/serial.rs:249] Failed to register serial input fd: event_manager: failed to manage epoll file descriptor
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+[    0.016877] dmi: Firmware registration failed.
+[    0.046316] zswap: default zpool zbud not available
+[    0.046643] zswap: pool creation failed
+Graalvisor boot time: 2529 ms.
+Graalvisor listening on port 8080.
+seccomp(SECCOMP_GET_NOTIF_SIZES): Invalid argument
+Warning: graalvisor compiled with no truffle language support.
+Function dynamichtml registered with context sandboxing in 1733 ms
+[thread 55] New context sandbox 140322323562496 in 119 us
+[thread 70] Creating context org.graalvm.polyglot.Context@7b382b2f
+[thread 60] New context sandbox 140322323562496 in 22 us
+[thread 83] Creating context org.graalvm.polyglot.Context@216f5f9a
+[thread 59] New context sandbox 140322323562496 in 6 us
+[thread 84] Creating context org.graalvm.polyglot.Context@4bd41bff
+[thread 61] New context sandbox 140322323562496 in 5 us
+[thread 85] Creating context org.graalvm.polyglot.Context@5ea1543e
