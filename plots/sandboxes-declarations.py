@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+#experiment="../results/experiment/truffle-performance-nojit/"
+experiment="../results/experiment/test-exp/"
+
 benchmark_labels = [
     "jv/hw",
     "jv/hash",
@@ -34,7 +37,7 @@ isolate_benchmark_path = [
     "java/gv-js-thumbnail-vm-context-benchmark-4-1-2048",
     "java/gv-js-hello-world-vm-context-benchmark-8-1-2048",
     "java/gv-py-hello-world-vm-context-benchmark-8-1-2048",
-    "java/gv-py-dynamic-html-vm-context-benchmark-8-1-2048",
+    "java/gv-py-dynamic-html-vm-context-benchmark-4-1-2048",
     "java/gv-py-thumbnail-vm-context-benchmark-2-1-2048",
     "java/gv-py-uploader-vm-context-benchmark-4-1-2048",
     "java/gv-py-compression-vm-context-benchmark-4-1-2048",
@@ -57,7 +60,7 @@ process_benchmark_path = [
     "java/gv-js-thumbnail-vm-process-benchmark-4-1-2048",
     "java/gv-js-hello-world-vm-process-benchmark-8-1-2048",
     "java/gv-py-hello-world-vm-process-benchmark-8-1-2048",
-    "java/gv-py-dynamic-html-vm-process-benchmark-8-1-2048",
+    "java/gv-py-dynamic-html-vm-process-benchmark-4-1-2048",
     "java/gv-py-thumbnail-vm-process-benchmark-2-1-2048",
     "java/gv-py-uploader-vm-process-benchmark-4-1-2048",
     "java/gv-py-compression-vm-process-benchmark-4-1-2048",
@@ -102,7 +105,7 @@ snapshot_benchmark_path = [
     "java/gv-js-thumbnail-vm-snapshot-context-benchmark-1-1-512",
     "java/gv-js-hello-world-vm-snapshot-context-benchmark-1-1-256",
     "java/gv-py-hello-world-vm-snapshot-context-benchmark-1-1-512",
-    "java/gv-py-dynamic-html-vm-snapshot-context-benchmark-1-1-256",
+    "java/gv-py-dynamic-html-vm-snapshot-context-benchmark-1-1-512",
     "java/gv-py-thumbnail-vm-snapshot-context-benchmark-1-1-1024",
     "java/gv-py-uploader-vm-snapshot-context-benchmark-1-1-512",
     "java/gv-py-compression-vm-snapshot-context-benchmark-1-1-512",
@@ -172,7 +175,7 @@ snapshot_mem_factor = [
     512,
     256,
     512, # python hello world
-    256,
+    512,
     1024,
     512,
     512,

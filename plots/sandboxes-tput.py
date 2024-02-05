@@ -5,6 +5,7 @@ import results
 import matplotlib.pyplot as plt
 import numpy as np
 
+experiment = declarations.experiment
 benchmark_labels = declarations.benchmark_labels
 isolate_benchmark_path = declarations.isolate_benchmark_path
 process_benchmark_path = declarations.process_benchmark_path
@@ -26,20 +27,20 @@ snapshot_tput_std = {}
 
 # Processing results.
 for idx, path in enumerate(isolate_benchmark_path):
-    isolate_tput_avg[idx] = results.process_result(path)["tput_avg"]
-    isolate_tput_std[idx] = results.process_result(path)["tput_std"]
+    isolate_tput_avg[idx] = results.process_result(experiment + path)["tput_avg"]
+    isolate_tput_std[idx] = results.process_result(experiment + path)["tput_std"]
 for idx, path in enumerate(process_benchmark_path):
-    process_tput_avg[idx] = results.process_result(path)["tput_avg"]
-    process_tput_std[idx] = results.process_result(path)["tput_std"]
+    process_tput_avg[idx] = results.process_result(experiment + path)["tput_avg"]
+    process_tput_std[idx] = results.process_result(experiment + path)["tput_std"]
 for idx, path in enumerate(openwhisk_benchmark_path):
-    openwhisk_tput_avg[idx] = results.process_result(path)["tput_avg"]
-    openwhisk_tput_std[idx] = results.process_result(path)["tput_std"]
+    openwhisk_tput_avg[idx] = results.process_result(experiment + path)["tput_avg"]
+    openwhisk_tput_std[idx] = results.process_result(experiment + path)["tput_std"]
 for idx, path in enumerate(nift_benchmark_path):
-    nift_tput_avg[idx] = results.process_result(path)["tput_avg"]
-    nift_tput_std[idx] = results.process_result(path)["tput_std"]
+    nift_tput_avg[idx] = results.process_result(experiment + path)["tput_avg"]
+    nift_tput_std[idx] = results.process_result(experiment + path)["tput_std"]
 for idx, path in enumerate(snapshot_benchmark_path):
-    snapshot_tput_avg[idx] = results.process_result(path)["tput_avg"]
-    snapshot_tput_std[idx] = results.process_result(path)["tput_std"]
+    snapshot_tput_avg[idx] = results.process_result(experiment + path)["tput_avg"]
+    snapshot_tput_std[idx] = results.process_result(experiment + path)["tput_std"]
 
 # Scale openwhisk to 2GB.
 for idx, path in enumerate(openwhisk_benchmark_path):
@@ -54,7 +55,7 @@ width = 0.15
 
 plt.rcParams.update({'font.size': 12})
 fig, ax = plt.subplots()
-ax.bar(x + 0*width, isolate_tput_avg.values(),   yerr=isolate_tput_std.values(),   width=width, hatch='*', label='Graalvisor', alpha=0.75)
+ax.bar(x + 0*width, isolate_tput_avg.values(),   yerr=isolate_tput_std.values(),   width=width, hatch='*', label='Hydra', alpha=0.75)
 ax.bar(x + 1*width, process_tput_avg.values(),   yerr=process_tput_std.values(),   width=width, hatch='.', label='Forking',  alpha=0.75)
 ax.bar(x + 2*width, nift_tput_avg.values(),      yerr=nift_tput_std.values(),      width=width, hatch='O', label='NI+TF',    alpha=0.75)
 ax.bar(x + 3*width, snapshot_tput_avg.values(),  yerr=snapshot_tput_std.values(),  width=width, hatch='/', label='VM Snapshot', alpha=0.75)

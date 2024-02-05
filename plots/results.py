@@ -32,12 +32,27 @@ def read_benchmark_memory(path):
     return mem
 
 def process_result(path):
+    try:
+        return process_result_internal(path)
+    except FileNotFoundError:
+        print("Warning, {path} not found".format(path=path))
+        results = {}
+        results["tput_avg"] = 0
+        results["tput_std"] = 0
+        results["mem_avg"] = 0
+        results["mem_std"] = 0
+        results["eff_avg"] = 0
+        results["eff_std"] = 0
+        return results
+
+
+def process_result_internal(path):
     # Throughput (ops/s) of each iteration.
     tput = []
     # Memory samples (rss in kbs) of each iteration.
     mem = []
 
-    for file in os.scandir('../results/benchmark/' + path): # TODO - check how this would work.
+    for file in os.scandir(path):
         if file.is_dir():
             mem.extend(read_benchmark_memory(file.path))
             tput.extend(read_benchmark_throughput(file.path))

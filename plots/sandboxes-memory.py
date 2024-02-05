@@ -5,6 +5,7 @@ import results
 import matplotlib.pyplot as plt
 import numpy as np
 
+experiment = declarations.experiment
 benchmark_labels = declarations.benchmark_labels
 isolate_benchmark_path = declarations.isolate_benchmark_path
 process_benchmark_path = declarations.process_benchmark_path
@@ -26,20 +27,20 @@ snapshot_mem_std = {}
 
 # Processing results.
 for idx, path in enumerate(isolate_benchmark_path):
-    isolate_mem_avg[idx] = results.process_result(path)["mem_avg"]
-    isolate_mem_std[idx] = results.process_result(path)["mem_std"]
+    isolate_mem_avg[idx] = results.process_result(experiment + path)["mem_avg"]
+    isolate_mem_std[idx] = results.process_result(experiment + path)["mem_std"]
 for idx, path in enumerate(process_benchmark_path):
-    process_mem_avg[idx] = results.process_result(path)["mem_avg"]
-    process_mem_std[idx] = results.process_result(path)["mem_std"]
+    process_mem_avg[idx] = results.process_result(experiment + path)["mem_avg"]
+    process_mem_std[idx] = results.process_result(experiment + path)["mem_std"]
 for idx, path in enumerate(openwhisk_benchmark_path):
-    openwhisk_mem_avg[idx] = results.process_result(path)["mem_avg"]
-    openwhisk_mem_std[idx] = results.process_result(path)["mem_std"]
+    openwhisk_mem_avg[idx] = results.process_result(experiment + path)["mem_avg"]
+    openwhisk_mem_std[idx] = results.process_result(experiment + path)["mem_std"]
 for idx, path in enumerate(nitf_benchmark_path):
-    nift_mem_avg[idx] = results.process_result(path)["mem_avg"]
-    nift_mem_std[idx] = results.process_result(path)["mem_std"]
+    nift_mem_avg[idx] = results.process_result(experiment + path)["mem_avg"]
+    nift_mem_std[idx] = results.process_result(experiment + path)["mem_std"]
 for idx, path in enumerate(snapshot_benchmark_path):
-    snapshot_mem_avg[idx] = results.process_result(path)["mem_avg"]
-    snapshot_mem_std[idx] = results.process_result(path)["mem_std"]
+    snapshot_mem_avg[idx] = results.process_result(experiment + path)["mem_avg"]
+    snapshot_mem_std[idx] = results.process_result(experiment + path)["mem_std"]
 
 # Scale openwhisk and snapshot to 2GB.
 for idx, path in enumerate(openwhisk_benchmark_path):
@@ -54,7 +55,7 @@ width = 0.15
 
 plt.rcParams.update({'font.size': 12})
 fig, ax = plt.subplots()
-ax.bar(x + 0*width, isolate_mem_avg.values(),   yerr=isolate_mem_std.values(),   width=width, hatch='*', label='Graalvisor', alpha=0.75)
+ax.bar(x + 0*width, isolate_mem_avg.values(),   yerr=isolate_mem_std.values(),   width=width, hatch='*', label='Hydra', alpha=0.75)
 ax.bar(x + 1*width, process_mem_avg.values(),   yerr=process_mem_std.values(),   width=width, hatch='.', label='Forking',  alpha=0.75)
 ax.bar(x + 2*width, nift_mem_avg.values(),      yerr=nift_mem_std.values(),      width=width, hatch='O', label='NI+FT',    alpha=0.75)
 ax.bar(x + 3*width, snapshot_mem_avg.values(),  yerr=snapshot_mem_std.values(),  width=width, hatch='/', label='VM Snapshot', alpha=0.75)

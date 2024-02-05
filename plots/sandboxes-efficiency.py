@@ -5,6 +5,7 @@ import results
 import matplotlib.pyplot as plt
 import numpy as np
 
+experiment = declarations.experiment
 benchmark_labels = declarations.benchmark_labels
 isolate_benchmark_path = declarations.isolate_benchmark_path
 process_benchmark_path = declarations.process_benchmark_path
@@ -26,27 +27,27 @@ snapshot_eff_std = {}
 
 # Processing results.
 for idx, path in enumerate(isolate_benchmark_path):
-    isolate_eff_avg[idx] = results.process_result(path)["eff_avg"]
-    isolate_eff_std[idx] = results.process_result(path)["eff_std"]
+    isolate_eff_avg[idx] = results.process_result(experiment + path)["eff_avg"]
+    isolate_eff_std[idx] = results.process_result(experiment + path)["eff_std"]
 for idx, path in enumerate(process_benchmark_path):
-    process_eff_avg[idx] = results.process_result(path)["eff_avg"]
-    process_eff_std[idx] = results.process_result(path)["eff_std"]
+    process_eff_avg[idx] = results.process_result(experiment + path)["eff_avg"]
+    process_eff_std[idx] = results.process_result(experiment + path)["eff_std"]
 for idx, path in enumerate(openwhisk_benchmark_path):
-    openwhisk_eff_avg[idx] = results.process_result(path)["eff_avg"]
-    openwhisk_eff_std[idx] = results.process_result(path)["eff_std"]
+    openwhisk_eff_avg[idx] = results.process_result(experiment + path)["eff_avg"]
+    openwhisk_eff_std[idx] = results.process_result(experiment + path)["eff_std"]
 for idx, path in enumerate(nitf_benchmark_path):
-    nitf_eff_avg[idx] = results.process_result(path)["eff_avg"]
-    nitf_eff_std[idx] = results.process_result(path)["eff_std"]
+    nitf_eff_avg[idx] = results.process_result(experiment + path)["eff_avg"]
+    nitf_eff_std[idx] = results.process_result(experiment + path)["eff_std"]
 for idx, path in enumerate(snapshot_benchmark_path):
-    snapshot_eff_avg[idx] = results.process_result(path)["eff_avg"]
-    snapshot_eff_std[idx] = results.process_result(path)["eff_std"]
+    snapshot_eff_avg[idx] = results.process_result(experiment + path)["eff_avg"]
+    snapshot_eff_std[idx] = results.process_result(experiment + path)["eff_std"]
 
 x = np.arange(len(benchmark_labels))
 width = 0.15
 
 plt.rcParams.update({'font.size': 12})
 fig, ax = plt.subplots()
-ax.bar(x + 0*width, isolate_eff_avg.values(),   yerr=isolate_eff_std.values(),   width=width, hatch='*', label='Graalvisor',  alpha=0.75)
+ax.bar(x + 0*width, isolate_eff_avg.values(),   yerr=isolate_eff_std.values(),   width=width, hatch='*', label='Hydra',  alpha=0.75)
 ax.bar(x + 1*width, process_eff_avg.values(),   yerr=process_eff_std.values(),   width=width, hatch='.', label='Forking',     alpha=0.75)
 ax.bar(x + 2*width, nitf_eff_avg.values(),      yerr=nitf_eff_std.values(),   width=width, hatch='O', label='NI+TF',     alpha=0.75)
 ax.bar(x + 3*width, snapshot_eff_avg.values(),  yerr=snapshot_eff_std.values(),  width=width, hatch='/', label='VM Snapshot', alpha=0.75)
