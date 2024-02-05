@@ -1,0 +1,36 @@
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+2024-02-05T14:44:47.448157285 [anonymous-instance:main:WARN:src/devices/src/legacy/serial.rs:249] Failed to register serial input fd: event_manager: failed to manage epoll file descriptor
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+[    0.016856] dmi: Firmware registration failed.
+[    0.045957] zswap: default zpool zbud not available
+[    0.046292] zswap: pool creation failed
+Graalvisor boot time: 1557 ms.
+Graalvisor listening on port 8080.
+seccomp(SECCOMP_GET_NOTIF_SIZES): Invalid argument
+Function httprequest registered with isolate sandboxing in 193 ms
+[thread 49] New isolate sandbox 139799439605760 in 4070 us
+[thread 58] New isolate sandbox 139730383536128 in 2639 us
+[thread 59] New isolate sandbox 139696014360576 in 2381 us
+[thread 60] New isolate sandbox 139661645185024 in 2223 us
+[thread 61] New isolate sandbox 139627276009472 in 2190 us
+[thread 62] New isolate sandbox 139592906833920 in 2115 us
+[thread 63] New isolate sandbox 139558537658368 in 1801 us
+[thread 57] New isolate sandbox 139764744323072 in 27329 us

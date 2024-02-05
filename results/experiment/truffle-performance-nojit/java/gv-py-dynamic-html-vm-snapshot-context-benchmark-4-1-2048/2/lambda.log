@@ -1,0 +1,20 @@
+Restoring vm...
+2024-02-05T12:06:49.550481591 [anonymous-instance:main:WARN:src/vmm/src/rpc_interface.rs:517] [DevPreview] Restoring snapshots is currently in development preview.
+2024-02-05T12:06:49.554740212 [anonymous-instance:main:WARN:src/devices/src/legacy/serial.rs:249] Failed to register serial input fd: event_manager: failed to manage epoll file descriptor
+2024-02-05T12:06:49.556785520 [anonymous-instance:main:WARN:src/vmm/src/rpc_interface.rs:563] [DevPreview] 'load snapshot' VMM action took 5944 us.
+2024-02-05T12:06:49.556914963 [anonymous-instance:fc_api:WARN:src/api_server/src/lib.rs:260] PUT /snapshot/load: mem_file_path field is deprecated.
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+Deprecation: true
+
+Restoring vm... done!
+Function dynamichtml registered with context sandboxing in 3076 ms
+[thread 56] New context sandbox 140101032083456 in 68 us
+[thread 72] Creating context org.graalvm.polyglot.Context@296b5679
+[thread 60] New context sandbox 140101032083456 in 13 us
+[thread 83] Creating context org.graalvm.polyglot.Context@7bb57022
+[thread 61] New context sandbox 140101032083456 in 2 us
+[thread 84] Creating context org.graalvm.polyglot.Context@1b1a83f6
+[thread 62] New context sandbox 140101032083456 in 5 us
+[thread 85] Creating context org.graalvm.polyglot.Context@5269600a

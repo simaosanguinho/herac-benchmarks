@@ -1,0 +1,11 @@
+Restoring vm...
+2024-02-05T14:56:23.089827919 [anonymous-instance:main:WARN:src/vmm/src/rpc_interface.rs:517] [DevPreview] Restoring snapshots is currently in development preview.
+2024-02-05T14:56:23.092889786 [anonymous-instance:main:WARN:src/devices/src/legacy/serial.rs:249] Failed to register serial input fd: event_manager: failed to manage epoll file descriptor
+2024-02-05T14:56:23.094855928 [anonymous-instance:main:WARN:src/vmm/src/rpc_interface.rs:563] [DevPreview] 'load snapshot' VMM action took 4913 us.
+2024-02-05T14:56:23.094948245 [anonymous-instance:fc_api:WARN:src/api_server/src/lib.rs:260] PUT /snapshot/load: mem_file_path field is deprecated.
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+Deprecation: true
+
+Restoring vm... done!

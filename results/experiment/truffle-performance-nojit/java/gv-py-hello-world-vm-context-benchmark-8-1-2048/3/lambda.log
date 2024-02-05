@@ -1,0 +1,44 @@
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+2024-02-05T14:48:48.584480330 [anonymous-instance:main:WARN:src/devices/src/legacy/serial.rs:249] Failed to register serial input fd: event_manager: failed to manage epoll file descriptor
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+[    0.016868] dmi: Firmware registration failed.
+[    0.046328] zswap: default zpool zbud not available
+[    0.046655] zswap: pool creation failed
+Graalvisor boot time: 2419 ms.
+Graalvisor listening on port 8080.
+seccomp(SECCOMP_GET_NOTIF_SIZES): Invalid argument
+Function hw registered with context sandboxing in 1764 ms
+[thread 49] New context sandbox 140216962646016 in 77 us
+[thread 72] Creating context org.graalvm.polyglot.Context@6e4f2ffd
+[thread 57] New context sandbox 140216962646016 in 20 us
+[thread 77] Creating context org.graalvm.polyglot.Context@23247dae
+[thread 58] New context sandbox 140216962646016 in 15 us
+[thread 78] Creating context org.graalvm.polyglot.Context@608e8208
+[thread 61] New context sandbox 140216962646016 in 14 us
+[thread 79] Creating context org.graalvm.polyglot.Context@4fb60a15
+[thread 60] New context sandbox 140216962646016 in 12 us
+[thread 63] New context sandbox 140216962646016 in 15 us
+[thread 62] New context sandbox 140216962646016 in 11 us
+[thread 80] Creating context org.graalvm.polyglot.Context@35e170dd
+[thread 81] Creating context org.graalvm.polyglot.Context@39297f0a
+[thread 82] Creating context org.graalvm.polyglot.Context@4f0a4e90
+[thread 64] New context sandbox 140216962646016 in 92331 us
+[thread 85] Creating context org.graalvm.polyglot.Context@caa6c55

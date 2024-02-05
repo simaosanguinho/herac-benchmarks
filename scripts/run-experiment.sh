@@ -75,6 +75,30 @@ function test_ow_benchmarks {
     done
 }
 
+function measure_benchmark_resources {
+    declare -A conc_mem_table
+    declare -A conc_cpu_table
+    conc_mem_table[1]=2048
+    conc_cpu_table[1]=100000
+    conc_mem_table[2]=1024
+    conc_cpu_table[2]=50000
+    conc_mem_table[4]=512
+    conc_cpu_table[4]=25000
+    conc_mem_table[8]=256
+    conc_cpu_table[8]=12500
+
+    for concurrency in 1 2 4 8;
+    do
+        for benchmark in $GV_BENCHMARKS $CR_BENCHMARKS;
+        do
+            concurrency_table["$benchmark"]=$concurrency
+            mem_table["$benchmark"]=${conc_mem_table["$concurrency"]}
+            cpu_table["$benchmark"]=${conc_cpu_table["$concurrency"]}
+        done
+        efficiency
+    done
+}
+
 function cdf_latency_filehashing {
     export ITERATIONS=5
     $(DIR)/benchmark-cruntime.sh   container cr_java_filehashing test 25
@@ -84,160 +108,6 @@ function cdf_latency_filehashing {
 
 # Memory (fixed HW resources of 1 core and 2GB of memory, measure ops/s/mb)
 function efficiency {
-
-    declare -A wmultiplier_table
-    wmultiplier_table[gv_java_hw]=2000
-    wmultiplier_table[cr_java_hw]=2000
-    wmultiplier_table[gv_java_filehashing]=1000
-    wmultiplier_table[cr_java_filehashing]=1000
-    wmultiplier_table[gv_java_classify]=10
-    wmultiplier_table[cr_java_classify]=10
-    wmultiplier_table[gv_java_httprequest]=1000
-    wmultiplier_table[cr_java_httprequest]=1000
-    wmultiplier_table[gv_java_videoprocessing]=2
-    wmultiplier_table[cr_java_videoprocessing]=2
-
-    wmultiplier_table[gv_python_hw]=5
-    wmultiplier_table[cr_python_hw]=5
-    wmultiplier_table[gv_python_mst]=5
-    wmultiplier_table[cr_python_mst]=5
-    wmultiplier_table[gv_python_bfs]=5
-    wmultiplier_table[cr_python_bfs]=5
-    wmultiplier_table[gv_python_pagerank]=5
-    wmultiplier_table[cr_python_pagerank]=5
-    wmultiplier_table[gv_python_dna]=2
-    wmultiplier_table[cr_python_dna]=2
-    wmultiplier_table[gv_python_classify]=1
-    wmultiplier_table[cr_python_classify]=1
-    wmultiplier_table[gv_python_dynamichtml]=5
-    wmultiplier_table[cr_python_dynamichtml]=5
-    wmultiplier_table[gv_python_compression]=5
-    wmultiplier_table[cr_python_compression]=5
-    wmultiplier_table[gv_python_thumbnail]=5
-    wmultiplier_table[cr_python_thumbnail]=5
-    wmultiplier_table[gv_python_videoprocessing]=1
-    wmultiplier_table[cr_python_videoprocessing]=1
-    wmultiplier_table[gv_python_uploader]=5
-    wmultiplier_table[cr_python_uploader]=5
-
-    wmultiplier_table[gv_javascript_hw]=256
-    wmultiplier_table[cr_javascript_hw]=256
-    wmultiplier_table[gv_javascript_dynamichtml]=256
-    wmultiplier_table[cr_javascript_dynamichtml]=256
-    wmultiplier_table[gv_javascript_thumbnail]=256
-    wmultiplier_table[cr_javascript_thumbnail]=256
-    wmultiplier_table[gv_javascript_uploader]=256
-    wmultiplier_table[cr_javascript_uploader]=256
-
-    declare -A concurrency_table
-    concurrency_table[gv_java_hw]=8
-    concurrency_table[gv_java_filehashing]=8
-    concurrency_table[gv_java_classify]=1
-    concurrency_table[gv_java_httprequest]=8
-    concurrency_table[gv_java_videoprocessing]=1
-
-    concurrency_table[gv_python_hw]=8
-    concurrency_table[gv_python_mst]=4
-    concurrency_table[gv_python_bfs]=4
-    concurrency_table[gv_python_pagerank]=4
-    concurrency_table[gv_python_dna]=2
-    concurrency_table[gv_python_classify]=1
-    concurrency_table[gv_python_dynamichtml]=4
-    concurrency_table[gv_python_compression]=4
-    concurrency_table[gv_python_thumbnail]=2
-    concurrency_table[gv_python_videoprocessing]=2
-    concurrency_table[gv_python_uploader]=4
-
-    concurrency_table[gv_javascript_hw]=8
-    concurrency_table[gv_javascript_dynamichtml]=8
-    concurrency_table[gv_javascript_thumbnail]=4
-    concurrency_table[gv_javascript_uploader]=8
-
-    declare -A mem_table
-    declare -A cpu_table
-    mem_table[gv_java_hw]=256
-    mem_table[cr_java_hw]=256
-    cpu_table[gv_java_hw]=12500
-    cpu_table[cr_java_hw]=12500
-    mem_table[gv_java_filehashing]=256
-    mem_table[cr_java_filehashing]=256
-    cpu_table[gv_java_filehashing]=12500
-    cpu_table[cr_java_filehashing]=12500
-    mem_table[gv_java_classify]=2048
-    mem_table[cr_java_classify]=2048
-    cpu_table[gv_java_classify]=100000
-    cpu_table[cr_java_classify]=100000
-    mem_table[gv_java_httprequest]=256
-    mem_table[cr_java_httprequest]=256
-    cpu_table[gv_java_httprequest]=12500
-    cpu_table[cr_java_httprequest]=12500
-    mem_table[gv_java_videoprocessing]=2048
-    mem_table[cr_java_videoprocessing]=2048
-    cpu_table[gv_java_videoprocessing]=100000
-    cpu_table[cr_java_videoprocessing]=100000
-
-    mem_table[gv_python_hw]=512
-    mem_table[cr_python_hw]=256 # TODO - diff
-    cpu_table[gv_python_hw]=25000
-    cpu_table[cr_python_hw]=12500 # TODO - diff
-    mem_table[gv_python_mst]=1024
-    mem_table[cr_python_mst]=512 # TODO - diff
-    cpu_table[gv_python_mst]=50000
-    cpu_table[cr_python_mst]=25000 # TODO - diff
-    mem_table[gv_python_bfs]=1024
-    mem_table[cr_python_bfs]=512 # TODO - diff
-    cpu_table[gv_python_bfs]=50000
-    cpu_table[cr_python_bfs]=25000 # TODO - diff
-    mem_table[gv_python_pagerank]=1024
-    mem_table[cr_python_pagerank]=512 # TODO - diff
-    cpu_table[gv_python_pagerank]=50000
-    cpu_table[cr_python_pagerank]=25000 # TODO - diff
-    mem_table[gv_python_dna]=1024
-    mem_table[cr_python_dna]=1024
-    cpu_table[gv_python_dna]=50000
-    cpu_table[cr_python_dna]=50000
-    mem_table[gv_python_classify]=2048
-    mem_table[cr_python_classify]=2048
-    cpu_table[gv_python_classify]=100000
-    cpu_table[cr_python_classify]=100000
-    mem_table[gv_python_dynamichtml]=512
-    mem_table[cr_python_dynamichtml]=256 # TODO - diff
-    cpu_table[gv_python_dynamichtml]=25000
-    cpu_table[cr_python_dynamichtml]=12500 # TODO - diff
-    mem_table[gv_python_compression]=512
-    mem_table[cr_python_compression]=256 # TODO - diff
-    cpu_table[gv_python_compression]=25000
-    cpu_table[cr_python_compression]=12500 # TODO - diff
-    mem_table[gv_python_thumbnail]=1024
-    mem_table[cr_python_thumbnail]=256 # TODO - diff
-    cpu_table[gv_python_thumbnail]=50000
-    cpu_table[cr_python_thumbnail]=12500 # TODO - diff
-    mem_table[gv_python_videoprocessing]=2048
-    mem_table[cr_python_videoprocessing]=2048
-    cpu_table[gv_python_videoprocessing]=100000
-    cpu_table[cr_python_videoprocessing]=100000
-    mem_table[gv_python_uploader]=512
-    mem_table[cr_python_uploader]=256 # TODO - diff
-    cpu_table[gv_python_uploader]=25000
-    cpu_table[cr_python_uploader]=12500 # TODO - diff
-
-    mem_table[gv_javascript_hw]=256
-    mem_table[cr_javascript_hw]=256
-    cpu_table[gv_javascript_hw]=12500
-    cpu_table[cr_javascript_hw]=12500
-    mem_table[gv_javascript_dynamichtml]=256
-    mem_table[cr_javascript_dynamichtml]=256
-    cpu_table[gv_javascript_dynamichtml]=12500
-    cpu_table[cr_javascript_dynamichtml]=12500
-    mem_table[gv_javascript_thumbnail]=512
-    mem_table[cr_javascript_thumbnail]=512
-    cpu_table[gv_javascript_thumbnail]=25000
-    cpu_table[cr_javascript_thumbnail]=25000
-    mem_table[gv_javascript_uploader]=256
-    mem_table[cr_javascript_uploader]=256
-    cpu_table[gv_javascript_uploader]=12500
-    cpu_table[cr_javascript_uploader]=12500
-
 
     # Graalvisor
     function efficiency_gv {
@@ -488,6 +358,15 @@ then
     test_ow_benchmarks
     exit 0
 fi
+
+read -p "Run benchmark resources experiment (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    measure_benchmark_resources
+    exit 0
+fi
+
 read -p "Run cdf latency experiment (y or Y, everything else as no)? " -n 1 -r
 echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]

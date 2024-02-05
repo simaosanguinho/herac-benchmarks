@@ -1,0 +1,21 @@
+Restoring vm...
+2024-02-05T12:07:50.103262415 [anonymous-instance:main:WARN:src/vmm/src/rpc_interface.rs:517] [DevPreview] Restoring snapshots is currently in development preview.
+2024-02-05T12:07:50.106704267 [anonymous-instance:main:WARN:src/devices/src/legacy/serial.rs:249] Failed to register serial input fd: event_manager: failed to manage epoll file descriptor
+2024-02-05T12:07:50.108176795 [anonymous-instance:main:WARN:src/vmm/src/rpc_interface.rs:563] [DevPreview] 'load snapshot' VMM action took 4789 us.
+2024-02-05T12:07:50.108228040 [anonymous-instance:fc_api:WARN:src/api_server/src/lib.rs:260] PUT /snapshot/load: mem_file_path field is deprecated.
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+Deprecation: true
+
+Restoring vm... done!
+[thread 57] New context sandbox 140136096464896 in 5071 us
+[thread 83] Creating context org.graalvm.polyglot.Context@742f229c
+SystemError: cannot execute multi-context code with native extensions
+	at org.graalvm.sdk/org.graalvm.polyglot.Context.eval(Context.java:429)
+	at com.oracle.svm.graalvisor.polyglot.PolyglotEngine.init(PolyglotEngine.java:63)
+	at com.oracle.svm.graalvisor.polyglot.PolyglotEngine.invoke(PolyglotEngine.java:77)
+	at com.thumbnail.Thumbnail.main(Thumbnail.java:40)
+	at java.base@17.0.7/java.lang.reflect.Method.invoke(Method.java:568)
+	at com.oracle.svm.graalvisor.guestapi.GuestAPI.invoke(GuestAPI.java:72)
+	at com.oracle.svm.graalvisor.guestapi.GuestAPI.invoke(GuestAPI.java:125)

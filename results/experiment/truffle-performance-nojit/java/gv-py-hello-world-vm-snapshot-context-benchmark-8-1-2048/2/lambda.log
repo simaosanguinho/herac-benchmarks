@@ -1,0 +1,28 @@
+Restoring vm...
+2024-02-05T12:06:01.281467626 [anonymous-instance:main:WARN:src/vmm/src/rpc_interface.rs:517] [DevPreview] Restoring snapshots is currently in development preview.
+2024-02-05T12:06:01.284703554 [anonymous-instance:main:WARN:src/devices/src/legacy/serial.rs:249] Failed to register serial input fd: event_manager: failed to manage epoll file descriptor
+2024-02-05T12:06:01.286305304 [anonymous-instance:main:WARN:src/vmm/src/rpc_interface.rs:563] [DevPreview] 'load snapshot' VMM action took 4712 us.
+2024-02-05T12:06:01.286418415 [anonymous-instance:fc_api:WARN:src/api_server/src/lib.rs:260] PUT /snapshot/load: mem_file_path field is deprecated.
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+Deprecation: true
+
+Restoring vm... done!
+Function hw registered with context sandboxing in 3035 ms
+[thread 56] New context sandbox 140101032083456 in 114 us
+[thread 72] Creating context org.graalvm.polyglot.Context@52d45ad5
+[thread 64] New context sandbox 140101032083456 in 31 us
+[thread 77] Creating context org.graalvm.polyglot.Context@648bfa71
+[thread 65] New context sandbox 140101032083456 in 24 us
+[thread 66] New context sandbox 140101032083456 in 28 us
+[thread 79] Creating context org.graalvm.polyglot.Context@440d1a27
+[thread 67] New context sandbox 140101032083456 in 25 us
+[thread 80] Creating context org.graalvm.polyglot.Context@7489769
+[thread 69] New context sandbox 140101032083456 in 51 us
+[thread 70] New context sandbox 140101032083456 in 218 us
+[thread 78] Creating context org.graalvm.polyglot.Context@9b26918
+[thread 82] Creating context org.graalvm.polyglot.Context@2fa2dfe8
+[thread 81] Creating context org.graalvm.polyglot.Context@2f7070cf
+[thread 71] New context sandbox 140101032083456 in 213 us
+[thread 83] Creating context org.graalvm.polyglot.Context@331a1012

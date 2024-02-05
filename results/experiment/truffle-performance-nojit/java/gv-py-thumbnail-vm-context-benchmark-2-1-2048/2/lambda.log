@@ -1,0 +1,40 @@
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+2024-02-05T14:50:37.878274742 [anonymous-instance:main:WARN:src/devices/src/legacy/serial.rs:249] Failed to register serial input fd: event_manager: failed to manage epoll file descriptor
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+[    0.027110] dmi: Firmware registration failed.
+[    0.058925] zswap: default zpool zbud not available
+[    0.059418] zswap: pool creation failed
+Graalvisor boot time: 2383 ms.
+Graalvisor listening on port 8080.
+seccomp(SECCOMP_GET_NOTIF_SIZES): Invalid argument
+Function thumbnail registered with context sandboxing in 2410 ms
+[thread 49] New context sandbox 140057982795776 in 103 us
+[thread 71] Creating context org.graalvm.polyglot.Context@9518259
+[thread 51] New context sandbox 140057982795776 in 15 us
+[thread 81] Creating context org.graalvm.polyglot.Context@7bc954da
+SystemError: cannot execute multi-context code with native extensions
+	at org.graalvm.sdk/org.graalvm.polyglot.Context.eval(Context.java:429)
+	at com.oracle.svm.graalvisor.polyglot.PolyglotEngine.init(PolyglotEngine.java:63)
+	at com.oracle.svm.graalvisor.polyglot.PolyglotEngine.invoke(PolyglotEngine.java:77)
+	at com.thumbnail.Thumbnail.main(Thumbnail.java:40)
+	at java.base@17.0.7/java.lang.reflect.Method.invoke(Method.java:568)
+	at com.oracle.svm.graalvisor.guestapi.GuestAPI.invoke(GuestAPI.java:72)
+	at com.oracle.svm.graalvisor.guestapi.GuestAPI.invoke(GuestAPI.java:125)

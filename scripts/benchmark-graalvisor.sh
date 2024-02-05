@@ -43,8 +43,7 @@ function benchmark {
             ab -p $APP_POST -T application/json -c 1 -n $WARMUP http://$IP:8080/warmup &> $TDIR/ab-warmup.log
     fi
 
-    # TODO - do we need this init?
-    ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:8080/ &> $TDIR/ab-init.log
+    #ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:8080/ &> $TDIR/ab-init.log
     ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:8080/ &> $TDIR/ab.log
 }
 
