@@ -24,6 +24,7 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
     private final AbstractWorker[] workers;
     private int overalloc = 0;
     private final List<String> statistics;
+    final long beginningTimestamp;
 
     public MultiWorkerInvocationTraceExecutor(ExecutorConfiguration config) {
         super(config);
@@ -34,6 +35,7 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
         }
         insertRealWorker(factory);
         statistics = new LinkedList<>();
+        beginningTimestamp = System.currentTimeMillis();
     }
 
     private AbstractMemoryManagerFactory getMemoryManagerFactory(ExecutorConfiguration config) {

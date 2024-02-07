@@ -35,7 +35,7 @@ public class RealWorker extends AbstractWorker {
 
     @Override
     public void acceptFunctionInvocation(String owner, String function, int functionMemory, int duration, int timestamp, FunctionLanguage language) throws IOException {
-        bw.write(String.format(TRACE_INVOCATION_RECORD, owner, function, functionMemory, duration, timestamp, language));
+        bw.write(String.format(TRACE_INVOCATION_RECORD, owner, function, functionMemory, duration, (System.currentTimeMillis() - executor.beginningTimestamp), language));
         bw.newLine();
         memoryManager.startRequest(owner, function, functionMemory);
         executor.invokeFunction(owner, function, functionMemory, language, new InvocationCallback(this, owner, function));
