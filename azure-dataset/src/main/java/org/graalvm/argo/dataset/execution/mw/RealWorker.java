@@ -25,20 +25,21 @@ public class RealWorker extends AbstractWorker {
         bw.newLine();
     }
 
-    public void ensureUploaded(String owner, String function, FunctionLanguage language) {
+    @Override
+    public void ensureUploaded(String owner, String function, FunctionLanguage language, int functionId) {
         if (!functions.contains(function)) {
-            executor.uploadFunction(owner, function, language);
+            executor.uploadFunction(owner, function, language, functionId);
             owners.add(owner);
             functions.add(function);
         }
     }
 
     @Override
-    public void acceptFunctionInvocation(String owner, String function, int functionMemory, int duration, int timestamp, FunctionLanguage language) throws IOException {
+    public void acceptFunctionInvocation(String owner, String function, int functionMemory, int duration, int timestamp, FunctionLanguage language, int functionId) throws IOException {
         bw.write(String.format(TRACE_INVOCATION_RECORD, owner, function, functionMemory, duration, (System.currentTimeMillis() - executor.beginningTimestamp), language));
         bw.newLine();
         memoryManager.startRequest(owner, function, functionMemory);
-        executor.invokeFunction(owner, function, functionMemory, language, new InvocationCallback(this, owner, function));
+        executor.invokeFunction(owner, function, functionMemory, language, functionId, new InvocationCallback(this, owner, function));
 
         ++totalRequests;
     }

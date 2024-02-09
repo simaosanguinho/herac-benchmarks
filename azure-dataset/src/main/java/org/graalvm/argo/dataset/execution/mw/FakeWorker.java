@@ -9,7 +9,8 @@ public class FakeWorker extends AbstractWorker {
         super(memoryManager);
     }
 
-    public void ensureUploaded(String owner, String function, FunctionLanguage language) {
+    @Override
+    public void ensureUploaded(String owner, String function, FunctionLanguage language, int functionId) {
         if (!functions.contains(function)) {
             owners.add(owner);
             functions.add(function);
@@ -17,7 +18,7 @@ public class FakeWorker extends AbstractWorker {
     }
 
     @Override
-    public void acceptFunctionInvocation(String owner, String function, int functionMemory, int duration, int timestamp, FunctionLanguage language) {
+    public void acceptFunctionInvocation(String owner, String function, int functionMemory, int duration, int timestamp, FunctionLanguage language, int functionId) {
         memoryManager.startRequest(owner, function, functionMemory);
         MockNetworkUtils.sendPost(new InvocationCallback(this, owner, function, duration));
 

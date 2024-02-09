@@ -41,11 +41,14 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
     private AbstractMemoryManagerFactory getMemoryManagerFactory(ExecutorConfiguration config) {
         if ("true".equals(config.invocationCollocation)) {
             if ("true".equals(config.functionIsolation)) {
+                System.out.println("Using SingleFunctionMemoryManager");
                 return new SingleFunctionMemoryManagerFactory();
             } else {
+                System.out.println("Using OwnerCollocationMemoryManager");
                 return new OwnerCollocationMemoryManagerFactory();
             }
         } else {
+            System.out.println("Using SingleInvocationMemoryManager");
             return new SingleInvocationMemoryManagerFactory();
         }
     }
@@ -75,14 +78,15 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
                 int duration = Integer.parseInt(splitRow[3]);
                 int timestamp = Integer.parseInt(splitRow[4]);
                 FunctionLanguage language = FunctionLanguage.fromString(splitRow[5]);
-                int functionMemory = config.getFunctionConfiguration(language).memory;
+                int functionId = Integer.parseInt(splitRow[6]);
+                int functionMemory = config.getFunctionConfiguration(language, functionId).memory;
 
                 AbstractWorker worker = schedule(owner, function, functionMemory);
-                worker.ensureUploaded(owner, function, language);
+                worker.ensureUploaded(owner, function, language, functionId);
                 waitForInvocation(currentTimestamp, timestamp);
                 currentTimestamp = timestamp;
 
-                worker.acceptFunctionInvocation(owner, function, functionMemory, duration, timestamp, language);
+                worker.acceptFunctionInvocation(owner, function, functionMemory, duration, timestamp, language, functionId);
                 if (Environment.COLLECT_STATISTICS && currentTimestamp - lastStatisticsTimestamp >= Environment.STATISTICS_INTERVAL_MS) {
                     long before = System.nanoTime();
                     updateGlobalStatistics(currentTimestamp);

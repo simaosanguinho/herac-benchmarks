@@ -12,8 +12,6 @@ import java.util.function.Consumer;
 
 public class InvocationTraceExecutor {
 
-    private static final int MS_IN_HOUR = 3600000;
-
     protected final ExecutorConfiguration config;
 
 
@@ -35,11 +33,12 @@ public class InvocationTraceExecutor {
                 String function = splitRow[1];
                 int timestamp = Integer.parseInt(splitRow[4]);
                 FunctionLanguage language = FunctionLanguage.fromString(splitRow[5]);
+                int functionId = Integer.parseInt(splitRow[6]);
 
                 waitForInvocation(currentTimestamp, timestamp);
                 currentTimestamp = timestamp;
 
-                invokeFunction(owner, function, timestamp, language, System.out::println);
+                invokeFunction(owner, function, timestamp, language, functionId, System.out::println);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,16 +56,17 @@ public class InvocationTraceExecutor {
                 String owner = splitRow[0];
                 String function = splitRow[1];
                 FunctionLanguage language = FunctionLanguage.fromString(splitRow[5]);
-                ensureUploaded(uploadedFunctions, owner, function, language);
+                int functionId = Integer.parseInt(splitRow[6]);
+                ensureUploaded(uploadedFunctions, owner, function, language, functionId);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    protected void ensureUploaded(Set<String> uploadedFunctions, String owner, String function, FunctionLanguage language) {
+    protected void ensureUploaded(Set<String> uploadedFunctions, String owner, String function, FunctionLanguage language, int functionId) {
         if (!uploadedFunctions.contains(function)) {
-            uploadFunction(owner, function, language);
+            uploadFunction(owner, function, language, functionId);
             uploadedFunctions.add(function);
         }
     }
@@ -82,8 +82,8 @@ public class InvocationTraceExecutor {
         }
     }
 
-    public void uploadFunction(String owner, String function, FunctionLanguage language) {
-        ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language);
+    public void uploadFunction(String owner, String function, FunctionLanguage language, int functionId) {
+        ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language, functionId);
         // Graalvisor Python/JavaScript benchmarks have Java wrappers.
         FunctionLanguage actualLanguage = Environment.GRAALVISOR_RUNTIME.equals(config.functionRuntime) ? FunctionLanguage.JAVA : language;
         String queryParameters = "username=" + owner + "&function_name=" + function +
@@ -98,8 +98,8 @@ public class InvocationTraceExecutor {
         }
     }
 
-    public void invokeFunction(String owner, String function, int timestamp, FunctionLanguage language, Consumer<String> asyncConsumer) {
-        ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language);
+    public void invokeFunction(String owner, String function, int timestamp, FunctionLanguage language, int functionId, Consumer<String> asyncConsumer) {
+        ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language, functionId);
         byte[] data = functionConfig.payload;
         if (config.isDebugMode()) {
             System.out.println("Sending request with timestamp: " + timestamp);
