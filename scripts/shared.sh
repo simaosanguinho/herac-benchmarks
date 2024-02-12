@@ -60,15 +60,21 @@ function postime {
     printf "\nTime taken: $tt us\n"
 }
 
-function log_rss {
+function log_resources {
     PID=$1
-    OFILE=$2
-    rm $OFILE &> /dev/null
+    OFILE_CPU=$2/lambda.cpu
+    OFILE_RSS=$2/lambda.rss    
+    
+    rm $OFILE_CPU &> /dev/null
+    rm $OFILE_RSS &> /dev/null
         while sudo kill -0 $PID &> /dev/null; do
-                ps -q $PID -o rss= >> $OFILE
+                top -bn 1 | grep "Cpu(s)" >> $OFILE_CPU
+                ps -q $PID -o rss= >> $OFILE_RSS
                 sleep .5
         done
 }
+
+
 
 function enable_turbo_boost {
     if [ -f "/sys/devices/system/cpu/intel_pstate/no_turbo" ]; then
