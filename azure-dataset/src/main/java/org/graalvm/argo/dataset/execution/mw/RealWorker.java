@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 public class RealWorker extends AbstractWorker {
 
-    private static final String TRACE_INVOCATION_RECORD = "%s,%s,%d,%d,%d,%s";
+    private static final String TRACE_INVOCATION_RECORD = "%s,%s,%d,%d,%d,%s,%d";
 
     private final MultiWorkerInvocationTraceExecutor executor;
 
@@ -21,7 +21,7 @@ public class RealWorker extends AbstractWorker {
         super(memoryManager);
         this.bw = new BufferedWriter(new FileWriter(output));
         this.executor = executor;
-        bw.write("HashOwner,HashFunction,AverageAllocatedMb,AverageDuration,Timestamp");
+        bw.write("HashOwner,HashFunction,AverageAllocatedMb,AverageDuration,Timestamp,Language,Function");
         bw.newLine();
     }
 
@@ -36,7 +36,7 @@ public class RealWorker extends AbstractWorker {
 
     @Override
     public void acceptFunctionInvocation(String owner, String function, int functionMemory, int duration, int timestamp, FunctionLanguage language, int functionId) throws IOException {
-        bw.write(String.format(TRACE_INVOCATION_RECORD, owner, function, functionMemory, duration, (System.currentTimeMillis() - executor.beginningTimestamp), language));
+        bw.write(String.format(TRACE_INVOCATION_RECORD, owner, function, functionMemory, duration, (System.currentTimeMillis() - executor.beginningTimestamp), language, functionId));
         bw.newLine();
         memoryManager.startRequest(owner, function, functionMemory);
         executor.invokeFunction(owner, function, functionMemory, language, functionId, new InvocationCallback(this, owner, function));
