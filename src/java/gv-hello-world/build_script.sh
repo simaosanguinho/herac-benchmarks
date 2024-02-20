@@ -12,6 +12,7 @@ function build_ni {
 	cd build
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
+		-H:-AllowVMInternalThreads \
 		-cp libs/hello-world-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
 		-DGraalVisorGuest=true \
 		-Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \

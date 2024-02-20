@@ -6,6 +6,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Map;
 import java.util.HashMap;
+import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.IsolateThread;
 
 public class HttpRequest {
     
@@ -22,15 +24,26 @@ public class HttpRequest {
         }
     }
 
+    /* For Graalvisor invocation. */
     public static HashMap<String, Object> main(Map<String, Object> args) {
         HashMap<String, Object> output = new HashMap<>();
         output.put("size", downloadBytes((String)args.get("url")).length);
         return output;
     }
 
+    /* For standalone invocations. */
     public static void main(String[] args) {
         HashMap<String, Object> output = new HashMap<>();
         output.put("url", "http://127.0.0.1:8000/snap.png");
+        output = main(output);
+        System.out.println(output);
+    }
+
+    /* For c-API invocations. */
+    @CEntryPoint(name = "entrypoint")
+    public static void main(IsolateThread thread) {
+        HashMap<String, Object> output = new HashMap<>();
+        output.put("url", "http://127.0.0.1:8000/snap.png"); // TODO - receive arg.
         output = main(output);
         System.out.println(output);
     }

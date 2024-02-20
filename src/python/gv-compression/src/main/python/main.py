@@ -1,9 +1,5 @@
-import datetime
 import os
-import stat
-import subprocess
 import shutil
-import tempfile
 import requests
 
 def compression(url):

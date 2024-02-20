@@ -5,6 +5,8 @@ import java.util.Map;
 import com.oracle.svm.graalvisor.utils.JsonUtils;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
+import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.IsolateThread;
 
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
@@ -66,6 +68,7 @@ public class DynamicHTML extends PolyglotHostAccess {
         return engine;
     }
 
+    /* For Graalvisor invocation. */
     public static HashMap<String, Object> main(Map<String, Object> args) {
         HashMap<String, Object> output = new HashMap<>();
         String url = (String) args.get("url");
@@ -76,9 +79,21 @@ public class DynamicHTML extends PolyglotHostAccess {
         return output;
     }
 
+    /* For standalone invocations. */
     public static void main(String[] args) {
         HashMap<String, Object> output = new HashMap<>();
         output.put("url", "http://127.0.0.1:8000/template.html");
+        output.put("username", "rbruno");
+        output.put("nsize", "10");
+        output = main(output);
+        System.out.println(output);
+    }
+
+    /* For c-API invocations. */
+    @CEntryPoint(name = "entrypoint")
+    public static void main(IsolateThread thread) {
+        HashMap<String, Object> output = new HashMap<>();
+	output.put("url", "http://127.0.0.1:8000/template.html"); // TODO - receive arg.
         output.put("username", "rbruno");
         output.put("nsize", "10");
         output = main(output);

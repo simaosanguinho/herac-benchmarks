@@ -12,6 +12,7 @@ function build_ni {
 	cd build
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
+		-H:-AllowVMInternalThreads \
 		--enable-url-protocols=http \
 		-cp libs/filehashing-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
 		-DGraalVisorGuest=true \

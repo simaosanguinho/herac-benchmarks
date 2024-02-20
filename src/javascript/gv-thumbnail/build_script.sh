@@ -13,8 +13,11 @@ function run_hotspot {
 
 function build_ni {
 	cd build
+		#--language:js \
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
+		-g -O0 \
+		-H:-AllowVMInternalThreads \
 		--enable-url-protocols=http \
 		-cp libs/thumbnail-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
 		-DGraalVisorGuest=true \
@@ -25,7 +28,6 @@ function build_ni {
 		--initialize-at-build-time=com.thumbnail.Thumbnail \
 		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
 		-H:ConfigurationFileDirectories=../ni-agent-config \
-		--language:js \
 		-H:+ReportExceptionStackTraces \
 		$NI_BIN_OPTS \
 		-H:Name=libthumbnail
