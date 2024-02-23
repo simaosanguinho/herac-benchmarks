@@ -2,6 +2,8 @@ package com.uploader;
 
 import java.util.Map;
 
+import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.IsolateThread;
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
 
@@ -34,6 +36,7 @@ public class Uploader extends PolyglotHostAccess {
         return engine;
     }
 
+    /* For Graalvisor invocations. */
     public static HashMap<String, Object> main(Map<String, Object> args) {
         HashMap<String, Object> output = new HashMap<>();
         PolyglotEngine engine = getEngine();
@@ -41,9 +44,19 @@ public class Uploader extends PolyglotHostAccess {
         return output;
     }
 
+    /* For standalone invocations. */
     public static void main(String[] args) {
         HashMap<String, Object> output = new HashMap<>();
         output.put("url", "http://127.0.0.1:8000/snap.png");
+        output = main(output);
+        System.out.println(output);
+    }
+
+    /* For c-API invocations. */
+    @CEntryPoint(name = "entrypoint")
+    public static void main(IsolateThread thread) {
+        HashMap<String, Object> output = new HashMap<>();
+        output.put("url", "http://127.0.0.1:8000/snap.png"); // TODO - receive arg.
         output = main(output);
         System.out.println(output);
     }
