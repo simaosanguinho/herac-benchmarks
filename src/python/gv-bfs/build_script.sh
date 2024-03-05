@@ -21,7 +21,7 @@ function build_ni {
 		-Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.language=python \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
-		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/python/main.py \
+		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/python/main2.py \
 		--initialize-at-build-time=com.bfs.BFS \
 		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
 		-H:ConfigurationFileDirectories=../ni-agent-config \

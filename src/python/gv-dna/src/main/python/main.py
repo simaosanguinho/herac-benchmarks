@@ -1,5 +1,4 @@
 import datetime
-import os
 import requests
 from itertools import islice, count
 
@@ -207,8 +206,9 @@ def dna(fasta_url):
 
 def main(fasta_url):
     try:
-        return {"result": dna(fasta_url)}
+        #return {"result": dna(fasta_url)}
+        return {"result": transform("ATCTTTTTCGGCTTTTTTTAGTATCCACAGAGGTTATCGACAACATTTTCACATTACCAACCCCTGTGGACAAGGTTTTT") }
     except Exception as e:
         return {"result": str(e)}
 
-#main("http://127.0.0.1:8000/bacillus_subtilis.fasta")
+#print(main("http://127.0.0.1:8000/bacillus_subtilis.fasta"))

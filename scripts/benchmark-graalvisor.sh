@@ -14,11 +14,11 @@ if [ "$#" -ne 4 ]; then
     echo "Available modes: test benchmark. Test will perform a number of requests. Benchmark will use apache bench with the desired concurrency level."
     echo "Example: benchmark-graalvisor.sh svm gv_java_hw test 1"
     echo "Available environment variables: "
-    echo "- SANDBOX=<isolate|runtime|process|context> - isolation level of concurrent requests in graalvisor. Defaults to isolate or context depending on the function language;"
+    echo "- SANDBOX=<isolate|runtime|process|context|context-snapshot> - isolation level of concurrent requests in graalvisor. Defaults to isolate or context depending on the function language;"
     echo "- SNAPSHOT=<path> - path on disk where the snapshot should be stored/loaded from; Defaults to empty which leads to no snapshot being stored/loaded;"
     echo "- ITERATIONS=<number> - number of iterations the workload is ran. Defaults to 1;"
     echo "- WMULTIPLIER=<number> - workload multiplier to scale up or down the length of the benchmark (only used in benchmark mode). Defaults to 256;"
-    echo "- WARMUP=<number> - number of warmup requests sent to graalvisor. Only used in benchmark mode. Defaults to zero;"
+    echo "- WARMUP=<number> - number of warmup requests sent to graalvisor. Defaults to zero;"
     echo "- CGROUP=<name> - name of the cgroup to use. A directory with that name will be created under /sys/fs/cgroup. Defaults to empty which leads to no CGROUP being used;"
     echo "- CGROUP_CPU_QUOTA=<number> - CPU quota for a 100ms period. A quota 100000 means using a full core. Only used if CGROUP is set. Defaults to 100000 (full core)."
     echo "- VM_CPU=<number> - number of cores that the VM will create internally (only used in vm mode). Defaults to 1;"
@@ -40,18 +40,22 @@ function benchmark {
     fi
 
     if [ ! -z "$WARMUP" ]; then
-            ab -p $APP_POST -T application/json -c 1 -n $WARMUP http://$IP:8080/warmup &> $TDIR/ab-warmup.log
+        curl -s -X POST $IP:$GRAALVISOR_PORT/warmup?concurrency=$WARMUP\&requests=$WARMUP -H 'Content-Type: application/json' -d $(cat $APP_POST)
     fi
 
-    #ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:8080/ &> $TDIR/ab-init.log
-    ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:8080/ &> $TDIR/ab.log
+    ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:$GRAALVISOR_PORT/ &> $TDIR/ab.log
 }
 
 function test {
+
+    if [ ! -z "$WARMUP" ]; then
+        curl -s -X POST $IP:$GRAALVISOR_PORT/warmup?concurrency=$WARMUP\&requests=$WARMUP -H 'Content-Type: application/json' -d $(cat $APP_POST)
+    fi
+
     for i in $(seq 1 $workload)
     do
         pretime
-        curl -s -X POST $IP:8080 -H 'Content-Type: application/json' -d $(cat $APP_POST)
+        curl -s -X POST $IP:$GRAALVISOR_PORT -H 'Content-Type: application/json' -d $(cat $APP_POST)
         postime
     done
 }
@@ -70,13 +74,16 @@ function run {
     fi
 
     # Let the lambda start.
-    wait_port $IP 8080
+    wait_port $IP $GRAALVISOR_PORT
 
     # Get PID of lambda.
     if [ "$backend" == "svm" ]; then
         PID=$(cat $TDIR/lambda.pid)
     elif [ "$backend" == "container" ]; then
         PID=$(docker inspect --format '{{ .State.Pid }}' bcontainer)
+        # Note: docker entrypoint is 'sh -c /polyglot-proxy' so we need to look
+        # at the child process of 'sh'.
+        PID=$(ps -h --ppid $PID | awk '{print $1}')
     elif [ "$backend" == "vm" ]; then
         PID=$(cat $TDIR/lambda.pid)
     fi

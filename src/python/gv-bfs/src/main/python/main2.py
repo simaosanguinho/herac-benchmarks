@@ -7,8 +7,6 @@ graph = {
   '8' : []
 }
 
-visited = [] # List for visited nodes.
-queue = []     #Initialize a queue
 
 def bfs(visited, graph, node): #function for BFS
   visited.append(node)
@@ -23,6 +21,8 @@ def bfs(visited, graph, node): #function for BFS
         queue.append(neighbour)
 
 def main(args):
+    visited = [] # List for visited nodes.
+    queue = []     #Initialize a queue
     bfs(visited, graph, '5')
     return { 'result' : visited }
 

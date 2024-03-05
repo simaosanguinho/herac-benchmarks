@@ -5,7 +5,7 @@ import tempfile
 import time
 import urllib.request
 
-import requests
+#import requests
 from PIL import Image
 
 # Global variables.
@@ -30,8 +30,8 @@ def thumbnail(img_url):
             img = img.resize((WIDTH, HEIGHT))
             img.save(img_filename, 'png')
 
-        with open(img_filename, 'rb') as img:
-            requests.post(img_url, headers={'Content-Type': 'image/jpeg'}, data=img)
+#        with open(img_filename, 'rb') as img:
+#            requests.post(img_url, headers={'Content-Type': 'image/jpeg'}, data=img)
 
 #        os.remove(img_filename)
         return img_filename

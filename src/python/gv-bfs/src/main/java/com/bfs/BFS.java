@@ -5,6 +5,12 @@ import java.util.Map;
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
 
+import org.graalvm.word.UnsignedWord;
+import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -41,10 +47,19 @@ public class BFS extends PolyglotHostAccess {
         return output;
     }
 
-    public static void main(String[] args) {
-        HashMap<String, Object> output = new HashMap<>();
-        output.put("size", "100");
-        output = main(output);
-        System.out.println(output);
+    /* For c-API invocations. */
+    @CEntryPoint(name = "entrypoint")
+    public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
+        String input = CTypeConversion.toJavaString(fin);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("size", "100"); // TODO - conver input into map
+        String output = main(map).toString();
+        if (foutLen.rawValue() > 0) {
+            if (output.length() > (int) foutLen.rawValue()) {
+                CTypeConversion.toCString(output.substring(0, (int) foutLen.rawValue() - 2), fout, foutLen);
+            } else {
+                CTypeConversion.toCString(output, fout, foutLen);
+            }
+        }
     }
 }

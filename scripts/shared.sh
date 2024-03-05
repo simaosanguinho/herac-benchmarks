@@ -18,6 +18,7 @@ GRAALVISOR_HOME=$ARGO_HOME/graalvisor
 RES_HOME=$ARGO_HOME/resources
 TDIR=$HOME/tmp/test-proxy
 FIRECRACKER=$(which firecracker)
+GRAALVISOR_PORT=8081
 
 # VM network setup for the test.
 SOCKET=$TDIR/lambda.socket
@@ -63,8 +64,8 @@ function postime {
 function log_resources {
     PID=$1
     OFILE_CPU=$2/lambda.cpu
-    OFILE_RSS=$2/lambda.rss    
-    
+    OFILE_RSS=$2/lambda.rss
+
     rm $OFILE_CPU &> /dev/null
     rm $OFILE_RSS &> /dev/null
         while sudo kill -0 $PID &> /dev/null; do
@@ -73,8 +74,6 @@ function log_resources {
                 sleep .5
         done
 }
-
-
 
 function enable_turbo_boost {
     if [ -f "/sys/devices/system/cpu/intel_pstate/no_turbo" ]; then
@@ -240,7 +239,7 @@ function start_gv_vm {
     then
         restore_vm $SOCKET $SNAPSHOT.snap $SNAPSHOT.mem $SNAPSHOT.disk
     else
-        gvargs="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=8080 LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
+        gvargs="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=$GRAALVISOR_PORT LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
         # Kernel opts example: https://github.com/firecracker-microvm/firecracker-demo/blob/main/start-firecracker.sh
         kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$IP::$GATEWAY:$MASK::eth0:none::: nomodule random.trust_cpu=on console=ttyS0 reboot=k panic=1 pci=off $gvargs"
         start_vm $ARGO_HOME/images/graalvisor/graalvisor.img $RES_HOME/hello-vmlinux.bin $kopts
@@ -254,7 +253,7 @@ function start_ow_vm {
 }
 
 function start_gv_container {
-    docker run --rm --name=bcontainer --network host -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="8080" -e JAVA_HOME="/jvm" graalvisor:latest
+    docker run --privileged --rm --name=bcontainer --network host -v /tmp/apps:/tmp/apps -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="$GRAALVISOR_PORT" -e JAVA_HOME="/jvm" graalvisor:latest
 }
 
 function start_ow_container {
@@ -265,11 +264,10 @@ function start_svm {
     cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy $TDIR/app
     cd $TDIR
     export lambda_timestamp="$(date +%s%N | cut -b1-13)"
-    export lambda_port="8080"
+    export lambda_port="$GRAALVISOR_PORT"
     #sudo perf stat -e cache-misses,context-switches,branch-misses,page-faults ./app
     #strace -o $TDIR/strace.log -f ./app
-    #strace -f ./app
-    ./app &
+    setarch -R ./app &
     echo -n "$!" > "$TDIR/lambda.pid"
     wait
 }

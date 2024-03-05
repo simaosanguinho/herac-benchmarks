@@ -4,8 +4,12 @@ import java.util.Map;
 
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
+
+import org.graalvm.word.UnsignedWord;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -54,10 +58,17 @@ public class Compression extends PolyglotHostAccess {
 
     /* For c-API invocations. */
     @CEntryPoint(name = "entrypoint")
-    public static void main(IsolateThread thread) {
-        HashMap<String, Object> output = new HashMap<>();
-        output.put("url", "http://127.0.0.1:8000/video.mp4"); // TODO - receive arg
-        output = main(output);
-        System.out.println(output);
+    public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
+        String input = CTypeConversion.toJavaString(fin);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("url", "http://127.0.0.1:8000/snap.png"); // TODO - convert input into map.
+        String output = main(map).toString();
+        if (foutLen.rawValue() > 0) {
+            if (output.length() > (int) foutLen.rawValue()) {
+                CTypeConversion.toCString(output.substring(0, (int) foutLen.rawValue() - 1), fout, foutLen);
+            } else {
+                CTypeConversion.toCString(output, fout, foutLen);
+            }
+        }
     }
 }

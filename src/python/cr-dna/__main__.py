@@ -21,7 +21,8 @@ def dna(fasta_url):
 
 def main(args):
     try:
-        return {"result": dna(args['fasta_url'])}
+        #return {"result": dna(args['fasta_url'])}
+        return {"result": transform("ATCTTTTTCGGCTTTTTTTAGTATCCACAGAGGTTATCGACAACATTTTCACATTACCAACCCCTGTGGACAAGGTTTTT") }
     except Exception as e:
         return {"result": str(e)}
 

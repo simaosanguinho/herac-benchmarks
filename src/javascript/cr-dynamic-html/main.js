@@ -6,6 +6,33 @@ function random(b, e) {
     return Math.round(Math.random() * (e - b) + b);
 }
 
+const template = `<!DOCTYPE html>
+	<html>
+	  <head>
+	    <title>Randomly generated data.</title>
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	    <style type="text/css">
+	      .container {
+		              max-width: 500px;
+		              padding-top: 100px;
+		            }
+    </style>
+	  </head>
+	  <body>
+	    <div class="container">
+	      <p>Welcome {{username}}!</p>
+	      <p>Data generated at: {{cur_time}}!</p>
+	      <p>Requested random numbers:</p>
+	      <ul>
+	        {{#random_numbers}}
+        <li>{{.}}</li>
+	        {{/random_numbers}}
+      </ul>
+	    </div>
+	  </body>
+	</html>`;
+
 function get_request(template_url) {
     return new Promise((resolve, reject) => {
         let q = url.parse(template_url, true);
@@ -33,7 +60,6 @@ async function main(args) {
         random_numbers[i] = random(0, 100);
     }
     let template_args = { "cur_time": new Date().toLocaleString(), "username" : username, "random_numbers": random_numbers };
-    let template = await get_request(args['url']);
     return { "result": mustache.render(template, template_args) } 
 }
 
