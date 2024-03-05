@@ -71,8 +71,8 @@ function run {
     # Write lambda pid to file.
     echo -n "$PID" > $TDIR/lambda.pid
 
-    # Log memory.
-    log_rss $PID $TDIR/lambda.rss &
+    # Log resources.
+    log_resources $PID $TDIR &
 
     # Prepares the local resources (cgroups, core pinning, turbo boost).
     prepare_resources

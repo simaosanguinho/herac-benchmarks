@@ -115,7 +115,7 @@ function efficiency {
             for benchmark in $JV_GV_BENCHMARKS;
             do
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark ${concurrency_table["$benchmark"]}
+                $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}
                 unset WMULTIPLIER
             done
         }
@@ -123,7 +123,15 @@ function efficiency {
         function efficiency_gv_javascript {
             for benchmark in $JS_GV_BENCHMARKS;
             do
-                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark ${concurrency_table["$benchmark"]}
+                export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
+                if [ "$SANDBOX" = "context-snapshot" ]; then
+                    export WARMUP=${concurrency_table["$benchmark"]}
+                    rm -f /tmp/apps/*.memsnap  /tmp/apps/*.metasnap # TODO - make this configurable.
+                    $(DIR)/benchmark-graalvisor.sh container $benchmark test ${concurrency_table["$benchmark"]}
+                fi
+                $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}
+                unset WARMUP
+                unset WMULTIPLIER
             done
         }
 
@@ -131,17 +139,23 @@ function efficiency {
             for benchmark in $PY_GV_BENCHMARKS;
             do
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark ${concurrency_table["$benchmark"]}
+                if [ "$SANDBOX" = "context-snapshot" ]; then
+                    export WARMUP=${concurrency_table["$benchmark"]}
+                    rm -f /tmp/apps/*.memsnap  /tmp/apps/*.metasnap # TODO - make this configurable.
+                    $(DIR)/benchmark-graalvisor.sh container $benchmark test ${concurrency_table["$benchmark"]}
+                fi
+                $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}
+                unset WARMUP
                 unset WMULTIPLIER
             done
         }
 
         export SANDBOX=isolate; efficiency_gv_java
         export SANDBOX=process; efficiency_gv_java
-        export WARMUP=1; export SANDBOX=context; efficiency_gv_javascript
-        export WARMUP=1; export SANDBOX=context; efficiency_gv_python
-        export WARMUP=1; export SANDBOX=process; efficiency_gv_javascript
-        export WARMUP=1; export SANDBOX=process; efficiency_gv_python
+        export SANDBOX=context-snapshot; efficiency_gv_javascript
+        export SANDBOX=context-snapshot; efficiency_gv_python
+        export SANDBOX=process; efficiency_gv_javascript
+        export SANDBOX=process; efficiency_gv_python
         unset WARMUP
         unset SANDBOX
     }
@@ -154,7 +168,7 @@ function efficiency {
                 export VM_MEM=${mem_table["$benchmark"]}
                 export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark 1
                 unset WMULTIPLIER
                 unset CGROUP_CPU_QUOTA
                 unset VM_MEM
@@ -166,7 +180,8 @@ function efficiency {
             do
                 export VM_MEM=${mem_table["$benchmark"]}
                 export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
-                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
+                $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark 1
                 unset CGROUP_CPU_QUOTA
                 unset VM_MEM
             done
@@ -178,7 +193,7 @@ function efficiency {
                 export VM_MEM=${mem_table["$benchmark"]}
                 export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark 1
                 unset WMULTIPLIER
                 unset CGROUP_CPU_QUOTA
                 unset VM_MEM
@@ -186,8 +201,8 @@ function efficiency {
         }
 
         export SANDBOX=isolate; efficiency_gv_java_single
-        export WARMUP=1; export SANDBOX=context; efficiency_gv_javascript_single
-        export WARMUP=1; export SANDBOX=context; efficiency_gv_python_single
+        export SANDBOX=context; efficiency_gv_javascript_single
+        export SANDBOX=context; efficiency_gv_python_single
         unset WARMUP
         unset SANDBOX
     }
@@ -264,23 +279,25 @@ function efficiency {
             export VM_MEM=${mem_table["$benchmark"]}
             export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
             export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-            $(DIR)/benchmark-cruntime.sh vm $benchmark benchmark 1
+            $(DIR)/benchmark-cruntime.sh container $benchmark benchmark 1
             unset WMULTIPLIER
             unset CGROUP_CPU_QUOTA
             unset VM_MEM
         done
     }
 
-    export ITERATIONS=3 # Note: by default this should be 5.
+    export ITERATIONS=1 # Note: by default this should be 5.
     export CGROUP="experiments"
     export PIN_CORE="true"
     # Disabling turbo will make some benchmarks more stable. However, it will make everything much slower.
     export DISABLE_TURBO="false"
-    export EXPERIMENT="test-exp"
+    export EXPERIMENT="asplos25-spring"
+    unset WARMUP
+    unset SNAPSHOT
 
     efficiency_gv
     efficiency_gv_single
-    efficiency_gv_snapshot
+    #efficiency_gv_snapshot
     efficiency_cr
 
     # Clear variables.
@@ -343,6 +360,13 @@ function startup_latency {
     startup_latency_cr
 }
 
+read -p "Run efficiency experiment (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    efficiency
+    exit 0
+fi
 read -p "Run basic graalvisor tests (y or Y, everything else as no)? " -n 1 -r
 echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
@@ -380,14 +404,6 @@ echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
     startup_latency
-    exit 0
-fi
-
-read -p "Run efficiency experiment (y or Y, everything else as no)? " -n 1 -r
-echo    # move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-    efficiency
     exit 0
 fi
 

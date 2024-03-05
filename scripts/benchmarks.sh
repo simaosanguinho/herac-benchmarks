@@ -9,8 +9,8 @@ GV_PORT=8081
 # How function registration should be done. Either by uploading via curl or
 # by copying into a shared directory. If mode not 'uploader', then the value
 # is used as the shared directory.
-#GV_REGISTRATION_MODE=upload
-GV_REGISTRATION_MODE=/tmp/apps
+GV_REGISTRATION_MODE=upload
+#GV_REGISTRATION_MODE=/tmp/apps
 
 JV_GV_BENCHMARKS=""
 # (disabled) #JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_sleep"
@@ -79,47 +79,47 @@ CR_BENCHMARKS="$JV_CR_BENCHMARKS $PY_CR_BENCHMARKS $JS_CR_BENCHMARKS"
 # are used when running experiments.
 declare -A wmultiplier_table
 wmultiplier_table[gv_java_hw]=2000
-wmultiplier_table[cr_java_hw]=2000
-wmultiplier_table[gv_java_filehashing]=1000
-wmultiplier_table[cr_java_filehashing]=1000
+wmultiplier_table[cr_java_hw]=16000
+wmultiplier_table[gv_java_filehashing]=2000
+wmultiplier_table[cr_java_filehashing]=4000
 wmultiplier_table[gv_java_classify]=10
 wmultiplier_table[cr_java_classify]=10
 wmultiplier_table[gv_java_httprequest]=1000
-wmultiplier_table[cr_java_httprequest]=1000
+wmultiplier_table[cr_java_httprequest]=8000
 wmultiplier_table[gv_java_videoprocessing]=2
 wmultiplier_table[cr_java_videoprocessing]=2
 
-wmultiplier_table[gv_python_hw]=25
-wmultiplier_table[cr_python_hw]=25
-wmultiplier_table[gv_python_mst]=5
-wmultiplier_table[cr_python_mst]=5
-wmultiplier_table[gv_python_bfs]=5
-wmultiplier_table[cr_python_bfs]=5
-wmultiplier_table[gv_python_pagerank]=5
-wmultiplier_table[cr_python_pagerank]=5
-wmultiplier_table[gv_python_dna]=2
-wmultiplier_table[cr_python_dna]=2
+wmultiplier_table[gv_python_hw]=500
+wmultiplier_table[cr_python_hw]=4000
+wmultiplier_table[gv_python_mst]=40
+wmultiplier_table[cr_python_mst]=40
+wmultiplier_table[gv_python_bfs]=40
+wmultiplier_table[cr_python_bfs]=40
+wmultiplier_table[gv_python_pagerank]=10
+wmultiplier_table[cr_python_pagerank]=40
+wmultiplier_table[gv_python_dna]=8
+wmultiplier_table[cr_python_dna]=8
 wmultiplier_table[gv_python_classify]=1
-wmultiplier_table[cr_python_classify]=1
+wmultiplier_table[cr_python_classify]=8
 wmultiplier_table[gv_python_dynamichtml]=25
-wmultiplier_table[cr_python_dynamichtml]=25
-wmultiplier_table[gv_python_compression]=5
-wmultiplier_table[cr_python_compression]=5
+wmultiplier_table[cr_python_dynamichtml]=100
+wmultiplier_table[gv_python_compression]=10
+wmultiplier_table[cr_python_compression]=40
 wmultiplier_table[gv_python_thumbnail]=10
-wmultiplier_table[cr_python_thumbnail]=10
+wmultiplier_table[cr_python_thumbnail]=80
 wmultiplier_table[gv_python_videoprocessing]=1
-wmultiplier_table[cr_python_videoprocessing]=1
+wmultiplier_table[cr_python_videoprocessing]=8
 wmultiplier_table[gv_python_uploader]=10
-wmultiplier_table[cr_python_uploader]=10
+wmultiplier_table[cr_python_uploader]=80
 
-wmultiplier_table[gv_javascript_hw]=256
-wmultiplier_table[cr_javascript_hw]=256
+wmultiplier_table[gv_javascript_hw]=2000
+wmultiplier_table[cr_javascript_hw]=16000
 wmultiplier_table[gv_javascript_dynamichtml]=256
-wmultiplier_table[cr_javascript_dynamichtml]=256
+wmultiplier_table[cr_javascript_dynamichtml]=2048
 wmultiplier_table[gv_javascript_thumbnail]=256
-wmultiplier_table[cr_javascript_thumbnail]=256
+wmultiplier_table[cr_javascript_thumbnail]=2048
 wmultiplier_table[gv_javascript_uploader]=256
-wmultiplier_table[cr_javascript_uploader]=256
+wmultiplier_table[cr_javascript_uploader]=2048
 
 declare -A concurrency_table
 concurrency_table[gv_java_hw]=8
@@ -129,16 +129,16 @@ concurrency_table[gv_java_httprequest]=8
 concurrency_table[gv_java_videoprocessing]=1
 
 concurrency_table[gv_python_hw]=8
-concurrency_table[gv_python_mst]=4
-concurrency_table[gv_python_bfs]=4
-concurrency_table[gv_python_pagerank]=4
-concurrency_table[gv_python_dna]=2
+concurrency_table[gv_python_mst]=8
+concurrency_table[gv_python_bfs]=8
+concurrency_table[gv_python_pagerank]=1
+concurrency_table[gv_python_dna]=8
 concurrency_table[gv_python_classify]=1
-concurrency_table[gv_python_dynamichtml]=4
-concurrency_table[gv_python_compression]=4
+concurrency_table[gv_python_dynamichtml]=8
+concurrency_table[gv_python_compression]=8
 concurrency_table[gv_python_thumbnail]=2
 concurrency_table[gv_python_videoprocessing]=2
-concurrency_table[gv_python_uploader]=4
+concurrency_table[gv_python_uploader]=8
 
 concurrency_table[gv_javascript_hw]=8
 concurrency_table[gv_javascript_dynamichtml]=8
@@ -168,38 +168,38 @@ mem_table[cr_java_videoprocessing]=2048
 cpu_table[gv_java_videoprocessing]=100000
 cpu_table[cr_java_videoprocessing]=100000
 
-mem_table[gv_python_hw]=512
-mem_table[cr_python_hw]=256 # TODO - diff
-cpu_table[gv_python_hw]=25000
-cpu_table[cr_python_hw]=12500 # TODO - diff
-mem_table[gv_python_mst]=1024
-mem_table[cr_python_mst]=512 # TODO - diff
-cpu_table[gv_python_mst]=50000
-cpu_table[cr_python_mst]=25000 # TODO - diff
-mem_table[gv_python_bfs]=1024
-mem_table[cr_python_bfs]=512 # TODO - diff
-cpu_table[gv_python_bfs]=50000
-cpu_table[cr_python_bfs]=25000 # TODO - diff
-mem_table[gv_python_pagerank]=1024
-mem_table[cr_python_pagerank]=512 # TODO - diff
-cpu_table[gv_python_pagerank]=50000
-cpu_table[cr_python_pagerank]=25000 # TODO - diff
-mem_table[gv_python_dna]=1024
-mem_table[cr_python_dna]=1024
-cpu_table[gv_python_dna]=50000
-cpu_table[cr_python_dna]=50000
+mem_table[gv_python_hw]=256
+mem_table[cr_python_hw]=256
+cpu_table[gv_python_hw]=12500
+cpu_table[cr_python_hw]=12500
+mem_table[gv_python_mst]=256
+mem_table[cr_python_mst]=256
+cpu_table[gv_python_mst]=12500
+cpu_table[cr_python_mst]=12500
+mem_table[gv_python_bfs]=256
+mem_table[cr_python_bfs]=256
+cpu_table[gv_python_bfs]=12500
+cpu_table[cr_python_bfs]=12500
+mem_table[gv_python_pagerank]=256
+mem_table[cr_python_pagerank]=256
+cpu_table[gv_python_pagerank]=12500
+cpu_table[cr_python_pagerank]=12500
+mem_table[gv_python_dna]=256
+mem_table[cr_python_dna]=256
+cpu_table[gv_python_dna]=12500
+cpu_table[cr_python_dna]=12500
 mem_table[gv_python_classify]=2048
 mem_table[cr_python_classify]=2048
 cpu_table[gv_python_classify]=100000
 cpu_table[cr_python_classify]=100000
-mem_table[gv_python_dynamichtml]=512
-mem_table[cr_python_dynamichtml]=256 # TODO - diff
-cpu_table[gv_python_dynamichtml]=25000
-cpu_table[cr_python_dynamichtml]=12500 # TODO - diff
-mem_table[gv_python_compression]=512
-mem_table[cr_python_compression]=256 # TODO - diff
-cpu_table[gv_python_compression]=25000
-cpu_table[cr_python_compression]=12500 # TODO - diff
+mem_table[gv_python_dynamichtml]=256
+mem_table[cr_python_dynamichtml]=256
+cpu_table[gv_python_dynamichtml]=12500
+cpu_table[cr_python_dynamichtml]=12500
+mem_table[gv_python_compression]=256
+mem_table[cr_python_compression]=256
+cpu_table[gv_python_compression]=12500
+cpu_table[cr_python_compression]=12500
 mem_table[gv_python_thumbnail]=1024
 mem_table[cr_python_thumbnail]=256 # TODO - diff
 cpu_table[gv_python_thumbnail]=50000
@@ -208,10 +208,10 @@ mem_table[gv_python_videoprocessing]=2048
 mem_table[cr_python_videoprocessing]=2048
 cpu_table[gv_python_videoprocessing]=100000
 cpu_table[cr_python_videoprocessing]=100000
-mem_table[gv_python_uploader]=512
-mem_table[cr_python_uploader]=256 # TODO - diff
-cpu_table[gv_python_uploader]=25000
-cpu_table[cr_python_uploader]=12500 # TODO - diff
+mem_table[gv_python_uploader]=256
+mem_table[cr_python_uploader]=256
+cpu_table[gv_python_uploader]=12500
+cpu_table[cr_python_uploader]=12500
 
 mem_table[gv_javascript_hw]=256
 mem_table[cr_javascript_hw]=256
@@ -576,7 +576,7 @@ function cr_python_compression {
     APP_NAME=cr-compression
     INIT_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/init.json
     RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
-    echo '{ "value": { "url": "http://'$DATA_IP':'$DATA_PORT'/video.mp4" } }' > $RUN_POST
+    echo '{ "value": { "url": "http://'$DATA_IP':'$DATA_PORT'/snap.png" } }' > $RUN_POST
 }
 
 function gv_python_mst {

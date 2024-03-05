@@ -70,8 +70,16 @@ function log_resources {
     rm $OFILE_RSS &> /dev/null
         while sudo kill -0 $PID &> /dev/null; do
                 top -bn 1 | grep "Cpu(s)" >> $OFILE_CPU
-                ps -q $PID -o rss= >> $OFILE_RSS
-                sleep .5
+                # The idea for memory is that we traverse the entire pid subprocess tree
+                # and memory memory utilization. We sum all individual memory and return.
+                s_mem=0
+                for p in $(pstree -p $PID | grep -o '([0-9]\+)' | grep -o '[0-9]\+')
+                do
+                    p_mem=$(ps -q $p -o rss=)
+                    s_mem=$((s_mem + p_mem))
+                done
+                echo $s_mem >> $OFILE_RSS
+                sleep .100
         done
 }
 

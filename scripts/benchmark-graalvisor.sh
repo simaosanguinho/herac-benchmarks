@@ -81,9 +81,6 @@ function run {
         PID=$(cat $TDIR/lambda.pid)
     elif [ "$backend" == "container" ]; then
         PID=$(docker inspect --format '{{ .State.Pid }}' bcontainer)
-        # Note: docker entrypoint is 'sh -c /polyglot-proxy' so we need to look
-        # at the child process of 'sh'.
-        PID=$(ps -h --ppid $PID | awk '{print $1}')
     elif [ "$backend" == "vm" ]; then
         PID=$(cat $TDIR/lambda.pid)
     fi
