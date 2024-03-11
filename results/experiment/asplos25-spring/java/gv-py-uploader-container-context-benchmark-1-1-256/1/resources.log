@@ -1,0 +1,6 @@
+12500 100000
+1376201
+Added process 1376201 to cgroup experiments with a quota of 12500 out of 100000.
+pid 1376201's current affinity list: 0-103
+pid 1376201's new affinity list: 0
+Pinned process 1376201 to core 0.

@@ -1,0 +1,5 @@
+Graalvisor boot time: 103 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-hello-world
+Function gv-hello-world registered with isolate sandboxing in 1 ms
+[thread 56] New isolate sandbox 140668230959104 in 845 us

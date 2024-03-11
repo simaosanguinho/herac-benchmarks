@@ -1,0 +1,160 @@
+Graalvisor boot time: 122 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-js-dynamic-html
+Function gv-js-dynamic-html registered with context-snapshot sandboxing in 0 ms
+No snapshot found (/tmp/apps/gv-js-dynamic-html.metasnap), checkpointing svm after 8 requests on 8 concurrent threads.
+warning: clone3 was invoked (2 active threads)!
+warning: clone3 was invoked (3 active threads)!
+warning: clone3 was invoked (4 active threads)!
+warning: clone3 was invoked (5 active threads)!
+warning: clone3 was invoked (6 active threads)!
+warning: clone3 was invoked (7 active threads)!
+warning: clone3 was invoked (8 active threads)!
+warning: clone3 was invoked (9 active threads)!
+[thread 2] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 7 ms)
+[thread 4] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 6 ms)
+[thread 3] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 7 ms)
+[thread 6] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 5 ms)
+[thread 7] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 3 ms)
+[thread 9] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 3 ms)
+[thread 10] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 3 ms)
+[thread 11] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 2 ms)
+entrypoint took 28455 us
+entrypoint took 23978 us
+entrypoint took 27253 us
+entrypoint took 26019 us
+entrypoint took 23820 us
+entrypoint took 22616 us
+entrypoint took 28190 us
+entrypoint took 23141 us
+entrypoint took 583 us
+entrypoint took 607 us
+entrypoint took 730 us
+entrypoint took 756 us
+entrypoint took 788 us
+entrypoint took 803 us
+entrypoint took 468 us
+entrypoint took 792 us
+entrypoint took 1087 us
+entrypoint took 442 us
+entrypoint took 648 us
+entrypoint took 649 us
+entrypoint took 506 us
+entrypoint took 476 us
+entrypoint took 693 us
+entrypoint took 756 us
+entrypoint took 471 us
+entrypoint took 1100 us
+entrypoint took 558 us
+entrypoint took 633 us
+entrypoint took 463 us
+entrypoint took 528 us
+entrypoint took 1282 us
+entrypoint took 606 us
+entrypoint took 447 us
+entrypoint took 374 us
+entrypoint took 523 us
+entrypoint took 590 us
+entrypoint took 498 us
+entrypoint took 491 us
+entrypoint took 403 us
+entrypoint took 562 us
+entrypoint took 381 us
+entrypoint took 530 us
+entrypoint took 483 us
+entrypoint took 453 us
+entrypoint took 504 us
+entrypoint took 476 us
+entrypoint took 390 us
+entrypoint took 363 us
+warning: exit was invoked!
+warning: exit was invoked!
+entrypoint took 501 us
+entrypoint took 487 us
+entrypoint took 471 us
+entrypoint took 485 us
+entrypoint took 482 us
+entrypoint took 471 us
+entrypoint took 485 us
+entrypoint took 553 us
+entrypoint took 450 us
+entrypoint took 532 us
+warning: exit was invoked!
+entrypoint took 448 us
+warning: exit was invoked!
+entrypoint took 474 us
+entrypoint took 840 us
+entrypoint took 516 us
+entrypoint took 487 us
+warning: exit was invoked!
+entrypoint took 470 us
+warning: exit was invoked!
+warning: exit was invoked!
+warning: exit was invoked!
+warning: unmapping unkown mapping   0x7ff7f54fb000 -   0x7ff7f5cf6000
+checkpoint took 605792 us
+[thread 56] New context-snapshot sandbox 140702658862848 in 33 us
+entrypoint took 997 us
+entrypoint took 599 us
+entrypoint took 542 us
+entrypoint took 543 us
+entrypoint took 538 us
+entrypoint took 544 us
+entrypoint took 536 us
+entrypoint took 567 us

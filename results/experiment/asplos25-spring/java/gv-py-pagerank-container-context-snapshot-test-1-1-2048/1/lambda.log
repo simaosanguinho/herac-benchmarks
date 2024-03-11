@@ -1,0 +1,24 @@
+Graalvisor boot time: 160 ms.
+Graalvisor listening on port 8081.
+Function gv-py-pagerank registered with context-snapshot sandboxing in 393 ms
+No snapshot found (/tmp/apps/gv-py-pagerank.metasnap), checkpointing svm after 1 requests on 1 concurrent threads.
+warning: clone3 was invoked (2 active threads)!
+warning: clone3 was invoked (3 active threads)!
+warning: clone3 was invoked (4 active threads)!
+warning: clone3 was invoked (5 active threads)!
+warning: clone3 was invoked (6 active threads)!
+warning: clone3 was invoked (7 active threads)!
+warning: clone3 was invoked (8 active threads)!
+warning: clone3 was invoked (9 active threads)!
+warning: blocking clone (new process)!
+warning: blocking clone (new process)!
+[thread 1] Creating context <function main at 0x459be475> (took 4085 ms)
+Got context <function main at 0x459be475>
+entrypoint took 4105302 us
+warning: unmapping unkown mapping   0x7ff7f54fb000 -   0x7ff7f5cf6000
+warning: exit was invoked!
+warning: monitor exiting before all function threads terminate (8 active threads)!
+checkpoint took 1511926 us
+[thread 56] New context-snapshot sandbox 140702658862208 in 15 us
+Got context <function main at 0x459be475>
+entrypoint took 17109 us

@@ -1,0 +1,12 @@
+Graalvisor boot time: 111 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-file-hashing
+Function gv-file-hashing registered with process sandboxing in 1 ms
+[thread 56] New process sandbox 14 in 999 us
+[thread 65] New process sandbox 26 in 1304 us
+[thread 66] New process sandbox 28 in 2609 us
+[thread 67] New process sandbox 29 in 860 us
+[thread 68] New process sandbox 30 in 756 us
+[thread 70] New process sandbox 33 in 732 us
+[thread 69] New process sandbox 36 in 892 us
+[thread 71] New process sandbox 39 in 707 us

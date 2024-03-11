@@ -1,0 +1,146 @@
+Graalvisor boot time: 118 ms.
+Graalvisor listening on port 8081.
+Function gv-js-uploader registered with context-snapshot sandboxing in 201 ms
+No snapshot found (/tmp/apps/gv-js-uploader.metasnap), checkpointing svm after 8 requests on 8 concurrent threads.
+warning: clone3 was invoked (2 active threads)!
+warning: clone3 was invoked (3 active threads)!
+warning: clone3 was invoked (4 active threads)!
+warning: clone3 was invoked (5 active threads)!
+warning: clone3 was invoked (6 active threads)!
+warning: clone3 was invoked (7 active threads)!
+warning: clone3 was invoked (8 active threads)!
+warning: clone3 was invoked (9 active threads)!
+[thread 2] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 6 ms)
+[thread 3] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 7 ms)
+[thread 5] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 6 ms)
+[thread 7] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 5 ms)
+[thread 9] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 2 ms)
+[thread 4] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 6 ms)
+[thread 10] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 2 ms)
+[thread 11] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 2 ms)
+warning: clone3 was invoked (10 active threads)!
+entrypoint took 10523 us
+entrypoint took 10888 us
+entrypoint took 4894 us
+entrypoint took 4674 us
+entrypoint took 9515 us
+entrypoint took 8589 us
+entrypoint took 10122 us
+entrypoint took 572 us
+entrypoint took 588 us
+entrypoint took 6277 us
+entrypoint took 1019 us
+entrypoint took 1106 us
+entrypoint took 1117 us
+entrypoint took 1047 us
+entrypoint took 927 us
+entrypoint took 869 us
+entrypoint took 607 us
+entrypoint took 704 us
+entrypoint took 687 us
+entrypoint took 646 us
+entrypoint took 724 us
+entrypoint took 876 us
+entrypoint took 890 us
+entrypoint took 888 us
+entrypoint took 940 us
+entrypoint took 762 us
+entrypoint took 817 us
+entrypoint took 781 us
+entrypoint took 838 us
+entrypoint took 944 us
+entrypoint took 1214 us
+entrypoint took 1001 us
+entrypoint took 917 us
+entrypoint took 1224 us
+entrypoint took 1363 us
+entrypoint took 1143 us
+entrypoint took 563 us
+entrypoint took 1826 us
+entrypoint took 728 us
+entrypoint took 1254 us
+entrypoint took 955 us
+entrypoint took 588 us
+entrypoint took 403 us
+entrypoint took 561 us
+entrypoint took 987 us
+entrypoint took 547 us
+entrypoint took 555 us
+entrypoint took 1318 us
+entrypoint took 325 us
+entrypoint took 542 us
+warning: exit was invoked!
+entrypoint took 651 us
+entrypoint took 480 us
+entrypoint took 535 us
+entrypoint took 693 us
+entrypoint took 896 us
+entrypoint took 934 us
+entrypoint took 680 us
+entrypoint took 908 us
+warning: exit was invoked!
+entrypoint took 967 us
+entrypoint took 990 us
+warning: exit was invoked!
+entrypoint took 608 us
+warning: exit was invoked!
+warning: exit was invoked!
+entrypoint took 558 us
+entrypoint took 718 us
+warning: exit was invoked!
+warning: exit was invoked!
+entrypoint took 985 us
+warning: exit was invoked!
+warning: unmapping unkown mapping   0x7ff7f54fb000 -   0x7ff7f5cf6000
+warning: exit was invoked!
+warning: monitor exiting before all function threads terminate (1 active threads)!
+checkpoint took 601593 us
+[thread 56] New context-snapshot sandbox 140702658862848 in 44 us
+entrypoint took 1925 us
+entrypoint took 1597 us
+entrypoint took 1130 us
+entrypoint took 836 us
+entrypoint took 786 us
+entrypoint took 1199 us
+entrypoint took 1196 us
+entrypoint took 1225 us

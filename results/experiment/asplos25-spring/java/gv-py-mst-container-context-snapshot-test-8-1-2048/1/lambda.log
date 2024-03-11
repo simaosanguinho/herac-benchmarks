@@ -1,0 +1,125 @@
+Graalvisor boot time: 129 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-mst
+Function gv-py-mst registered with context-snapshot sandboxing in 0 ms
+No snapshot found (/tmp/apps/gv-py-mst.metasnap), checkpointing svm after 8 requests on 8 concurrent threads.
+warning: clone3 was invoked (2 active threads)!
+warning: clone3 was invoked (3 active threads)!
+warning: clone3 was invoked (4 active threads)!
+warning: clone3 was invoked (5 active threads)!
+warning: clone3 was invoked (6 active threads)!
+warning: clone3 was invoked (7 active threads)!
+warning: clone3 was invoked (8 active threads)!
+warning: clone3 was invoked (9 active threads)!
+warning: clone3 was invoked (10 active threads)!
+warning: clone3 was invoked (11 active threads)!
+warning: clone3 was invoked (12 active threads)!
+warning: clone3 was invoked (13 active threads)!
+warning: clone3 was invoked (14 active threads)!
+warning: clone3 was invoked (15 active threads)!
+warning: clone3 was invoked (16 active threads)!
+warning: clone3 was invoked (17 active threads)!
+warning: clone3 was invoked (18 active threads)!
+warning: clone3 was invoked (19 active threads)!
+warning: clone3 was invoked (20 active threads)!
+warning: clone3 was invoked (21 active threads)!
+warning: clone3 was invoked (22 active threads)!
+warning: clone3 was invoked (23 active threads)!
+warning: clone3 was invoked (24 active threads)!
+warning: clone3 was invoked (25 active threads)!
+[thread 2] Creating context <function main at 0x63391aea> (took 812 ms)
+entrypoint took 813353 us
+warning: clone3 was invoked (26 active threads)!
+warning: clone3 was invoked (27 active threads)!
+[thread 9] Creating context <function main at 0xb942597> (took 1636 ms)
+entrypoint took 1636672 us
+entrypoint took 346 us
+entrypoint took 151 us
+entrypoint took 131 us
+entrypoint took 128 us
+entrypoint took 130 us
+entrypoint took 130 us
+entrypoint took 129 us
+warning: exit was invoked!
+[thread 7] Creating context <function main at 0x2263fb59> (took 1644 ms)
+entrypoint took 1644709 us
+entrypoint took 344 us
+entrypoint took 153 us
+entrypoint took 136 us
+entrypoint took 130 us
+entrypoint took 130 us
+entrypoint took 129 us
+entrypoint took 129 us
+warning: exit was invoked!
+[thread 6] Creating context <function main at 0x3de77583> (took 1647 ms)
+entrypoint took 1648159 us
+entrypoint took 367 us
+entrypoint took 156 us
+entrypoint took 135 us
+entrypoint took 132 us
+entrypoint took 130 us
+entrypoint took 129 us
+entrypoint took 129 us
+warning: exit was invoked!
+[thread 5] Creating context <function main at 0x61a83dbb> (took 1651 ms)
+entrypoint took 1653165 us
+entrypoint took 760 us
+entrypoint took 362 us
+entrypoint took 326 us
+entrypoint took 319 us
+entrypoint took 319 us
+entrypoint took 318 us
+entrypoint took 318 us
+warning: exit was invoked!
+[thread 4] Creating context <function main at 0x6cafe62e> (took 1677 ms)
+entrypoint took 1678641 us
+entrypoint took 538 us
+entrypoint took 253 us
+entrypoint took 226 us
+entrypoint took 224 us
+entrypoint took 222 us
+entrypoint took 222 us
+entrypoint took 222 us
+warning: exit was invoked!
+[thread 2] Creating context <function main at 0x1c3b11b0> (took 891 ms)
+entrypoint took 892330 us
+entrypoint took 420 us
+entrypoint took 206 us
+entrypoint took 183 us
+entrypoint took 179 us
+entrypoint took 176 us
+entrypoint took 177 us
+warning: exit was invoked!
+[thread 8] Creating context <function main at 0x7b7018a6> (took 1726 ms)
+entrypoint took 1727109 us
+entrypoint took 413 us
+entrypoint took 205 us
+entrypoint took 176 us
+entrypoint took 172 us
+entrypoint took 171 us
+[thread 3] Creating context <function main at 0x35d99bc1> (took 1729 ms)
+entrypoint took 171 us
+entrypoint took 170 us
+warning: exit was invoked!
+entrypoint took 1730749 us
+entrypoint took 248 us
+entrypoint took 175 us
+entrypoint took 167 us
+entrypoint took 166 us
+entrypoint took 165 us
+entrypoint took 167 us
+entrypoint took 165 us
+warning: exit was invoked!
+warning: unmapping unkown mapping   0x7ff7f54fb000 -   0x7ff7f5cf6000
+warning: exit was invoked!
+warning: monitor exiting before all function threads terminate (18 active threads)!
+checkpoint took 1697770 us
+[thread 56] New context-snapshot sandbox 140702658862848 in 87 us
+entrypoint took 1242 us
+entrypoint took 261 us
+entrypoint took 249 us
+entrypoint took 264 us
+entrypoint took 273 us
+entrypoint took 280 us
+entrypoint took 309 us
+entrypoint took 428 us

@@ -1,0 +1,12 @@
+Graalvisor boot time: 106 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-httprequest
+Function gv-httprequest registered with isolate sandboxing in 1 ms
+[thread 56] New isolate sandbox 140668163850240 in 938 us
+[thread 63] New isolate sandbox 140633065914368 in 4664 us
+[thread 68] New isolate sandbox 140495090089984 in 1147 us
+[thread 65] New isolate sandbox 140598571958272 in 5906 us
+[thread 67] New isolate sandbox 140529584046080 in 4125 us
+[thread 66] New isolate sandbox 140564078002176 in 5161 us
+[thread 69] New isolate sandbox 140460596133888 in 2760 us
+[thread 70] New isolate sandbox 140426102177792 in 1141 us

@@ -1,0 +1,79 @@
+Graalvisor boot time: 101 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-dna
+Function gv-py-dna registered with context-snapshot sandboxing in 0 ms
+Found /tmp/apps/gv-py-dna.metasnap, restoring svm.
+restore took 86129 us
+entrypoint took 4277 us
+[thread 56] New context-snapshot sandbox 140702524640704 in 29 us
+entrypoint took 698 us
+[thread 66] New context-snapshot sandbox 140701585116608 in 29 us
+[thread 63] New context-snapshot sandbox 140701719334336 in 32 us
+[thread 65] New context-snapshot sandbox 140701786443200 in 31 us
+entrypoint took 3624 us
+[thread 69] New context-snapshot sandbox 140701450898880 in 1078 us
+[thread 67] New context-snapshot sandbox 140701652225472 in 278 us
+[thread 68] New context-snapshot sandbox 140701316681152 in 33 us
+[thread 70] New context-snapshot sandbox 140701383790016 in 32 us
+entrypoint took 3314 us
+entrypoint took 3705 us
+entrypoint took 4346 us
+entrypoint took 4012 us
+entrypoint took 2103 us
+entrypoint took 1286 us
+entrypoint took 1498 us
+entrypoint took 2139 us
+entrypoint took 599 us
+entrypoint took 679 us
+entrypoint took 619 us
+entrypoint took 676 us
+entrypoint took 647 us
+entrypoint took 678 us
+entrypoint took 669 us
+entrypoint took 571 us
+entrypoint took 688 us
+entrypoint took 595 us
+entrypoint took 576 us
+entrypoint took 634 us
+entrypoint took 687 us
+entrypoint took 662 us
+entrypoint took 618 us
+entrypoint took 568 us
+entrypoint took 636 us
+entrypoint took 577 us
+entrypoint took 663 us
+entrypoint took 617 us
+entrypoint took 582 us
+entrypoint took 775 us
+entrypoint took 627 us
+entrypoint took 625 us
+entrypoint took 567 us
+entrypoint took 667 us
+entrypoint took 718 us
+entrypoint took 584 us
+entrypoint took 736 us
+entrypoint took 609 us
+entrypoint took 676 us
+entrypoint took 702 us
+entrypoint took 779 us
+entrypoint took 659 us
+entrypoint took 667 us
+entrypoint took 662 us
+entrypoint took 700 us
+entrypoint took 636 us
+entrypoint took 716 us
+entrypoint took 730 us
+entrypoint took 768 us
+entrypoint took 790 us
+entrypoint took 617 us
+entrypoint took 735 us
+entrypoint took 814 us
+entrypoint took 749 us
+entrypoint took 629 us
+entrypoint took 727 us
+entrypoint took 697 us
+entrypoint took 738 us
+entrypoint took 710 us
+entrypoint took 667 us
+entrypoint took 655 us
+entrypoint took 666 us

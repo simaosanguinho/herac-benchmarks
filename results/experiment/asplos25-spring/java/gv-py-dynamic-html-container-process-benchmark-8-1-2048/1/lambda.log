@@ -1,0 +1,20 @@
+Graalvisor boot time: 109 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-dynamic-html
+Function gv-py-dynamic-html registered with process sandboxing in 10 ms
+[thread 56] New process sandbox 14 in 863 us
+[thread 1] Creating context <function main at 0x17b57e16> (took 2580 ms)
+[thread 66] New process sandbox 32 in 2606 us
+[thread 65] New process sandbox 34 in 920 us
+[thread 67] New process sandbox 38 in 1006 us
+[thread 68] New process sandbox 40 in 1894 us
+[thread 69] New process sandbox 41 in 1730 us
+[thread 70] New process sandbox 42 in 786 us
+[thread 71] New process sandbox 43 in 762 us
+[thread 1] Creating context <function main at 0x504a4d78> (took 2838 ms)
+[thread 1] Creating context <function main at 0x37887c1b> (took 2948 ms)
+[thread 1] Creating context <function main at 0x35ac1961> (took 2952 ms)
+[thread 1] Creating context <function main at 0x14ca31ba> (took 2973 ms)
+[thread 1] Creating context <function main at 0x44a6d31c> (took 3014 ms)
+[thread 1] Creating context <function main at 0x2c14a384> (took 3129 ms)
+[thread 1] Creating context <function main at 0x665ed3c> (took 3220 ms)

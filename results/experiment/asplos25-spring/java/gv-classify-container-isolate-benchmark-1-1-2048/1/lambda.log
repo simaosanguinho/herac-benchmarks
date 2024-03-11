@@ -1,0 +1,6 @@
+Graalvisor boot time: 121 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-classify
+Function gv-classify registered with isolate sandboxing in 1 ms
+[thread 56] New isolate sandbox 140702956766912 in 1425 us
+2024-02-29 15:34:08.395062: I tensorflow/core/platform/cpu_feature_guard.cc:137] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 AVX512F FMA

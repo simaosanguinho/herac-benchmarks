@@ -1,0 +1,20 @@
+Graalvisor boot time: 127 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-mst
+Function gv-py-mst registered with process sandboxing in 9 ms
+[thread 56] New process sandbox 14 in 1591 us
+[thread 1] Creating context <function main at 0x6238cbf8> (took 164 ms)
+[thread 65] New process sandbox 28 in 1651 us
+[thread 64] New process sandbox 29 in 1523 us
+[thread 66] New process sandbox 30 in 1038 us
+[thread 67] New process sandbox 31 in 1355 us
+[thread 69] New process sandbox 34 in 3882 us
+[thread 70] New process sandbox 36 in 1176 us
+[thread 71] New process sandbox 37 in 1825 us
+[thread 1] Creating context <function main at 0x5ada3a75> (took 183 ms)
+[thread 1] Creating context <function main at 0x3fbbf921> (took 180 ms)
+[thread 1] Creating context <function main at 0x5ada3a75> (took 183 ms)
+[thread 1] Creating context <function main at 0x3fbbf921> (took 178 ms)
+[thread 1] Creating context <function main at 0x5ada3a75> (took 188 ms)
+[thread 1] Creating context <function main at 0x5ada3a75> (took 187 ms)
+[thread 1] Creating context <function main at 0x3fbbf921> (took 181 ms)

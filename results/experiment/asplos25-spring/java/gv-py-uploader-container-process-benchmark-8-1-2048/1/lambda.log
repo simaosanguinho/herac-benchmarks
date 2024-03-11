@@ -1,0 +1,20 @@
+Graalvisor boot time: 98 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-uploader
+Function gv-py-uploader registered with process sandboxing in 10 ms
+[thread 56] New process sandbox 14 in 1550 us
+[thread 1] Creating context <function main at 0x647a89e4> (took 2329 ms)
+[thread 63] New process sandbox 27 in 1766 us
+[thread 65] New process sandbox 29 in 848 us
+[thread 67] New process sandbox 31 in 1331 us
+[thread 69] New process sandbox 34 in 641 us
+[thread 68] New process sandbox 36 in 2045 us
+[thread 70] New process sandbox 37 in 733 us
+[thread 71] New process sandbox 38 in 914 us
+[thread 1] Creating context <function main at 0x6f85d018> (took 2643 ms)
+[thread 1] Creating context <function main at 0x6686de13> (took 2650 ms)
+[thread 1] Creating context <function main at 0x19c0a4f3> (took 2655 ms)
+[thread 1] Creating context <function main at 0x6f85d018> (took 2658 ms)
+[thread 1] Creating context <function main at 0x457872f7> (took 2658 ms)
+[thread 1] Creating context <function main at 0x7d1bbc51> (took 2674 ms)
+[thread 1] Creating context <function main at 0x23b93797> (took 2901 ms)

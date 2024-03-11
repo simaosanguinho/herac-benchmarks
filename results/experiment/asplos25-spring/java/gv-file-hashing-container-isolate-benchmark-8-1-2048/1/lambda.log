@@ -1,0 +1,12 @@
+Graalvisor boot time: 119 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-file-hashing
+Function gv-file-hashing registered with isolate sandboxing in 2 ms
+[thread 56] New isolate sandbox 140668163850240 in 2161 us
+[thread 68] New isolate sandbox 140529516937216 in 4734 us
+[thread 64] New isolate sandbox 140598369583104 in 5242 us
+[thread 67] New isolate sandbox 140564008796160 in 5609 us
+[thread 69] New isolate sandbox 140426168238080 in 2693 us
+[thread 65] New isolate sandbox 140632998805504 in 7945 us
+[thread 66] New isolate sandbox 140495156150272 in 6095 us
+[thread 70] New isolate sandbox 140460529025024 in 4713 us

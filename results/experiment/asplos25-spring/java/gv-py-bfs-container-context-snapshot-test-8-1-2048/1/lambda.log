@@ -1,0 +1,163 @@
+Graalvisor boot time: 135 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-bfs
+Function gv-py-bfs registered with context-snapshot sandboxing in 1 ms
+No snapshot found (/tmp/apps/gv-py-bfs.metasnap), checkpointing svm after 8 requests on 8 concurrent threads.
+warning: clone3 was invoked (2 active threads)!
+warning: clone3 was invoked (3 active threads)!
+warning: clone3 was invoked (4 active threads)!
+warning: clone3 was invoked (5 active threads)!
+warning: clone3 was invoked (6 active threads)!
+warning: clone3 was invoked (7 active threads)!
+warning: clone3 was invoked (8 active threads)!
+warning: clone3 was invoked (9 active threads)!
+warning: clone3 was invoked (10 active threads)!
+warning: clone3 was invoked (11 active threads)!
+warning: clone3 was invoked (12 active threads)!
+warning: clone3 was invoked (13 active threads)!
+warning: clone3 was invoked (14 active threads)!
+warning: clone3 was invoked (15 active threads)!
+warning: clone3 was invoked (16 active threads)!
+warning: clone3 was invoked (17 active threads)!
+warning: clone3 was invoked (18 active threads)!
+warning: clone3 was invoked (19 active threads)!
+warning: clone3 was invoked (20 active threads)!
+warning: clone3 was invoked (21 active threads)!
+warning: clone3 was invoked (22 active threads)!
+warning: clone3 was invoked (23 active threads)!
+warning: clone3 was invoked (24 active threads)!
+warning: clone3 was invoked (25 active threads)!
+warning: clone3 was invoked (26 active threads)!
+warning: clone3 was invoked (27 active threads)!
+warning: clone3 was invoked (28 active threads)!
+warning: clone3 was invoked (29 active threads)!
+warning: clone3 was invoked (30 active threads)!
+warning: clone3 was invoked (31 active threads)!
+warning: clone3 was invoked (32 active threads)!
+warning: clone3 was invoked (33 active threads)!
+warning: clone3 was invoked (34 active threads)!
+warning: clone3 was invoked (35 active threads)!
+warning: clone3 was invoked (36 active threads)!
+warning: clone3 was invoked (37 active threads)!
+warning: clone3 was invoked (38 active threads)!
+warning: clone3 was invoked (39 active threads)!
+warning: clone3 was invoked (40 active threads)!
+warning: clone3 was invoked (41 active threads)!
+warning: clone3 was invoked (42 active threads)!
+warning: clone3 was invoked (43 active threads)!
+warning: clone3 was invoked (44 active threads)!
+warning: clone3 was invoked (45 active threads)!
+warning: clone3 was invoked (46 active threads)!
+warning: clone3 was invoked (47 active threads)!
+warning: clone3 was invoked (48 active threads)!
+warning: clone3 was invoked (49 active threads)!
+warning: clone3 was invoked (50 active threads)!
+warning: clone3 was invoked (51 active threads)!
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 76] Creating context <function main at 0x74552ca1> (took 940 ms)
+entrypoint took 940381 us
+entrypoint took 28 us
+entrypoint took 17 us
+entrypoint took 16 us
+entrypoint took 16 us
+entrypoint took 16 us
+entrypoint took 17 us
+entrypoint took 17 us
+warning: exit was invoked!
+warning: clone3 was invoked (51 active threads)!
+warning: clone3 was invoked (52 active threads)!
+warning: clone3 was invoked (53 active threads)!
+warning: clone3 was invoked (54 active threads)!
+warning: clone3 was invoked (55 active threads)!
+warning: clone3 was invoked (56 active threads)!
+warning: clone3 was invoked (57 active threads)!
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 74] Creating context <function main at 0x570aeffd> (took 1578 ms)
+entrypoint took 1578691 us
+entrypoint took 56 us
+entrypoint took 38 us
+entrypoint took 36 us
+entrypoint took 36 us
+entrypoint took 37 us
+entrypoint took 38 us
+entrypoint took 40 us
+warning: exit was invoked!
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 77] Creating context <function main at 0x18c3abd4> (took 1582 ms)
+entrypoint took 1582554 us
+entrypoint took 35 us
+entrypoint took 23 us
+entrypoint took 22 us
+entrypoint took 22 us
+entrypoint took 23 us
+entrypoint took 23 us
+entrypoint took 24 us
+warning: exit was invoked!
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 80] Creating context <function main at 0xffdd0cc> (took 1627 ms)
+entrypoint took 1626493 us
+entrypoint took 63 us
+entrypoint took 44 us
+entrypoint took 42 us
+entrypoint took 42 us
+entrypoint took 43 us
+entrypoint took 45 us
+entrypoint took 45 us
+warning: exit was invoked!
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 75] Creating context <function main at 0x3fe857e8> (took 1632 ms)
+entrypoint took 1631770 us
+entrypoint took 64 us
+entrypoint took 46 us
+entrypoint took 42 us
+entrypoint took 43 us
+entrypoint took 44 us
+entrypoint took 45 us
+entrypoint took 46 us
+warning: exit was invoked!
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 73] Creating context <function main at 0xe522422> (took 1642 ms)
+entrypoint took 1641653 us
+entrypoint took 54 us
+entrypoint took 40 us
+entrypoint took 38 us
+entrypoint took 38 us
+entrypoint took 39 us
+entrypoint took 40 us
+entrypoint took 41 us
+warning: exit was invoked!
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 79] Creating context <function main at 0x49ab934a> (took 1638 ms)
+entrypoint took 1638167 us
+entrypoint took 56 us
+entrypoint took 41 us
+entrypoint took 38 us
+entrypoint took 39 us
+entrypoint took 40 us
+entrypoint took 41 us
+entrypoint took 41 us
+warning: exit was invoked!
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 81] Creating context <function main at 0x773bb89a> (took 1660 ms)
+entrypoint took 1660148 us
+entrypoint took 56 us
+entrypoint took 42 us
+entrypoint took 38 us
+entrypoint took 39 us
+entrypoint took 40 us
+entrypoint took 41 us
+entrypoint took 42 us
+warning: exit was invoked!
+warning: unmapping unkown mapping   0x7ff7f54fb000 -   0x7ff7f5cf6000
+warning: exit was invoked!
+warning: monitor exiting before all function threads terminate (49 active threads)!
+checkpoint took 2227203 us
+[thread 56] New context-snapshot sandbox 140702658863168 in 53 us
+entrypoint took 371 us
+entrypoint took 120 us
+entrypoint took 132 us
+entrypoint took 203 us
+entrypoint took 206 us
+entrypoint took 111 us
+entrypoint took 105 us
+entrypoint took 107 us

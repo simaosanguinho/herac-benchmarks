@@ -1,0 +1,60 @@
+Graalvisor boot time: 131 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-js-uploader
+Function gv-js-uploader registered with process sandboxing in 7 ms
+[thread 56] New process sandbox 14 in 1046 us
+[thread 1] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 4 ms)
+[thread 64] New process sandbox 25 in 983 us
+[thread 66] New process sandbox 28 in 1154 us
+[thread 67] New process sandbox 30 in 756 us
+[thread 68] New process sandbox 31 in 1126 us
+[thread 69] New process sandbox 32 in 919 us
+[thread 70] New process sandbox 35 in 1717 us
+[thread 1] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 3 ms)
+[thread 71] New process sandbox 36 in 959 us
+[thread 1] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 2 ms)
+[thread 1] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 3 ms)
+[thread 1] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 3 ms)
+[thread 1] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 2 ms)
+[thread 1] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 2 ms)
+[thread 1] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 2 ms)

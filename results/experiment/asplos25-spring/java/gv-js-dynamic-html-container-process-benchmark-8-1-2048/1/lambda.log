@@ -1,0 +1,76 @@
+Graalvisor boot time: 161 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-js-dynamic-html
+Function gv-js-dynamic-html registered with process sandboxing in 7 ms
+[thread 56] New process sandbox 14 in 1528 us
+[thread 1] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 3 ms)
+[thread 64] New process sandbox 23 in 1242 us
+[thread 66] New process sandbox 25 in 863 us
+[thread 67] New process sandbox 30 in 1086 us
+[thread 68] New process sandbox 31 in 953 us
+[thread 69] New process sandbox 32 in 970 us
+[thread 70] New process sandbox 33 in 1908 us
+[thread 1] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 3 ms)
+[thread 71] New process sandbox 35 in 967 us
+[thread 1] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 3 ms)
+[thread 1] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 2 ms)
+[thread 1] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 2 ms)
+[thread 1] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 3 ms)
+[thread 1] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 3 ms)
+[thread 1] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 3 ms)

@@ -1,0 +1,31 @@
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+2024-02-29T12:55:54.963631422 [anonymous-instance:main:WARN:src/devices/src/legacy/serial.rs:249] Failed to register serial input fd: event_manager: failed to manage epoll file descriptor
+HTTP/1.1 204 
+Server: Firecracker API
+Connection: keep-alive
+
+[    0.022228] dmi: Firmware registration failed.
+[    0.053905] zswap: default zpool zbud not available
+[    0.054393] zswap: pool creation failed
+Graalvisor boot time: 1565 ms.
+Graalvisor listening on port 8081.
+seccomp(SECCOMP_GET_NOTIF_SIZES): Invalid argument
+Function gv-py-hello-world registered with context sandboxing in 37606 ms
+[thread 56] New context sandbox 139951479980032 in 168 us
+[thread 2] Creating context <function main at 0x5bae1138> (took 6696 ms)
+2024-02-29T12:56:42.604452928 [anonymous-instance:main:WARN:src/vmm/src/rpc_interface.rs:719] [DevPreview] Creating snapshots is currently in development preview.

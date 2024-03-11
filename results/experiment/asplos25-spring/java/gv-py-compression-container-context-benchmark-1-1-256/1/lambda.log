@@ -1,0 +1,6 @@
+Graalvisor boot time: 101 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-compression
+Function gv-py-compression registered with context sandboxing in 14 ms
+[thread 56] New context sandbox 140667867103232 in 62 us
+[thread 2] Creating context <function main at 0x7e8c6611> (took 2850 ms)

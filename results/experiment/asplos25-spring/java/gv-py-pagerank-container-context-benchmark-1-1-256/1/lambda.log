@@ -1,0 +1,16 @@
+Graalvisor boot time: 107 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-pagerank
+Function gv-py-pagerank registered with context sandboxing in 15 ms
+[thread 56] New context sandbox 140667867103232 in 27 us
+[thread 71] Creating context <function main at 0x11b6ead2> (took 2740 ms)
+Got context <function main at 0x11b6ead2>
+Got context <function main at 0x11b6ead2>
+Got context <function main at 0x11b6ead2>
+Got context <function main at 0x11b6ead2>
+Got context <function main at 0x11b6ead2>
+Got context <function main at 0x11b6ead2>
+Got context <function main at 0x11b6ead2>
+Got context <function main at 0x11b6ead2>
+Got context <function main at 0x11b6ead2>
+Got context <function main at 0x11b6ead2>

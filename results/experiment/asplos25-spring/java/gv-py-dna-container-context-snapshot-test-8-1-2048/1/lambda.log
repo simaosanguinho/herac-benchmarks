@@ -1,0 +1,156 @@
+Graalvisor boot time: 125 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-dna
+Function gv-py-dna registered with context-snapshot sandboxing in 0 ms
+No snapshot found (/tmp/apps/gv-py-dna.metasnap), checkpointing svm after 8 requests on 8 concurrent threads.
+warning: clone3 was invoked (2 active threads)!
+warning: clone3 was invoked (3 active threads)!
+warning: clone3 was invoked (4 active threads)!
+warning: clone3 was invoked (5 active threads)!
+warning: clone3 was invoked (6 active threads)!
+warning: clone3 was invoked (7 active threads)!
+warning: clone3 was invoked (8 active threads)!
+warning: clone3 was invoked (9 active threads)!
+warning: clone3 was invoked (10 active threads)!
+warning: clone3 was invoked (11 active threads)!
+warning: clone3 was invoked (12 active threads)!
+warning: clone3 was invoked (13 active threads)!
+warning: clone3 was invoked (14 active threads)!
+warning: clone3 was invoked (15 active threads)!
+warning: clone3 was invoked (16 active threads)!
+warning: clone3 was invoked (17 active threads)!
+warning: clone3 was invoked (18 active threads)!
+warning: clone3 was invoked (19 active threads)!
+warning: clone3 was invoked (20 active threads)!
+warning: clone3 was invoked (21 active threads)!
+warning: clone3 was invoked (22 active threads)!
+warning: clone3 was invoked (23 active threads)!
+warning: clone3 was invoked (24 active threads)!
+warning: clone3 was invoked (25 active threads)!
+warning: clone3 was invoked (26 active threads)!
+warning: clone3 was invoked (27 active threads)!
+warning: clone3 was invoked (28 active threads)!
+warning: clone3 was invoked (29 active threads)!
+warning: clone3 was invoked (30 active threads)!
+warning: clone3 was invoked (31 active threads)!
+warning: clone3 was invoked (32 active threads)!
+warning: clone3 was invoked (33 active threads)!
+warning: clone3 was invoked (34 active threads)!
+warning: clone3 was invoked (35 active threads)!
+warning: clone3 was invoked (36 active threads)!
+warning: clone3 was invoked (37 active threads)!
+warning: clone3 was invoked (38 active threads)!
+warning: clone3 was invoked (39 active threads)!
+warning: clone3 was invoked (40 active threads)!
+warning: clone3 was invoked (41 active threads)!
+warning: clone3 was invoked (42 active threads)!
+warning: clone3 was invoked (43 active threads)!
+warning: clone3 was invoked (44 active threads)!
+warning: clone3 was invoked (45 active threads)!
+warning: clone3 was invoked (46 active threads)!
+warning: clone3 was invoked (47 active threads)!
+warning: clone3 was invoked (48 active threads)!
+warning: clone3 was invoked (49 active threads)!
+warning: clone3 was invoked (50 active threads)!
+warning: clone3 was invoked (51 active threads)!
+warning: clone3 was invoked (52 active threads)!
+warning: clone3 was invoked (53 active threads)!
+warning: clone3 was invoked (54 active threads)!
+warning: clone3 was invoked (55 active threads)!
+warning: clone3 was invoked (56 active threads)!
+warning: clone3 was invoked (57 active threads)!
+warning: clone3 was invoked (58 active threads)!
+warning: clone3 was invoked (59 active threads)!
+[thread 80] Creating context <function main at 0x6d0dc33c> (took 19761 ms)
+entrypoint took 19762191 us
+entrypoint took 638 us
+entrypoint took 487 us
+entrypoint took 470 us
+entrypoint took 493 us
+entrypoint took 504 us
+entrypoint took 503 us
+entrypoint took 502 us
+warning: exit was invoked!
+[thread 78] Creating context <function main at 0x7a897b0e> (took 20376 ms)
+entrypoint took 20377532 us
+entrypoint took 1093 us
+entrypoint took 827 us
+entrypoint took 789 us
+entrypoint took 732 us
+entrypoint took 728 us
+[thread 76] Creating context <function main at 0x53219704> (took 20384 ms)
+entrypoint took 726 us
+entrypoint took 728 us
+entrypoint took 20385911 us
+entrypoint took 853 us
+warning: exit was invoked!
+entrypoint took 585 us
+entrypoint took 546 us
+entrypoint took 544 us
+entrypoint took 539 us
+entrypoint took 537 us
+entrypoint took 551 us
+warning: exit was invoked!
+[thread 77] Creating context <function main at 0x27c066e2> (took 20412 ms)
+entrypoint took 20413112 us
+entrypoint took 794 us
+entrypoint took 586 us
+entrypoint took 547 us
+entrypoint took 537 us
+entrypoint took 536 us
+entrypoint took 578 us
+entrypoint took 520 us
+warning: exit was invoked!
+[thread 73] Creating context <function main at 0x54dcb720> (took 20425 ms)
+entrypoint took 20426300 us
+entrypoint took 675 us
+entrypoint took 512 us
+entrypoint took 475 us
+entrypoint took 466 us
+entrypoint took 464 us
+entrypoint took 466 us
+entrypoint took 455 us
+warning: exit was invoked!
+[thread 75] Creating context <function main at 0x3abd844> (took 20463 ms)
+entrypoint took 20463730 us
+entrypoint took 680 us
+entrypoint took 497 us
+entrypoint took 473 us
+entrypoint took 469 us
+entrypoint took 483 us
+entrypoint took 470 us
+entrypoint took 463 us
+warning: exit was invoked!
+[thread 72] Creating context <function main at 0x1b328b86> (took 20480 ms)
+entrypoint took 20481605 us
+entrypoint took 646 us
+entrypoint took 482 us
+entrypoint took 455 us
+entrypoint took 449 us
+entrypoint took 483 us
+entrypoint took 450 us
+entrypoint took 464 us
+warning: exit was invoked!
+[thread 74] Creating context <function main at 0x4cc1b99f> (took 20493 ms)
+entrypoint took 20494321 us
+entrypoint took 670 us
+entrypoint took 505 us
+entrypoint took 476 us
+entrypoint took 468 us
+entrypoint took 450 us
+entrypoint took 450 us
+entrypoint took 448 us
+warning: exit was invoked!
+warning: unmapping unkown mapping   0x7ff7f54fb000 -   0x7ff7f5cf6000
+warning: exit was invoked!
+warning: monitor exiting before all function threads terminate (50 active threads)!
+checkpoint took 4835409 us
+[thread 56] New context-snapshot sandbox 140702658863168 in 121 us
+entrypoint took 1666 us
+entrypoint took 579 us
+entrypoint took 551 us
+entrypoint took 532 us
+entrypoint took 532 us
+entrypoint took 529 us
+entrypoint took 532 us
+entrypoint took 529 us

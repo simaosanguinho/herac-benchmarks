@@ -1,0 +1,16 @@
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://127.0.0.1:8000/template.html\"}}}","process time (us)":1704881}{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://127.0.0.1:8000/template.html\"}}}","process time (us)":2440}
+Time taken: 13641 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://127.0.0.1:8000/template.html\"}}}","process time (us)":1848}
+Time taken: 14422 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://127.0.0.1:8000/template.html\"}}}","process time (us)":1331}
+Time taken: 12102 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://127.0.0.1:8000/template.html\"}}}","process time (us)":968}
+Time taken: 8867 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://127.0.0.1:8000/template.html\"}}}","process time (us)":1061}
+Time taken: 8867 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://127.0.0.1:8000/template.html\"}}}","process time (us)":1442}
+Time taken: 10975 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://127.0.0.1:8000/template.html\"}}}","process time (us)":1434}
+Time taken: 10580 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"http://127.0.0.1:8000/template.html\"}}}","process time (us)":1456}
+Time taken: 9880 us

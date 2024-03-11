@@ -1,0 +1,8 @@
+Graalvisor boot time: 110 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-js-hello-world
+Function gv-js-hello-world registered with context sandboxing in 10 ms
+[thread 56] New context sandbox 140668040118272 in 33 us
+[thread 2] Creating context function main(args) {
+    return { "result": "Hello world from js!" }; 
+} (took 3 ms)

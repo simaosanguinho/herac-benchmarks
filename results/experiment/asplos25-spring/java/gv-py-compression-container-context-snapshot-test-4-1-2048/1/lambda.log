@@ -1,0 +1,50 @@
+Graalvisor boot time: 107 ms.
+Graalvisor listening on port 8081.
+Function gv-py-compression registered with context-snapshot sandboxing in 312 ms
+No snapshot found (/tmp/apps/gv-py-compression.metasnap), checkpointing svm after 4 requests on 4 concurrent threads.
+warning: clone3 was invoked (2 active threads)!
+warning: clone3 was invoked (3 active threads)!
+warning: clone3 was invoked (4 active threads)!
+warning: clone3 was invoked (5 active threads)!
+warning: clone3 was invoked (6 active threads)!
+warning: clone3 was invoked (7 active threads)!
+warning: clone3 was invoked (8 active threads)!
+warning: clone3 was invoked (9 active threads)!
+warning: clone3 was invoked (10 active threads)!
+warning: clone3 was invoked (11 active threads)!
+warning: clone3 was invoked (12 active threads)!
+warning: clone3 was invoked (13 active threads)!
+warning: clone3 was invoked (14 active threads)!
+[thread 4] Creating context <function main at 0x25edc429> (took 10148 ms)
+entrypoint took 11022620 us
+[thread 3] Creating context <function main at 0x26ad3a0e> (took 11061 ms)
+entrypoint took 47739 us
+entrypoint took 27074 us
+entrypoint took 32344 us
+warning: exit was invoked!
+entrypoint took 11148041 us
+entrypoint took 43783 us
+entrypoint took 27583 us
+[thread 5] Creating context <function main at 0x9845ee7> (took 11499 ms)
+entrypoint took 291366 us
+warning: exit was invoked!
+entrypoint took 11598213 us
+entrypoint took 47824 us
+entrypoint took 28818 us
+entrypoint took 30936 us
+warning: exit was invoked!
+[thread 2] Creating context <function main at 0x1212935d> (took 11732 ms)
+entrypoint took 11817850 us
+entrypoint took 43752 us
+entrypoint took 24192 us
+entrypoint took 27204 us
+warning: exit was invoked!
+warning: unmapping unkown mapping   0x7ff7f54fb000 -   0x7ff7f5cf6000
+warning: exit was invoked!
+warning: monitor exiting before all function threads terminate (9 active threads)!
+checkpoint took 2689700 us
+[thread 56] New context-snapshot sandbox 140702658862912 in 25 us
+entrypoint took 24850 us
+entrypoint took 30123 us
+entrypoint took 18099 us
+entrypoint took 16665 us

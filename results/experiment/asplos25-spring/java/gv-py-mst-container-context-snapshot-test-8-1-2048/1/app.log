@@ -1,0 +1,16 @@
+{"result":"{output={'result': ['Edge Weight', '0-1 2', '1-2 3', '0-3 6', '1-4 5']}}","process time (us)":4530045}{"result":"{output={'result': ['Edge Weight', '0-1 2', '1-2 3', '0-3 6', '1-4 5']}}","process time (us)":1873}
+Time taken: 14630 us
+{"result":"{output={'result': ['Edge Weight', '0-1 2', '1-2 3', '0-3 6', '1-4 5']}}","process time (us)":497}
+Time taken: 10824 us
+{"result":"{output={'result': ['Edge Weight', '0-1 2', '1-2 3', '0-3 6', '1-4 5']}}","process time (us)":475}
+Time taken: 10535 us
+{"result":"{output={'result': ['Edge Weight', '0-1 2', '1-2 3', '0-3 6', '1-4 5']}}","process time (us)":461}
+Time taken: 10520 us
+{"result":"{output={'result': ['Edge Weight', '0-1 2', '1-2 3', '0-3 6', '1-4 5']}}","process time (us)":484}
+Time taken: 11153 us
+{"result":"{output={'result': ['Edge Weight', '0-1 2', '1-2 3', '0-3 6', '1-4 5']}}","process time (us)":512}
+Time taken: 10071 us
+{"result":"{output={'result': ['Edge Weight', '0-1 2', '1-2 3', '0-3 6', '1-4 5']}}","process time (us)":523}
+Time taken: 10421 us
+{"result":"{output={'result': ['Edge Weight', '0-1 2', '1-2 3', '0-3 6', '1-4 5']}}","process time (us)":657}
+Time taken: 10496 us

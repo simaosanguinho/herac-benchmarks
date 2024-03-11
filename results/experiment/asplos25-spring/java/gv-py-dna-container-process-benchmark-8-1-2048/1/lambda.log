@@ -1,0 +1,20 @@
+Graalvisor boot time: 107 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-dna
+Function gv-py-dna registered with process sandboxing in 10 ms
+[thread 56] New process sandbox 14 in 820 us
+[thread 1] Creating context <function main at 0x2457e0c7> (took 2682 ms)
+[thread 61] New process sandbox 29 in 1245 us
+[thread 65] New process sandbox 32 in 1678 us
+[thread 68] New process sandbox 36 in 1301 us
+[thread 67] New process sandbox 37 in 938 us
+[thread 69] New process sandbox 39 in 1388 us
+[thread 70] New process sandbox 43 in 877 us
+[thread 71] New process sandbox 45 in 892 us
+[thread 1] Creating context <function main at 0x7447650d> (took 2631 ms)
+[thread 1] Creating context <function main at 0x123ac898> (took 2648 ms)
+[thread 1] Creating context <function main at 0x45088352> (took 2687 ms)
+[thread 1] Creating context <function main at 0x147c7333> (took 2694 ms)
+[thread 1] Creating context <function main at 0x2ca2f3e6> (took 2699 ms)
+[thread 1] Creating context <function main at 0x5e93ea03> (took 2796 ms)
+[thread 1] Creating context <function main at 0x5a11ff92> (took 2826 ms)

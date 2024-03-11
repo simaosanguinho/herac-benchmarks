@@ -1,0 +1,8 @@
+Graalvisor boot time: 107 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-video-processing
+Function gv-video-processing registered with process sandboxing in 2 ms
+[thread 56] New process sandbox 14 in 1007 us
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.

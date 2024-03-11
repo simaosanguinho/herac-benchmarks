@@ -1,0 +1,29 @@
+Graalvisor boot time: 100 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-pagerank
+Function gv-py-pagerank registered with context-snapshot sandboxing in 0 ms
+Found /tmp/apps/gv-py-pagerank.metasnap, restoring svm.
+restore took 31373 us
+Got context <function main at 0x459be475>
+entrypoint took 33999 us
+Got context <function main at 0x459be475>
+[thread 56] New context-snapshot sandbox 140702390422976 in 45 us
+entrypoint took 14222 us
+Got context <function main at 0x459be475>
+entrypoint took 13508 us
+Got context <function main at 0x459be475>
+entrypoint took 12939 us
+Got context <function main at 0x459be475>
+entrypoint took 12758 us
+Got context <function main at 0x459be475>
+entrypoint took 12655 us
+Got context <function main at 0x459be475>
+entrypoint took 12675 us
+Got context <function main at 0x459be475>
+entrypoint took 12686 us
+Got context <function main at 0x459be475>
+entrypoint took 12677 us
+Got context <function main at 0x459be475>
+entrypoint took 12813 us
+Got context <function main at 0x459be475>
+entrypoint took 12869 us

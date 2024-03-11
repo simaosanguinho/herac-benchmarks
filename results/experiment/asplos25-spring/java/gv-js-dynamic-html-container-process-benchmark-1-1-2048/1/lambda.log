@@ -1,0 +1,13 @@
+Graalvisor boot time: 107 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-js-dynamic-html
+Function gv-js-dynamic-html registered with process sandboxing in 6 ms
+[thread 56] New process sandbox 14 in 696 us
+[thread 1] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 3 ms)

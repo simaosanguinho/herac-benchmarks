@@ -1,0 +1,6 @@
+Graalvisor boot time: 133 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-mst
+Function gv-py-mst registered with context sandboxing in 18 ms
+[thread 56] New context sandbox 140667868151808 in 72 us
+[thread 2] Creating context <function main at 0x31d07482> (took 192 ms)

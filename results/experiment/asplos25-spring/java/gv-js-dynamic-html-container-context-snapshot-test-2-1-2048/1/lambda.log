@@ -1,0 +1,37 @@
+Graalvisor boot time: 132 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-js-dynamic-html
+Function gv-js-dynamic-html registered with context-snapshot sandboxing in 0 ms
+No snapshot found (/tmp/apps/gv-js-dynamic-html.metasnap), checkpointing svm after 2 requests on 2 concurrent threads.
+warning: clone3 was invoked (2 active threads)!
+warning: clone3 was invoked (3 active threads)!
+[thread 2] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 4 ms)
+[thread 3] Creating context async function (args) {
+    const output = new Map();
+    const args_split = args.split(";");
+    let url = args_split[0];
+    let username = args_split[1];
+    let nsize = args_split[2];
+    var...<omitted>...
+} (took 5 ms)
+warning: clone3 was invoked (4 active threads)!
+entrypoint took 28369 us
+entrypoint took 28568 us
+entrypoint took 1897 us
+entrypoint took 1962 us
+warning: exit was invoked!
+warning: exit was invoked!
+warning: unmapping unkown mapping   0x7ff7f54fb000 -   0x7ff7f5cf6000
+warning: exit was invoked!
+warning: monitor exiting before all function threads terminate (1 active threads)!
+checkpoint took 547400 us
+[thread 56] New context-snapshot sandbox 140702658862848 in 40 us
+entrypoint took 2476 us
+entrypoint took 1865 us

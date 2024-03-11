@@ -1,0 +1,96 @@
+Graalvisor boot time: 102 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-uploader
+Function gv-py-uploader registered with context-snapshot sandboxing in 0 ms
+Found /tmp/apps/gv-py-uploader.metasnap, restoring svm.
+error: failed to replay openat:	 original ret = 17 got ret = -1
+restore took 73315 us
+entrypoint took 33775 us
+[thread 56] New context-snapshot sandbox 140702524640704 in 28 us
+entrypoint took 18059 us
+[thread 61] New context-snapshot sandbox 140702189096384 in 77 us
+[thread 63] New context-snapshot sandbox 140701920660928 in 104 us
+[thread 65] New context-snapshot sandbox 140701853552064 in 101 us
+[thread 67] New context-snapshot sandbox 140701719334336 in 110 us
+[thread 69] New context-snapshot sandbox 140701450898880 in 72 us
+[thread 68] New context-snapshot sandbox 140701518007872 in 101 us
+[thread 70] New context-snapshot sandbox 140701316681152 in 108 us
+entrypoint took 24153 us
+entrypoint took 32841 us
+entrypoint took 33985 us
+entrypoint took 36945 us
+entrypoint took 36693 us
+entrypoint took 37710 us
+entrypoint took 37899 us
+entrypoint took 15558 us
+entrypoint took 38042 us
+entrypoint took 14692 us
+entrypoint took 15230 us
+entrypoint took 12333 us
+entrypoint took 14509 us
+entrypoint took 17195 us
+entrypoint took 16365 us
+entrypoint took 19173 us
+entrypoint took 17917 us
+entrypoint took 12821 us
+entrypoint took 16682 us
+entrypoint took 14315 us
+entrypoint took 17549 us
+entrypoint took 12869 us
+entrypoint took 16220 us
+entrypoint took 16826 us
+entrypoint took 15760 us
+entrypoint took 12279 us
+entrypoint took 11826 us
+entrypoint took 14251 us
+entrypoint took 15744 us
+entrypoint took 2072615 us
+entrypoint took 2069704 us
+entrypoint took 2075134 us
+entrypoint took 2076288 us
+entrypoint took 2068688 us
+entrypoint took 2077539 us
+entrypoint took 2069918 us
+entrypoint took 2074812 us
+entrypoint took 13132 us
+entrypoint took 11132 us
+entrypoint took 16167 us
+entrypoint took 16959 us
+entrypoint took 18084 us
+entrypoint took 16622 us
+entrypoint took 19922 us
+entrypoint took 11399 us
+entrypoint took 11922 us
+entrypoint took 15844 us
+entrypoint took 13938 us
+entrypoint took 18861 us
+entrypoint took 15539 us
+entrypoint took 14982 us
+entrypoint took 11931 us
+entrypoint took 18475 us
+entrypoint took 13275 us
+entrypoint took 16476 us
+entrypoint took 13490 us
+entrypoint took 14770 us
+entrypoint took 15725 us
+entrypoint took 16714 us
+entrypoint took 11959 us
+entrypoint took 17327 us
+entrypoint took 17273 us
+entrypoint took 15617 us
+entrypoint took 13280 us
+entrypoint took 14808 us
+entrypoint took 11522 us
+entrypoint took 16645 us
+entrypoint took 16825 us
+entrypoint took 17862 us
+entrypoint took 10601 us
+entrypoint took 18362 us
+entrypoint took 14466 us
+entrypoint took 13376 us
+entrypoint took 15708 us
+entrypoint took 15250 us
+entrypoint took 15275 us
+entrypoint took 11750 us
+entrypoint took 12315 us
+entrypoint took 15201 us

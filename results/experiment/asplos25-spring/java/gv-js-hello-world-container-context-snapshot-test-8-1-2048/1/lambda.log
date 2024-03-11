@@ -1,0 +1,120 @@
+Graalvisor boot time: 112 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-js-hello-world
+Function gv-js-hello-world registered with context-snapshot sandboxing in 0 ms
+No snapshot found (/tmp/apps/gv-js-hello-world.metasnap), checkpointing svm after 8 requests on 8 concurrent threads.
+warning: clone3 was invoked (2 active threads)!
+warning: clone3 was invoked (3 active threads)!
+warning: clone3 was invoked (4 active threads)!
+warning: clone3 was invoked (5 active threads)!
+warning: clone3 was invoked (6 active threads)!
+warning: clone3 was invoked (7 active threads)!
+warning: clone3 was invoked (8 active threads)!
+warning: clone3 was invoked (9 active threads)!
+[thread 2] Creating context function main(args) {
+    return { "result": "Hello world from js!" }; 
+} (took 6 ms)
+entrypoint took 6824 us
+entrypoint took 11 us
+entrypoint took 3 us
+entrypoint took 5 us
+entrypoint took 3 us
+entrypoint took 3 us
+entrypoint took 6 us
+entrypoint took 3 us
+warning: exit was invoked!
+[thread 9] Creating context function main(args) {
+    return { "result": "Hello world from js!" }; 
+} (took 4 ms)
+[thread 6] Creating context function main(args) {
+    return { "result": "Hello world from js!" }; 
+} (took 5 ms)
+[thread 5] Creating context function main(args) {
+    return { "result": "Hello world from js!" }; 
+} (took 6 ms)
+[thread 4] Creating context function main(args) {
+    return { "result": "Hello world from js!" }; 
+} (took 6 ms)
+[thread 7] Creating context function main(args) {
+    return { "result": "Hello world from js!" }; 
+} (took 5 ms)
+entrypoint took 4615 us
+entrypoint took 8 us
+entrypoint took 6 us
+entrypoint took 3 us
+entrypoint took 3 us
+[thread 8] Creating context function main(args) {
+    return { "result": "Hello world from js!" }; 
+} (took 5 ms)
+entrypoint took 7 us
+entrypoint took 3 us
+entrypoint took 3 us
+[thread 3] Creating context function main(args) {
+    return { "result": "Hello world from js!" }; 
+} (took 6 ms)
+entrypoint took 5842 us
+entrypoint took 9 us
+entrypoint took 6288 us
+entrypoint took 8 us
+entrypoint took 3 us
+entrypoint took 3 us
+entrypoint took 6638 us
+warning: exit was invoked!
+entrypoint took 5716 us
+entrypoint took 9 us
+entrypoint took 8 us
+entrypoint took 5 us
+entrypoint took 8 us
+entrypoint took 7 us
+entrypoint took 4 us
+entrypoint took 3 us
+entrypoint took 6 us
+entrypoint took 3 us
+entrypoint took 4 us
+entrypoint took 3 us
+entrypoint took 6 us
+entrypoint took 4 us
+entrypoint took 6800 us
+entrypoint took 3 us
+entrypoint took 9 us
+entrypoint took 11 us
+entrypoint took 4 us
+entrypoint took 4 us
+entrypoint took 3 us
+entrypoint took 4 us
+entrypoint took 3 us
+entrypoint took 5 us
+entrypoint took 5 us
+entrypoint took 5270 us
+entrypoint took 5 us
+entrypoint took 4 us
+entrypoint took 3 us
+entrypoint took 4 us
+entrypoint took 3 us
+entrypoint took 9 us
+warning: exit was invoked!
+entrypoint took 3 us
+entrypoint took 6 us
+entrypoint took 4 us
+entrypoint took 6 us
+entrypoint took 4 us
+warning: exit was invoked!
+entrypoint took 3 us
+entrypoint took 6 us
+warning: exit was invoked!
+entrypoint took 3 us
+entrypoint took 3 us
+warning: exit was invoked!
+warning: exit was invoked!
+warning: exit was invoked!
+warning: unmapping unkown mapping   0x7ff7f54fb000 -   0x7ff7f5cf6000
+checkpoint took 580018 us
+[thread 56] New context-snapshot sandbox 140702658862848 in 31 us
+entrypoint took 127 us
+entrypoint took 38 us
+entrypoint took 47 us
+entrypoint took 38 us
+entrypoint took 38 us
+entrypoint took 46 us
+entrypoint took 61 us
+entrypoint took 47 us

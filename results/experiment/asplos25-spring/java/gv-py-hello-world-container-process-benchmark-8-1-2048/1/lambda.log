@@ -1,0 +1,20 @@
+Graalvisor boot time: 121 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-hello-world
+Function gv-py-hello-world registered with process sandboxing in 10 ms
+[thread 56] New process sandbox 15 in 1548 us
+[thread 1] Creating context <function main at 0xa495df3> (took 163 ms)
+[thread 65] New process sandbox 26 in 1513 us
+[thread 66] New process sandbox 29 in 1209 us
+[thread 67] New process sandbox 31 in 765 us
+[thread 68] New process sandbox 33 in 713 us
+[thread 69] New process sandbox 35 in 841 us
+[thread 70] New process sandbox 36 in 865 us
+[thread 71] New process sandbox 38 in 1611 us
+[thread 1] Creating context <function main at 0x75a5057> (took 127 ms)
+[thread 1] Creating context <function main at 0x5001bf9a> (took 155 ms)
+[thread 1] Creating context <function main at 0x5001bf9a> (took 154 ms)
+[thread 1] Creating context <function main at 0x7f535a40> (took 158 ms)
+[thread 1] Creating context <function main at 0xf69b642> (took 152 ms)
+[thread 1] Creating context <function main at 0x5001bf9a> (took 155 ms)
+[thread 1] Creating context <function main at 0xf69b642> (took 152 ms)

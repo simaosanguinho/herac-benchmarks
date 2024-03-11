@@ -1,0 +1,16 @@
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"<!DOCTYPE html>\\n\\t<html>\\n\\t  <head>\\n\\t    <title>Randomly generated data.</title>\\n\\t    <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n\\t","process time (us)":719041}{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"<!DOCTYPE html>\\n\\t<html>\\n\\t  <head>\\n\\t    <title>Randomly generated data.</title>\\n\\t    <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n\\t","process time (us)":1379}
+Time taken: 13318 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"<!DOCTYPE html>\\n\\t<html>\\n\\t  <head>\\n\\t    <title>Randomly generated data.</title>\\n\\t    <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n\\t","process time (us)":823}
+Time taken: 14943 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"<!DOCTYPE html>\\n\\t<html>\\n\\t  <head>\\n\\t    <title>Randomly generated data.</title>\\n\\t    <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n\\t","process time (us)":757}
+Time taken: 12876 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"<!DOCTYPE html>\\n\\t<html>\\n\\t  <head>\\n\\t    <title>Randomly generated data.</title>\\n\\t    <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n\\t","process time (us)":785}
+Time taken: 13382 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"<!DOCTYPE html>\\n\\t<html>\\n\\t  <head>\\n\\t    <title>Randomly generated data.</title>\\n\\t    <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n\\t","process time (us)":754}
+Time taken: 11869 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"<!DOCTYPE html>\\n\\t<html>\\n\\t  <head>\\n\\t    <title>Randomly generated data.</title>\\n\\t    <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n\\t","process time (us)":760}
+Time taken: 12514 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"<!DOCTYPE html>\\n\\t<html>\\n\\t  <head>\\n\\t    <title>Randomly generated data.</title>\\n\\t    <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n\\t","process time (us)":760}
+Time taken: 10999 us
+{"result":"{output=Promise{[[PromiseStatus]]: \"resolved\", [[PromiseValue]]: Map(1){\"result\" => \"<!DOCTYPE html>\\n\\t<html>\\n\\t  <head>\\n\\t    <title>Randomly generated data.</title>\\n\\t    <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n\\t","process time (us)":780}
+Time taken: 11031 us

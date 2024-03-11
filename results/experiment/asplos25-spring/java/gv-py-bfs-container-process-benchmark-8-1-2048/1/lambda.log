@@ -1,0 +1,28 @@
+Graalvisor boot time: 101 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-bfs
+Function gv-py-bfs registered with process sandboxing in 10 ms
+[thread 56] New process sandbox 14 in 686 us
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 1] Creating context <function main at 0xe1e0849> (took 166 ms)
+[thread 65] New process sandbox 28 in 4506 us
+[thread 66] New process sandbox 30 in 1775 us
+[thread 67] New process sandbox 31 in 1642 us
+[thread 68] New process sandbox 32 in 2363 us
+[thread 69] New process sandbox 35 in 2084 us
+[thread 70] New process sandbox 37 in 861 us
+[thread 71] New process sandbox 40 in 1709 us
+{'result': ['5', '3', '7', '2', '4', '8']}
+{'result': ['5', '3', '7', '2', '4', '8']}
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 1] Creating context <function main at 0xe7d042e> (took 155 ms)
+[thread 1] Creating context <function main at 0x1e1e0040> (took 157 ms)
+[thread 1] Creating context <function main at 0xe7d042e> (took 153 ms)
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 1] Creating context <function main at 0xe7d042e> (took 154 ms)
+{'result': ['5', '3', '7', '2', '4', '8']}
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 1] Creating context <function main at 0xe7d042e> (took 156 ms)
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 1] Creating context <function main at 0x4b6d1228> (took 151 ms)
+[thread 1] Creating context <function main at 0x4b6d1228> (took 153 ms)

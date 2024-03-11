@@ -1,0 +1,11 @@
+Graalvisor boot time: 127 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-js-uploader
+Function gv-js-uploader registered with context sandboxing in 11 ms
+[thread 56] New context sandbox 140668041166848 in 50 us
+[thread 2] Creating context async function (url) {
+    const output = new Map()
+    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
+    output.set("result", url)
+    return output
+} (took 4 ms)

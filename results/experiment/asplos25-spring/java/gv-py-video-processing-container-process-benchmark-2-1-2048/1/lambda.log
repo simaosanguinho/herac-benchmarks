@@ -1,0 +1,6 @@
+Graalvisor boot time: 105 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-video-processing
+Function gv-py-video-processing registered with process sandboxing in 9 ms
+[thread 56] New process sandbox 14 in 794 us
+[thread 1] Creating context <function main at 0x25ef4a5e> (took 2713 ms)

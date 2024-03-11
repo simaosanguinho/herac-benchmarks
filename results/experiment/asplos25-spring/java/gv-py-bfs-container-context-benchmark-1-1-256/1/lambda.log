@@ -1,0 +1,7 @@
+Graalvisor boot time: 91 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-py-bfs
+Function gv-py-bfs registered with context sandboxing in 15 ms
+[thread 56] New context sandbox 140667867103232 in 21 us
+{'result': ['5', '3', '7', '2', '4', '8']}
+[thread 73] Creating context <function main at 0x603b6ced> (took 114 ms)

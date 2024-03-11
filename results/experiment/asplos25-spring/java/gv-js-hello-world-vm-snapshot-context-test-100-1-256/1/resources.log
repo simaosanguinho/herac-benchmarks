@@ -1,0 +1,6 @@
+12500 100000
+844717
+Added process 844717 to cgroup experiments with a quota of 12500 out of 100000.
+pid 844717's current affinity list: 0-103
+pid 844717's new affinity list: 0
+Pinned process 844717 to core 0.

@@ -1,0 +1,12 @@
+Graalvisor boot time: 122 ms.
+Graalvisor listening on port 8081.
+Reusing /tmp/apps/gv-httprequest
+Function gv-httprequest registered with process sandboxing in 1 ms
+[thread 56] New process sandbox 14 in 1094 us
+[thread 65] New process sandbox 27 in 778 us
+[thread 67] New process sandbox 29 in 1477 us
+[thread 68] New process sandbox 30 in 1103 us
+[thread 66] New process sandbox 31 in 2626 us
+[thread 69] New process sandbox 32 in 1169 us
+[thread 71] New process sandbox 35 in 1749 us
+[thread 70] New process sandbox 38 in 1825 us
