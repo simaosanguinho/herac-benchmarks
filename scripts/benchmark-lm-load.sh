@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Example usage of this script:
-# bash benchmark-lm-load.sh gv|cr|ph /path/to/dataset/file
+# bash benchmark-lm-load.sh gv|cr|ph /path/to/dataset/file </path/to/results/folder>
 # The structure of the .csv file should be as follows:
 # HashOwner HashFunction AverageAllocatedMb AverageDuration Timestamp
 
@@ -31,7 +31,7 @@ function process_dataset {
         --functionRuntime $function_runtime \
         --invocationCollocation $invocation_collocation \
         --functionIsolation $function_isolation \
-        # --multiWorker \
+        --multiWorker \
         $GV_SANDBOX_OPTION > /tmp/lse_executor.log
 
     wait
@@ -50,9 +50,11 @@ function wait_port {
     while ! nc -z $host $port; do echo "Waiting for $host:$port"; sleep 1; done
 }
 
+sudo ls &> /dev/null
 
 MODE=$1
 DATASET_FILE=$2
+RESULTS_DIR=$3
 ARGO_HOME=$(DIR)/../../argo/
 RUN_HOME=$ARGO_HOME/run/bin
 LAMBDA_MANAGER_CONFIG=$ARGO_HOME/run/configs/manager/default-lambda-manager.json
@@ -91,9 +93,20 @@ fi
 $RUN_HOME/run deploy lm &
 wait_port $LAMBDA_MANAGER_HOST $LAMBDA_MANAGER_PORT
 
+# To ensure that the LM process is started up properly
+sleep 60
+
 # Configure lambda manager
 curl -s -X POST $LAMBDA_MANAGER_ADDRESS/configure_manager -H 'Content-Type: application/json' --data-binary @"$LAMBDA_MANAGER_CONFIG"
 
 process_dataset $DATASET_FILE $FUNCTION_RUNTIME $INVOCATION_COLLOCATION $FUNCTION_ISOLATION $GV_SANDBOX &
 
 wait
+
+# Save results (always overwriting previous files)
+if [ -n "$RESULTS_DIR" ]
+then
+    cp $ARGO_HOME/lambda-manager/manager_metrics/metrics.log $RESULTS_DIR/"$MODE"_metrics.log
+    cp $ARGO_HOME/lambda-manager/manager_logs/lambda_manager.log $RESULTS_DIR/"$MODE"_manager.log
+    # tar vzcf $RESULTS_DIR/$MODE-lambda_logs.tar.gz $ARGO_HOME/lambda-manager/lambda_logs
+fi
