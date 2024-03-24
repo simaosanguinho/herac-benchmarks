@@ -10,4 +10,4 @@ stop_svm       &> /dev/null
 stop_container &> /dev/null
 stop_vm        &> /dev/null
 
-sudo rm -rf $TDIR &> /dev/null
+rm -rf $TDIR &> /dev/null

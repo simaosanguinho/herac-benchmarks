@@ -62,6 +62,8 @@ function test {
 
 function run {
     # Setting up environment.
+    echo "Waiting for $backend on $IP:$GRAALVISOR_PORT ..." | tee -a $TDIR/backend.log
+    sbs=$(date +%s%N)
     if [ "$backend" == "svm" ]; then
         IP=127.0.0.1
         start_svm &> $TDIR/lambda.log &
@@ -76,17 +78,22 @@ function run {
     # Let the lambda start.
     wait_port $IP $GRAALVISOR_PORT
 
+    # Measure how long it took.
+    sbt=$((($(date +%s%N) - $sbs)/1000))
+    echo "Waiting for $backend on $IP:$GRAALVISOR_PORT ... done (took $sbt us)." | tee -a $TDIR/backend.log
+
+    # Note: this sleep here is important to allow the lambda.pid to be written to a file.
+    sleep .1 # TODO - replace by loop
+
     # Get PID of lambda.
     if [ "$backend" == "svm" ]; then
         PID=$(cat $TDIR/lambda.pid)
     elif [ "$backend" == "container" ]; then
         PID=$(docker inspect --format '{{ .State.Pid }}' bcontainer)
+        echo -n "$PID" > $TDIR/lambda.pid
     elif [ "$backend" == "vm" ]; then
         PID=$(cat $TDIR/lambda.pid)
     fi
-
-    # Write lambda pid to file.
-    echo -n "$PID" > $TDIR/lambda.pid
 
     # Log Resources (memory and CPU)
     log_resources $PID $TDIR &
@@ -141,6 +148,9 @@ then
 else
     results_prefix=$BENCHMARKS_HOME/results/experiment/$EXPERIMENT
 fi
+
+# Checking permissions.
+check_permissions
 
 for iter in $(seq 1 $ITERATIONS)
 do

@@ -18,7 +18,9 @@ GRAALVISOR_HOME=$ARGO_HOME/graalvisor
 RES_HOME=$ARGO_HOME/resources
 TDIR=$HOME/tmp/test-proxy
 FIRECRACKER=$(which firecracker)
+CRIU=$(which criu)
 GRAALVISOR_PORT=8081
+OPENWHISK_PORT=8080
 
 # VM network setup for the test.
 SOCKET=$TDIR/lambda.socket
@@ -46,10 +48,25 @@ if [ -z "${ITERATIONS}" ]; then
     ITERATIONS=1
 fi
 
+function check_permissions {
+    if [ ! -z "$CGROUP" ]; then
+        echo "Elevated permissions required to use cgroups, sudo will be used."
+    elif [ ! -z "$PIN_CORE" ]; then
+        echo "Elevated permissions required to pin to core, sudo will be used."
+    elif [ ! -z "$DISABLE_TURBO" ]; then
+        echo "Elevated permissions required to disable turbo, sudo will be used."
+    elif [ "$backend" == "vm" ]; then
+        echo "Elevated permissions required to run VM sandbox, sudo will be used."
+    else
+        return
+    fi
+    sudo id > /dev/null
+}
+
 function wait_port {
     host=$1
     port=$2
-    while ! nc -z $host $port; do echo "Waiting for $host:$port"; sleep 0.1; done
+    while ! nc -z $host $port; do sleep 0.01; done
 }
 
 function pretime {
@@ -68,7 +85,7 @@ function log_resources {
 
     rm $OFILE_CPU &> /dev/null
     rm $OFILE_RSS &> /dev/null
-        while sudo kill -0 $PID &> /dev/null; do
+        while kill -0 $PID &> /dev/null; do
                 top -bn 1 | grep "Cpu(s)" >> $OFILE_CPU
                 # The idea for memory is that we traverse the entire pid subprocess tree
                 # and memory memory utilization. We sum all individual memory and return.
@@ -273,10 +290,23 @@ function start_svm {
     cd $TDIR
     export lambda_timestamp="$(date +%s%N | cut -b1-13)"
     export lambda_port="$GRAALVISOR_PORT"
-    #sudo perf stat -e cache-misses,context-switches,branch-misses,page-faults ./app
-    #strace -o $TDIR/strace.log -f ./app
-    setarch -R ./app &
-    echo -n "$!" > "$TDIR/lambda.pid"
+    if [ ! -z "$SNAPSHOT" ] && [ -f "$SNAPSHOT/inventory.img" ]
+    then
+        echo "Restoring svm..." | tee -a $TDIR/backend.log
+        local rs=$(date +%s%N)
+        $CRIU restore --unprivileged -v -d -j -o $TDIR/restore.log --pidfile $TDIR/lambda.pid -D $SNAPSHOT
+        local rf=$((($(date +%s%N) - $rs)/1000))
+        echo "Restoring svm... done (took $rf us) !" | tee -a $TDIR/backend.log
+    else
+        #sudo perf stat -e cache-misses,context-switches,branch-misses,page-faults ./app
+        #strace -o $TDIR/strace.log -f ./app
+        # Note 1 : setarch is necessary to disable ASRL, which is relevant for
+        # svm snapshotting (accessible through context-sandbox).
+        # Note 2: the tmp file is necessary for process snapshotting, we need to keep the
+        # file intact so that the restore operation can see the file.
+        setarch -R ./app &> /tmp/svm-$GRAALVISOR_PORT.log &
+        echo -n "$!" > "$TDIR/lambda.pid"
+    fi
     wait
 }
 
@@ -311,7 +341,8 @@ function restore_vm {
     snapshot_file=$2
     memory_file=$3
     disk_file=$4
-    echo "Restoring vm..."
+    echo "Restoring vm..." | tee -a $TDIR/backend.log
+    localrs=$(date +%s%N)
     $FIRECRACKER --no-seccomp --api-sock $vm_socket &
     echo $! > $TDIR/lambda.pid
 
@@ -328,7 +359,9 @@ function restore_vm {
             \"enable_diff_snapshots\": false,
             \"resume_vm\": true
         }"
-    echo "Restoring vm... done!"
+
+    local rf=$((($(date +%s%N) - $rs)/1000))
+    echo "Restoring vm... done (took $rf us) !" | tee -a $TDIR/backend.log
 }
 
 function stop_vm {
@@ -346,6 +379,13 @@ function stop_container {
 }
 
 function stop_svm {
-    kill $(cat $TDIR/lambda.pid)
+    if [ ! -z "$SNAPSHOT" ] && [ ! -f "$SNAPSHOT/inventory.img" ]
+    then
+        mkdir -p $SNAPSHOT
+        $CRIU dump --unprivileged -v -j -t $(cat $TDIR/lambda.pid) -o $TDIR/dump.log -D $SNAPSHOT
+    else
+        kill $(cat $TDIR/lambda.pid)
+    fi
+    cp /tmp/svm-$GRAALVISOR_PORT.log $TDIR/lambda.log
 }
 

@@ -4,39 +4,120 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-rutimes = ['Isolate', 'GV', 'PY', 'JS', 'JV', 'GV', 'PY', 'JS', 'JV']
-x = np.arange(len(rutimes))
+results = '../results/experiment/coldstart/java'
 
-avg_baremetal_startup = [0.47, 12.2, 13.1, 40.8, 26.9, 262, 1918, 2009, 2050 ] 
+# Request latency, which may include setting up a sandbox.
+def read_request_latency(path):
+    lats = []
+    with open(results + '/' + path + '/app.log') as file:
+        for line in file:
+            if 'Time taken' in line:
+                lats.append(int(line.split()[2]))
+    return lats
 
-width = .25
-fig, ax1 = plt.subplots()
-#ax1.bar(x, avg_baremetal_startup, width, color='black', hatch='x')
-ax1.bar(x, avg_baremetal_startup, width, alpha=0.75)
-ax1.set_xticks(x, rutimes)
-ax1.set_ylabel('Cold start latency (ms)')
-ax1.set_yscale('log')
-ax1.set_ylim(ymin=.1)
+# Backend startup latency, does not include initialization latency.
+def read_backend_startup_latency(path):
+    lats = []
+    with open(results + '/' + path + '/lambda.log') as file:
+        for line in file:
+            if 'Graalvisor boot time' in line:
+                lats.append(int(line.split()[3]))
+    return lats
 
-# Baremetal runtimes
-for i in range(1, 5):
-#    ax1.get_children()[i].set_color("red")
-    ax1.get_children()[i].set_hatch("//")
+# Backend startup latency, does not include initialization latency.
+def read_backend_startup_latency(path):
+    lats = []
+    with open(results + '/' + path + '/lambda.log') as file:
+        for line in file:
+            if 'Graalvisor boot time' in line:
+                lats.append(int(line.split()[3]))
+    return lats
 
-# MicroVM-ed runtimes
-for i in range(5, 9):
-#    ax1.get_children()[i].set_color("blue")
-    ax1.get_children()[i].set_hatch("..")
+# Backend restore latency.
+def read_backend_restore_latency(path):
+    lats = []
+    with open(results + '/' + path + '/backend.log') as file:
+        for line in file:
+            if 'Restoring' in line and 'done' in line:
+                lats.append(int(line.split()[4]))
+    return lats
 
-legends = [
-    matplotlib.patches.Patch(hatch="//", label="Bare-metal Runtimes", alpha=0.75),
-    matplotlib.patches.Patch(hatch="..", label="microVM Runtimes", alpha=0.75),
-]
+# Sandbox startup latency.
+def read_sandbox_startup_latency(path):
+    lats = []
+    with open(results + '/' + path + '/lambda.log') as file:
+        for line in file:
+            if 'Creating context' in line:
+                lats.append(int(line.split()[9]))
+    return lats
 
-fig.set_figwidth(5)
-fig.set_figheight(3)
-ax1.legend(handles=legends, prop={"size": 10})
-ax1.set_axisbelow(True)
-plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
-plt.savefig("cold-start-latency.pdf")
-plt.show()
+# Sandbox restore latency.
+def read_sandbox_restore_latency(path):
+    lats = []
+    with open(results + '/' + path + '/lambda.log') as file:
+        for line in file:
+            if 'restore took' in line:
+                lats.append(int(line.split()[2]))
+    return lats
+
+# Backend initialization latency, until it is ready to receive requests.
+def read_initialization_latency(path):
+    lats = []
+    with open(results + '/' + path + '/backend.log') as file:
+        for line in file:
+            if 'Waiting for' in line and "done" in line:
+                lats.append(int(line.split()[8]))
+    return lats
+
+# Input files for each type of virtualization backend.
+inputs = {}
+inputs['VM']            = 'gv-py-hello-world-vm-context-test-3-1-2048/1'
+inputs['Container']     = 'gv-py-hello-world-container-context-test-3-1-2048/1'
+inputs['NITF']          = 'gv-py-hello-world-svm-context-test-3-1-2048/1'
+# VM, Container, and NITF use a Sandbox on top of it.
+inputs['Sandbox']       = inputs['NITF']
+inputs['VM Snap']       = 'gv-py-hello-world-vm-snapshot-context-test-3-1-2048/1'
+inputs['NITF Snap']     = 'gv-py-hello-world-svm-snapshot-context-test-3-1-2048/1'
+inputs['Sandbox Snap']  = 'gv-py-hello-world-svm-context-snapshot-test-3-1-2048/1'
+
+# Request latencies after backend starts accepting connections.
+requests = {}
+requests['VM']              = read_request_latency(inputs['VM'])
+requests['Container']       = read_request_latency(inputs['Container'])
+requests['NITF']            = read_request_latency(inputs['NITF'])
+requests['Sandbox']         = read_request_latency(inputs['Sandbox'])
+requests['VM Snap']         = read_request_latency(inputs['VM Snap'])
+requests['NITF Snap']       = read_request_latency(inputs['NITF Snap'])
+requests['Sandbox Snap']    = read_request_latency(inputs['Sandbox Snap'])
+
+# Backend startup latencies.
+startup = {}
+startup['VM']               = read_backend_startup_latency(inputs['VM'])
+startup['Container']        = read_backend_startup_latency(inputs['Container'])
+startup['NITF']             = read_backend_startup_latency(inputs['NITF'])
+startup['Sandbox']          = read_sandbox_startup_latency(inputs['Sandbox'])
+startup['VM Snap']          = read_backend_restore_latency(inputs['VM Snap'])
+startup['NITF Snap']        = read_backend_restore_latency(inputs['NITF Snap'])
+startup['Sandbox Snap']     = read_sandbox_restore_latency(inputs['Sandbox Snap'])
+
+# Backend initialization latencies.
+initialization = {}
+initialization['VM']               = read_initialization_latency(inputs['VM'])
+initialization['Container']        = read_initialization_latency(inputs['Container'])
+initialization['NITF']             = read_initialization_latency(inputs['NITF'])
+# Sice sandbox does not require external resources (sockets, etc), it defaults to startup latency.
+initialization['Sandbox']          = startup['Sandbox']
+initialization['VM Snap']          = read_initialization_latency(inputs['VM Snap'])
+initialization['NITF Snap']        = read_initialization_latency(inputs['NITF Snap'])
+initialization['Sandbox Snap']     = startup['Sandbox Snap']
+
+print('Requests')
+print(requests)
+print('Startup')
+print(startup)
+print('Initialization')
+print(initialization)
+
+# TODO - extract request latency for the first
+# TODO - extract average request latency for the rest
+# TODO - extract rss?

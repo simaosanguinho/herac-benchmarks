@@ -99,11 +99,49 @@ function measure_benchmark_resources {
     done
 }
 
-function cdf_latency_filehashing {
-    export ITERATIONS=5
-    $(DIR)/benchmark-cruntime.sh   container cr_java_filehashing test 25
-    $(DIR)/benchmark-graalvisor.sh container gv_java_filehashing test 25
-    unset ITERATIONS
+function cold_start_latency {
+    export EXPERIMENT="coldstart"
+    cr_benchmark=cr_python_hw
+    gv_benchmark=gv_python_hw
+
+    function context_snapshot {
+        export SANDBOX=context-snapshot
+        export WARMUP=1
+        rm -f /tmp/apps/*.memsnap  /tmp/apps/*.metasnap # TODO - make this configurable.
+        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 1
+        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 3
+        unset WARMUP
+        unset SANDBOX
+    }
+
+    function process_snapshot {
+        SNAPSHOT_HOME=/tmp/snapshots
+        export SNAPSHOT=$SNAPSHOT_HOME/$gv_benchmark
+        rm -r $SNAPSHOT &> /dev/null
+        mkdir -p $SNAPSHOT_HOME
+        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 1
+        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 3
+        unset SNAPSHOT
+    }
+
+    function vm_snapshot {
+        SNAPSHOT_HOME=/tmp/snapshots
+        export SNAPSHOT=$SNAPSHOT_HOME/$gv_benchmark
+        mkdir -p $SNAPSHOT_HOME
+        rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+        $(DIR)/benchmark-graalvisor.sh vm $gv_benchmark test 1
+        $(DIR)/benchmark-graalvisor.sh vm $gv_benchmark test 3
+        unset SNAPSHOT
+    }
+
+#    $(DIR)/benchmark-cruntime.sh   container $cr_benchmark test 3
+#    $(DIR)/benchmark-cruntime.sh   vm        $cr_benchmark test 3 # TODO - need to create vm.
+    $(DIR)/benchmark-graalvisor.sh svm       $gv_benchmark test 3
+    $(DIR)/benchmark-graalvisor.sh container $gv_benchmark test 3
+    $(DIR)/benchmark-graalvisor.sh vm        $gv_benchmark test 3
+    context_snapshot
+    process_snapshot
+    vm_snapshot
 }
 
 # Memory (fixed HW resources of 1 core and 2GB of memory, measure ops/s/mb)
@@ -308,58 +346,6 @@ function efficiency {
     unset EXPERIMENT
 }
 
-function startup_latency {
-
-    function startup_latency_gv {
-        for mode in svm vm;
-        do
-            for i in $(seq 1 10);
-            do
-                $(DIR)/benchmark-graalvisor.sh $mode gv_java_hw test 1
-                cat /tmp/test-proxy/lambda.log | grep "Polyglot Lambda boot time"
-            done
-        done
-    }
-
-    function startup_latency_cr {
-        if [[ -z "${FIRECRACKER_CONTAINERD_HOME}" ]]; then
-            echo "FIRECRACKER_CONTAINERD_HOME is not defined."
-            echo "Run export FIRECRACKER_CONTAINERD_HOME=/home/$USER/git/firecracker-containerd ?"
-            echo "Exiting..."
-            exit 1
-        fi
-
-        JS_IMG="docker.io/rfbpb/action-nodejs-v14:latest"
-        PY_IMG="docker.io/rfbpb/action-python-v3.7:latest"
-        JV_IMG="docker.io/rfbpb/java8action:latest"
-
-        # JS, PY, JV on custom runtime.
-        for img in $JS_IMG $PY_IMG $JV_IMG;
-        do
-            $FIRECRACKER_CONTAINERD_HOME/demo/firecracker-ctr.sh run --snapshotter devmapper --runtime aws.firecracker --tty --net-host $img vm1 &
-            wait_port $ip 8080
-            $FIRECRACKER_CONTAINERD_HOME/demo/firecracker-ctr.sh task kill -a vm1
-            wait
-            for i in $(seq 1 10);
-            do
-                echo "Starting $img at $(($(date +%s%N)/1000000)) ms"
-                $FIRECRACKER_CONTAINERD_HOME/demo/firecracker-ctr.sh task start vm1 &
-                wait_port $ip 8080
-                $FIRECRACKER_CONTAINERD_HOME/demo/firecracker-ctr.sh task kill -a vm1
-                wait
-            done
-            $FIRECRACKER_CONTAINERD_HOME/demo/firecracker-ctr.sh container del vm1
-        done
-
-        # JS vanilla, extract from virt-bench
-        # PY vanilla, extract from virt-bench
-        # JV vanilla, extract from virt-bench
-    }
-
-    startup_latency_gv
-    startup_latency_cr
-}
-
 read -p "Run efficiency experiment (y or Y, everything else as no)? " -n 1 -r
 echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
@@ -391,11 +377,11 @@ then
     exit 0
 fi
 
-read -p "Run cdf latency experiment (y or Y, everything else as no)? " -n 1 -r
+read -p "Run cold start latency experiment (y or Y, everything else as no)? " -n 1 -r
 echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    cdf_latency_filehashing
+    cold_start_latency
     exit 0
 fi
 
