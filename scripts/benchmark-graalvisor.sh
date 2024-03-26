@@ -34,56 +34,65 @@ else
     workload=$4
 fi
 
+function request {
+    URL=$1
+    ts=$(date +%s%N)
+    output=$(curl -s -X POST $URL -H 'Content-Type: application/json' -d $(cat $APP_POST))
+    tt=$((($(date +%s%N) - $ts)/1000))
+    printf "Req latency $tt us; \tReq output: $output\n"
+}
+
 function benchmark {
     if [ -z "$WMULTIPLIER" ]; then
         WMULTIPLIER=256
     fi
 
     if [ ! -z "$WARMUP" ]; then
-        curl -s -X POST $IP:$GRAALVISOR_PORT/warmup?concurrency=$WARMUP\&requests=$WARMUP -H 'Content-Type: application/json' -d $(cat $APP_POST)
+        printf "\nSending $WARMUP warmup requests:\n"
+        request "$IP:$GRAALVISOR_PORT/warmup?concurrency=$WARMUP\&requests=$WARMUP"
     fi
 
+    printf "Running ab (check $TDIR/ab.log).\n"
     ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:$GRAALVISOR_PORT/ &> $TDIR/ab.log
 }
 
 function test {
-
     if [ ! -z "$WARMUP" ]; then
-        curl -s -X POST $IP:$GRAALVISOR_PORT/warmup?concurrency=$WARMUP\&requests=$WARMUP -H 'Content-Type: application/json' -d $(cat $APP_POST)
+        printf "\nSending $WARMUP warmup requests:\n"
+        request "$IP:$GRAALVISOR_PORT/warmup?concurrency=$WARMUP\&requests=$WARMUP"
     fi
 
+    printf "Sending $workload requests:\n"
     for i in $(seq 1 $workload)
     do
-        pretime
-        curl -s -X POST $IP:$GRAALVISOR_PORT -H 'Content-Type: application/json' -d $(cat $APP_POST)
-        postime
+        request "$IP:$GRAALVISOR_PORT"
     done
 }
 
 function run {
     # Setting up environment.
-    echo "Waiting for $backend on $IP:$GRAALVISOR_PORT ..." | tee -a $TDIR/backend.log
+    echo "Waiting for $backend on $IP:$GRAALVISOR_PORT ..." | tee $TDIR/backend.log
     sbs=$(date +%s%N)
     if [ "$backend" == "svm" ]; then
         IP=127.0.0.1
-        start_svm &> $TDIR/lambda.log &
+        start_svm &>> $TDIR/backend.log &
     elif [ "$backend" == "container" ]; then
         IP=127.0.0.1
-        start_gv_container &> $TDIR/lambda.log &
+        start_gv_container &>> $TDIR/backend.log &
     elif [ "$backend" == "vm" ]; then
         # Note: ip is already set when loading shared.sh
-        start_gv_vm &> $TDIR/lambda.log &
+        start_gv_vm &>> $TDIR/backend.log &
     fi
 
     # Let the lambda start.
     wait_port $IP $GRAALVISOR_PORT
 
-    # Measure how long it took.
+    # Measure how long it took (not that this time includes copying disk/binaries, setting up the runtime, network, etc).
     sbt=$((($(date +%s%N) - $sbs)/1000))
     echo "Waiting for $backend on $IP:$GRAALVISOR_PORT ... done (took $sbt us)." | tee -a $TDIR/backend.log
 
     # Note: this sleep here is important to allow the lambda.pid to be written to a file.
-    sleep .1 # TODO - replace by loop
+    sleep 1 # TODO - replace by loop
 
     # Get PID of lambda.
     if [ "$backend" == "svm" ]; then
@@ -107,13 +116,16 @@ function run {
     # Run test/benchmark.
     $mode 2>&1 | tee $TDIR/app.log
 
+    # Allow time for final collection of resource utilization.
+    sleep 1
+
     # Teardown the lambda.
     if [ "$backend" == "svm" ]; then
-        stop_svm
+        stop_svm &>> $TDIR/backend.log
     elif [ "$backend" == "container" ]; then
-        stop_container
+        stop_container &>> $TDIR/backend.log
     elif [ "$backend" == "vm" ]; then
-        stop_vm
+        stop_vm &>> $TDIR/backend.log
     fi
     wait
 
@@ -139,7 +151,7 @@ APP_POST=$TDIR/payload.post
 
 # Preparing working directory
 rm -r $TDIR/ &> /dev/null
-mkdir $TDIR &> /dev/null
+mkdir -p $TDIR &> /dev/null
 
 # Preparing the directory path where results will be placed.
 if [ -z "$EXPERIMENT" ]

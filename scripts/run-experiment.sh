@@ -109,7 +109,8 @@ function cold_start_latency {
         export WARMUP=1
         rm -f /tmp/apps/*.memsnap  /tmp/apps/*.metasnap # TODO - make this configurable.
         $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 1
-        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 3
+        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 1
+        rm -f /tmp/apps/*.memsnap  /tmp/apps/*.metasnap # TODO - make this configurable.
         unset WARMUP
         unset SANDBOX
     }
@@ -120,7 +121,8 @@ function cold_start_latency {
         rm -r $SNAPSHOT &> /dev/null
         mkdir -p $SNAPSHOT_HOME
         $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 1
-        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 3
+        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 1
+        rm -r $SNAPSHOT &> /dev/null
         unset SNAPSHOT
     }
 
@@ -130,15 +132,16 @@ function cold_start_latency {
         mkdir -p $SNAPSHOT_HOME
         rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
         $(DIR)/benchmark-graalvisor.sh vm $gv_benchmark test 1
-        $(DIR)/benchmark-graalvisor.sh vm $gv_benchmark test 3
+        $(DIR)/benchmark-graalvisor.sh vm $gv_benchmark test 1
+        rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
         unset SNAPSHOT
     }
 
-#    $(DIR)/benchmark-cruntime.sh   container $cr_benchmark test 3
-#    $(DIR)/benchmark-cruntime.sh   vm        $cr_benchmark test 3 # TODO - need to create vm.
-    $(DIR)/benchmark-graalvisor.sh svm       $gv_benchmark test 3
-    $(DIR)/benchmark-graalvisor.sh container $gv_benchmark test 3
-    $(DIR)/benchmark-graalvisor.sh vm        $gv_benchmark test 3
+    $(DIR)/benchmark-cruntime.sh   container $cr_benchmark test 1
+    $(DIR)/benchmark-graalvisor.sh container $gv_benchmark test 1
+#    $(DIR)/benchmark-cruntime.sh   vm        $cr_benchmark test 1 # TODO - need to create vm.
+    $(DIR)/benchmark-graalvisor.sh svm       $gv_benchmark test 1
+    $(DIR)/benchmark-graalvisor.sh vm        $gv_benchmark test 1
     context_snapshot
     process_snapshot
     vm_snapshot
@@ -384,12 +387,3 @@ then
     cold_start_latency
     exit 0
 fi
-
-read -p "Run startup latency experiment (y or Y, everything else as no)? " -n 1 -r
-echo    # move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-    startup_latency
-    exit 0
-fi
-

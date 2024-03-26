@@ -16,11 +16,11 @@ if [ -z "${JAVA_HOME}" ]; then
 fi
 GRAALVISOR_HOME=$ARGO_HOME/graalvisor
 RES_HOME=$ARGO_HOME/resources
-TDIR=$HOME/tmp/test-proxy
-FIRECRACKER=$(which firecracker)
-CRIU=$(which criu)
-GRAALVISOR_PORT=8081
-OPENWHISK_PORT=8080
+export TDIR=$HOME/tmp/test-proxy
+export FIRECRACKER=$(which firecracker)
+export CRIU=$(which criu)
+export GRAALVISOR_PORT=8081
+export OPENWHISK_PORT=8080
 
 # VM network setup for the test.
 SOCKET=$TDIR/lambda.socket
@@ -69,11 +69,11 @@ function wait_port {
     while ! nc -z $host $port; do sleep 0.01; done
 }
 
-function pretime {
+function pretime { # TODO - delete
     ts=$(date +%s%N)
 }
 
-function postime {
+function postime { # TODO - delete
     tt=$((($(date +%s%N) - $ts)/1000))
     printf "\nTime taken: $tt us\n"
 }
@@ -85,19 +85,19 @@ function log_resources {
 
     rm $OFILE_CPU &> /dev/null
     rm $OFILE_RSS &> /dev/null
-        while kill -0 $PID &> /dev/null; do
-                top -bn 1 | grep "Cpu(s)" >> $OFILE_CPU
-                # The idea for memory is that we traverse the entire pid subprocess tree
-                # and memory memory utilization. We sum all individual memory and return.
-                s_mem=0
-                for p in $(pstree -p $PID | grep -o '([0-9]\+)' | grep -o '[0-9]\+')
-                do
-                    p_mem=$(ps -q $p -o rss=)
-                    s_mem=$((s_mem + p_mem))
-                done
-                echo $s_mem >> $OFILE_RSS
-                sleep .100
+    while kill -0 $PID &> /dev/null; do
+        top -bn 1 | grep "Cpu(s)" >> $OFILE_CPU
+        # The idea for memory is that we traverse the entire pid subprocess tree
+        # and memory memory utilization. We sum all individual memory and return.
+        s_mem=0
+        for p in $(pstree -p $PID | grep -o '([0-9]\+)' | grep -o '[0-9]\+')
+        do
+            p_mem=$(ps -q $p -o rss=)
+            s_mem=$((s_mem + p_mem))
         done
+        echo $s_mem >> $OFILE_RSS
+        sleep .100
+    done
 }
 
 function enable_turbo_boost {
@@ -205,7 +205,7 @@ function start_vm {
     mac=`printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))`
 
     # Start firecracker.
-    $FIRECRACKER --no-seccomp --api-sock $SOCKET &
+    $FIRECRACKER --no-seccomp --api-sock $SOCKET &> $TDIR/lambda.log &
     echo $! > $TDIR/lambda.pid
 
     # Set save vm ip.
@@ -278,32 +278,36 @@ function start_ow_vm {
 }
 
 function start_gv_container {
-    docker run --privileged --rm --name=bcontainer --network host -v /tmp/apps:/tmp/apps -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="$GRAALVISOR_PORT" -e JAVA_HOME="/jvm" graalvisor:latest
+    docker run --privileged --rm --name=bcontainer --network host -v /tmp/apps:/tmp/apps -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="$GRAALVISOR_PORT" -e JAVA_HOME="/jvm" graalvisor:latest &> $TDIR/lambda.log
 }
 
 function start_ow_container {
-    docker run --rm --name=bcontainer --network host $IMG
+    docker run --rm --name=bcontainer --network host $IMG &> $TDIR/lambda.log
 }
 
 function start_svm {
     cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy $TDIR/app
     cd $TDIR
-    export lambda_timestamp="$(date +%s%N | cut -b1-13)"
-    export lambda_port="$GRAALVISOR_PORT"
     if [ ! -z "$SNAPSHOT" ] && [ -f "$SNAPSHOT/inventory.img" ]
     then
-        echo "Restoring svm..." | tee -a $TDIR/backend.log
-        local rs=$(date +%s%N)
-        $CRIU restore --unprivileged -v -d -j -o $TDIR/restore.log --pidfile $TDIR/lambda.pid -D $SNAPSHOT
-        local rf=$((($(date +%s%N) - $rs)/1000))
-        echo "Restoring svm... done (took $rf us) !" | tee -a $TDIR/backend.log
+        echo "[$(date +%s%N) ns] Restoring svm..."
+        sudo $CRIU restore --unprivileged -v -d -j -o $TDIR/restore.log --pidfile $TDIR/lambda.pid -D $SNAPSHOT # TODO - remove sudo!
+        echo "[$(date +%s%N) ns] Restoring svm... done!"
+        #lat_secs=$(cat $TDIR/restore.log | grep "Writing stats" | awk '{print $1}' | tr -d "()")
+        #lat_us=$(echo "$lat_secs * 1000000" | bc)
+        #echo "Restoring svm... done (took $lat_us us) !"
+        sudo chown -R rbruno:gsd $SNAPSHOT
+        sudo chown -R rbruno:gsd $TDIR
     else
+        export lambda_timestamp="$(date +%s%N | cut -b1-13)"
+        export lambda_port="$GRAALVISOR_PORT"
         #sudo perf stat -e cache-misses,context-switches,branch-misses,page-faults ./app
         #strace -o $TDIR/strace.log -f ./app
         # Note 1 : setarch is necessary to disable ASRL, which is relevant for
         # svm snapshotting (accessible through context-sandbox).
         # Note 2: the tmp file is necessary for process snapshotting, we need to keep the
         # file intact so that the restore operation can see the file.
+        #unshare --user --keep-caps setarch -R ./app &> /tmp/svm-$GRAALVISOR_PORT.log &
         setarch -R ./app &> /tmp/svm-$GRAALVISOR_PORT.log &
         echo -n "$!" > "$TDIR/lambda.pid"
     fi
@@ -315,7 +319,8 @@ function snapshot_vm {
     snapshot_file=$2
     memory_file=$3
     disk_file=$4
-    echo "Snapshotting vm..."
+
+    echo "[$(date +%s%N) ns] Snapshotting vm..."
     curl -s --unix-socket $vm_socket -i \
         -X PATCH "http://localhost/vm" \
         -d "{ \"state\": \"Paused\" }"
@@ -328,12 +333,14 @@ function snapshot_vm {
             \"mem_file_path\": \"$memory_file\"
         }"
 
+    echo "[$(date +%s%N) ns] Copying rootfs..."
     cp $TDIR/rootfs.img $disk_file
+    echo "[$(date +%s%N) ns] Copying rootfs... done!"
 
     curl -s --unix-socket $vm_socket -i \
         -X PATCH "http://localhost/vm" \
         -d "{ \"state\": \"Resumed\" }"
-    echo "Snapshotting vm... done!"
+    echo "[$(date +%s%N) ns] Snapshotting vm... done!"
 }
 
 function restore_vm {
@@ -341,15 +348,18 @@ function restore_vm {
     snapshot_file=$2
     memory_file=$3
     disk_file=$4
-    echo "Restoring vm..." | tee -a $TDIR/backend.log
-    localrs=$(date +%s%N)
-    $FIRECRACKER --no-seccomp --api-sock $vm_socket &
-    echo $! > $TDIR/lambda.pid
 
-    # Write vm ip to file.
+    echo "[$(date +%s%N) ns] Restoring vm..."
+    echo "[$(date +%s%N) ns] Copying rootfs..."
+    cp $disk_file $TDIR/rootfs.img
+    echo "[$(date +%s%N) ns] Copying rootfs... done!"
+
+    $FIRECRACKER --no-seccomp --api-sock $vm_socket &> $TDIR/lambda.log &
+    echo $! > $TDIR/lambda.pid
     echo "$IP" > $TDIR/lambda.ip
 
-    cp $disk_file $TDIR/rootfs.img
+    # Wait for vm socket to exist.
+    while [ ! -S $vm_socket ]; do sleep 0.005; done
 
     curl -s --unix-socket $vm_socket -i \
         -X PUT "http://localhost/snapshot/load" \
@@ -359,9 +369,7 @@ function restore_vm {
             \"enable_diff_snapshots\": false,
             \"resume_vm\": true
         }"
-
-    local rf=$((($(date +%s%N) - $rs)/1000))
-    echo "Restoring vm... done (took $rf us) !" | tee -a $TDIR/backend.log
+    echo "[$(date +%s%N) ns] Restoring vm... done!"
 }
 
 function stop_vm {
@@ -382,7 +390,9 @@ function stop_svm {
     if [ ! -z "$SNAPSHOT" ] && [ ! -f "$SNAPSHOT/inventory.img" ]
     then
         mkdir -p $SNAPSHOT
-        $CRIU dump --unprivileged -v -j -t $(cat $TDIR/lambda.pid) -o $TDIR/dump.log -D $SNAPSHOT
+        sudo $CRIU dump --unprivileged -v -j -t $(cat $TDIR/lambda.pid) -o $TDIR/dump.log -D $SNAPSHOT
+        sudo chown -R rbruno:gsd $TDIR
+        sudo chown -R rbruno:gsd $SNAPSHOT
     else
         kill $(cat $TDIR/lambda.pid)
     fi
