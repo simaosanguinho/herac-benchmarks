@@ -105,46 +105,39 @@ function cold_start_latency {
     gv_benchmark=gv_python_hw
 
     function context_snapshot {
-        export SANDBOX=context-snapshot
         export WARMUP=1
-        rm -f /tmp/apps/*.memsnap  /tmp/apps/*.metasnap # TODO - make this configurable.
+        export SANDBOX=context-snapshot
+        rm -rf $ADIR/*.memsnap $ADIR/*.metasnap
         $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 1
-        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 1
-        rm -f /tmp/apps/*.memsnap  /tmp/apps/*.metasnap # TODO - make this configurable.
-        unset WARMUP
         unset SANDBOX
+        unset WARMUP
     }
 
     function process_snapshot {
-        SNAPSHOT_HOME=/tmp/snapshots
-        export SNAPSHOT=$SNAPSHOT_HOME/$gv_benchmark
-        rm -r $SNAPSHOT &> /dev/null
-        mkdir -p $SNAPSHOT_HOME
+        export SNAPSHOT=$SDIR/$gv_benchmark
+        rm -rf $SNAPSHOT
         $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 1
-        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 1
-        rm -r $SNAPSHOT &> /dev/null
         unset SNAPSHOT
     }
 
     function vm_snapshot {
-        SNAPSHOT_HOME=/tmp/snapshots
-        export SNAPSHOT=$SNAPSHOT_HOME/$gv_benchmark
-        mkdir -p $SNAPSHOT_HOME
-        rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
+        export SNAPSHOT=$SDIR/$gv_benchmark
+        rm -rf $SNAPSHOT.{disk,mem,snap}
         $(DIR)/benchmark-graalvisor.sh vm $gv_benchmark test 1
-        $(DIR)/benchmark-graalvisor.sh vm $gv_benchmark test 1
-        rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
         unset SNAPSHOT
     }
 
+    # TODO - use cgroups?
     $(DIR)/benchmark-cruntime.sh   container $cr_benchmark test 1
-    $(DIR)/benchmark-graalvisor.sh container $gv_benchmark test 1
-#    $(DIR)/benchmark-cruntime.sh   vm        $cr_benchmark test 1 # TODO - need to create vm.
+    $(DIR)/benchmark-cruntime.sh   vm        $cr_benchmark test 1
     $(DIR)/benchmark-graalvisor.sh svm       $gv_benchmark test 1
+    $(DIR)/benchmark-graalvisor.sh container $gv_benchmark test 1
     $(DIR)/benchmark-graalvisor.sh vm        $gv_benchmark test 1
+    export ITERATIONS=2 # Note: one iteration to dump, another to restore.
     context_snapshot
     process_snapshot
     vm_snapshot
+    unset ITERATIONS
 }
 
 # Memory (fixed HW resources of 1 core and 2GB of memory, measure ops/s/mb)
@@ -167,7 +160,7 @@ function efficiency {
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
                 if [ "$SANDBOX" = "context-snapshot" ]; then
                     export WARMUP=${concurrency_table["$benchmark"]}
-                    rm -f /tmp/apps/*.memsnap  /tmp/apps/*.metasnap # TODO - make this configurable.
+                    rm -f $ADIR/*.memsnap  $ADIR/*.metasnap
                     $(DIR)/benchmark-graalvisor.sh container $benchmark test ${concurrency_table["$benchmark"]}
                 fi
                 $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}
@@ -182,7 +175,7 @@ function efficiency {
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
                 if [ "$SANDBOX" = "context-snapshot" ]; then
                     export WARMUP=${concurrency_table["$benchmark"]}
-                    rm -f /tmp/apps/*.memsnap  /tmp/apps/*.metasnap # TODO - make this configurable.
+                    rm -f $ADIR/*.memsnap $ADIR/*.metasnap
                     $(DIR)/benchmark-graalvisor.sh container $benchmark test ${concurrency_table["$benchmark"]}
                 fi
                 $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}

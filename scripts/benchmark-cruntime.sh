@@ -36,45 +36,44 @@ function benchmark {
         WMULTIPLIER=256
     fi
 
+    printf "Running ab (check $TDIR/ab.log).\n"
     ab -p $RUN_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$IP:$OPENWHISK_PORT/run &> $TDIR/ab.log
 }
 
 function test {
+    printf "Sending $workload requests:\n"
     for i in $(seq 1 $workload)
     do
-        pretime
-        curl -s -X POST $IP:$OPENWHISK_PORT/run -H 'Content-Type: application/json' -d @$RUN_POST
-        postime
+        request $IP:$OPENWHISK_PORT/run
     done
 }
 
 function run {
     # Setting up environment.
-    echo "Waiting for $backend on $IP:$OPENWHISK_PORT ..." | tee -a $TDIR/backend.log
+    echo "Waiting for $backend..." | tee $TDIR/backend.log
     sbs=$(date +%s%N)
     if [ "$backend" == "container" ]; then
         IP=127.0.0.1
-        start_ow_container &> $TDIR/lambda.log &
+        start_ow_container &>> $TDIR/backend.log &
     elif [ "$backend" == "vm" ]; then
         # Note: ip is already set when loading shared.sh
-        start_ow_vm &> $TDIR/lambda.log &
+        start_ow_vm &>> $TDIR/backend.log &
     fi
 
     # Let the lambda start.
     wait_port $IP $OPENWHISK_PORT
 
-    # Measure how long it took.
+    # Measure how long it took to accept connections.
     sbt=$((($(date +%s%N) - $sbs)/1000))
-    echo "Waiting for $backend on $IP:$OPENWHISK_PORT ... done (took $sbt us)." | tee -a $TDIR/backend.log
-
-    # Note: this sleep here is important to allow the lambda.pid to be written to a file.
-    sleep .1 # TODO - replace by loop
+    echo "Waiting for $backend... done (took $sbt us)." | tee -a $TDIR/backend.log
 
     # Get PID of lambda.
     if [ "$backend" == "container" ]; then
         PID=$(docker inspect --format '{{ .State.Pid }}' bcontainer)
         echo -n "$PID" > $TDIR/lambda.pid
     elif [ "$backend" == "vm" ]; then
+        # Note: wait until lambda.pid is filled.
+        while [ ! -f $TDIR/lambda.pid ]; do sleep 0.01; done
         PID=$(cat $TDIR/lambda.pid)
     fi
 
@@ -85,51 +84,45 @@ function run {
     prepare_resources
 
     # Load function into runtime.
+    echo -n "Function $APP_NAME registration: "
     curl -s -X POST $IP:$OPENWHISK_PORT/init -H 'Content-Type: application/json' -d @$INIT_POST
 
     # Run test/benchmark.
     $mode 2>&1 | tee -a $TDIR/app.log
 
+     # Allow time for final collection of resource utilization.
+    sleep 1
+
     # Teardown the lambda.
     if [ "$backend" == "container" ]; then
-        stop_container
+        stop_container &>> $TDIR/backend.log
     elif [ "$backend" == "vm" ]; then
-        stop_vm
+        stop_vm &>> $TDIR/backend.log
     fi
     wait
 
     # Teardown local resource changes (delete cgroups, enable turbo boost).
     teardown_resources
+
+    # Saving logs.
+    backup_results
 }
 
-echo "Running environment=$backend; app=$app; mode=$mode; workload=$workload; cpu=$VM_CPU; mem=$VM_MEM"
-echo "Logs available at $TDIR..."
+check_permissions
+
+# Openwhisk only supports process isolation.
+export SANDBOX=process
+
+echo "$(tput bold)Running openwhisk environment=$backend; app=$app; mode=$mode; workload=$workload; cpu=$VM_CPU; mem=$VM_MEM:$(tput sgr0)"
 
 # Preparing working directory
-rm -r $TDIR/ &> /dev/null
-mkdir $TDIR &> /dev/null
+rm -rf $TDIR
+mkdir -p $TDIR
 
 # Load function to benchmark
 $app
 
-# Preparing the directory path where results will be placed.
-if [ -z "$EXPERIMENT" ]
-then
-    results_prefix=$BENCHMARKS_HOME/results/benchmark
-else
-    results_prefix=$BENCHMARKS_HOME/results/experiment/$EXPERIMENT
-fi
-
-# Checking permissions.
-check_permissions
-
 for iter in $(seq 1 $ITERATIONS)
 do
-    # Run...
     run
-    # Preparing results directory
-    results_dir=$results_prefix/$APP_LANG/$APP_NAME-$backend-$mode-$workload-$VM_CPU-$VM_MEM/$iter
-    mkdir -p $results_dir &> /dev/null
-    cp $TDIR/{*.log,*.rss,*.cpu} $results_dir &> /dev/null
-    echo "Saved logs (iteration $iter): $results_dir/lambda.log"
 done

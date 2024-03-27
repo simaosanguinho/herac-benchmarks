@@ -1,16 +1,18 @@
 #!/bin/bash
 
+# Import global definitions.
+source $(DIR)/globals.sh
+
 # Data is available in the host ip.
 DATA_IP=$(ip route get 8.8.8.8 | grep -oP  'src \K\S+')
 DATA_PORT=8000
-# Graalvisor port.
-GV_PORT=8081
 
+# TODO - we should be able to switch between modes.
 # How function registration should be done. Either by uploading via curl or
 # by copying into a shared directory. If mode not 'uploader', then the value
 # is used as the shared directory.
 GV_REGISTRATION_MODE=upload
-#GV_REGISTRATION_MODE=/tmp/apps
+#GV_REGISTRATION_MODE=$ADIR
 
 JV_GV_BENCHMARKS=""
 # (disabled) #JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_sleep"
@@ -233,7 +235,7 @@ cpu_table[cr_javascript_uploader]=12500
 function gv_upload_function {
     if [ "$GV_REGISTRATION_MODE" = "upload" ]; then
         curl -s \
-            -X POST $IP:$GV_PORT/register?name=$APP_NAME\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX \
+            -X POST $IP:$GRAALVISOR_PORT/register?name=$APP_NAME\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX \
             -H 'Content-Type: application/json' \
             --data-binary @$APP
     else
@@ -241,8 +243,10 @@ function gv_upload_function {
             cp $APP $GV_REGISTRATION_MODE/$APP_NAME
         fi
         curl -s \
-            -X POST $IP:$GV_PORT/register?name=$APP_NAME\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX
+            -X POST $IP:$GRAALVISOR_PORT/register?name=$APP_NAME\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX
     fi
+    # Note: this is just to enter a new line after curl's output.
+    echo ""
 }
 
 function gv_java_hw {
@@ -250,7 +254,7 @@ function gv_java_hw {
     APP_NAME=gv-hello-world
     APP_MAIN=com.hello_world.HelloWorld
     APP=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/build/libhelloworld.so
-    echo '{"name":"gv-hello-world","async":"false","cached":"true","arguments":""}' > $APP_POST
+    echo '{"name":"gv-hello-world","async":"false","cached":"true","arguments":""}' > $RUN_POST
     gv_upload_function
 }
 
@@ -259,7 +263,7 @@ function gv_java_shopcart {
     APP_NAME=gv-shopcart
     APP_MAIN=micronaut.benchmark.shopcart.Application
     APP=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/target/libshopcart.so
-    echo '{"name":"gv-shopcart","async":"false","cached":"true","arguments":""}' > $APP_POST
+    echo '{"name":"gv-shopcart","async":"false","cached":"true","arguments":""}' > $RUN_POST
     gv_upload_function
 }
 
@@ -286,8 +290,8 @@ function gv_javascript_hw_builtin {
     APP_NAME=gv-hello-world
     APP_MAIN=main
     APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/src/main/javascript/main.js
-    curl -s -X POST $IP:$GV_PORT/register?name=hw\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-    echo '{"name":"hw","async":"false","arguments":""}' > $APP_POST
+    curl -s -X POST $IP:$GRAALVISOR_PORT/register?name=hw\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
+    echo '{"name":"hw","async":"false","arguments":""}' > $RUN_POST
 }
 
 function gv_javascript_hw {
@@ -295,7 +299,7 @@ function gv_javascript_hw {
     APP_NAME=gv-js-hello-world
     APP_MAIN=com.helloworld.HelloWorld
     APP=$BENCHMARKS_HOME/src/javascript/gv-hello-world/build/libhelloworld.so
-    echo '{"name":"gv-js-hello-world","async":"false","arguments":""}' > $APP_POST
+    echo '{"name":"gv-js-hello-world","async":"false","arguments":""}' > $RUN_POST
     gv_upload_function
 }
 
@@ -314,8 +318,8 @@ function gv_python_hw_builtin {
     APP_NAME=gv-hello-world
     APP_MAIN=main
     APP_SCRIPT=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/src/main/python/main.py
-    curl -s -X POST $IP:$GV_PORT/register?name=hw\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
-    echo '{"name":"hw","async":"false","arguments":""}' > $APP_POST
+    curl -s -X POST $IP:$GRAALVISOR_PORT/register?name=hw\&entryPoint=$APP_MAIN\&language=$APP_LANG\&sandbox=$SANDBOX -H 'Content-Type: application/json' --data-binary @$APP_SCRIPT
+    echo '{"name":"hw","async":"false","arguments":""}' > $RUN_POST
 }
 
 function gv_python_hw {
@@ -323,7 +327,7 @@ function gv_python_hw {
     APP_NAME=gv-py-hello-world
     APP_MAIN=com.helloworld.HelloWorld
     APP=$BENCHMARKS_HOME/src/python/gv-hello-world/build/libhelloworld.so
-    echo '{"name":"gv-py-hello-world","async":"false","arguments":""}' > $APP_POST
+    echo '{"name":"gv-py-hello-world","async":"false","arguments":""}' > $RUN_POST
     gv_upload_function
 }
 
@@ -340,7 +344,7 @@ function gv_python_thumbnail {
     APP_NAME=gv-py-thumbnail
     APP_MAIN=com.thumbnail.Thumbnail
     APP=$BENCHMARKS_HOME/src/python/gv-thumbnail/build/libthumbnail.so
-    echo '{"name":"gv-py-thumbnail","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $APP_POST
+    echo '{"name":"gv-py-thumbnail","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -358,7 +362,7 @@ function gv_javascript_thumbnail {
     APP_NAME=gv-js-thumbnail
     APP_MAIN=com.thumbnail.Thumbnail
     APP=$BENCHMARKS_HOME/src/javascript/gv-thumbnail/build/libthumbnail.so
-    echo '{"name":"gv-js-thumbnail","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $APP_POST
+    echo '{"name":"gv-js-thumbnail","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -376,7 +380,7 @@ function gv_java_genericapp {
     APP_NAME=gv-genericapp
     APP_MAIN=com.genericapp.GenericApp
     APP=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/build/libgenericapp.so
-    echo '{"name":"gv-genericapp","async":"false","arguments":"{\"memory\":\"4000000\",\"duration\":\"1000\"}"}' > $APP_POST
+    echo '{"name":"gv-genericapp","async":"false","arguments":"{\"memory\":\"4000000\",\"duration\":\"1000\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -385,7 +389,7 @@ function gv_java_sleep {
     APP_NAME=gv-sleep
     APP_MAIN=com.sleep.Sleep
     APP=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/build/libsleep.so
-    echo '{"name":"gv-sleep","async":"false","arguments":"{\"memory\":\"128\",\"sleep\":\"1000\"}"}' > $APP_POST
+    echo '{"name":"gv-sleep","async":"false","arguments":"{\"memory\":\"128\",\"sleep\":\"1000\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -402,7 +406,7 @@ function gv_python_sleep {
     APP_NAME=gv-py-sleep
     APP_MAIN=com.sleep.Sleep
     APP=$BENCHMARKS_HOME/src/python/gv-sleep/build/libsleep.so
-    echo '{"name":"gv-py-sleep","async":"false","arguments":"1"}' > $APP_POST
+    echo '{"name":"gv-py-sleep","async":"false","arguments":"1"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -419,7 +423,7 @@ function gv_javascript_sleep {
     APP_NAME=gv-js-sleep
     APP_MAIN=com.sleep.Sleep
     APP=$BENCHMARKS_HOME/src/javascript/gv-sleep/build/libsleep.so
-    echo '{"name":"gv-js-sleep","async":"false","arguments":"{\"time\":\"1\"}"}' > $APP_POST
+    echo '{"name":"gv-js-sleep","async":"false","arguments":"{\"time\":\"1\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -436,7 +440,7 @@ function gv_java_filehashing {
     APP_NAME=gv-file-hashing
     APP_MAIN=com.filehashing.FileHashing
     APP=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/build/libfilehashing.so
-    echo '{"name":"gv-file-hashing","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $APP_POST
+    echo '{"name":"gv-file-hashing","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -464,7 +468,7 @@ function gv_java_httprequest {
     APP_NAME=gv-httprequest
     APP_MAIN=com.httprequest.HttpRequest
     APP=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/build/libhttprequest.so
-    echo '{"name":"gv-httprequest","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $APP_POST
+    echo '{"name":"gv-httprequest","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -492,7 +496,7 @@ function gv_java_videoprocessing {
     APP_NAME=gv-video-processing
     APP_MAIN=com.videoprocessing.VideoProcessing
     APP=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/build/libvideoprocessing.so
-    echo '{"name":"gv-video-processing","async":"false","arguments":"{\"video\":\"http://'$DATA_IP':'$DATA_PORT'/video.mp4\",\"ffmpeg\":\"http://'$DATA_IP':'$DATA_PORT'/ffmpeg\"}"}' > $APP_POST
+    echo '{"name":"gv-video-processing","async":"false","arguments":"{\"video\":\"http://'$DATA_IP':'$DATA_PORT'/video.mp4\",\"ffmpeg\":\"http://'$DATA_IP':'$DATA_PORT'/ffmpeg\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -520,7 +524,7 @@ function gv_python_videoprocessing {
     APP_NAME=gv-py-video-processing
     APP_MAIN=com.videoprocessing.VideoProcessing
     APP=$BENCHMARKS_HOME/src/python/gv-video-processing/build/libvideoprocessing.so
-    echo '{"name":"gv-py-video-processing","async":"false","arguments":"{\"video\":\"http://'$DATA_IP':'$DATA_PORT'/video.mp4\",\"ffmpeg\":\"http://'$DATA_IP':'$DATA_PORT'/ffmpeg\"}"}' > $APP_POST
+    echo '{"name":"gv-py-video-processing","async":"false","arguments":"{\"video\":\"http://'$DATA_IP':'$DATA_PORT'/video.mp4\",\"ffmpeg\":\"http://'$DATA_IP':'$DATA_PORT'/ffmpeg\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -538,7 +542,7 @@ function gv_java_classify {
     APP_NAME=gv-classify
     APP_MAIN=com.classify.Classify
     APP=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/build/libclassify.so
-    echo '{"name":"gv-classify","async":"false","arguments":"{\"model_url\":\"http://'$DATA_IP':'$DATA_PORT'/tensorflow_inception_graph.pb\",\"labels_url\":\"http://'$DATA_IP':'$DATA_PORT'/imagenet_comp_graph_label_strings.txt\",\"image_url\":\"http://'$DATA_IP':'$DATA_PORT'/eagle.jpg\"}"}' > $APP_POST
+    echo '{"name":"gv-classify","async":"false","arguments":"{\"model_url\":\"http://'$DATA_IP':'$DATA_PORT'/tensorflow_inception_graph.pb\",\"labels_url\":\"http://'$DATA_IP':'$DATA_PORT'/imagenet_comp_graph_label_strings.txt\",\"image_url\":\"http://'$DATA_IP':'$DATA_PORT'/eagle.jpg\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -566,7 +570,7 @@ function gv_python_compression {
     APP_NAME=gv-py-compression
     APP_MAIN=com.compression.Compression
     APP=$BENCHMARKS_HOME/src/python/gv-compression/build/libcompression.so
-    echo '{"name":"gv-py-compression","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/video.mp4\"}"}' > $APP_POST
+    echo '{"name":"gv-py-compression","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/video.mp4\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -584,7 +588,7 @@ function gv_python_mst {
     APP_NAME=gv-py-mst
     APP_MAIN=com.mst.MST
     APP=$BENCHMARKS_HOME/src/python/gv-mst/build/libmst.so
-    echo '{"name":"gv-py-mst","async":"false","arguments":"{\"size\":\"100\"}"}' > $APP_POST
+    echo '{"name":"gv-py-mst","async":"false","arguments":"{\"size\":\"100\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -593,7 +597,7 @@ function gv_python_bfs {
     APP_NAME=gv-py-bfs
     APP_MAIN=com.bfs.BFS
     APP=$BENCHMARKS_HOME/src/python/gv-bfs/build/libbfs.so
-    echo '{"name":"gv-py-bfs","async":"false","arguments":"{\"size\":\"100\"}"}' > $APP_POST
+    echo '{"name":"gv-py-bfs","async":"false","arguments":"{\"size\":\"100\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -611,7 +615,7 @@ function gv_python_pagerank {
     APP_NAME=gv-py-pagerank
     APP_MAIN=com.pr.PageRank
     APP=$BENCHMARKS_HOME/src/python/gv-pagerank/build/libpr.so
-    echo '{"name":"gv-py-pagerank","async":"false","arguments":"{\"size\":\"10\"}"}' > $APP_POST
+    echo '{"name":"gv-py-pagerank","async":"false","arguments":"{\"size\":\"10\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -629,7 +633,7 @@ function gv_python_dna {
     APP_NAME=gv-py-dna
     APP_MAIN=com.dna.DNA
     APP=$BENCHMARKS_HOME/src/python/gv-dna/build/libdna.so
-    echo '{"name":"gv-py-dna","async":"false","arguments":"{\"fasta_url\":\"http://'$DATA_IP':'$DATA_PORT'/bacillus_subtilis.fasta\"}"}' > $APP_POST
+    echo '{"name":"gv-py-dna","async":"false","arguments":"{\"fasta_url\":\"http://'$DATA_IP':'$DATA_PORT'/bacillus_subtilis.fasta\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -647,7 +651,7 @@ function gv_python_classify {
     APP_NAME=gv-py-classify
     APP_MAIN=com.classify.Classify
     APP=$BENCHMARKS_HOME/src/python/gv-classify/build/libclassify.so
-    echo '{"name":"gv-py-classify","async":"false","arguments":"{\"restnet_url\":\"http://'$DATA_IP':'$DATA_PORT'/resnet50-19c8e357.pth\",\"img_url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $APP_POST
+    echo '{"name":"gv-py-classify","async":"false","arguments":"{\"restnet_url\":\"http://'$DATA_IP':'$DATA_PORT'/resnet50-19c8e357.pth\",\"img_url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -674,7 +678,7 @@ function gv_javascript_dynamichtml {
     APP_NAME=gv-js-dynamic-html
     APP_MAIN=com.dynamichtml.DynamicHTML
     APP=$BENCHMARKS_HOME/src/javascript/gv-dynamic-html/build/libdynamichtml.so
-    echo '{"name":"gv-js-dynamic-html","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/template.html\",\"username\":\"rbruno\",\"nsize\":\"10\"}"}' > $APP_POST
+    echo '{"name":"gv-js-dynamic-html","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/template.html\",\"username\":\"rbruno\",\"nsize\":\"10\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -692,7 +696,7 @@ function gv_python_dynamichtml {
     APP_NAME=gv-py-dynamic-html
     APP_MAIN=com.dynamichtml.DynamicHTML
     APP=$BENCHMARKS_HOME/src/python/gv-dynamic-html/build/libdynamichtml.so
-    echo '{"name":"gv-py-dynamic-html","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/template.html\",\"username\":\"rbruno\",\"nsize\":\"10\"}"}' > $APP_POST
+    echo '{"name":"gv-py-dynamic-html","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/template.html\",\"username\":\"rbruno\",\"nsize\":\"10\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -710,7 +714,7 @@ function gv_python_uploader {
     APP_NAME=gv-py-uploader
     APP_MAIN=com.uploader.Uploader
     APP=$BENCHMARKS_HOME/src/python/gv-uploader/build/libuploader.so
-    echo '{"name":"gv-py-uploader","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $APP_POST
+    echo '{"name":"gv-py-uploader","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $RUN_POST
     gv_upload_function
 }
 
@@ -728,7 +732,7 @@ function gv_javascript_uploader {
     APP_NAME=gv-js-uploader
     APP_MAIN=com.uploader.Uploader
     APP=$BENCHMARKS_HOME/src/javascript/gv-uploader/build/libuploader.so
-    echo '{"name":"gv-js-uploader","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $APP_POST
+    echo '{"name":"gv-js-uploader","async":"false","arguments":"{\"url\":\"http://'$DATA_IP':'$DATA_PORT'/snap.png\"}"}' > $RUN_POST
     gv_upload_function
 }
 
