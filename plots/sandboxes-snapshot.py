@@ -143,5 +143,5 @@ axs[1].set_yscale('log')
 fig.set_figwidth(7)
 fig.set_figheight(3)
 
-plt.savefig("sandboxes-snapshot.pdf", bbox_inches='tight')
-plt.savefig("sandboxes-snapshot.png", bbox_inches='tight')
+plt.savefig("sandboxes-snapshot.pdf", bbox_inches='tight', dpi = 300)
+plt.savefig("sandboxes-snapshot.png", bbox_inches='tight', dpi = 300)

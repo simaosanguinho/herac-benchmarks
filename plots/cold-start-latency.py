@@ -1,42 +1,135 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-rutimes = ['Isolate', 'GV', 'PY', 'JS', 'JV', 'GV', 'PY', 'JS', 'JV']
-x = np.arange(len(rutimes))
+results = '../results/experiment/coldstart/java'
 
-avg_baremetal_startup = [0.47, 12.2, 13.1, 40.8, 26.9, 262, 1918, 2009, 2050 ] 
+# Request latency, which may include setting up a sandbox.
+def read_request_latency(path):
+    with open(results + '/' + path + '/app.log') as file:
+        for line in file:
+            if 'Time taken' in line:
+                return float(line.split()[2])
 
-width = .25
-fig, ax1 = plt.subplots()
-#ax1.bar(x, avg_baremetal_startup, width, color='black', hatch='x')
-ax1.bar(x, avg_baremetal_startup, width, alpha=0.75)
-ax1.set_xticks(x, rutimes)
-ax1.set_ylabel('Cold start latency (ms)')
-ax1.set_yscale('log')
-ax1.set_ylim(ymin=.1)
+# Backend startup latency, does not include initialization latency.
+def read_backend_startup_latency(path):
+    with open(results + '/' + path + '/lambda.log') as file:
+        for line in file:
+            if 'Graalvisor boot time' in line:
+                return float(line.split()[3]) * 1000
 
-# Baremetal runtimes
-for i in range(1, 5):
-#    ax1.get_children()[i].set_color("red")
-    ax1.get_children()[i].set_hatch("//")
+# Backend restore latency.
+def read_backend_restore_latency(path):
+    with open(results + '/' + path + '/backend.log') as file:
+        for line in file:
+            if 'Restoring' in line and 'done' in line:
+                return float(line.split()[4])
 
-# MicroVM-ed runtimes
-for i in range(5, 9):
-#    ax1.get_children()[i].set_color("blue")
-    ax1.get_children()[i].set_hatch("..")
+# Sandbox startup latency.
+def read_sandbox_startup_latency(path):
+    with open(results + '/' + path + '/lambda.log') as file:
+        for line in file:
+            if 'Creating context' in line:
+                return float(line.split()[9]) * 1000
 
-legends = [
-    matplotlib.patches.Patch(hatch="//", label="Bare-metal Runtimes", alpha=0.75),
-    matplotlib.patches.Patch(hatch="..", label="microVM Runtimes", alpha=0.75),
-]
+# Sandbox restore latency.
+def read_sandbox_restore_latency(path):
+    with open(results + '/' + path + '/lambda.log') as file:
+        for line in file:
+            if 'restore took' in line:
+                return float(line.split()[2])
 
-fig.set_figwidth(5)
-fig.set_figheight(3)
-ax1.legend(handles=legends, prop={"size": 10})
-ax1.set_axisbelow(True)
+# Backend initialization latency, until it is ready to receive requests.
+def read_initialization_latency(path):
+    with open(results + '/' + path + '/backend.log') as file:
+        for line in file:
+            if 'Waiting for' in line and "done" in line:
+                return float(line.split()[8])
+
+# Input files for each type of virtualization backend.
+inputs = {}
+inputs['Firecracker']      = 'gv-py-hello-world-vm-context-test-1-1-2048/1'
+inputs['NITF']             = 'gv-py-hello-world-svm-context-test-1-1-2048/1'
+# VM, Container, and NITF use a Sandbox on top of it.
+inputs['Sandbox']          = inputs['NITF']
+inputs['Firecracker C/R']  = 'gv-py-hello-world-vm-snapshot-context-test-1-1-2048/1'
+inputs['NITF C/R (CRIU)']  = 'gv-py-hello-world-svm-snapshot-context-test-1-1-2048/1'
+
+# Backend startup latencies.
+startup = {}
+startup['Firecracker']      = read_backend_startup_latency(inputs['Firecracker'])
+startup['NITF']             = read_backend_startup_latency(inputs['NITF'])
+# A sandbox does not require any backend startup.
+startup['Sandbox']          = read_sandbox_startup_latency(inputs['Sandbox'])
+startup['Firecracker C/R']  = read_backend_restore_latency(inputs['Firecracker C/R'])
+startup['NITF C/R (CRIU)']  = read_backend_restore_latency(inputs['NITF C/R (CRIU)'])
+
+# Backend ready latencies (includes sandbox startup).
+ready = {}
+ready['Firecracker']      = startup['Firecracker'] + startup['Sandbox']
+ready['NITF']             = startup['NITF'] + startup['Sandbox']
+ready['Sandbox']          = startup['Sandbox']
+ready['Firecracker C/R']  = startup['Firecracker C/R']
+ready['NITF C/R (CRIU)']  = startup['NITF C/R (CRIU)']
+
+# Request latencies after backend starts accepting connections (may include sandbox setup).
+request = {}
+request['Firecracker']     = read_request_latency(inputs['Firecracker']) - startup['Sandbox']
+request['NITF']            = read_request_latency(inputs['NITF']) - startup['Sandbox']
+request['Sandbox']         = read_request_latency(inputs['Sandbox']) - startup['Sandbox']
+request['Firecracker C/R'] = read_request_latency(inputs['Firecracker C/R'])
+request['NITF C/R (CRIU)'] = read_request_latency(inputs['NITF C/R (CRIU)'])
+
+print('Request latency in us (Vm and NITF include sandbox startup):')
+print(request)
+print('Startup latency in us')
+print(startup)
+
+del inputs['Sandbox']
+del startup['Sandbox']
+del ready['Sandbox']
+del request['Sandbox']
+
+# TODO - extract rss?
+
+x = np.arange(len(inputs.keys()))
+requests = list(request.values())
+readies  = list(ready.values())
+startups = list(startup.values())
+
+# From us to ms
+requests = [x / 1000 for x in requests]
+readies = [x / 1000 for x in readies]
+startups = [x / 1000 for x in startups]
+
+plt.rcParams.update({'font.size': 12})
+fig, ax = plt.subplots()
+ax.bar(x, [x + y for x, y in zip(readies, requests)] ,  label='Request', alpha=0.75)
+ax.bar(x, readies,  label='Truffle Context', alpha=0.75)
+ax.bar(x, startups, label = 'Startup', alpha=0.75)
+
+ax.set_ylabel('Cold Start Latency (ms)')
+ax.set_xticks(x, inputs.keys())
+ax.set_axisbelow(True)
 plt.grid(axis = 'y', linestyle = '--', linewidth = 0.25)
-plt.savefig("cold-start-latency.pdf")
-plt.show()
+plt.xticks(rotation = 35)
+
+# Uncomment to hide xtics.
+#plt.tick_params(
+#    axis='x',          # changes apply to the x-axis
+#    which='both',      # both major and minor ticks are affected
+#    bottom=False,      # ticks along the bottom edge are off
+#    top=False,         # ticks along the top edge are off
+#    labelbottom=False) # labels along the bottom edge are off
+
+ax.set_yscale('log')
+#ax.set_ylim(ymin=0.1, ymax=100000)
+#ax.set_xlim(xmin=-.25, xmax=14.7)
+fig.set_figwidth(15)
+fig.set_figheight(3)
+
+ax.legend(ncol=5, loc='upper right')
+plt.savefig("cold-start-latency.pdf", bbox_inches='tight')
+plt.savefig("cold-start-latency.png", bbox_inches='tight')

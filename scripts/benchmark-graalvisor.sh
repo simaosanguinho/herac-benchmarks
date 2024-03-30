@@ -40,53 +40,62 @@ function benchmark {
     fi
 
     if [ ! -z "$WARMUP" ]; then
-        curl -s -X POST $IP:$GRAALVISOR_PORT/warmup?concurrency=$WARMUP\&requests=$WARMUP -H 'Content-Type: application/json' -d $(cat $APP_POST)
+        printf "Sending $WARMUP warmup requests:\n"
+        request "$IP:$GRAALVISOR_PORT/warmup?concurrency=$WARMUP\&requests=$WARMUP"
     fi
 
-    ab -p $APP_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:$GRAALVISOR_PORT/ &> $TDIR/ab.log
+    printf "Running ab (check $TDIR/ab.log).\n"
+    ab -p $RUN_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:$GRAALVISOR_PORT/ &> $TDIR/ab.log
 }
 
 function test {
-
     if [ ! -z "$WARMUP" ]; then
-        curl -s -X POST $IP:$GRAALVISOR_PORT/warmup?concurrency=$WARMUP\&requests=$WARMUP -H 'Content-Type: application/json' -d $(cat $APP_POST)
+        printf "Sending $WARMUP warmup requests:\n"
+        request $IP:$GRAALVISOR_PORT/warmup?concurrency=$WARMUP\&requests=$WARMUP
     fi
 
+    printf "Sending $workload requests:\n"
     for i in $(seq 1 $workload)
     do
-        pretime
-        curl -s -X POST $IP:$GRAALVISOR_PORT -H 'Content-Type: application/json' -d $(cat $APP_POST)
-        postime
+        request $IP:$GRAALVISOR_PORT
     done
 }
 
 function run {
     # Setting up environment.
+    echo "Waiting for $backend..." | tee $TDIR/backend.log
+    sbs=$(date +%s%N)
     if [ "$backend" == "svm" ]; then
         IP=127.0.0.1
-        start_svm &> $TDIR/lambda.log &
+        start_svm &>> $TDIR/backend.log &
     elif [ "$backend" == "container" ]; then
         IP=127.0.0.1
-        start_gv_container &> $TDIR/lambda.log &
+        start_gv_container &>> $TDIR/backend.log &
     elif [ "$backend" == "vm" ]; then
         # Note: ip is already set when loading shared.sh
-        start_gv_vm &> $TDIR/lambda.log &
+        start_gv_vm &>> $TDIR/backend.log &
     fi
 
     # Let the lambda start.
     wait_port $IP $GRAALVISOR_PORT
 
+    # Measure how long it took to accept connections.
+    sbt=$((($(date +%s%N) - $sbs)/1000))
+    echo "Waiting for $backend... done (took $sbt us)." | tee -a $TDIR/backend.log
+
     # Get PID of lambda.
     if [ "$backend" == "svm" ]; then
+        # Note: wait until lambda.pid is filled.
+        while [ ! -f $TDIR/lambda.pid ]; do sleep 0.01; done
         PID=$(cat $TDIR/lambda.pid)
     elif [ "$backend" == "container" ]; then
         PID=$(docker inspect --format '{{ .State.Pid }}' bcontainer)
+        echo -n "$PID" > $TDIR/lambda.pid
     elif [ "$backend" == "vm" ]; then
+        # Note: wait until lambda.pid is filled.
+        while [ ! -f $TDIR/lambda.pid ]; do sleep 0.01; done
         PID=$(cat $TDIR/lambda.pid)
     fi
-
-    # Write lambda pid to file.
-    echo -n "$PID" > $TDIR/lambda.pid
 
     # Log Resources (memory and CPU)
     log_resources $PID $TDIR &
@@ -94,25 +103,34 @@ function run {
     # Prepares the local resources (cgroups, core pinning, turbo boost).
     prepare_resources
 
-    # Load function into runtime.
+    # Load function into runtime and prepare payload.
+    RUN_POST=$TDIR/payload.post
     $app
 
     # Run test/benchmark.
-    $mode 2>&1 | tee $TDIR/app.log
+    $mode 2>&1 | tee -a $TDIR/app.log
+
+    # Allow time for final collection of resource utilization.
+    sleep 1
 
     # Teardown the lambda.
     if [ "$backend" == "svm" ]; then
-        stop_svm
+        stop_svm &>> $TDIR/backend.log
     elif [ "$backend" == "container" ]; then
-        stop_container
+        stop_container &>> $TDIR/backend.log
     elif [ "$backend" == "vm" ]; then
-        stop_vm
+        stop_vm &>> $TDIR/backend.log
     fi
     wait
 
     # Teardown local resource changes (delete cgroups, enable turbo boost).
     teardown_resources
+
+    # Saving logs.
+    backup_results
 }
+
+check_permissions
 
 # Setting a sandbox if not already set.
 if [ -z "$SANDBOX" ]
@@ -124,36 +142,16 @@ then
     fi
 fi
 
-echo "Running environment=$backend; sandbox=$SANDBOX; app=$app; mode=$mode; workload=$workload; cpu=$VM_CPU; mem=$VM_MEM"
-echo "Logs available at $TDIR..."
+echo "$(tput bold)Running graalvisor environment=$backend; sandbox=$SANDBOX; app=$app; mode=$mode; workload=$workload; cpu=$VM_CPU; mem=$VM_MEM:$(tput sgr0)"
 
-# Writing post file to disk
-APP_POST=$TDIR/payload.post
+# Print if this run will perform some snapshotting.
+if [ ! -z "$SNAPSHOT" ]; then echo "SNAPSHOT = $SNAPSHOT"; fi
 
 # Preparing working directory
-rm -r $TDIR/ &> /dev/null
-mkdir $TDIR &> /dev/null
-
-# Preparing the directory path where results will be placed.
-if [ -z "$EXPERIMENT" ]
-then
-    results_prefix=$BENCHMARKS_HOME/results/benchmark
-else
-    results_prefix=$BENCHMARKS_HOME/results/experiment/$EXPERIMENT
-fi
+rm -rf $TDIR
+mkdir -p $TDIR
 
 for iter in $(seq 1 $ITERATIONS)
 do
-    # Run...
     run
-    # Preparing results directory
-    if [ ! -z "$SNAPSHOT" ]
-    then
-        results_dir=$results_prefix/$APP_LANG/$APP_NAME-$backend-snapshot-$SANDBOX-$mode-$workload-$VM_CPU-$VM_MEM/$iter
-    else
-        results_dir=$results_prefix/$APP_LANG/$APP_NAME-$backend-$SANDBOX-$mode-$workload-$VM_CPU-$VM_MEM/$iter
-    fi
-    mkdir -p $results_dir &> /dev/null
-    cp $TDIR/{*.log,*.rss,*.cpu} $results_dir &> /dev/null
-    echo "Saved logs (iteration $iter): $results_dir/lambda.log"
 done

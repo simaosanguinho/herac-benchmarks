@@ -4,21 +4,8 @@ function DIR {
     echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
-# Preparing global paths.
-BENCHMARKS_HOME=$(DIR)/..
-if [ -z "${ARGO_HOME}" ]; then
-    echo "ARGO_HOME is not defined. Existing..."
-    exit 1
-fi
-if [ -z "${JAVA_HOME}" ]; then
-        echo "JAVA_HOME is not defined. Existing..."
-        exit 1
-fi
-GRAALVISOR_HOME=$ARGO_HOME/graalvisor
-RES_HOME=$ARGO_HOME/resources
-TDIR=$HOME/tmp/test-proxy
-FIRECRACKER=$(which firecracker)
-GRAALVISOR_PORT=8081
+# Import global definitions.
+source $(DIR)/globals.sh
 
 # VM network setup for the test.
 SOCKET=$TDIR/lambda.socket
@@ -46,19 +33,46 @@ if [ -z "${ITERATIONS}" ]; then
     ITERATIONS=1
 fi
 
+function check_permissions {
+    if [ "$EUID" -ne 0 ]; then
+        echo "Warning: running as non-root. Features such as cgroups, core pinning, disabling turbo, and others may fail."
+    fi
+}
+
 function wait_port {
     host=$1
     port=$2
-    while ! nc -z $host $port; do echo "Waiting for $host:$port"; sleep 0.1; done
+    while ! nc -z $host $port; do sleep 0.01; done
 }
 
-function pretime {
+function backup_results {
+    if [ -z "$EXPERIMENT" ]
+    then
+        results_prefix=$BENCHMARKS_HOME/results/benchmark
+    else
+        results_prefix=$BENCHMARKS_HOME/results/experiment/$EXPERIMENT
+    fi
+
+    if [ ! -z "$SNAPSHOT" ]
+    then
+        snapshot="snap"
+    else
+        snapshot="cold"
+    fi
+
+    results_dir=$results_prefix/$APP_LANG/$APP_NAME-$backend-$snapshot-$SANDBOX-$mode-$workload-$VM_CPU-$VM_MEM/$iter
+
+    mkdir -p $results_dir
+    cp $TDIR/{*.log,*.rss,*.cpu} $results_dir
+    echo "Saved logs (iteration $iter): $results_dir"
+}
+
+function request {
+    URL=$1
     ts=$(date +%s%N)
-}
-
-function postime {
+    output=$(curl -s -X POST $URL -H 'Content-Type: application/json' -d @$RUN_POST)
     tt=$((($(date +%s%N) - $ts)/1000))
-    printf "\nTime taken: $tt us\n"
+    printf "Req latency $tt us; Req output: $output\n"
 }
 
 function log_resources {
@@ -68,24 +82,24 @@ function log_resources {
 
     rm $OFILE_CPU &> /dev/null
     rm $OFILE_RSS &> /dev/null
-        while sudo kill -0 $PID &> /dev/null; do
-                top -bn 1 | grep "Cpu(s)" >> $OFILE_CPU
-                # The idea for memory is that we traverse the entire pid subprocess tree
-                # and memory memory utilization. We sum all individual memory and return.
-                s_mem=0
-                for p in $(pstree -p $PID | grep -o '([0-9]\+)' | grep -o '[0-9]\+')
-                do
-                    p_mem=$(ps -q $p -o rss=)
-                    s_mem=$((s_mem + p_mem))
-                done
-                echo $s_mem >> $OFILE_RSS
-                sleep .100
+    while kill -0 $PID &> /dev/null; do
+        top -bn 1 | grep "Cpu(s)" >> $OFILE_CPU
+        # The idea for memory is that we traverse the entire pid subprocess tree
+        # and memory memory utilization. We sum all individual memory and return.
+        s_mem=0
+        for p in $(pstree -p $PID | grep -o '([0-9]\+)' | grep -o '[0-9]\+')
+        do
+            p_mem=$(ps -q $p -o rss=)
+            s_mem=$((s_mem + p_mem))
         done
+        echo $s_mem >> $OFILE_RSS
+        sleep .100
+    done
 }
 
 function enable_turbo_boost {
     if [ -f "/sys/devices/system/cpu/intel_pstate/no_turbo" ]; then
-        echo "0" | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo
+        echo "0" | tee /sys/devices/system/cpu/intel_pstate/no_turbo
     echo "Enabled turbo boost."
     else
     echo "Warning: failed to enable turbo boost."
@@ -94,7 +108,7 @@ function enable_turbo_boost {
 
 function disable_turbo_boost {
     if [ -f "/sys/devices/system/cpu/intel_pstate/no_turbo" ]; then
-        echo "1" | sudo tee /sys/devices/system/cpu/intel_pstate/no_turbo
+        echo "1" | tee /sys/devices/system/cpu/intel_pstate/no_turbo
     echo "Disabled turbo boost."
     else
     echo "Warning: failed to disable turbo boost."
@@ -102,30 +116,30 @@ function disable_turbo_boost {
 }
 
 function pin_core {
-    sudo taskset -cp 0 $PID
+    taskset -cp 0 $PID
     echo "Pinned process $PID to core 0."
 }
 
 function create_cgroup {
     period=100000
     if [ -d "/sys/fs/cgroup/unified" ]; then
-        sudo mkdir /sys/fs/cgroup/cpu/$CGROUP
-        echo "$period"            | sudo tee -a /sys/fs/cgroup/cpu/$CGROUP/cpu.cfs_period_us
-        echo "$CGROUP_CPU_QUOTA"  | sudo tee -a /sys/fs/cgroup/cpu/$CGROUP/cpu.cfs_quota_us
-        echo $PID                 | sudo tee -a /sys/fs/cgroup/cpu/$CGROUP/cgroup.procs
+        mkdir /sys/fs/cgroup/cpu/$CGROUP
+        echo "$period"            | tee -a /sys/fs/cgroup/cpu/$CGROUP/cpu.cfs_period_us
+        echo "$CGROUP_CPU_QUOTA"  | tee -a /sys/fs/cgroup/cpu/$CGROUP/cpu.cfs_quota_us
+        echo $PID                 | tee -a /sys/fs/cgroup/cpu/$CGROUP/cgroup.procs
     else
-        sudo mkdir /sys/fs/cgroup/$CGROUP
-        echo "$CGROUP_CPU_QUOTA $period" | sudo tee -a /sys/fs/cgroup/$CGROUP/cpu.max
-        echo $PID                        | sudo tee -a /sys/fs/cgroup/$CGROUP/cgroup.procs
+        mkdir /sys/fs/cgroup/$CGROUP
+        echo "$CGROUP_CPU_QUOTA $period" | tee -a /sys/fs/cgroup/$CGROUP/cpu.max
+        echo $PID                        | tee -a /sys/fs/cgroup/$CGROUP/cgroup.procs
     fi
     echo "Added process $PID to cgroup $CGROUP with a quota of $CGROUP_CPU_QUOTA out of $period."
 }
 
 function destroy_cgroup {
     if [ -d "/sys/fs/cgroup/unified" ]; then
-        sudo rmdir /sys/fs/cgroup/cpu/$CGROUP
+        rmdir /sys/fs/cgroup/cpu/$CGROUP
     else
-        sudo rmdir /sys/fs/cgroup/$CGROUP
+        rmdir /sys/fs/cgroup/$CGROUP
     fi
 }
 
@@ -159,21 +173,21 @@ function create_tap {
     # Create bridge if not already created
     if [ ! -d "/sys/class/net/$BRIDGE" ]; then
         defaultdevice=$(ip route get 8.8.8.8 | grep -Po '(?<=(dev ))(\S+)')
-        sudo ip link add name $BRIDGE type bridge
-        sudo ip addr add $GATEWAY/$SMASK brd + dev $BRIDGE
-        sudo ip link set dev $BRIDGE up
-        sudo iptables -A FORWARD -o $BRIDGE -j ACCEPT
-        sudo iptables -A FORWARD -i $BRIDGE -j ACCEPT
-        sudo iptables -t nat -A POSTROUTING -o $defaultdevice -j MASQUERADE
-        sudo iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+        ip link add name $BRIDGE type bridge
+        ip addr add $GATEWAY/$SMASK brd + dev $BRIDGE
+        ip link set dev $BRIDGE up
+        iptables -A FORWARD -o $BRIDGE -j ACCEPT
+        iptables -A FORWARD -i $BRIDGE -j ACCEPT
+        iptables -t nat -A POSTROUTING -o $defaultdevice -j MASQUERADE
+        iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
     fi
-    sudo ip tuntap add dev $TAP mode tap
-    sudo brctl addif $BRIDGE $TAP
-    sudo ip link set dev $TAP up
+    ip tuntap add dev $TAP mode tap
+    brctl addif $BRIDGE $TAP
+    ip link set dev $TAP up
 }
 
 function remove_tap {
-    sudo ip link delete $TAP
+    ip link delete $TAP
 }
 
 function start_vm {
@@ -181,14 +195,14 @@ function start_vm {
     kernel=$2
     kops=$3
 
-    # Copy rootfs to tmp dir.
+    # Copy rootfs to tmp work dir.
     cp $rootfs $TDIR/rootfs.img
 
     # Generate a mac for the vm.
     mac=`printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))`
 
     # Start firecracker.
-    $FIRECRACKER --no-seccomp --api-sock $SOCKET &
+    firecracker --no-seccomp --api-sock $SOCKET &> $TDIR/lambda.log &
     echo $! > $TDIR/lambda.pid
 
     # Set save vm ip.
@@ -250,33 +264,46 @@ function start_gv_vm {
         gvargs="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=$GRAALVISOR_PORT LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
         # Kernel opts example: https://github.com/firecracker-microvm/firecracker-demo/blob/main/start-firecracker.sh
         kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$IP::$GATEWAY:$MASK::eth0:none::: nomodule random.trust_cpu=on console=ttyS0 reboot=k panic=1 pci=off $gvargs"
-        start_vm $ARGO_HOME/images/graalvisor/graalvisor.img $RES_HOME/hello-vmlinux.bin $kopts
+        start_vm $ARGO_HOME/images/graalvisor/graalvisor.img $RESOURCES_HOME/hello-vmlinux.bin $kopts
     fi
 }
 
 function start_ow_vm {
     create_tap
     kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$IP::$GATEWAY:$MASK::eth0:none::: nomodule random.trust_cpu=on console=ttyS0 reboot=k panic=1 pci=off"
-    start_vm $ARGO_HOME/images/$APP_LANG-openwhisk/$APP_LANG-openwhisk.img $RES_HOME/hello-vmlinux.bin $kopts
+    start_vm $ARGO_HOME/images/$APP_LANG-openwhisk/$APP_LANG-openwhisk.img $RESOURCES_HOME/hello-vmlinux.bin $kopts
 }
 
 function start_gv_container {
-    docker run --privileged --rm --name=bcontainer --network host -v /tmp/apps:/tmp/apps -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="$GRAALVISOR_PORT" -e JAVA_HOME="/jvm" graalvisor:latest
+    docker run --privileged --rm --name=bcontainer --network host -v $ADIR:/tmp/apps -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="$GRAALVISOR_PORT" -e JAVA_HOME="/jvm" graalvisor:latest &> $TDIR/lambda.log
 }
 
 function start_ow_container {
-    docker run --rm --name=bcontainer --network host $IMG
+    docker run --rm --name=bcontainer --network host $IMG &> $TDIR/lambda.log
 }
 
 function start_svm {
-    cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy $TDIR/app
+    cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy $TDIR/graalvisor
     cd $TDIR
-    export lambda_timestamp="$(date +%s%N | cut -b1-13)"
-    export lambda_port="$GRAALVISOR_PORT"
-    #sudo perf stat -e cache-misses,context-switches,branch-misses,page-faults ./app
-    #strace -o $TDIR/strace.log -f ./app
-    setarch -R ./app &
-    echo -n "$!" > "$TDIR/lambda.pid"
+    if [ ! -z "$SNAPSHOT" ] && [ -f "$SNAPSHOT/inventory.img" ]
+    then
+        echo "[$(date +%s%N) ns] Restoring svm..."
+        criu restore -v -d -j -o $TDIR/restore.log --pidfile $TDIR/lambda.pid -D $SNAPSHOT
+        echo "[$(date +%s%N) ns] Restoring svm... done!"
+        #lat_secs=$(cat $TDIR/restore.log | grep "Writing stats" | awk '{print $1}' | tr -d "()")
+        #lat_us=$(echo "$lat_secs * 1000000" | bc)
+        #echo "Restoring svm... done (took $lat_us us) !"
+    else
+        export lambda_timestamp="$(date +%s%N | cut -b1-13)"
+        export lambda_port="$GRAALVISOR_PORT"
+        export app_dir="$ADIR"
+        #perf stat -e cache-misses,context-switches,branch-misses,page-faults ./app
+        #strace -o $TDIR/strace.log -f ./app
+        # Note 1 : setarch is necessary to disable ASRL, which is relevant for
+        # svm snapshotting (accessible through context-sandbox).
+        setarch -R ./graalvisor &> $TDIR/lambda.log &
+        echo -n "$!" > "$TDIR/lambda.pid"
+    fi
     wait
 }
 
@@ -285,7 +312,8 @@ function snapshot_vm {
     snapshot_file=$2
     memory_file=$3
     disk_file=$4
-    echo "Snapshotting vm..."
+
+    echo "[$(date +%s%N) ns] Snapshotting vm..."
     curl -s --unix-socket $vm_socket -i \
         -X PATCH "http://localhost/vm" \
         -d "{ \"state\": \"Paused\" }"
@@ -298,12 +326,14 @@ function snapshot_vm {
             \"mem_file_path\": \"$memory_file\"
         }"
 
+    echo "[$(date +%s%N) ns] Copying rootfs..."
     cp $TDIR/rootfs.img $disk_file
+    echo "[$(date +%s%N) ns] Copying rootfs... done!"
 
     curl -s --unix-socket $vm_socket -i \
         -X PATCH "http://localhost/vm" \
         -d "{ \"state\": \"Resumed\" }"
-    echo "Snapshotting vm... done!"
+    echo "[$(date +%s%N) ns] Snapshotting vm... done!"
 }
 
 function restore_vm {
@@ -311,14 +341,18 @@ function restore_vm {
     snapshot_file=$2
     memory_file=$3
     disk_file=$4
-    echo "Restoring vm..."
-    $FIRECRACKER --no-seccomp --api-sock $vm_socket &
-    echo $! > $TDIR/lambda.pid
 
-    # Write vm ip to file.
+    echo "[$(date +%s%N) ns] Restoring vm..."
+    echo "[$(date +%s%N) ns] Copying rootfs..."
+    cp $disk_file $TDIR/rootfs.img
+    echo "[$(date +%s%N) ns] Copying rootfs... done!"
+
+    firecracker --no-seccomp --api-sock $vm_socket &> $TDIR/lambda.log &
+    echo $! > $TDIR/lambda.pid
     echo "$IP" > $TDIR/lambda.ip
 
-    cp $disk_file $TDIR/rootfs.img
+    # Wait for vm socket to exist.
+    while [ ! -S $vm_socket ]; do sleep 0.005; done
 
     curl -s --unix-socket $vm_socket -i \
         -X PUT "http://localhost/snapshot/load" \
@@ -328,7 +362,7 @@ function restore_vm {
             \"enable_diff_snapshots\": false,
             \"resume_vm\": true
         }"
-    echo "Restoring vm... done!"
+    echo "[$(date +%s%N) ns] Restoring vm... done!"
 }
 
 function stop_vm {
@@ -338,14 +372,23 @@ function stop_vm {
     fi
     kill $(cat $TDIR/lambda.pid)
     rm -f $SOCKET
+    rm -f $TDIR/lambda.pid
     remove_tap
 }
 
 function stop_container {
     docker kill bcontainer
+    rm -f $TDIR/lambda.pid
 }
 
 function stop_svm {
-    kill $(cat $TDIR/lambda.pid)
+    if [ ! -z "$SNAPSHOT" ] && [ ! -f "$SNAPSHOT/inventory.img" ]
+    then
+        mkdir -p $SNAPSHOT
+        criu dump -v -j -t $(cat $TDIR/lambda.pid) -o $TDIR/dump.log -D $SNAPSHOT
+    else
+        kill $(cat $TDIR/lambda.pid)
+    fi
+    rm -f $TDIR/lambda.pid
 }
 
