@@ -7,12 +7,11 @@ source $(DIR)/globals.sh
 DATA_IP=$(ip route get 8.8.8.8 | grep -oP  'src \K\S+')
 DATA_PORT=8000
 
-# TODO - we should be able to switch between modes.
-# How function registration should be done. Either by uploading via curl or
-# by copying into a shared directory. If mode not 'uploader', then the value
-# is used as the shared directory.
-GV_REGISTRATION_MODE=upload
-#GV_REGISTRATION_MODE=$ADIR
+# How function registration should be done. Either by uploading via curl ('upload')
+# or by copying into a shared directory ('upload'). If mode not 'upload', then the
+# value is used as the shared directory.
+GV_REGISTRATION_MODE=upload # Note: upload always works, graalvisor will close the
+# connection earlier if it finds the function binary.
 
 JV_GV_BENCHMARKS=""
 # (disabled) #JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS gv_java_sleep"

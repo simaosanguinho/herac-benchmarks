@@ -108,7 +108,7 @@ function cold_start_latency {
         export WARMUP=1
         export SANDBOX=context-snapshot
         rm -rf $ADIR/*.memsnap $ADIR/*.metasnap
-        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 1
+        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 0
         unset SANDBOX
         unset WARMUP
     }
