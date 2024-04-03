@@ -6,6 +6,8 @@ function DIR {
 
 source $(DIR)/shared.sh
 
+pkill -f benchmark-cruntime.sh
+pkill -f benchmark-graalvisor.sh
 stop_svm       &> /dev/null
 stop_container &> /dev/null
 stop_vm        &> /dev/null

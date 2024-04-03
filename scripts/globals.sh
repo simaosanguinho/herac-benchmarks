@@ -4,6 +4,10 @@ function DIR {
     echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 }
 
+if [ -f $(DIR)/../../env.sh ]; then
+    source $(DIR)/../../env.sh
+fi
+
 if [ -z "${ARGO_HOME}" ]; then
     echo "ARGO_HOME is not defined. Existing..."
     exit 1
@@ -13,7 +17,7 @@ if [ -z "${JAVA_HOME}" ]; then
     exit 1
 fi
 if [ -z "${WORK_DIR}" ]; then
-    echo "Temporary working dir not defined. Existing..."
+    echo "WORK_DIR is not defined. Existing..."
     exit 1
 fi
 
