@@ -28,7 +28,7 @@ def plot_invocations(userfile, funcfile, outprefix):
   
     matplotlib.rcParams.update({'font.size': 16})
     plt.rcParams["figure.figsize"] = (10, 4)
-    plt.plot(x_user, y_user, linestyle='--',   linewidth=3, label="Tenant Invocations")
+    plt.plot(x_user, y_user, linestyle='--',   linewidth=3, label="User Invocations")
     plt.plot(x_func, y_func, linestyle='-',  linewidth=3, label="Function Invocations")
     plt.grid()
     plt.xlabel('Invocations per Minute')
