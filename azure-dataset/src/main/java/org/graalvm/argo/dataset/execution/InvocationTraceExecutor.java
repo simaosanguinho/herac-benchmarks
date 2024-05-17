@@ -38,7 +38,7 @@ public class InvocationTraceExecutor {
                 waitForInvocation(currentTimestamp, timestamp);
                 currentTimestamp = timestamp;
 
-                invokeFunction(owner, function, timestamp, language, functionId, System.out::println);
+                invokeFunction(owner, function, timestamp, language, functionId, (s) -> {});
             }
         } catch (IOException e) {
             e.printStackTrace();
