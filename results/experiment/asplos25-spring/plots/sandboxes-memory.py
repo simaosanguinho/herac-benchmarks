@@ -4,6 +4,7 @@ declarations = __import__("sandboxes-declarations")
 import results
 import matplotlib.pyplot as plt
 import numpy as np
+import statistics
 
 experiment = declarations.experiment
 benchmark_labels = declarations.benchmark_labels
@@ -49,6 +50,12 @@ for idx, path in enumerate(snapshot_benchmark_path):
     snapshot_mem_avg[idx] = snapshot_mem_avg[idx] * (2048 / declarations.snapshot_mem_factor[idx])
 for idx, path in enumerate(nitf_benchmark_path):
     nift_mem_avg[idx] = nift_mem_avg[idx] * (2048 / declarations.nift_mem_factor[idx])
+
+# Printing some normalized results.
+normalized = []
+for idx, path in enumerate(isolate_benchmark_path):
+    normalized.append(isolate_mem_avg[idx]/openwhisk_mem_avg[idx])
+print("Avg. memory normalized to OpenWhisk: " + str(statistics.median(normalized)))
 
 x = np.arange(len(benchmark_labels))
 width = 0.15
