@@ -16,6 +16,7 @@ public class RealWorker extends AbstractWorker {
     private final MultiWorkerInvocationTraceExecutor executor;
 
     private final BufferedWriter bw;
+    private int conc;
 
     protected RealWorker(AbstractMemoryManager memoryManager, MultiWorkerInvocationTraceExecutor executor, File output) throws IOException {
         super(memoryManager);
@@ -23,6 +24,7 @@ public class RealWorker extends AbstractWorker {
         this.executor = executor;
         bw.write("HashOwner,HashFunction,AverageAllocatedMb,AverageDuration,Timestamp,Language,Function");
         bw.newLine();
+        conc = 0;
     }
 
     @Override
@@ -38,6 +40,8 @@ public class RealWorker extends AbstractWorker {
     public void acceptFunctionInvocation(String owner, String function, int functionMemory, int duration, int timestamp, FunctionLanguage language, int functionId) throws IOException {
         bw.write(String.format(TRACE_INVOCATION_RECORD, owner, function, functionMemory, duration, (System.currentTimeMillis() - executor.beginningTimestamp), language, functionId));
         bw.newLine();
+        ++conc;
+        System.out.println("conc: " + conc);
         memoryManager.startRequest(owner, function, functionMemory);
         executor.invokeFunction(owner, function, functionMemory, language, functionId, new InvocationCallback(this, owner, function));
 
@@ -58,6 +62,7 @@ public class RealWorker extends AbstractWorker {
 
         @Override
         public void accept(String s) {
+            --((RealWorker)worker).conc;
             worker.memoryManager.finishRequest(owner, function);
         }
     }
