@@ -11,9 +11,9 @@ public class FakeWorker extends AbstractWorker {
 
     @Override
     public void ensureUploaded(String owner, String function, FunctionLanguage language, int functionId) {
-        if (!functions.contains(function)) {
+        if (!functions.contains(owner + "_" + function)) {
             owners.add(owner);
-            functions.add(function);
+            functions.add(owner + "_" + function);
         }
     }
 

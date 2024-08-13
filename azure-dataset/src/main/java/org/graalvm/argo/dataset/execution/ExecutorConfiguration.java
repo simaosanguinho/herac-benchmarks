@@ -11,7 +11,6 @@ public class ExecutorConfiguration {
     final String functionRuntime;
     public final String invocationCollocation;
     public final String functionIsolation;
-    final String gvSandbox;
     /**
      * If true, then print timestamps instead of issuing requests.
      */
@@ -20,11 +19,10 @@ public class ExecutorConfiguration {
 
     private final Map<FunctionLanguage, FunctionConfiguration[]> functionConfigs;
 
-    ExecutorConfiguration(String functionRuntime, String invocationCollocation, String functionIsolation, String gvSandbox, boolean debug, String lambdaManagerAddress) {
+    ExecutorConfiguration(String functionRuntime, String invocationCollocation, String functionIsolation, boolean debug, String lambdaManagerAddress) {
         this.functionRuntime = functionRuntime;
         this.invocationCollocation = invocationCollocation;
         this.functionIsolation = functionIsolation;
-        this.gvSandbox = gvSandbox;
         this.debug = debug;
         this.lambdaManagerAddress = lambdaManagerAddress;
         this.functionConfigs = new HashMap<>();
@@ -38,30 +36,36 @@ public class ExecutorConfiguration {
         if (Environment.GRAALVISOR_RUNTIME.equals(this.functionRuntime)) {
             // Add function configs for Graalvisor.
             javaConfigs = new FunctionConfiguration[] {
-                    new FunctionConfiguration(Environment.GV_JV_FILEHASHING_CODE, Environment.GV_JV_FILEHASHING_ENTRYPOINT, Environment.JV_FILEHASHING_PARAMETERS, Environment.JV_FILEHASHING_MEMORY),
-                    new FunctionConfiguration(Environment.GV_JV_HTTPREQUEST_CODE, Environment.GV_JV_HTTPREQUEST_ENTRYPOINT, Environment.JV_HTTPREQUEST_PARAMETERS, Environment.JV_HTTPREQUEST_MEMORY)
+                    new FunctionConfiguration(Environment.JV_HELLOWORLD_NAME, Environment.GV_JV_HELLOWORLD_CODE, Environment.GV_JV_HELLOWORLD_ENTRYPOINT, Environment.JV_HELLOWORLD_PARAMETERS, Environment.JV_HELLOWORLD_MEMORY, Environment.GV_JV_SANDBOX),
+                    new FunctionConfiguration(Environment.JV_FILEHASHING_NAME, Environment.GV_JV_FILEHASHING_CODE, Environment.GV_JV_FILEHASHING_ENTRYPOINT, Environment.JV_FILEHASHING_PARAMETERS, Environment.JV_FILEHASHING_MEMORY, Environment.GV_JV_SANDBOX),
+                    new FunctionConfiguration(Environment.JV_HTTPREQUEST_NAME, Environment.GV_JV_HTTPREQUEST_CODE, Environment.GV_JV_HTTPREQUEST_ENTRYPOINT, Environment.JV_HTTPREQUEST_PARAMETERS, Environment.JV_HTTPREQUEST_MEMORY, Environment.GV_JV_SANDBOX)
             };
             javaScriptConfigs = new FunctionConfiguration[] {
-                    new FunctionConfiguration(Environment.GV_JS_DYNAMICHTML_CODE, Environment.GV_JS_DYNAMICHTML_ENTRYPOINT, Environment.JS_DYNAMICHTML_PARAMETERS, Environment.JS_DYNAMICHTML_MEMORY),
-                    new FunctionConfiguration(Environment.GV_JS_UPLOADER_CODE, Environment.GV_JS_UPLOADER_ENTRYPOINT, Environment.JS_UPLOADER_PARAMETERS, Environment.JS_UPLOADER_MEMORY)
+                    new FunctionConfiguration(Environment.JS_HELLOWORLD_NAME, Environment.GV_JS_HELLOWORLD_CODE, Environment.GV_JS_HELLOWORLD_ENTRYPOINT, Environment.JS_HELLOWORLD_PARAMETERS, Environment.JS_HELLOWORLD_MEMORY, Environment.GV_JS_SANDBOX, Environment.GV_JS_HELLOWORLD_SVMID),
+                    new FunctionConfiguration(Environment.JS_UPLOADER_NAME, Environment.GV_JS_UPLOADER_CODE, Environment.GV_JS_UPLOADER_ENTRYPOINT, Environment.JS_UPLOADER_PARAMETERS, Environment.JS_UPLOADER_MEMORY, Environment.GV_JS_SANDBOX, Environment.GV_JS_UPLOADER_SVMID),
+                    new FunctionConfiguration(Environment.JS_DYNAMICHTML_NAME, Environment.GV_JS_DYNAMICHTML_CODE, Environment.GV_JS_DYNAMICHTML_ENTRYPOINT, Environment.JS_DYNAMICHTML_PARAMETERS, Environment.JS_DYNAMICHTML_MEMORY, Environment.GV_JS_SANDBOX, Environment.GV_JS_DYNAMICHTML_SVMID)
             };
             pythonConfigs = new FunctionConfiguration[] {
-                    new FunctionConfiguration(Environment.GV_PY_UPLOADER_CODE, Environment.GV_PY_UPLOADER_ENTRYPOINT, Environment.PY_UPLOADER_PARAMETERS, Environment.PY_UPLOADER_MEMORY),
-                    new FunctionConfiguration(Environment.GV_PY_COMPRESSION_CODE, Environment.GV_PY_COMPRESSION_ENTRYPOINT, Environment.PY_COMPRESSION_PARAMETERS, Environment.PY_COMPRESSION_MEMORY)
+                    new FunctionConfiguration(Environment.PY_HELLOWORLD_NAME, Environment.GV_PY_HELLOWORLD_CODE, Environment.GV_PY_HELLOWORLD_ENTRYPOINT, Environment.PY_HELLOWORLD_PARAMETERS, Environment.PY_HELLOWORLD_MEMORY, Environment.GV_PY_SANDBOX, Environment.GV_PY_HELLOWORLD_SVMID),
+                    new FunctionConfiguration(Environment.PY_UPLOADER_NAME, Environment.GV_PY_UPLOADER_CODE, Environment.GV_PY_UPLOADER_ENTRYPOINT, Environment.PY_UPLOADER_PARAMETERS, Environment.PY_UPLOADER_MEMORY, Environment.GV_PY_SANDBOX, Environment.GV_PY_UPLOADER_SVMID),
+                    new FunctionConfiguration(Environment.PY_COMPRESSION_NAME, Environment.GV_PY_COMPRESSION_CODE, Environment.GV_PY_COMPRESSION_ENTRYPOINT, Environment.PY_COMPRESSION_PARAMETERS, Environment.PY_COMPRESSION_MEMORY, Environment.GV_PY_SANDBOX, Environment.GV_PY_COMPRESSION_SVMID)
             };
         } else {
             // Add function configs for OpenWhisk.
             javaConfigs = new FunctionConfiguration[] {
-                    new FunctionConfiguration(Environment.OW_JV_FILEHASHING_CODE, Environment.OW_JV_FILEHASHING_ENTRYPOINT, Environment.JV_FILEHASHING_PARAMETERS, Environment.JV_FILEHASHING_MEMORY),
-                    new FunctionConfiguration(Environment.OW_JV_HTTPREQUEST_CODE, Environment.OW_JV_HTTPREQUEST_ENTRYPOINT, Environment.JV_HTTPREQUEST_PARAMETERS, Environment.JV_HTTPREQUEST_MEMORY)
+                    new FunctionConfiguration(Environment.JV_HELLOWORLD_NAME, Environment.OW_JV_HELLOWORLD_CODE, Environment.OW_JV_HELLOWORLD_ENTRYPOINT, Environment.JV_HELLOWORLD_PARAMETERS, Environment.JV_HELLOWORLD_MEMORY),
+                    new FunctionConfiguration(Environment.JV_FILEHASHING_NAME, Environment.OW_JV_FILEHASHING_CODE, Environment.OW_JV_FILEHASHING_ENTRYPOINT, Environment.JV_FILEHASHING_PARAMETERS, Environment.JV_FILEHASHING_MEMORY),
+                    new FunctionConfiguration(Environment.JV_HTTPREQUEST_NAME, Environment.OW_JV_HTTPREQUEST_CODE, Environment.OW_JV_HTTPREQUEST_ENTRYPOINT, Environment.JV_HTTPREQUEST_PARAMETERS, Environment.JV_HTTPREQUEST_MEMORY)
             };
             javaScriptConfigs = new FunctionConfiguration[] {
-                    new FunctionConfiguration(Environment.OW_JS_DYNAMICHTML_CODE, Environment.OW_JS_DYNAMICHTML_ENTRYPOINT, Environment.JS_DYNAMICHTML_PARAMETERS, Environment.JS_DYNAMICHTML_MEMORY),
-                    new FunctionConfiguration(Environment.OW_JS_UPLOADER_CODE, Environment.OW_JS_UPLOADER_ENTRYPOINT, Environment.JS_UPLOADER_PARAMETERS, Environment.JS_UPLOADER_MEMORY)
+                    new FunctionConfiguration(Environment.JS_HELLOWORLD_NAME, Environment.OW_JS_HELLOWORLD_CODE, Environment.OW_JS_HELLOWORLD_ENTRYPOINT, Environment.JS_HELLOWORLD_PARAMETERS, Environment.JS_HELLOWORLD_MEMORY),
+                    new FunctionConfiguration(Environment.JS_UPLOADER_NAME, Environment.OW_JS_UPLOADER_CODE, Environment.OW_JS_UPLOADER_ENTRYPOINT, Environment.JS_UPLOADER_PARAMETERS, Environment.JS_UPLOADER_MEMORY),
+                    new FunctionConfiguration(Environment.JS_DYNAMICHTML_NAME, Environment.OW_JS_DYNAMICHTML_CODE, Environment.OW_JS_DYNAMICHTML_ENTRYPOINT, Environment.JS_DYNAMICHTML_PARAMETERS, Environment.JS_DYNAMICHTML_MEMORY)
             };
             pythonConfigs = new FunctionConfiguration[] {
-                    new FunctionConfiguration(Environment.OW_PY_UPLOADER_CODE, Environment.OW_PY_UPLOADER_ENTRYPOINT, Environment.PY_UPLOADER_PARAMETERS, Environment.PY_UPLOADER_MEMORY),
-                    new FunctionConfiguration(Environment.OW_PY_COMPRESSION_CODE, Environment.OW_PY_COMPRESSION_ENTRYPOINT, Environment.PY_COMPRESSION_PARAMETERS, Environment.PY_COMPRESSION_MEMORY)
+                    new FunctionConfiguration(Environment.PY_HELLOWORLD_NAME, Environment.OW_PY_HELLOWORLD_CODE, Environment.OW_PY_HELLOWORLD_ENTRYPOINT, Environment.PY_HELLOWORLD_PARAMETERS, Environment.PY_HELLOWORLD_MEMORY),
+                    new FunctionConfiguration(Environment.PY_UPLOADER_NAME, Environment.OW_PY_UPLOADER_CODE, Environment.OW_PY_UPLOADER_ENTRYPOINT, Environment.PY_UPLOADER_PARAMETERS, Environment.PY_UPLOADER_MEMORY),
+                    new FunctionConfiguration(Environment.PY_COMPRESSION_NAME, Environment.OW_PY_COMPRESSION_CODE, Environment.OW_PY_COMPRESSION_ENTRYPOINT, Environment.PY_COMPRESSION_PARAMETERS, Environment.PY_COMPRESSION_MEMORY)
             };
         }
         functionConfigs.put(FunctionLanguage.JAVA, javaConfigs);
@@ -82,17 +86,31 @@ public class ExecutorConfiguration {
     }
 
     public class FunctionConfiguration {
+        public final String functionName;
         // Contains path to the code instead of the code itself due to LocalFunctionStorage in Lambda Manager.
         final byte[] code;
         final String entryPoint;
         final byte[] payload;
         public final int memory;
+        final String gvSandbox;
+        final String svmId;
 
-        private FunctionConfiguration(String code, String entryPoint, String payload, int memory) {
+        private FunctionConfiguration(String functionName, String code, String entryPoint, String payload, int memory) {
+            this(functionName, code, entryPoint, payload, memory, null, null);
+        }
+
+        private FunctionConfiguration(String functionName, String code, String entryPoint, String payload, int memory, String gvSandbox) {
+            this(functionName, code, entryPoint, payload, memory, gvSandbox, null);
+        }
+
+        private FunctionConfiguration(String functionName, String code, String entryPoint, String payload, int memory, String gvSandbox, String svmId) {
+            this.functionName = functionName;
             this.code = code.getBytes(StandardCharsets.UTF_8);
             this.entryPoint = entryPoint;
             this.payload = payload.getBytes(StandardCharsets.UTF_8);
             this.memory = memory;
+            this.gvSandbox = gvSandbox;
+            this.svmId = svmId;
         }
     }
 }

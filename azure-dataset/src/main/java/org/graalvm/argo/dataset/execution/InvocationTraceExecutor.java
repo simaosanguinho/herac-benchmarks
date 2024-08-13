@@ -30,10 +30,10 @@ public class InvocationTraceExecutor {
             while ((line = br.readLine()) != null) {
                 splitRow = line.split(InvocationTraceGenerator.DELIMITER);
                 String owner = splitRow[0];
-                String function = splitRow[1];
                 int timestamp = Integer.parseInt(splitRow[4]);
                 FunctionLanguage language = FunctionLanguage.fromString(splitRow[5]);
                 int functionId = Integer.parseInt(splitRow[6]);
+                String function = config.getFunctionConfiguration(language, functionId).functionName;
 
                 waitForInvocation(currentTimestamp, timestamp);
                 currentTimestamp = timestamp;
@@ -54,9 +54,9 @@ public class InvocationTraceExecutor {
             while ((line = br.readLine()) != null) {
                 splitRow = line.split(InvocationTraceGenerator.DELIMITER);
                 String owner = splitRow[0];
-                String function = splitRow[1];
                 FunctionLanguage language = FunctionLanguage.fromString(splitRow[5]);
                 int functionId = Integer.parseInt(splitRow[6]);
+                String function = config.getFunctionConfiguration(language, functionId).functionName;
                 ensureUploaded(uploadedFunctions, owner, function, language, functionId);
             }
         } catch (IOException e) {
@@ -65,9 +65,9 @@ public class InvocationTraceExecutor {
     }
 
     protected void ensureUploaded(Set<String> uploadedFunctions, String owner, String function, FunctionLanguage language, int functionId) {
-        if (!uploadedFunctions.contains(function)) {
+        if (!uploadedFunctions.contains(owner + "_" + function)) {
             uploadFunction(owner, function, language, functionId);
-            uploadedFunctions.add(function);
+            uploadedFunctions.add(owner + "_" + function);
         }
     }
 
@@ -90,8 +90,12 @@ public class InvocationTraceExecutor {
                 "&function_language=" + actualLanguage + "&function_entry_point=" + functionConfig.entryPoint +
                 "&function_memory=" + functionConfig.memory + "&function_runtime=" + config.functionRuntime +
                 "&function_isolation=" + config.functionIsolation + "&invocation_collocation=" + config.invocationCollocation;
-        if (config.gvSandbox != null) {
-            queryParameters = queryParameters + "&gv_sandbox=" + config.gvSandbox;
+        if (functionConfig.gvSandbox != null) {
+            queryParameters = queryParameters + "&gv_sandbox=" + functionConfig.gvSandbox;
+            // For Python/JS functions that need sandbox snapshotting.
+            if ("context-snapshot".equals(functionConfig.gvSandbox) && functionConfig.svmId != null) {
+                queryParameters = queryParameters + "&svm_id=" + functionConfig.svmId;
+            }
         }
         if (!config.isDebugMode()) {
             NetworkUtils.sendPost(config.getLambdaManagerAddress(), "/upload_function?" + queryParameters, "application/octet-stream", functionConfig.code, false);

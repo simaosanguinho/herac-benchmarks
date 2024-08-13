@@ -74,11 +74,11 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
             while ((line = br.readLine()) != null) {
                 splitRow = line.split(InvocationTraceGenerator.DELIMITER);
                 String owner = splitRow[0];
-                String function = splitRow[1];
                 int duration = Integer.parseInt(splitRow[3]);
                 int timestamp = Integer.parseInt(splitRow[4]);
                 FunctionLanguage language = FunctionLanguage.fromString(splitRow[5]);
                 int functionId = Integer.parseInt(splitRow[6]);
+                String function = config.getFunctionConfiguration(language, functionId).functionName;
                 int functionMemory = config.getFunctionConfiguration(language, functionId).memory;
 
                 AbstractWorker worker = schedule(owner, function, functionMemory);
@@ -139,7 +139,7 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
     private AbstractWorker schedule(String owner, String function, int invocationMemory) {
         AbstractWorker result = null;
         for (AbstractWorker w : workers) {
-            if (w.canAccommodateRequest(owner, function, invocationMemory) && w.hasFunctionRegistered(function)) {
+            if (w.canAccommodateRequest(owner, function, invocationMemory) && w.hasFunctionRegistered(owner, function)) {
                 result = w;
                 break;
             }

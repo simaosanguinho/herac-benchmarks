@@ -18,10 +18,9 @@ public class ExecutorEntryPoint {
             String functionRuntime = cmd.getOptionValue("functionRuntime");
             String invocationCollocation = cmd.getOptionValue("invocationCollocation");
             String functionIsolation = cmd.getOptionValue("functionIsolation");
-            String gvSandbox = cmd.getOptionValue("gvSandbox");
             boolean debug = cmd.hasOption("debug");
             String lambdaManagerAddress = cmd.getOptionValue("lambdaManagerAddress", "localhost:30009");
-            ExecutorConfiguration config = new ExecutorConfiguration(functionRuntime, invocationCollocation, functionIsolation, gvSandbox, debug, lambdaManagerAddress);
+            ExecutorConfiguration config = new ExecutorConfiguration(functionRuntime, invocationCollocation, functionIsolation, debug, lambdaManagerAddress);
             boolean multiWorker = cmd.hasOption("multiWorker");
             InvocationTraceExecutor executor = multiWorker ? new MultiWorkerInvocationTraceExecutor(config) : new InvocationTraceExecutor(config);
             executor.execute(inputFilePath);
@@ -47,9 +46,6 @@ public class ExecutorEntryPoint {
         Option functionIsolation = new Option("fi", "functionIsolation", true, "Isolation of functions across several workers.");
         functionIsolation.setRequired(true);
         options.addOption(functionIsolation);
-        Option gvSandbox = new Option("gvs", "gvSandbox", true, "Sandbox to be used in Graalvisor.");
-        gvSandbox.setRequired(false);
-        options.addOption(gvSandbox);
         Option debug = new Option("d", "debug", false, "Just print requests instead of sending them.");
         debug.setRequired(false);
         options.addOption(debug);

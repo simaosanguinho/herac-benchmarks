@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Example usage of this script:
-# bash benchmark-lm-load.sh gv|cr|ph /path/to/dataset/file </path/to/results/folder>
+# bash benchmark-lse.sh gv|gv-sf|gv-si|ow /path/to/dataset/file </path/to/results/folder>
 # The structure of the .csv file should be as follows:
 # HashOwner HashFunction AverageAllocatedMb AverageDuration Timestamp
 
@@ -15,24 +15,16 @@ function process_dataset {
     function_runtime=$2
     invocation_collocation=$3
     function_isolation=$4
-    gv_sandbox=$5  # should be the last parameter since it can be empty
 
     AZURE_EXECUTOR_JAR=$(DIR)/../azure-dataset/build/libs/azure-dataset-1.0-all.jar
     AZURE_EXECUTOR_ENTRYPOINT=org.graalvm.argo.dataset.execution.ExecutorEntryPoint
-
-    GV_SANDBOX_OPTION=
-    if [ -n "$gv_sandbox" ]
-    then
-        GV_SANDBOX_OPTION="--gvSandbox $gv_sandbox"
-    fi
 
     time $JAVA_HOME/bin/java -cp $AZURE_EXECUTOR_JAR $AZURE_EXECUTOR_ENTRYPOINT \
         --input $csv_file \
         --functionRuntime $function_runtime \
         --invocationCollocation $invocation_collocation \
         --functionIsolation $function_isolation \
-        --multiWorker \
-        $GV_SANDBOX_OPTION > /tmp/lse_executor.log
+        --multiWorker > /tmp/lse_executor.log
 
     wait
 
@@ -56,7 +48,6 @@ MODE=$1
 DATASET_FILE=$2
 RESULTS_DIR=$3
 ARGO_HOME=$(DIR)/../../argo/
-RUN_HOME=$ARGO_HOME/run/bin
 LAMBDA_MANAGER_CONFIG=$ARGO_HOME/run/configs/manager/default-lambda-manager.json
 LAMBDA_MANAGER_HOST=localhost
 LAMBDA_MANAGER_PORT=30009
@@ -79,10 +70,6 @@ elif [[ "$MODE" = "ow" ]]; then
     FUNCTION_RUNTIME=openwhisk
     FUNCTION_ISOLATION=true
     INVOCATION_COLLOCATION=false
-elif [[ "$MODE" = "ow-uber" ]]; then
-    FUNCTION_RUNTIME=openwhisk_uber
-    FUNCTION_ISOLATION=true
-    INVOCATION_COLLOCATION=false
 else
     echo "Syntax: <mode> </path/to/dataset/directory>"
 	exit 1
@@ -90,7 +77,7 @@ fi
 
 
 # Deploy lambda manager and wait for it to launch
-$RUN_HOME/run deploy lm &
+bash $ARGO_HOME/lambda-manager/deploy.sh &
 wait_port $LAMBDA_MANAGER_HOST $LAMBDA_MANAGER_PORT
 
 # To ensure that the LM process is started up properly
@@ -99,7 +86,7 @@ sleep 60
 # Configure lambda manager
 curl -s -X POST $LAMBDA_MANAGER_ADDRESS/configure_manager -H 'Content-Type: application/json' --data-binary @"$LAMBDA_MANAGER_CONFIG"
 
-process_dataset $DATASET_FILE $FUNCTION_RUNTIME $INVOCATION_COLLOCATION $FUNCTION_ISOLATION $GV_SANDBOX &
+process_dataset $DATASET_FILE $FUNCTION_RUNTIME $INVOCATION_COLLOCATION $FUNCTION_ISOLATION &
 
 wait
 

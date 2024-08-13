@@ -27,8 +27,8 @@ public abstract class AbstractWorker {
 
     public abstract void acceptFunctionInvocation(String owner, String function, int allocatedMemoryMb, int duration, int timestamp, FunctionLanguage language, int functionId) throws IOException;
 
-    public boolean hasFunctionRegistered(String function) {
-        return functions.contains(function);
+    public boolean hasFunctionRegistered(String owner, String function) {
+        return functions.contains(owner + "_" + function);
     }
 
     public boolean hasOwnerRegistered(String owner) {

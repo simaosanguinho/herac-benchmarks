@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Example usage of this script:
-# bash benchmark-lm-all.sh /path/to/dataset/file
+# bash benchmark-lse-all.sh /path/to/dataset/file
 # The structure of the .csv file should be as follows:
 # HashOwner HashFunction AverageAllocatedMb AverageDuration Timestamp
 
@@ -21,24 +21,24 @@ COLLOCATABLE_LAMBDA_MANAGER_CONFIG=/home/sergiyivan/results/collocatable-default
 
 
 cp $OW_LAMBDA_MANAGER_CONFIG $LAMBDA_MANAGER_CONFIG
-bash $(DIR)/benchmark-lm-load.sh ow $DATASET_FILE
+bash $(DIR)/benchmark-lse.sh ow $DATASET_FILE
 
 sleep 10
 bash /home/sergiyivan/lse/argo/argo/lambda-manager/cleanup.sh &> /dev/null
 
 cp $GV_SI_LAMBDA_MANAGER_CONFIG $LAMBDA_MANAGER_CONFIG
-bash $(DIR)/benchmark-lm-load.sh gv-si $DATASET_FILE
+bash $(DIR)/benchmark-lse.sh gv-si $DATASET_FILE
 
 sleep 10
 bash /home/sergiyivan/lse/argo/argo/lambda-manager/cleanup.sh &> /dev/null
 
 cp $COLLOCATABLE_LAMBDA_MANAGER_CONFIG $LAMBDA_MANAGER_CONFIG
-bash $(DIR)/benchmark-lm-load.sh gv-sf $DATASET_FILE
+bash $(DIR)/benchmark-lse.sh gv-sf $DATASET_FILE
 
 sleep 10
 bash /home/sergiyivan/lse/argo/argo/lambda-manager/cleanup.sh &> /dev/null
 
-bash $(DIR)/benchmark-lm-load.sh gv $DATASET_FILE
+bash $(DIR)/benchmark-lse.sh gv $DATASET_FILE
 
 bash /home/sergiyivan/lse/argo/argo/lambda-manager/cleanup.sh &> /dev/null
 

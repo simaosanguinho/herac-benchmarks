@@ -29,10 +29,10 @@ public class RealWorker extends AbstractWorker {
 
     @Override
     public void ensureUploaded(String owner, String function, FunctionLanguage language, int functionId) {
-        if (!functions.contains(function)) {
+        if (!functions.contains(owner + "_" + function)) {
             executor.uploadFunction(owner, function, language, functionId);
             owners.add(owner);
-            functions.add(function);
+            functions.add(owner + "_" + function);
         }
     }
 
