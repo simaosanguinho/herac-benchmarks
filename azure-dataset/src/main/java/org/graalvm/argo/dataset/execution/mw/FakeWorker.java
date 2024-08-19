@@ -1,12 +1,21 @@
 package org.graalvm.argo.dataset.execution.mw;
 
+import org.graalvm.argo.dataset.execution.mw.entity.Function;
 import org.graalvm.argo.dataset.execution.mw.memory.AbstractMemoryManager;
 import org.graalvm.argo.dataset.multilang.FunctionLanguage;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+
 public class FakeWorker extends AbstractWorker {
+
+    private final Map<Integer, Queue<Runnable>> scheduledTasks;
 
     public FakeWorker(AbstractMemoryManager memoryManager) {
         super(memoryManager);
+        scheduledTasks = new HashMap<>();
     }
 
     @Override
@@ -20,9 +29,39 @@ public class FakeWorker extends AbstractWorker {
     @Override
     public void acceptFunctionInvocation(String owner, String function, int functionMemory, int duration, int timestamp, FunctionLanguage language, int functionId) {
         memoryManager.startRequest(owner, function, functionMemory);
-        MockNetworkUtils.sendPost(new InvocationCallback(this, owner, function, duration));
+        int invocationFinishTimestamp = timestamp + duration;
+        scheduledTasks.computeIfAbsent(invocationFinishTimestamp, k -> new LinkedList<>());
+        scheduledTasks.get(invocationFinishTimestamp).offer(new InvocationFinishCallback(this, owner, function));
 
         ++totalRequests;
+    }
+
+    public void evictInvocations(int timestamp) {
+        Queue<Runnable> tasks = scheduledTasks.get(timestamp);
+        if (tasks != null) {
+            while (!tasks.isEmpty()) {
+                tasks.poll().run();
+            }
+        }
+    }
+
+    private static class InvocationFinishCallback implements Runnable {
+
+        private final AbstractWorker worker;
+        private final String owner;
+        private final String function;
+
+        private InvocationFinishCallback(AbstractWorker worker, String owner, String function) {
+            this.worker = worker;
+            this.owner = owner;
+            this.function = function;
+        }
+
+        @Override
+        public void run() {
+            worker.memoryManager.finishRequest(owner, function);
+        }
+
     }
 
     private static class InvocationCallback implements Runnable {

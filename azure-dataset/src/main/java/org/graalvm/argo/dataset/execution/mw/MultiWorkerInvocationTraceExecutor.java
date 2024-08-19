@@ -26,6 +26,14 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
     private final List<String> statistics;
     final long beginningTimestamp;
 
+    // To be removed (everything in ms):
+    private static long timeInRead = 0;
+    private static long timeInSchedule = 0;
+    private static long timeInEnsureUploaded = 0;
+    private static long timeInWait = 0;
+    private static long timeInRequest = 0;
+    private static long timeInEvict = 0;
+
     public MultiWorkerInvocationTraceExecutor(ExecutorConfiguration config) {
         super(config);
         AbstractMemoryManagerFactory factory = getMemoryManagerFactory(config);
@@ -33,7 +41,7 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
         for (int i = 0; i < Environment.WORKER_COUNT; ++i) {
             workers[i] = new FakeWorker(factory.createMemoryManager());
         }
-        insertRealWorker(factory);
+//        insertRealWorker(factory);
         statistics = new LinkedList<>();
         beginningTimestamp = System.currentTimeMillis();
     }
@@ -69,9 +77,14 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
             String line;
             String[] splitRow;
             br.readLine(); // To skip the header
-            int currentTimestamp = 0;
             int lastStatisticsTimestamp = 0;
+            long beforeTmp = 0;
+            /* Timestamp used to understand whether the executor is too slow or too fast compared to the trace. */
+            long beginningTimestamp = System.currentTimeMillis();
+            /* Used to avoid waiting on the same period multiple times. */
+            int checkedTimestamp = 0;
             while ((line = br.readLine()) != null) {
+                beforeTmp = System.nanoTime();
                 splitRow = line.split(InvocationTraceGenerator.DELIMITER);
                 String owner = splitRow[0];
                 int duration = Integer.parseInt(splitRow[3]);
@@ -80,17 +93,33 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
                 int functionId = Integer.parseInt(splitRow[6]);
                 String function = config.getFunctionConfiguration(language, functionId).functionName;
                 int functionMemory = config.getFunctionConfiguration(language, functionId).memory;
+                timeInRead += (System.nanoTime() - beforeTmp);
 
+                beforeTmp = System.nanoTime();
                 AbstractWorker worker = schedule(owner, function, functionMemory);
+                timeInSchedule += (System.nanoTime() - beforeTmp);
+                beforeTmp = System.nanoTime();
                 worker.ensureUploaded(owner, function, language, functionId);
-                waitForInvocation(currentTimestamp, timestamp);
-                currentTimestamp = timestamp;
+                timeInEnsureUploaded += (System.nanoTime() - beforeTmp);
+                beforeTmp = System.nanoTime();
+                /* Periodically check if we need to slow down the executor. */
+                if (timestamp != checkedTimestamp && timestamp % Environment.WAIT_PERIOD_MS == 0) {
+                    System.out.println(timestamp);
+                    waitForInvocation(timestamp, System.currentTimeMillis() - beginningTimestamp);
+                    checkedTimestamp = timestamp;
+                }
+                timeInWait += (System.nanoTime() - beforeTmp);
 
+                beforeTmp = System.nanoTime();
                 worker.acceptFunctionInvocation(owner, function, functionMemory, duration, timestamp, language, functionId);
-                if (Environment.COLLECT_STATISTICS && currentTimestamp - lastStatisticsTimestamp >= Environment.STATISTICS_INTERVAL_MS) {
+                timeInRequest += (System.nanoTime() - beforeTmp);
+                beforeTmp = System.nanoTime();
+                evictTimedOutInvocations(timestamp);
+                timeInEvict += (System.nanoTime() - beforeTmp);
+                if (Environment.COLLECT_STATISTICS && timestamp - lastStatisticsTimestamp >= Environment.STATISTICS_INTERVAL_MS) {
                     long before = System.nanoTime();
-                    updateGlobalStatistics(currentTimestamp);
-                    lastStatisticsTimestamp = currentTimestamp;
+                    updateGlobalStatistics(timestamp);
+                    lastStatisticsTimestamp = timestamp;
                     System.out.println("Time took to update statistics (ns): " + (System.nanoTime() - before));
                 }
             }
@@ -100,6 +129,16 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
         for (AbstractWorker w : workers) {
             w.printStatistics();
         }
+        /*-------------------------------------*/
+        System.out.println();
+        System.out.println("Time In Read (ms): " + timeInRead / 1000000);
+        System.out.println("Time In Schedule (ms): " + timeInSchedule / 1000000);
+        System.out.println("Time In EnsureUploaded (ms): " + timeInEnsureUploaded / 1000000);
+        System.out.println("Time In Request (ms): " + timeInRequest / 1000000);
+        System.out.println("Time In Wait (ms): " + timeInWait / 1000000);
+        System.out.println("Time In Evict (ms): " + timeInEvict / 1000000);
+        System.out.println("Time total (ms): " + (timeInRead + timeInSchedule + timeInEnsureUploaded + timeInRequest + timeInWait + timeInEvict) / 1000000);
+        /*-------------------------------------*/
         System.out.println("Overallocated " + overalloc + " requests.");
         System.out.println("Real node stats:");
         workers[Environment.REAL_WORKER_INDEX].printStatistics();
@@ -110,6 +149,14 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
             printGlobalStatistics();
         }
         MockNetworkUtils.shutdown();
+    }
+
+    private void evictTimedOutInvocations(int timestamp) {
+        for (AbstractWorker w : workers) {
+            if (w instanceof FakeWorker) {
+                ((FakeWorker) w).evictInvocations(timestamp);
+            }
+        }
     }
 
     private void updateGlobalStatistics(int currentTimestamp) {

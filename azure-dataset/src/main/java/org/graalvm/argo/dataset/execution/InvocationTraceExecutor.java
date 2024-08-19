@@ -82,6 +82,20 @@ public class InvocationTraceExecutor {
         }
     }
 
+    protected void waitForInvocation(int traceTimestamp, long realTimestamp) {
+        long timeDifference = traceTimestamp - realTimestamp;
+        if (timeDifference > 0) {
+            try {
+                System.out.println("Sleeping (ms) " + timeDifference);
+                Thread.sleep(timeDifference);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Warning: executor lags behind the trace by (ms) " + timeDifference);
+        }
+    }
+
     public void uploadFunction(String owner, String function, FunctionLanguage language, int functionId) {
         ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language, functionId);
         // Graalvisor Python/JavaScript benchmarks have Java wrappers.

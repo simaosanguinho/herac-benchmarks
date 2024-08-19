@@ -9,6 +9,7 @@ public class Environment {
     public final static boolean COLLECT_STATISTICS = false;
     public final static String GLOBAL_STATISTICS_OUTPUT = "/tmp/lse_statistics.json";
     public final static int STATISTICS_INTERVAL_MS = 1000;
+    public static final long WAIT_PERIOD_MS = 10;
 
     public static final int VM_MEMORY = 256;
 
