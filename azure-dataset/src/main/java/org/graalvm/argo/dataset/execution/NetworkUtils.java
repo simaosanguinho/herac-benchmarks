@@ -16,7 +16,7 @@ public class NetworkUtils {
 
     public static void sendPost(String address, String path, String contentType, byte[] content, boolean async, Consumer<String> asyncConsumer) {
         HttpRequest request = HttpRequest.newBuilder(URI.create("http://" + address + path))
-                .timeout(Duration.ofMinutes(3))
+                .timeout(Duration.ofSeconds(30))
                 .header("Content-Type", contentType)
                 .header("accept", "application/json; charset=UTF-8")
                 .POST(HttpRequest.BodyPublishers.ofByteArray(content)).build();

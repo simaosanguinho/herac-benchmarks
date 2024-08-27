@@ -15,7 +15,7 @@ public abstract class AbstractWorker {
     protected int totalRequests = 0;
     protected int maxExperiencedMemoryUtilization = 0;
 
-    protected AbstractMemoryManager memoryManager;
+    protected final AbstractMemoryManager memoryManager;
 
     protected AbstractWorker(AbstractMemoryManager memoryManager) {
         this.owners = new HashSet<>();

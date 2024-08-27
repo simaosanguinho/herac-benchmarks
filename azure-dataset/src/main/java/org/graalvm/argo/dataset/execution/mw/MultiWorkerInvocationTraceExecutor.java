@@ -12,7 +12,6 @@ import org.graalvm.argo.dataset.multilang.FunctionLanguage;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -39,9 +38,12 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
         AbstractMemoryManagerFactory factory = getMemoryManagerFactory(config);
         workers = new AbstractWorker[Environment.WORKER_COUNT];
         for (int i = 0; i < Environment.WORKER_COUNT; ++i) {
-            workers[i] = new FakeWorker(factory.createMemoryManager());
+            if (i == Environment.REAL_WORKER_INDEX) {
+                workers[i] = getRealWorker(factory);
+            } else {
+                workers[i] = new PhysicalFakeWorker(factory.createMemoryManager(), this, Environment.FAKE_WORKER_HOST + ":" + (Environment.FAKE_WORKER_FIRST_PORT + i));
+            }
         }
-//        insertRealWorker(factory);
         statistics = new LinkedList<>();
         beginningTimestamp = System.currentTimeMillis();
     }
@@ -61,13 +63,12 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
         }
     }
 
-    private void insertRealWorker(AbstractMemoryManagerFactory factory) {
+    private RealWorker getRealWorker(AbstractMemoryManagerFactory factory) {
         try {
-            File outputTraceFile = new File(Environment.REAL_WORKER_TRACE_OUTPUT);
-            outputTraceFile.createNewFile();
-            workers[Environment.REAL_WORKER_INDEX] = new RealWorker(factory.createMemoryManager(), this, outputTraceFile);
+            return new RealWorker(factory.createMemoryManager(), this, config.getLambdaManagerAddress());
         } catch (IOException e) {
             System.err.println("Couldn't create a real worker: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -148,7 +149,6 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
         if (Environment.COLLECT_STATISTICS) {
             printGlobalStatistics();
         }
-        MockNetworkUtils.shutdown();
     }
 
     private void evictTimedOutInvocations(int timestamp) {

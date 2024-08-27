@@ -90,7 +90,7 @@ public class ExecutorConfiguration {
         // Contains path to the code instead of the code itself due to LocalFunctionStorage in Lambda Manager.
         final byte[] code;
         final String entryPoint;
-        final byte[] payload;
+        final String payload;
         public final int memory;
         final String gvSandbox;
         final String svmId;
@@ -107,7 +107,7 @@ public class ExecutorConfiguration {
             this.functionName = functionName;
             this.code = code.getBytes(StandardCharsets.UTF_8);
             this.entryPoint = entryPoint;
-            this.payload = payload.getBytes(StandardCharsets.UTF_8);
+            this.payload = payload;
             this.memory = memory;
             this.gvSandbox = gvSandbox;
             this.svmId = svmId;

@@ -6,6 +6,7 @@ import org.graalvm.argo.dataset.multilang.FunctionLanguage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -30,6 +31,7 @@ public class InvocationTraceExecutor {
             while ((line = br.readLine()) != null) {
                 splitRow = line.split(InvocationTraceGenerator.DELIMITER);
                 String owner = splitRow[0];
+                int duration = Integer.parseInt(splitRow[3]);
                 int timestamp = Integer.parseInt(splitRow[4]);
                 FunctionLanguage language = FunctionLanguage.fromString(splitRow[5]);
                 int functionId = Integer.parseInt(splitRow[6]);
@@ -38,7 +40,7 @@ public class InvocationTraceExecutor {
                 waitForInvocation(currentTimestamp, timestamp);
                 currentTimestamp = timestamp;
 
-                invokeFunction(owner, function, timestamp, language, functionId, (s) -> {});
+                invokeFunction(config.getLambdaManagerAddress(), owner, function, timestamp, duration, language, functionId, (s) -> {});
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,7 +68,7 @@ public class InvocationTraceExecutor {
 
     protected void ensureUploaded(Set<String> uploadedFunctions, String owner, String function, FunctionLanguage language, int functionId) {
         if (!uploadedFunctions.contains(owner + "_" + function)) {
-            uploadFunction(owner, function, language, functionId);
+            uploadFunction(config.getLambdaManagerAddress(), owner, function, language, functionId);
             uploadedFunctions.add(owner + "_" + function);
         }
     }
@@ -96,7 +98,7 @@ public class InvocationTraceExecutor {
         }
     }
 
-    public void uploadFunction(String owner, String function, FunctionLanguage language, int functionId) {
+    public void uploadFunction(String address, String owner, String function, FunctionLanguage language, int functionId) {
         ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language, functionId);
         // Graalvisor Python/JavaScript benchmarks have Java wrappers.
         FunctionLanguage actualLanguage = Environment.GRAALVISOR_RUNTIME.equals(config.functionRuntime) ? FunctionLanguage.JAVA : language;
@@ -112,17 +114,18 @@ public class InvocationTraceExecutor {
             }
         }
         if (!config.isDebugMode()) {
-            NetworkUtils.sendPost(config.getLambdaManagerAddress(), "/upload_function?" + queryParameters, "application/octet-stream", functionConfig.code, false);
+            NetworkUtils.sendPost(address, "/upload_function?" + queryParameters, "application/octet-stream", functionConfig.code, false);
         }
     }
 
-    public void invokeFunction(String owner, String function, int timestamp, FunctionLanguage language, int functionId, Consumer<String> asyncConsumer) {
+    public void invokeFunction(String address, String owner, String function, int timestamp, int duration, FunctionLanguage language, int functionId, Consumer<String> asyncConsumer) {
         ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language, functionId);
-        byte[] data = functionConfig.payload;
+        // Always add duration field to the function payload. The real worker will ignore it.
+        byte[] data = String.format(functionConfig.payload, duration).getBytes(StandardCharsets.UTF_8);
         if (config.isDebugMode()) {
             System.out.println("Sending request with timestamp: " + timestamp);
         } else {
-            NetworkUtils.sendPost(config.getLambdaManagerAddress(), "/" + owner + "/" + function, "application/json; charset=UTF-8", data, true, asyncConsumer);
+            NetworkUtils.sendPost(address, "/" + owner + "/" + function, "application/json; charset=UTF-8", data, true, asyncConsumer);
         }
     }
 }
