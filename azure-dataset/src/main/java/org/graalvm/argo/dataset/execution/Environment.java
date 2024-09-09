@@ -16,8 +16,7 @@ public class Environment {
     public static final long WAIT_PERIOD_MS = 10;
 
     // Fake worker configuration.
-    private static final String FAKE_WORKER_DURATION_FIELD = "fakeWorkerDuration";
-    private static final String FAKE_WORKER_DURATION = "\"" + FAKE_WORKER_DURATION_FIELD + "\":\"%d\"";
+    public static final String FAKE_WORKER_DURATION_HEADER = "X-Sleep-Duration";
     public static final String FAKE_WORKER_HOST = "localhost";
     public final static int FAKE_WORKER_FIRST_PORT = 30010;
 
@@ -25,7 +24,7 @@ public class Environment {
 
     private static final String ARGO_HOME_PATH = System.getenv("ARGO_HOME");
     private static final String HOST_ADDRESS = "http://172.18.0.1:8000";
-    private static final String URL_SNAP = "{\"url\":\"" + HOST_ADDRESS + "/snap.png\"," + FAKE_WORKER_DURATION + "}";
+    private static final String URL_SNAP = "{\"url\":\"" + HOST_ADDRESS + "/snap.png\"}";
 
     public static final String GRAALVISOR_RUNTIME = "graalvisor";
 
@@ -86,15 +85,15 @@ public class Environment {
 
     // Invocation parameters for benchmarks.
     // Python
-    public static final String PY_HELLOWORLD_PARAMETERS = "{ " + FAKE_WORKER_DURATION + " }";
+    public static final String PY_HELLOWORLD_PARAMETERS = "{ }";
     public static final String PY_UPLOADER_PARAMETERS = URL_SNAP;
-    public static final String PY_COMPRESSION_PARAMETERS = "{\"url\":\"" + HOST_ADDRESS + "/video.mp4\"," + FAKE_WORKER_DURATION + "}";
+    public static final String PY_COMPRESSION_PARAMETERS = "{\"url\":\"" + HOST_ADDRESS + "/video.mp4\"}";
     // JavaScript
-    public static final String JS_HELLOWORLD_PARAMETERS = "{ " + FAKE_WORKER_DURATION + " }";
+    public static final String JS_HELLOWORLD_PARAMETERS = "{ }";
     public static final String JS_UPLOADER_PARAMETERS = URL_SNAP;
-    public static final String JS_DYNAMICHTML_PARAMETERS = "{\"url\":\"" + HOST_ADDRESS + "/template.html\",\"username\":\"rbruno\",\"nsize\":\"10\"," + FAKE_WORKER_DURATION + "}";
+    public static final String JS_DYNAMICHTML_PARAMETERS = "{\"url\":\"" + HOST_ADDRESS + "/template.html\",\"username\":\"rbruno\",\"nsize\":\"10\"}";
     // Java
-    public static final String JV_HELLOWORLD_PARAMETERS = "{\"name\":\"rbruno\"," + FAKE_WORKER_DURATION + "}";
+    public static final String JV_HELLOWORLD_PARAMETERS = "{\"name\":\"rbruno\"}";
     public static final String JV_FILEHASHING_PARAMETERS = URL_SNAP;
     public static final String JV_HTTPREQUEST_PARAMETERS = URL_SNAP;
 

@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -99,6 +100,10 @@ public class InvocationTraceExecutor {
     }
 
     public void uploadFunction(String address, String owner, String function, FunctionLanguage language, int functionId) {
+        uploadFunction(address, owner, function, language, functionId, true);
+    }
+
+    public void uploadFunction(String address, String owner, String function, FunctionLanguage language, int functionId, boolean includeBody) {
         ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language, functionId);
         // Graalvisor Python/JavaScript benchmarks have Java wrappers.
         FunctionLanguage actualLanguage = Environment.GRAALVISOR_RUNTIME.equals(config.functionRuntime) ? FunctionLanguage.JAVA : language;
@@ -114,18 +119,23 @@ public class InvocationTraceExecutor {
             }
         }
         if (!config.isDebugMode()) {
-            NetworkUtils.sendPost(address, "/upload_function?" + queryParameters, "application/octet-stream", functionConfig.code, false);
+            byte[] payload = includeBody ? functionConfig.code : new byte[0];
+            NetworkUtils.sendPost(address, "/upload_function?" + queryParameters, "application/octet-stream", payload, false);
         }
     }
 
     public void invokeFunction(String address, String owner, String function, int timestamp, int duration, FunctionLanguage language, int functionId, Consumer<String> asyncConsumer) {
+        invokeFunction(address, owner, function, timestamp, duration, language, functionId, asyncConsumer, true);
+    }
+
+    public void invokeFunction(String address, String owner, String function, int timestamp, int duration, FunctionLanguage language, int functionId, Consumer<String> asyncConsumer, boolean includeBody) {
         ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language, functionId);
-        // Always add duration field to the function payload. The real worker will ignore it.
-        byte[] data = String.format(functionConfig.payload, duration).getBytes(StandardCharsets.UTF_8);
+        String[] durationHeader = { Environment.FAKE_WORKER_DURATION_HEADER, String.valueOf(duration) };
         if (config.isDebugMode()) {
             System.out.println("Sending request with timestamp: " + timestamp);
         } else {
-            NetworkUtils.sendPost(address, "/" + owner + "/" + function, "application/json; charset=UTF-8", data, true, asyncConsumer);
+            byte[] payload = includeBody ? functionConfig.payload.getBytes(StandardCharsets.UTF_8) : new byte[0];
+            NetworkUtils.sendPost(address, "/" + owner + "/" + function, "application/json; charset=UTF-8", payload, durationHeader, true, asyncConsumer);
         }
     }
 }

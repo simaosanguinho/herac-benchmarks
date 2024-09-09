@@ -17,6 +17,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor {
 
@@ -32,6 +34,12 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
     private static long timeInWait = 0;
     private static long timeInRequest = 0;
     private static long timeInEvict = 0;
+    public final static Queue<Long> differences = new ConcurrentLinkedQueue<>();
+    public final static Queue<Long> networkSend = new ConcurrentLinkedQueue<>();
+    public final static Queue<Long> workerProcess = new ConcurrentLinkedQueue<>();
+    public final static Queue<Long> traceDurations = new ConcurrentLinkedQueue<>();
+    public final static Queue<Long> networkRecv = new ConcurrentLinkedQueue<>();
+    public final static Queue<Double> ratios = new ConcurrentLinkedQueue<>();
 
     public MultiWorkerInvocationTraceExecutor(ExecutorConfiguration config) {
         super(config);
@@ -85,10 +93,14 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
             /* Used to avoid waiting on the same period multiple times. */
             int checkedTimestamp = 0;
             while ((line = br.readLine()) != null) {
+                long beforeMs = System.nanoTime();
                 beforeTmp = System.nanoTime();
                 splitRow = line.split(InvocationTraceGenerator.DELIMITER);
                 String owner = splitRow[0];
                 int duration = Integer.parseInt(splitRow[3]);
+                if (duration > 290000) {
+                    duration = 290000;
+                }
                 int timestamp = Integer.parseInt(splitRow[4]);
                 FunctionLanguage language = FunctionLanguage.fromString(splitRow[5]);
                 int functionId = Integer.parseInt(splitRow[6]);
@@ -123,6 +135,7 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
                     lastStatisticsTimestamp = timestamp;
                     System.out.println("Time took to update statistics (ns): " + (System.nanoTime() - before));
                 }
+                System.out.println("Time took to issue request: " + (System.nanoTime() - beforeMs));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -139,16 +152,29 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
         System.out.println("Time In Wait (ms): " + timeInWait / 1000000);
         System.out.println("Time In Evict (ms): " + timeInEvict / 1000000);
         System.out.println("Time total (ms): " + (timeInRead + timeInSchedule + timeInEnsureUploaded + timeInRequest + timeInWait + timeInEvict) / 1000000);
+        System.out.println("Avg longer duration: " + differences.stream().mapToLong(x -> x).average().orElse(0));
+        System.out.println("Avg increase: " + ratios.stream().mapToDouble(x -> x).average().orElse(0.0));
+        System.out.println("Avg network send: " + networkSend.stream().mapToLong(x -> x).average().orElse(0));
+        System.out.println("Avg worker time: " + workerProcess.stream().mapToLong(x -> x).average().orElse(0));
+        System.out.println("Avg trace duration: " + traceDurations.stream().mapToLong(x -> x).average().orElse(0));
+        System.out.println("Avg network recv: " + networkRecv.stream().mapToLong(x -> x).average().orElse(0));
         /*-------------------------------------*/
         System.out.println("Overallocated " + overalloc + " requests.");
-        System.out.println("Real node stats:");
-        workers[Environment.REAL_WORKER_INDEX].printStatistics();
-        if (workers[Environment.REAL_WORKER_INDEX] instanceof RealWorker) {
-            ((RealWorker) workers[Environment.REAL_WORKER_INDEX]).close();
+        if (Environment.REAL_WORKER_INDEX >= 0 && Environment.REAL_WORKER_INDEX < workers.length) {
+            // Only print stats and close if real worker is injected.
+            System.out.println("Real node stats:");
+            workers[Environment.REAL_WORKER_INDEX].printStatistics();
+            if (workers[Environment.REAL_WORKER_INDEX] instanceof RealWorker) {
+                ((RealWorker) workers[Environment.REAL_WORKER_INDEX]).close();
+            }
         }
         if (Environment.COLLECT_STATISTICS) {
             printGlobalStatistics();
         }
+        // To allow for all async requests to finish.
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) { }
     }
 
     private void evictTimedOutInvocations(int timestamp) {
