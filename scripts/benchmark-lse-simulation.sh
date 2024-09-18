@@ -13,6 +13,10 @@ function DIR {
 }
 
 
+WORKER_COUNT=150
+FIRST_PORT=30010
+
+
 function process_dataset {
     csv_file=$1
     function_runtime=$2
@@ -60,6 +64,12 @@ else
 	exit 1
 fi
 
+# bash $(DIR)/../fake-worker/deploy-swarm.sh $WORKER_COUNT $FIRST_PORT
+
+sleep 1
+
 process_dataset $DATASET_FILE $FUNCTION_RUNTIME $INVOCATION_COLLOCATION $FUNCTION_ISOLATION &
+
+# bash $(DIR)/../fake-worker/cleanup-swarm.sh
 
 wait
