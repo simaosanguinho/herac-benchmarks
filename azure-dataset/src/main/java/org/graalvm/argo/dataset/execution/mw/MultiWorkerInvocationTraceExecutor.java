@@ -9,6 +9,7 @@ import org.graalvm.argo.dataset.execution.mw.memory.MemoryManagerFactories.Singl
 import org.graalvm.argo.dataset.execution.mw.memory.MemoryManagerFactories.OwnerCollocationMemoryManagerFactory;
 import org.graalvm.argo.dataset.execution.mw.memory.MemoryManagerFactories.SingleFunctionMemoryManagerFactory;
 import org.graalvm.argo.dataset.multilang.FunctionLanguage;
+import org.graalvm.argo.dataset.utils.network.SocketNetworkUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -93,7 +94,6 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
             /* Used to avoid waiting on the same period multiple times. */
             int checkedTimestamp = 0;
             while ((line = br.readLine()) != null) {
-                long beforeMs = System.nanoTime();
                 beforeTmp = System.nanoTime();
                 splitRow = line.split(InvocationTraceGenerator.DELIMITER);
                 String owner = splitRow[0];
@@ -120,23 +120,25 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
                     System.out.println(timestamp);
                     waitForInvocation(timestamp, System.currentTimeMillis() - beginningTimestamp);
                     checkedTimestamp = timestamp;
+                    SocketNetworkUtils.readAllAvailable();
                 }
                 timeInWait += (System.nanoTime() - beforeTmp);
 
                 beforeTmp = System.nanoTime();
                 worker.acceptFunctionInvocation(owner, function, functionMemory, duration, timestamp, language, functionId);
                 timeInRequest += (System.nanoTime() - beforeTmp);
-                beforeTmp = System.nanoTime();
-                evictTimedOutInvocations(timestamp);
-                timeInEvict += (System.nanoTime() - beforeTmp);
+//                beforeTmp = System.nanoTime();
+//                evictTimedOutInvocations(timestamp);
+//                timeInEvict += (System.nanoTime() - beforeTmp);
                 if (Environment.COLLECT_STATISTICS && timestamp - lastStatisticsTimestamp >= Environment.STATISTICS_INTERVAL_MS) {
                     long before = System.nanoTime();
                     updateGlobalStatistics(timestamp);
                     lastStatisticsTimestamp = timestamp;
                     System.out.println("Time took to update statistics (ns): " + (System.nanoTime() - before));
                 }
-                System.out.println("Time took to issue request: " + (System.nanoTime() - beforeMs));
             }
+            // Try to wait for remaining responses for 5 seconds more.
+            SocketNetworkUtils.waitForResponses(5000);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -177,13 +179,13 @@ public class MultiWorkerInvocationTraceExecutor extends InvocationTraceExecutor 
         } catch (InterruptedException e) { }
     }
 
-    private void evictTimedOutInvocations(int timestamp) {
-        for (AbstractWorker w : workers) {
-            if (w instanceof FakeWorker) {
-                ((FakeWorker) w).evictInvocations(timestamp);
-            }
-        }
-    }
+//    private void evictTimedOutInvocations(int timestamp) {
+//        for (AbstractWorker w : workers) {
+//            if (w instanceof FakeWorker) {
+//                ((FakeWorker) w).evictInvocations(timestamp);
+//            }
+//        }
+//    }
 
     private void updateGlobalStatistics(int currentTimestamp) {
         StringBuilder sb = new StringBuilder("{\"").append(currentTimestamp).append("\":[");

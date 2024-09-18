@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Usage: deploy.sh [<port>]
-# Port is an optional parameter for the server application.
-
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 if [[ -z "${ARGO_HOME}" ]]; then
@@ -20,6 +17,4 @@ cd "$ARGO_HOME/../benchmarks/fake-worker" || {
     exit 1
 }
 
-PORT=$1
-
-$JAVA_HOME/bin/java -cp $DIR/target/fakeworker-1.0-SNAPSHOT.jar org.fakeworker.server.Server $PORT
+$JAVA_HOME/bin/java -cp $DIR/target/fakeworker-1.0-SNAPSHOT.jar org.fakeworker.client.Client

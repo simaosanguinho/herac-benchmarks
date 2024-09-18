@@ -16,7 +16,6 @@ public class Environment {
     public static final long WAIT_PERIOD_MS = 10;
 
     // Fake worker configuration.
-    public static final String FAKE_WORKER_DURATION_HEADER = "X-Sleep-Duration";
     public static final String FAKE_WORKER_HOST = "localhost";
     public final static int FAKE_WORKER_FIRST_PORT = 30010;
 

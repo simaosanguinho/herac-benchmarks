@@ -19,7 +19,7 @@ public class PhysicalFakeWorker extends AbstractWorker {
     @Override
     public void ensureUploaded(String owner, String function, FunctionLanguage language, int functionId) {
         if (!functions.contains(owner + "_" + function)) {
-//            executor.uploadFunction(address, owner, function, language, functionId, false);
+            executor.uploadFunction(address, owner, function, language, functionId, false);
             owners.add(owner);
             functions.add(owner + "_" + function);
         }
@@ -49,9 +49,9 @@ public class PhysicalFakeWorker extends AbstractWorker {
         }
 
         @Override
-        public void accept(String s) {
+        public void accept(String response) {
             long actualEndTimestamp = System.currentTimeMillis();
-            String[] ts = s.split(" ");
+            String[] ts = response.split(" ");
             long msgReceivedTs = Long.parseLong(ts[0]);
             long msgRespondedTs = Long.parseLong(ts[1]);
             worker.memoryManager.finishRequest(owner, function);

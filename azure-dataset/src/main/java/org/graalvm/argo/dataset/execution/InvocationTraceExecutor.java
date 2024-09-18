@@ -2,13 +2,14 @@ package org.graalvm.argo.dataset.execution;
 
 import org.graalvm.argo.dataset.InvocationTraceGenerator;
 import org.graalvm.argo.dataset.multilang.FunctionLanguage;
+import org.graalvm.argo.dataset.utils.network.HttpClientNetworkUtils;
+import org.graalvm.argo.dataset.utils.network.SocketNetworkUtils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -119,8 +120,8 @@ public class InvocationTraceExecutor {
             }
         }
         if (!config.isDebugMode()) {
-            byte[] payload = includeBody ? functionConfig.code : new byte[0];
-            NetworkUtils.sendPost(address, "/upload_function?" + queryParameters, "application/octet-stream", payload, false);
+            String payload = includeBody ? functionConfig.code : "";
+            SocketNetworkUtils.send(address, "u", false, (s) -> {});
         }
     }
 
@@ -129,13 +130,12 @@ public class InvocationTraceExecutor {
     }
 
     public void invokeFunction(String address, String owner, String function, int timestamp, int duration, FunctionLanguage language, int functionId, Consumer<String> asyncConsumer, boolean includeBody) {
-        ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language, functionId);
-        String[] durationHeader = { Environment.FAKE_WORKER_DURATION_HEADER, String.valueOf(duration) };
         if (config.isDebugMode()) {
             System.out.println("Sending request with timestamp: " + timestamp);
         } else {
-            byte[] payload = includeBody ? functionConfig.payload.getBytes(StandardCharsets.UTF_8) : new byte[0];
-            NetworkUtils.sendPost(address, "/" + owner + "/" + function, "application/json; charset=UTF-8", payload, durationHeader, true, asyncConsumer);
+            ExecutorConfiguration.FunctionConfiguration functionConfig = config.getFunctionConfiguration(language, functionId);
+            String payload = includeBody ? functionConfig.payload : "";
+            SocketNetworkUtils.send(address, "i " + duration, true, asyncConsumer);
         }
     }
 }

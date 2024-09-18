@@ -1,4 +1,4 @@
-package org.graalvm.argo.dataset.execution;
+package org.graalvm.argo.dataset.utils.network;
 
 import java.io.IOException;
 import java.net.URI;
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class NetworkUtils {
+public class HttpClientNetworkUtils {
 
     private static final Map<String, HttpClient> CLIENTS = new HashMap<>();
 

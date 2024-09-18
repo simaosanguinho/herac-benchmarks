@@ -39,6 +39,6 @@ mkdir $TMP_DIR &> /dev/null
 
 for port in $( seq $FIRST_PORT $(( $FIRST_PORT + $COUNT - 1 )) ); do
     mkdir $TMP_DIR/$port
-    $JAVA_HOME/bin/java -cp $DIR/target/selector-test-1.0-SNAPSHOT.jar org.selector.Main $port &> $TMP_DIR/$port/worker.log &
+    $JAVA_HOME/bin/java -cp $DIR/target/fakeworker-1.0-SNAPSHOT.jar org.fakeworker.server.Server $port &> $TMP_DIR/$port/worker.log &
     echo $! > $TMP_DIR/$port/worker.pid
 done
