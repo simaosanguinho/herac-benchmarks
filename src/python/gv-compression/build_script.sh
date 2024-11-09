@@ -7,8 +7,8 @@ function run_hotspot {
 		-Dcom.oracle.svm.graalvisor.polyglotengine.language=python \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/python/main.py \
-                -cp build/libs/compression-1.0-all.jar \
-                com.compression.Compression
+        -cp build/libs/compression-1.0-all.jar \
+         com.compression.Compression
 }
 
 function build_ni {
@@ -17,15 +17,11 @@ function build_ni {
 		--no-fallback \
 		-H:-AllowVMInternalThreads \
 		--enable-url-protocols=http \
-		-cp libs/compression-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
-		-DGraalVisorGuest=true \
-		-Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
+		-cp libs/compression-1.0-all.jar \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.language=python \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/python/main.py \
 		--initialize-at-build-time=com.compression.Compression \
-		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
-		-H:ConfigurationFileDirectories=../ni-agent-config \
 		--language:python \
 		-H:+ReportExceptionStackTraces \
 		$NI_BIN_OPTS \

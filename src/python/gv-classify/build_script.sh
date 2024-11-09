@@ -7,8 +7,8 @@ function run_hotspot {
 		-Dcom.oracle.svm.graalvisor.polyglotengine.language=python \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/python/main.py \
-                -cp build/libs/classify-1.0-all.jar \
-                com.classify.Classify
+        -cp build/libs/classify-1.0-all.jar \
+        com.classify.Classify
 }
 
 function build_ni {
@@ -16,15 +16,11 @@ function build_ni {
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
 		--enable-url-protocols=http \
-		-cp libs/classify-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
-		-DGraalVisorGuest=true \
-		-Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
+		-cp libs/classify-1.0-all.jari \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.language=python \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/python/main.py \
 		--initialize-at-build-time=com.classify.Classify \
-		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
-		-H:ConfigurationFileDirectories=../ni-agent-config \
 		--language:python \
 		-H:+ReportExceptionStackTraces \
 		$NI_BIN_OPTS \

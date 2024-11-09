@@ -4,42 +4,39 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 function run_hotspot {
         $JAVA_HOME/bin/java \
-		-Dcom.oracle.svm.graalvisor.polyglotengine.language=js \
-		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
-		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/javascript/main.js \
-                -cp build/libs/dynamichtml-1.0-all.jar \
-                com.dynamichtml.DynamicHTML
+        -Dcom.oracle.svm.graalvisor.polyglotengine.language=js \
+        -Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
+        -Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/javascript/main.js \
+        -cp build/libs/dynamichtml-1.0-all.jar \
+        com.dynamichtml.DynamicHTML
 }
 
 function build_ni {
-	cd build
-	$JAVA_HOME/bin/native-image \
-		--no-fallback \
-		-H:-AllowVMInternalThreads \
-		--enable-url-protocols=http \
-		-cp libs/dynamichtml-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
-		-DGraalVisorGuest=true \
-		-Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
-		-Dcom.oracle.svm.graalvisor.polyglotengine.language=js \
-		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
-		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/javascript/main.js \
-		--initialize-at-build-time=com.dynamichtml.DynamicHTML \
-		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
-		-H:ConfigurationFileDirectories=../ni-agent-config \
-		--language:js \
-		-H:+ReportExceptionStackTraces \
-		$NI_BIN_OPTS \
-		-H:Name=libdynamichtml
+    cd build
+    $JAVA_HOME/bin/native-image \
+        --no-fallback \
+        -H:-AllowVMInternalThreads \
+        --enable-url-protocols=http \
+        -cp libs/dynamichtml-1.0-all.jar \
+        -Dcom.oracle.svm.graalvisor.polyglotengine.language=js \
+        -Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
+        -Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/javascript/main.js \
+        --initialize-at-build-time=com.dynamichtml.DynamicHTML \
+        -H:ConfigurationFileDirectories=../ni-agent-config \
+        --language:js \
+        -H:+ReportExceptionStackTraces \
+        $NI_BIN_OPTS \
+        -H:Name=libdynamichtml
 }
 
 function build_ni_standalone {
-	NI_BIN_OPTS="com.dynamichtml.DynamicHTML"
-	build_ni
+    NI_BIN_OPTS="com.dynamichtml.DynamicHTML"
+    build_ni
 }
 
 function build_ni_sharedlibrary {
-	NI_BIN_OPTS="--shared"
-	build_ni
+    NI_BIN_OPTS="--shared"
+    build_ni
 }
 
 if [ -z "$ARGO_HOME" ]
@@ -66,28 +63,28 @@ cd $DIR &> /dev/null
 TARGET=$1
 if [ ! -z "$TARGET" ]
 then
-        $TARGET
-	exit 0
+    $TARGET
+    exit 0
 else
-	read -p "Run benchmark on hotspot (y or Y, everything else as no)? " -n 1 -r
-        echo # move to a new line
-        if [[ $REPLY =~ ^[Yy]$ ]]
-        then
-                run_hotspot
-                exit 0
-        fi
-	read -p "Build standalone Native Image (y or Y, everything else as no)? " -n 1 -r
-        echo # move to a new line
-        if [[ $REPLY =~ ^[Yy]$ ]]
-        then
-                build_ni_standalone
-                exit 0
-        fi
-	read -p "Build shared library Native Image (y or Y, everything else as no)? " -n 1 -r
-        echo # move to a new line
-        if [[ $REPLY =~ ^[Yy]$ ]]
-        then
-                build_ni_sharedlibrary
-                exit 0
-        fi
+    read -p "Run benchmark on hotspot (y or Y, everything else as no)? " -n 1 -r
+    echo # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        run_hotspot
+        exit 0
+    fi
+    read -p "Build standalone Native Image (y or Y, everything else as no)? " -n 1 -r
+    echo # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        build_ni_standalone
+        exit 0
+    fi
+    read -p "Build shared library Native Image (y or Y, everything else as no)? " -n 1 -r
+    echo # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        build_ni_sharedlibrary
+        exit 0
+    fi
 fi

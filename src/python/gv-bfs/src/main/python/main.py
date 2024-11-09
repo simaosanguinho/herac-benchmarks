@@ -3,7 +3,7 @@ import igraph
 
 def main(args):
 
-    size = int(args)
+    size = int(10)
 
     graph_generating_begin = datetime.datetime.now()
     graph = igraph.Graph.Barabasi(size, 10)
@@ -24,3 +24,4 @@ def main(args):
             }
     }
 
+#print(main({}))

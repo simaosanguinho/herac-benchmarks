@@ -5,6 +5,12 @@ import java.util.Map;
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
 
+import org.graalvm.word.UnsignedWord;
+import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -37,15 +43,24 @@ public class Sleep extends PolyglotHostAccess {
     public static HashMap<String, Object> main(Map<String, Object> args) {
         HashMap<String, Object> output = new HashMap<>();
         PolyglotEngine engine = getEngine();
-	String time = (String) args.get("time");
+	    String time = (String) args.get("time");
         output.put("output", engine.invoke(language, source, entrypoint, time));
         return output;
     }
 
     public static void main(String[] args) {
         HashMap<String, Object> output = new HashMap<>();
-	output.put("time", "1");
+	    output.put("time", "1");
         output = main(output);
         System.out.println(output);
+    }
+
+    /* For c-API invocations. */
+    @CEntryPoint(name = "entrypoint")
+    public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
+        HashMap<String, Object> map = new HashMap<>();
+	    map.put("time", "1");
+        String output = main(map).toString();
+        CTypeConversion.toCString(output, fout, foutLen);
     }
 }

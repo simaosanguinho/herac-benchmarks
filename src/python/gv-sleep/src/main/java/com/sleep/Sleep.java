@@ -5,6 +5,12 @@ import java.util.Map;
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
 
+import org.graalvm.word.UnsignedWord;
+import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -45,5 +51,11 @@ public class Sleep extends PolyglotHostAccess {
         HashMap<String, Object> output = new HashMap<>();
         output = main(output);
         System.out.println(output);
+    }
+
+    @CEntryPoint(name = "entrypoint")
+    public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
+        String output = main(new HashMap<>()).toString();
+        CTypeConversion.toCString(output, fout, foutLen);
     }
 }

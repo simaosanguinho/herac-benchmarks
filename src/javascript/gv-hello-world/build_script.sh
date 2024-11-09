@@ -17,15 +17,11 @@ function build_ni {
 		--no-fallback \
 		-H:-AllowVMInternalThreads \
 		--enable-url-protocols=http \
-		-cp libs/helloworld-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
-		-DGraalVisorGuest=true \
-		-Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
+		-cp libs/helloworld-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-all.jar \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.language=js \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/javascript/main.js \
 		--initialize-at-build-time=com.helloworld.HelloWorld \
-		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
-		-H:ConfigurationFileDirectories=../ni-agent-config \
 		--language:js \
 		-H:+ReportExceptionStackTraces \
 		$NI_BIN_OPTS \

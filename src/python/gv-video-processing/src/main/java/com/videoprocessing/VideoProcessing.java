@@ -5,6 +5,12 @@ import java.util.Map;
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
 
+import org.graalvm.word.UnsignedWord;
+import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -49,5 +55,14 @@ public class VideoProcessing extends PolyglotHostAccess {
         output.put("ffmpeg", "http://127.0.0.1:8000/ffmpeg");
         output = main(output);
         System.out.println(output);
+    }
+
+    @CEntryPoint(name = "entrypoint")
+    public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
+        HashMap<String, Object> output = new HashMap<>();
+        output.put("video", "http://127.0.0.1:8000/video.mp4");
+        output.put("ffmpeg", "http://127.0.0.1:8000/ffmpeg");
+        output = main(output);
+        CTypeConversion.toCString(output.toString(), fout, foutLen);
     }
 }

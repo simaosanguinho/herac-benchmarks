@@ -16,13 +16,7 @@ shadowJar() {
 }
 
 dependencies {
-    implementation files(System.getenv('ARGO_HOME') + '/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar')
-}
-
-processResources{
-    from(zipTree(System.getenv('ARGO_HOME') + '/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar')){
-        include("com.oracle.svm.graalvisor.headers/")
-    }
+    implementation files(System.getenv('ARGO_HOME') + '/graalvisor-lib/build/libs/graalvisor-lib-1.0-all.jar')
 }
 
 jar {

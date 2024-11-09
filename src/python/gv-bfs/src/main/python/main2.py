@@ -8,12 +8,14 @@ graph = {
 }
 
 
+queue = []     #Initialize a queue
+
 def bfs(visited, graph, node): #function for BFS
   visited.append(node)
   queue.append(node)
 
   while queue:          # Creating loop to visit each node
-    m = queue.pop(0) 
+    m = queue.pop(0)
 
     for neighbour in graph[m]:
       if neighbour not in visited:
@@ -22,9 +24,7 @@ def bfs(visited, graph, node): #function for BFS
 
 def main(args):
     visited = [] # List for visited nodes.
-    queue = []     #Initialize a queue
     bfs(visited, graph, '5')
     return { 'result' : visited }
-
 
 #print(main({}))

@@ -8,6 +8,13 @@ import org.graalvm.polyglot.HostAccess;
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
 
+import org.graalvm.word.UnsignedWord;
+import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
+
+
 import com.criteo.vips.VipsImage;
 import com.criteo.vips.enums.VipsImageFormat;
 
@@ -76,5 +83,14 @@ public class Thumbnail extends PolyglotHostAccess {
         output.put("url", "http://127.0.0.1:8000/snap.png");
         output = main(output);
         System.out.println(output);
+    }
+
+    /* For c-API invocations. */
+    @CEntryPoint(name = "entrypoint")
+    public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("url", "http://127.0.0.1:8000/snap.png");
+        String output = main(map).toString();
+        CTypeConversion.toCString(output, fout, foutLen);
     }
 }

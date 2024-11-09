@@ -2,7 +2,6 @@ package com.dynamichtml;
 
 import java.util.Map;
 
-import com.oracle.svm.graalvisor.utils.JsonUtils;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import org.graalvm.polyglot.Context;
@@ -15,6 +14,7 @@ import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 
 import com.github.mustachejava.DefaultMustacheFactory;
+import com.fasterxml.jackson.jr.ob.JSON;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -41,10 +41,27 @@ public class DynamicHTML extends PolyglotHostAccess {
         }
     }
 
+    /**
+     * Extract arguments json encoded string into Map.
+     *
+     * @param jsonString json encoded String
+     * @return map that illustrates json
+     */
+    public static Map<String, Object> jsonToMap(String jsonString) {
+        try {
+            if (jsonString != null && jsonString.length() > 0) {
+                return JSON.std.mapFrom(jsonString);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new HashMap<>();
+    }
+
     // Note: Replacement for nodejs mustache package.
     @HostAccess.Export
     public String mustache(String template, String arguments) {
-        Map<String, Object> scopes = JsonUtils.jsonToMap(arguments);
+        Map<String, Object> scopes = jsonToMap(arguments);
         try {
             Writer writer = new StringWriter();
             new DefaultMustacheFactory().compile(new StringReader(template), "template").execute(writer, scopes);

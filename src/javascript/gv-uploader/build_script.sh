@@ -7,8 +7,8 @@ function run_hotspot {
 		-Dcom.oracle.svm.graalvisor.polyglotengine.language=js \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/javascript/main.js \
-                -cp build/libs/uploader-1.0-all.jar \
-                com.uploader.Uploader
+        -cp build/libs/uploader-1.0-all.jar \
+         com.uploader.Uploader
 }
 
 function build_ni {
@@ -17,14 +17,11 @@ function build_ni {
 		--no-fallback \
 		-H:-AllowVMInternalThreads \
 		--enable-url-protocols=http \
-		-cp libs/uploader-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
-		-DGraalVisorGuest=true \
-		-Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
+		-cp libs/uploader-1.0-all.jar \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.language=js \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/javascript/main.js \
 		--initialize-at-build-time=com.uploader.Uploader \
-		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
 		-H:ConfigurationFileDirectories=../ni-agent-config \
 		--language:js \
 		-H:+ReportExceptionStackTraces \
