@@ -12,6 +12,12 @@ import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
 
+import org.graalvm.word.UnsignedWord;
+import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
+
 import java.util.HashMap;
 
 public class VideoProcessing {
@@ -82,5 +88,23 @@ public class VideoProcessing {
         output.put("video", "http://127.0.0.1:8000/video.mp4");
         output = main(output);
         System.out.println(output);
+    }
+
+    /* For c-API invocations. */
+    @CEntryPoint(name = "entrypoint")
+    public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
+        String input = CTypeConversion.toJavaString(fin);
+        HashMap<String, Object> map = new HashMap<>();
+        // TODO - receive from input
+        map.put("ffmpeg", "http://127.0.0.1:8000/ffmpeg");
+        map.put("video", "http://127.0.0.1:8000/video.mp4");
+        String output = main(map).toString();
+        if (foutLen.rawValue() > 0) {
+            if (output.length() > (int) foutLen.rawValue()) {
+                CTypeConversion.toCString(output.substring(0, (int) foutLen.rawValue() - 1), fout, foutLen);
+            } else {
+                CTypeConversion.toCString(output, fout, foutLen);
+            }
+        }
     }
 }

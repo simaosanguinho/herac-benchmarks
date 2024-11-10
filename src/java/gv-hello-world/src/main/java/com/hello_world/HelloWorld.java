@@ -30,7 +30,14 @@ public class HelloWorld {
     @CEntryPoint(name = "entrypoint")
     public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
         String input = CTypeConversion.toJavaString(fin);
-        String output = main(new HashMap<>()).toString();
-        CTypeConversion.toCString(output, fout, foutLen);
+        HashMap<String, Object> map = new HashMap<>();
+        String output = main(map).toString();
+        if (foutLen.rawValue() > 0) {
+            if (output.length() > (int) foutLen.rawValue()) {
+                CTypeConversion.toCString(output.substring(0, (int) foutLen.rawValue() - 1), fout, foutLen);
+            } else {
+                CTypeConversion.toCString(output, fout, foutLen);
+            }
+        }
     }
 }

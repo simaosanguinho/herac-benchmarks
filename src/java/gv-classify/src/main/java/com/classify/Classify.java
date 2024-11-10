@@ -13,6 +13,12 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.graalvm.word.UnsignedWord;
+import org.graalvm.nativeimage.c.function.CEntryPoint;
+import org.graalvm.nativeimage.IsolateThread;
+import org.graalvm.nativeimage.c.type.CCharPointer;
+import org.graalvm.nativeimage.c.type.CTypeConversion;
+
 import javax.imageio.ImageIO;
 
 public class Classify {
@@ -89,5 +95,23 @@ public class Classify {
         System.out.println(main(output));
     }
     
+    /* For c-API invocations. */
+    @CEntryPoint(name = "entrypoint")
+    public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
+        String input = CTypeConversion.toJavaString(fin);
+        HashMap<String, Object> map = new HashMap<>();
+        // TODO - get from input.
+        map.put("model_url", "http://127.0.0.1:8000/tensorflow_inception_graph.pb");
+    	map.put("labels_url", "http://127.0.0.1:8000/imagenet_comp_graph_label_strings.txt");
+    	map.put("image_url", "http://127.0.0.1:8000/eagle.jpg");
+        String output = main(map).toString();
+        if (foutLen.rawValue() > 0) {
+            if (output.length() > (int) foutLen.rawValue()) {
+                CTypeConversion.toCString(output.substring(0, (int) foutLen.rawValue() - 1), fout, foutLen);
+            } else {
+                CTypeConversion.toCString(output, fout, foutLen);
+            }
+        }
+    }
 
 }
