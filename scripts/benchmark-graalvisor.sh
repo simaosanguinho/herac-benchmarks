@@ -148,8 +148,11 @@ echo "$(tput bold)Running graalvisor environment=$backend; sandbox=$SANDBOX; app
 if [ ! -z "$SNAPSHOT" ]; then echo "SNAPSHOT = $SNAPSHOT"; fi
 
 # Preparing working directory
+echo "Removing $TDIR and $ADIR"
 rm -rf $TDIR
+rm -rf $ADIR
 mkdir -p $TDIR
+mkdir -p $ADIR
 
 for iter in $(seq 1 $ITERATIONS)
 do
