@@ -2,4 +2,4 @@
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
-cp $DIR/build/libthumbnail.so $1/gv-js-thumbnail.so
+zip --junk-paths $1/gv-js-thumbnail.zip $DIR/build/*.so $DIR/build/*.h

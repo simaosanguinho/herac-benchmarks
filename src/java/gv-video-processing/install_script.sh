@@ -2,4 +2,4 @@
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
-cp $DIR/build/libvideoprocessing.so $1/gv-video-processing.so
+cp $DIR/build/libvideoprocessing.so $1/gv-jv-video-processing.so

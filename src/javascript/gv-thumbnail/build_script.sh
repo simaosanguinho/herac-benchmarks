@@ -27,7 +27,7 @@ function build_ni {
         -H:ConfigurationFileDirectories=../ni-agent-config,../config-dir \
         -H:+ReportExceptionStackTraces \
         $NI_BIN_OPTS \
-        -H:Name=libthumbnail
+        -H:Name=gv-js-thumbnail
 }
 
 function build_ni_standalone {

@@ -2,4 +2,4 @@
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
-cp $DIR/build/libclassify.so $1/gv-classify.so
+zip --junk-paths $1/gv-jv-classify.zip $DIR/build/*.so $DIR/build/*.h
