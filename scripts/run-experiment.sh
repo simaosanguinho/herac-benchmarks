@@ -31,7 +31,8 @@ function test_gv_benchmarks {
     do
         for backend in "svm" "container" "vm"
         do
-            for sandbox in "default" "runtime" "process"
+            # TODO - add context-snapshot
+            for sandbox in "default" "process"
             do
                 if [ "$sandbox" == "default" ]; then
                     unset SANDBOX

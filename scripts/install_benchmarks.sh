@@ -4,7 +4,7 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 APP_DIR=$DIR/../data/apps
 LOG=$DIR/install_benchmarks.log
 
-# (disabled) #JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-sleep"
+JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-sleep"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-hello-world"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-file-hashing"
 JV_GV_BENCHMARKS="$JV_GV_BENCHMARKS java/gv-httprequest"
@@ -89,6 +89,7 @@ then
     INSTALL_SET="$INSTALL_SET $JS_GV_BENCHMARKS"
 fi
 
+
 # Rotate the log.
 rm $LOG &> /dev/null
 
@@ -103,6 +104,6 @@ do
         bash $install_script $APP_DIR 2>&1 >> $LOG
         echo "done!"
     else
-        echo "$install_script/install_script.sh DOES NOT exist, skipping."
+        echo "$install_script DOES NOT exist, skipping."
     fi
 done

@@ -12,14 +12,11 @@ function build_ni {
 	cd build
 	$JAVA_HOME/bin/native-image \
 		--no-fallback \
-		-cp libs/sleep-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
-		-DGraalVisorGuest=true \
-		-Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
+		-cp libs/sleep-1.0-all.jar \
 		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
-		-H:ConfigurationFileDirectories=../ni-agent-config \
 		-H:+ReportExceptionStackTraces \
 		$NI_BIN_OPTS \
-		-H:Name=libsleep
+		-H:Name=gv-sleep
 }
 
 function build_ni_standalone {

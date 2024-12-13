@@ -61,6 +61,10 @@ function test {
     done
 }
 
+function stress {
+    request $IP:$GRAALVISOR_PORT/stress?concurrency=100000\&requests=$workload
+}
+
 function run {
     # Setting up environment.
     echo "Waiting for $backend..." | tee $TDIR/backend.log
