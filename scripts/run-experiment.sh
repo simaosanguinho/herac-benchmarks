@@ -31,16 +31,24 @@ function test_gv_benchmarks {
     do
         for backend in "svm" "container" "vm"
         do
-            # TODO - add context-snapshot
-            for sandbox in "default" "process"
-            do
-                if [ "$sandbox" == "default" ]; then
-                    unset SANDBOX
-                else
-                    export SANDBOX=$sandbox;
-                fi
-                $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 1 | grep "\"result\""
-           done
+            echo "$(tput bold)Benchmark: $benchmark$(tput sgr0)"
+            rm -rf $ADIR
+            export SANDBOX="default"; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 1 | grep "Req output:"
+            export SANDBOX="process"; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 1 | grep "Req output:"
+            if [[ $benchmark == *"gv_java_classify"* || $benchmark == *"videoprocessing"* ]]; then
+                echo "Skipping $benchmark (not supported)"
+                continue
+            fi
+            if [[ $benchmark == *"_thumbnail"* || $benchmark == *"gv_python_dynamichtml"* || $benchmark == *"gv_python_compression"* ]]; then
+                echo "Skipping $benchmark (not supported)"
+                continue
+            fi
+            export WARMUP=1
+            # Create the snapshot.
+            export SANDBOX=snapshot; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 0 | grep "Req output:"
+            # Restore from the snapshot.
+            export SANDBOX=snapshot; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 0 | grep "Req output:"
+            unset WARMUP
         done
     done
     unset SANDBOX

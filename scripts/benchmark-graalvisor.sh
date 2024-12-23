@@ -14,7 +14,7 @@ if [ "$#" -ne 4 ]; then
     echo "Available modes: test benchmark. Test will perform a number of requests. Benchmark will use apache bench with the desired concurrency level."
     echo "Example: benchmark-graalvisor.sh svm gv_java_hw test 1"
     echo "Available environment variables: "
-    echo "- SANDBOX=<isolate|runtime|process|context|context-snapshot> - isolation level of concurrent requests in graalvisor. Defaults to isolate or context depending on the function language;"
+    echo "- SANDBOX=<isolate|runtime|process|context|snapshot> - isolation level of concurrent requests in graalvisor. Defaults to isolate or context depending on the function language;"
     echo "- SNAPSHOT=<path> - path on disk where the snapshot should be stored/loaded from; Defaults to empty which leads to no snapshot being stored/loaded;"
     echo "- ITERATIONS=<number> - number of iterations the workload is ran. Defaults to 1;"
     echo "- WMULTIPLIER=<number> - workload multiplier to scale up or down the length of the benchmark (only used in benchmark mode). Defaults to 256;"
@@ -154,7 +154,8 @@ if [ ! -z "$SNAPSHOT" ]; then echo "SNAPSHOT = $SNAPSHOT"; fi
 # Preparing working directory
 echo "Removing $TDIR and $ADIR"
 rm -rf $TDIR
-rm -rf $ADIR
+# Note: we do not remove the app dir to facilitate snapshot testing.
+# You may want to call benchmark-clean.sh before you call this script.
 mkdir -p $TDIR
 mkdir -p $ADIR
 

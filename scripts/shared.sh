@@ -70,7 +70,7 @@ function backup_results {
 function request {
     URL=$1
     ts=$(date +%s%N)
-    output=$(curl -s -X POST $URL -H 'Content-Type: application/json' -d @$RUN_POST)
+    output=$(curl -s --connect-timeout 5 -X POST $URL -H 'Content-Type: application/json' -d @$RUN_POST)
     tt=$((($(date +%s%N) - $ts)/1000))
     printf "Req latency $tt us; Req output: $output\n"
 }

@@ -2,6 +2,8 @@
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
+cd $DIR
+
 if [ ! -f ffmpeg ];
 then
     wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
@@ -26,5 +28,6 @@ then
     wget https://github.com/spcl/serverless-benchmarks-data/raw/6a17a460f289e166abb47ea6298fb939e80e8beb/500.scientific/504.dna-visualisation/bacillus_subtilis.fasta
 fi
 
+cd -
 
 docker run -d -p 8000:80 --rm -v $DIR:/usr/share/nginx/html --name web nginx
