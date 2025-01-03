@@ -63,8 +63,6 @@ public class Uploader extends PolyglotHostAccess {
         HashMap<String, Object> map = new HashMap<>();
         map.put("url", "http://127.0.0.1:8000/snap.png"); // TODO - conver input into map.
         map.put("url", "http://127.0.0.1:8000/template.html");
-        map.put("username", "rbruno");
-        map.put("nsize", "10");
         String output = main(map).toString();
         if (foutLen.rawValue() > 0) {
             if (output.length() > (int) foutLen.rawValue()) {

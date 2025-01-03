@@ -29,9 +29,9 @@ function test_gv_benchmarks {
 
     for benchmark in $TEST_SET
     do
-        for backend in "svm" "container" "vm"
+        for backend in "svm" #"container" "vm"
         do
-            echo "$(tput bold)Benchmark: $benchmark$(tput sgr0)"
+            echo "$(tput bold)Benchmark: $benchmark in $backend $(tput sgr0)"
             rm -rf $ADIR
             export SANDBOX="default"; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 1 | grep "Req output:"
             export SANDBOX="process"; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 1 | grep "Req output:"

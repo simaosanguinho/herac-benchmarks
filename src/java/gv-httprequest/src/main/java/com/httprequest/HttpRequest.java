@@ -1,7 +1,12 @@
 package com.httprequest;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Map;
@@ -16,14 +21,17 @@ public class HttpRequest {
     
     public static byte[] downloadBytes(String url) {
         try {
-            URLConnection conn = new URL(url).openConnection();
-            InputStream is = conn.getInputStream();
-            byte[] bytes = is.readAllBytes();
-            is.close();
-            return bytes;
-        } catch (IOException e) {
+            return downloadBytesInternal(url);
+        } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return e.getMessage().getBytes();
+        }
+    }
+
+    public static byte[] downloadBytesInternal(String url) throws Exception {
+        URLConnection conn = new URL(url).openConnection();
+        try (InputStream is = conn.getInputStream()) {
+            return is.readAllBytes();
         }
     }
 
