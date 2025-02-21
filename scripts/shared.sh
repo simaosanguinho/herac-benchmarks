@@ -304,7 +304,7 @@ function start_svm {
         # Note 1 : setarch is necessary to disable ASRL, which is relevant for
         # svm snapshotting (accessible through context-sandbox).
         # Note 2 : for large heaps, add `-Xmx128g`.
-        setarch -R ./graalvisor &> $TDIR/lambda.log &
+        unshare --map-root-user --keep-caps --mount-proc -f -p setarch -R ./graalvisor &> $TDIR/lambda.log &
         #strace --trace=memory -o $TDIR/graalvisor.strace -f ./graalvisor -Xmx128g &> $TDIR/lambda.log &
         echo -n "$!" > "$TDIR/lambda.pid"
     fi
