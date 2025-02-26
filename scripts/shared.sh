@@ -311,6 +311,43 @@ function start_svm {
     wait
 }
 
+function start_graalhost {
+    $GRAALHOST_HOME/scripts/build-env-rc.sh \
+        ${GRAALHOST_HOME}/graalhost/graalhost \
+            --port=$GRAALHOST_PORT \
+            --seccomp 2 \
+            --hub \
+            --webserver \
+            --log_to=file \
+            --musl_path=${GRAALHOST_HOME}/graalhost/libc.so \
+            --ephemeral_dir=$TDIR \
+            --write_pid=$TDIR/graalhost.pid &> $TDIR/graalhost.log
+}
+
+function start_graalhost_container {
+    ephemeral_dir=/tmp/ephemeral
+
+    docker run --rm --name=bcontainer \
+        --user $(id -u):$(id -g) \
+        --pid host \
+        -p $GRAALHOST_PORT:$GRAALHOST_PORT \
+        -p 9001:9001 \
+        -v "$GRAALHOST_HOME":/graalos \
+        -v "$TDIR":$ephemeral_dir \
+        -v "$BENCHMARKS_HOME":/benchmarks \
+        graalos-image \
+        /graalos/scripts/build-env-rc.sh \
+            /graalos/graalhost/graalhost \
+                --port=$GRAALHOST_PORT \
+                --seccomp 2 \
+                --hub \
+                --webserver \
+                --log_to=file \
+                --musl_path=/graalos/graalhost/libc.so \
+                --ephemeral_dir=$ephemeral_dir \
+                --write_pid=$ephemeral_dir/graalhost.pid &> $TDIR/graalhost.log
+}
+
 function snapshot_vm {
     vm_socket=$1
     snapshot_file=$2
@@ -396,3 +433,7 @@ function stop_svm {
     rm -f $TDIR/lambda.pid
 }
 
+function stop_graalhost {
+    kill $(cat $TDIR/graalhost.pid)
+
+}

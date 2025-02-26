@@ -706,3 +706,22 @@ function cr_javascript_uploader {
     RUN_POST=$BENCHMARKS_HOME/src/$APP_LANG/$APP_NAME/run.json
     echo '{ "value": { "url": "http://'$DATA_IP':'$DATA_PORT'/snap.png" } }' > $RUN_POST
 }
+
+function gh_java_http {
+    APP_PORT=9001
+    APP_LANG=java
+    APP_NAME=gh-http-hello-world
+    APP_PATH=helloworld
+    app=$BENCHMARKS_HOME/src/java/gh-http-hello-world/build/native/nativeCompile/simple-http
+
+    echo "Loading $app..." | tee -a $TDIR/backend.log
+    sas=$(date +%s%N)
+    curl --data-binary '{ "act": "add_ep", "app": "'$app'", "ep": 2001, "default_socket": { "port": '$APP_PORT'  }, "listen_socket": { "port": '$APP_PORT'  }, "fsroot": "/", "fsmappings": [ { "concrete": "/   ", "virt": "/"  }  ], "env": { "myvar": "initial_value"  }, "instances": 1  }' http://$IP:$GRAALHOST_PORT/command
+
+    # Let the app load.
+    wait_port $IP $APP_PORT
+
+    # Measure how long it took to accept connections.
+    sat=$((($(date +%s%N) - $sbs)/1000))
+    echo "Loading $app... done (took $sbt us)." | tee -a $TDIR/backend.log
+}
