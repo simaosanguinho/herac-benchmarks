@@ -92,8 +92,6 @@ function run {
         # Note: wait until lambda.pid is filled.
         while [ ! -f $TDIR/lambda.pid ]; do sleep 0.01; done
         PID=$(cat $TDIR/lambda.pid)
-        PID=$(pgrep -P $PID)
-        echo -n "$PID" > $TDIR/lambda.pid
     elif [ "$backend" == "container" ]; then
         PID=$(docker inspect --format '{{ .State.Pid }}' bcontainer)
         echo -n "$PID" > $TDIR/lambda.pid

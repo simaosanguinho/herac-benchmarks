@@ -47,6 +47,12 @@ public class PageRank extends PolyglotHostAccess {
         return output;
     }
 
+    public static void main(String[] args) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("size", "100");
+        System.out.println(main(map).toString());
+    }
+
     /* For c-API invocations. */
     @CEntryPoint(name = "entrypoint")
     public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {

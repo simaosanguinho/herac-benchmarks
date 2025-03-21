@@ -12,6 +12,4 @@ stop_svm       &> /dev/null
 stop_container &> /dev/null
 stop_vm        &> /dev/null
 
-rm -rf $TDIR
-rm -rf $ADIR
-rm -rf $SDIR
+rm -rf $WORK_DIR

@@ -294,21 +294,11 @@ function start_svm {
         #lat_us=$(echo "$lat_secs * 1000000" | bc)
         #echo "Restoring svm... done (took $lat_us us) !"
     else
-        # This is important to ensure that we can load many (>100k) sandboxes.
-        sysctl -w vm.max_map_count=2000000
         export lambda_timestamp="$(date +%s%N | cut -b1-13)"
         export lambda_port="$GRAALVISOR_PORT"
         export app_dir="$ADIR"
-        #perf stat -e cache-misses,context-switches,branch-misses,page-faults ./app
-        #strace -o $TDIR/strace.log -f ./app
-        # Note 1 : setarch is necessary to disable ASRL, which is relevant for
-        # svm snapshotting (accessible through context-sandbox).
-        # Note 2 : for large heaps, add `-Xmx128g`.
-        unshare --map-root-user --keep-caps --mount-proc -f -p setarch -R ./graalvisor &> $TDIR/lambda.log &
-        #strace --trace=memory -o $TDIR/graalvisor.strace -f ./graalvisor -Xmx128g &> $TDIR/lambda.log &
-        echo -n "$!" > "$TDIR/lambda.pid"
+        bash $GRAALVISOR_HOME/graalvisor $TDIR/graalvisor $TDIR/lambda.pid &> $TDIR/lambda.log
     fi
-    wait
 }
 
 function start_graalhost {
