@@ -1,0 +1,32 @@
+import java.nio.file.*
+
+plugins {
+    id("java")
+    id("application")
+    id("org.graalvm.buildtools.native") version "0.10.2"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+group = "org.example"
+version = "1.0-SNAPSHOT"
+description = "embedding"
+
+dependencies {
+    implementation("org.graalvm.polyglot:polyglot:24.2.0")
+    implementation("org.graalvm.polyglot:js:24.2.0")
+    implementation("org.graalvm.polyglot:python:24.2.0")
+}
+
+application {
+    mainModule.set("embedding")
+    mainClass.set("org.example.embedding.Main")
+}
