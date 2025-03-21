@@ -34,7 +34,7 @@ matplotlib.rcParams.update({'font.size': 16})
 plt.rcParams["figure.figsize"] = (8, 5.5)
 
 plt.xlabel('Memory Footprint (MB)')
-plt.ylabel('Sartup Latency (ms)')
+plt.ylabel('Startup Latency (ms)')
 
 plt.xlim(0.11, 1000)
 plt.ylim(0.11, 1000)

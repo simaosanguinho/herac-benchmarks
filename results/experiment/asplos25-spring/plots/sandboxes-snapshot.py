@@ -54,6 +54,8 @@ normal_memory = [
     327548,
     310972
 ]
+# Converting KBs to MBs.
+normal_memory = [float(x) / 1024.0 for x in normal_memory]
 
 restore = [
     139,
@@ -106,6 +108,8 @@ restored_memory = [
     118908,
     47308
 ]
+# Converting KBs to MBs.
+restored_memory = [float(x) / 1024.0 for x in restored_memory]
 
 print(normal_entrypoint)
 print(restored_total)
@@ -118,6 +122,7 @@ print("Normalized memory improvement:")
 print(mi)
 print("Average latency improvement:" + str(sum(li) / len(li)) )
 print("Average memry improvement:" + str(sum(mi) / len(mi)) )
+print(max(normal_memory))
 
 
 x = np.arange(len(benchmark_labels))
@@ -132,12 +137,14 @@ axs[1].bar(x + 0*width, normal_memory,   width=width, hatch='...', label='Cold',
 axs[1].bar(x + 1*width, restored_memory, width=width, hatch='|||', label='Snap',  alpha=0.75)
 axs[0].set_xticks([])
 axs[1].set_xticks(x, benchmark_labels)
-axs[1].legend()
+axs[1].legend(ncol=1, loc='upper left')
+# axs[1].set_ylim(ymax=100000000)
+
 plt.xticks(rotation = 45)
 axs[0].grid(axis = 'y', linestyle = '--', linewidth = 0.25)
 axs[1].grid(axis = 'y', linestyle = '--', linewidth = 0.25)
 axs[0].set_ylabel('Latency (us)')
-axs[1].set_ylabel('Memory (KBs)')
+axs[1].set_ylabel('Memory (MBs)')
 axs[0].set_yscale('log')
 axs[1].set_yscale('log')
 fig.set_figwidth(7)
