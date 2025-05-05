@@ -297,7 +297,7 @@ function start_svm {
         export lambda_timestamp="$(date +%s%N | cut -b1-13)"
         export lambda_port="$GRAALVISOR_PORT"
         export app_dir="$ADIR"
-        bash $GRAALVISOR_HOME/graalvisor $TDIR/graalvisor $TDIR/lambda.pid &> $TDIR/lambda.log
+        bash $GRAALVISOR_HOME/graalvisor $TDIR/lambda.pid &> $TDIR/lambda.log
     fi
 }
 

@@ -154,8 +154,7 @@ if [ ! -z "$SNAPSHOT" ]; then echo "SNAPSHOT = $SNAPSHOT"; fi
 # Preparing working directory
 echo "Removing $TDIR and $ADIR"
 rm -rf $TDIR
-# Note: we do not remove the app dir to facilitate snapshot testing.
-# You may want to call benchmark-clean.sh before you call this script.
+rm -rf $ADIR
 mkdir -p $TDIR
 mkdir -p $ADIR
 

@@ -32,7 +32,6 @@ function test_gv_benchmarks {
         for backend in "svm" #"container" "vm"
         do
             echo "$(tput bold)Benchmark: $benchmark in $backend $(tput sgr0)"
-            rm -rf $ADIR
             export SANDBOX="default"; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 1 | grep "Req output:"
             export SANDBOX="process"; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 1 | grep "Req output:"
             if [[ $benchmark == *"gv_java_classify"* || $benchmark == *"videoprocessing"* ]]; then
@@ -43,12 +42,11 @@ function test_gv_benchmarks {
                 echo "Skipping $benchmark (not supported)"
                 continue
             fi
+            export ITERATIONS=2 # One iteration for the checkpoint, another for the restore.
             export WARMUP=1
-            # Create the snapshot.
-            export SANDBOX=snapshot; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 0 | grep "Req output:"
-            # Restore from the snapshot.
             export SANDBOX=snapshot; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 0 | grep "Req output:"
             unset WARMUP
+            unset ITERATIONS
         done
     done
     unset SANDBOX
