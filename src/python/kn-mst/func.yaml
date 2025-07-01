@@ -1,0 +1,7 @@
+specVersion: 0.36.0
+name: kn-mst
+runtime: python
+registry: knative-py
+created: 2025-05-15T15:16:41.771047836+01:00
+build:
+  builder: pack

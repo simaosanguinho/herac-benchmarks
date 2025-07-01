@@ -275,11 +275,15 @@ function start_ow_vm {
 }
 
 function start_gv_container {
-    docker run --privileged --rm --name=bcontainer --network host -v $ADIR:/tmp/apps -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="$GRAALVISOR_PORT" -e JAVA_HOME="/jvm" graalvisor:latest &> $TDIR/lambda.log
+    docker run --privileged --rm --name=bcontainer --memory "${VM_MEM}m" --network host -v $ADIR:/tmp/apps -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="$GRAALVISOR_PORT" -e JAVA_HOME="/jvm" graalvisor:latest &> $TDIR/lambda.log
 }
 
 function start_ow_container {
-    docker run --rm --name=bcontainer --network host $IMG &> $TDIR/lambda.log
+    docker run --rm --name=bcontainer --memory "${VM_MEM}m" --network host $IMG &> $TDIR/lambda.log
+}
+
+function start_kn_container {
+    docker run --rm --name=bcontainer --memory "${VM_MEM}m" -p $KNATIVE_PORT:8080 $IMG &> $TDIR/lambda.log
 }
 
 function start_svm {

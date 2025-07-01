@@ -1,0 +1,7 @@
+specVersion: 0.36.0
+name: kn-hello-world
+runtime: node
+registry: knative-js
+created: 2025-05-09T08:21:13.179210146+01:00
+build:
+  builder: pack

@@ -1,0 +1,7 @@
+specVersion: 0.36.0
+name: kn-uploader
+runtime: node
+registry: knative-js
+created: 2025-05-09T08:32:22.458226135+01:00
+build:
+  builder: pack

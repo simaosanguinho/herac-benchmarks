@@ -1,0 +1,7 @@
+specVersion: 0.36.0
+name: kn-uploader
+runtime: python
+registry: knative-py
+created: 2025-05-09T09:18:00.180822713+01:00
+build:
+  builder: pack

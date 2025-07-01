@@ -78,6 +78,33 @@ function test_ow_benchmarks {
     done
 }
 
+function test_kn_benchmarks {
+    TEST_SET=""
+    read -p "Test Knative's Java benchmarks (y or Y, everything else as no)? " -n 1 -r
+    echo    # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        TEST_SET="$TEST_SET $JV_KN_BENCHMARKS"
+    fi
+    read -p "Test Knative's Python benchmarks (y or Y, everything else as no)? " -n 1 -r
+    echo    # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        TEST_SET="$TEST_SET $PY_KN_BENCHMARKS"
+    fi
+    read -p "Test Knative's JavaScript benchmarks (y or Y, everything else as no)? " -n 1 -r
+    echo    # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        TEST_SET="$TEST_SET $JS_KN_BENCHMARKS"
+    fi
+
+    for benchmark in $TEST_SET
+    do
+        $(DIR)/benchmark-knative.sh $benchmark test 1
+    done
+}
+
 function measure_benchmark_resources {
     declare -A conc_mem_table
     declare -A conc_cpu_table
@@ -92,7 +119,7 @@ function measure_benchmark_resources {
 
     for concurrency in 1 2 4 8;
     do
-        for benchmark in $GV_BENCHMARKS $CR_BENCHMARKS;
+        for benchmark in $GV_BENCHMARKS $CR_BENCHMARKS $KN_BENCHMARKS;
         do
             concurrency_table["$benchmark"]=$concurrency
             mem_table["$benchmark"]=${conc_mem_table["$concurrency"]}
@@ -106,10 +133,11 @@ function cold_start_latency {
     export EXPERIMENT="coldstart"
     cr_benchmark=cr_python_hw
     gv_benchmark=gv_python_hw
+    kn_benchmark=kn_python_hw
 
     function context_snapshot {
         export WARMUP=1
-        export SANDBOX=context-snapshot
+        export SANDBOX=snapshot
         rm -rf $ADIR/*.memsnap $ADIR/*.metasnap
         $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 0
         unset SANDBOX
@@ -136,6 +164,7 @@ function cold_start_latency {
     $(DIR)/benchmark-graalvisor.sh svm       $gv_benchmark test 1
     $(DIR)/benchmark-graalvisor.sh container $gv_benchmark test 1
     $(DIR)/benchmark-graalvisor.sh vm        $gv_benchmark test 1
+    $(DIR)/benchmark-knative.sh              $kn_benchmark test 1
     export ITERATIONS=2 # Note: one iteration to dump, another to restore.
     context_snapshot
     process_snapshot
@@ -161,12 +190,14 @@ function efficiency {
             for benchmark in $JS_GV_BENCHMARKS;
             do
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-                if [ "$SANDBOX" = "context-snapshot" ]; then
+                if [ "$SANDBOX" = "snapshot" ]; then
                     export WARMUP=${concurrency_table["$benchmark"]}
                     rm -f $ADIR/*.memsnap  $ADIR/*.metasnap
                     $(DIR)/benchmark-graalvisor.sh container $benchmark test ${concurrency_table["$benchmark"]}
                 fi
+                export KEEP_SNAPSHOTS=true
                 $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}
+                unset KEEP_SNAPSHOTS
                 unset WARMUP
                 unset WMULTIPLIER
             done
@@ -176,12 +207,14 @@ function efficiency {
             for benchmark in $PY_GV_BENCHMARKS;
             do
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-                if [ "$SANDBOX" = "context-snapshot" ]; then
+                if [ "$SANDBOX" = "snapshot" ]; then
                     export WARMUP=${concurrency_table["$benchmark"]}
                     rm -f $ADIR/*.memsnap $ADIR/*.metasnap
                     $(DIR)/benchmark-graalvisor.sh container $benchmark test ${concurrency_table["$benchmark"]}
                 fi
+                export KEEP_SNAPSHOTS=true
                 $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}
+                unset KEEP_SNAPSHOTS
                 unset WARMUP
                 unset WMULTIPLIER
             done
@@ -189,8 +222,8 @@ function efficiency {
 
         export SANDBOX=isolate; efficiency_gv_java
         export SANDBOX=process; efficiency_gv_java
-        export SANDBOX=context-snapshot; efficiency_gv_javascript
-        export SANDBOX=context-snapshot; efficiency_gv_python
+        export SANDBOX=snapshot; efficiency_gv_javascript
+        export SANDBOX=snapshot; efficiency_gv_python
         export SANDBOX=process; efficiency_gv_javascript
         export SANDBOX=process; efficiency_gv_python
         unset WARMUP
@@ -323,6 +356,16 @@ function efficiency {
         done
     }
 
+    # Knative runtimes
+    function efficiency_kn {
+        for benchmark in $KN_BENCHMARKS;
+        do
+            export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
+            $(DIR)/benchmark-knative.sh $benchmark benchmark ${concurrency_table["$benchmark"]}
+            unset WMULTIPLIER
+        done
+    }
+
     export ITERATIONS=1 # Note: by default this should be 5.
     export CGROUP="experiments"
     export PIN_CORE="true"
@@ -334,8 +377,9 @@ function efficiency {
 
     efficiency_gv
     efficiency_gv_single
-    #efficiency_gv_snapshot
+    # efficiency_gv_snapshot
     efficiency_cr
+    efficiency_kn
 
     # Clear variables.
     unset ITERATIONS
@@ -365,6 +409,14 @@ echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
     test_ow_benchmarks
+    exit 0
+fi
+
+read -p "Run basic knative tests (y or Y, everything else as no)? " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    test_kn_benchmarks
     exit 0
 fi
 

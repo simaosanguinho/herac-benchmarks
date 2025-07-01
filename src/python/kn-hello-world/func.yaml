@@ -1,0 +1,7 @@
+specVersion: 0.36.0
+name: kn-hello-world
+runtime: python
+registry: knative-py
+created: 2025-05-09T09:09:31.795424793+01:00
+build:
+  builder: pack

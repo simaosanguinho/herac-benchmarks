@@ -1,0 +1,7 @@
+specVersion: 0.36.0
+name: kn-dynamic-html
+runtime: python
+registry: knative-py
+created: 2025-05-16T10:00:48.034466434+01:00
+build:
+  builder: pack

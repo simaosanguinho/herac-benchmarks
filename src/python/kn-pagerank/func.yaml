@@ -1,0 +1,7 @@
+specVersion: 0.36.0
+name: kn-pagerank
+runtime: python
+registry: knative-py
+created: 2025-05-15T16:36:11.957034475+01:00
+build:
+  builder: pack

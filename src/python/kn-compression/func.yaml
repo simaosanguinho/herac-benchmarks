@@ -1,0 +1,7 @@
+specVersion: 0.36.0
+name: kn-compression
+runtime: python
+registry: knative-py
+created: 2025-05-09T14:06:56.047469539+01:00
+build:
+  builder: pack

@@ -1,0 +1,7 @@
+specVersion: 0.36.0
+name: kn-dynamic-html
+runtime: node
+registry: knative-js
+created: 2025-05-09T08:50:39.28298914+01:00
+build:
+  builder: pack

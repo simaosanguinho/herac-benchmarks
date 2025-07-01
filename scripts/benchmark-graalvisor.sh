@@ -26,6 +26,7 @@ if [ "$#" -ne 4 ]; then
     echo "- PIN_CORE=<boolean> - if true, will pin the process to core 0. Defaults to false;"
     echo "- DISABLE_TURBO=<boolean> - if true, will disable turbo boost. Defaults to false;"
     echo "- EXPERIMENT=<tag> - if set, will copy result logs into a dedicated experiment directory. Defaults to unset;"
+    echo "- KEEP_SNAPSHOTS=<boolean> - if true, the script will not remove the 'apps' directory to keep the snapshot files from the previous execution;"
     exit 1
 else
     backend=$1
@@ -41,11 +42,16 @@ function benchmark {
 
     if [ ! -z "$WARMUP" ]; then
         printf "Sending $WARMUP warmup requests:\n"
-        request "$IP:$GRAALVISOR_PORT/warmup?concurrency=$WARMUP\&requests=$WARMUP"
+        request $IP:$GRAALVISOR_PORT/warmup?concurrency=$WARMUP\&requests=$WARMUP
+    fi
+
+    REQUEST_ENDPOINT=""
+    if [ "$SANDBOX" = "snapshot" ]; then
+        REQUEST_ENDPOINT="warmup?concurrency=1&requests=1"
     fi
 
     printf "Running ab (check $TDIR/ab.log).\n"
-    ab -p $RUN_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:$GRAALVISOR_PORT/ &> $TDIR/ab.log
+    ab -s 60 -l -p $RUN_POST -T application/json -c $workload -n $((workload * WMULTIPLIER)) http://$IP:$GRAALVISOR_PORT/$REQUEST_ENDPOINT &> $TDIR/ab.log
 }
 
 function test {
@@ -154,7 +160,9 @@ if [ ! -z "$SNAPSHOT" ]; then echo "SNAPSHOT = $SNAPSHOT"; fi
 # Preparing working directory
 echo "Removing $TDIR and $ADIR"
 rm -rf $TDIR
-rm -rf $ADIR
+if [ "$KEEP_SNAPSHOTS" != "true" ]; then
+    rm -rf $ADIR
+fi
 mkdir -p $TDIR
 mkdir -p $ADIR
 

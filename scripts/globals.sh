@@ -28,6 +28,7 @@ export RESOURCES_HOME=$ARGO_HOME/resources
 export GRAALVISOR_PORT=8081
 export GRAALHOST_PORT=8100
 export OPENWHISK_PORT=8080
+export KNATIVE_PORT=8082
 export TDIR=$WORK_DIR/bench
 export ADIR=$WORK_DIR/apps
 export SDIR=$WORK_DIR/snaps

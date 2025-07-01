@@ -1,0 +1,7 @@
+specVersion: 0.36.0
+name: kn-thumbnail
+runtime: node
+registry: knative-js
+created: 2025-05-09T15:43:19.802568651+01:00
+build:
+  builder: pack

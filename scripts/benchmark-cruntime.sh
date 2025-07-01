@@ -37,7 +37,7 @@ function benchmark {
     fi
 
     printf "Running ab (check $TDIR/ab.log).\n"
-    ab -p $RUN_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$IP:$OPENWHISK_PORT/run &> $TDIR/ab.log
+    ab -l -p $RUN_POST -T application/json -c $workload -n $((workload * WMULTIPLIER))  http://$IP:$OPENWHISK_PORT/run &> $TDIR/ab.log
 }
 
 function test {

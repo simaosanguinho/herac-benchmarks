@@ -1,0 +1,7 @@
+specVersion: 0.36.0
+name: kn-video-processing
+runtime: python
+registry: knative-py
+created: 2025-05-15T14:43:00.799771777+01:00
+build:
+  builder: pack
