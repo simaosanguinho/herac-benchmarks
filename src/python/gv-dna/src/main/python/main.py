@@ -188,13 +188,14 @@ def transform(sequence, method="squiggle", bar=False):
     return x, y
 
 
-def dna(fasta_url):
-    with open("/tmp/bacillus_subtilis.fasta", 'wb') as ofile:
+def dna(fasta_url, tmp_dir):
+    fasta_path = "{dir}/bacillus_subtilis.fasta".format(dir=tmp_dir)
+    with open(fasta_path, 'wb') as ofile:
         response = requests.get(fasta_url)
         ofile.write(response.content)
 
     process_begin = datetime.datetime.now()
-    result = transform(open("/tmp/bacillus_subtilis.fasta", "r").read())
+    result = transform(open(fasta_path, "r").read())
     process_end = datetime.datetime.now()
 
     return {
@@ -204,11 +205,12 @@ def dna(fasta_url):
             }
     }
 
-def main(fasta_url):
+def main(args):
     try:
-        #return {"result": dna(fasta_url)}
+        fasta_url, tmp_dir = args.split(";")
+        #return {"result": dna(fasta_url, tmp_dir)}
         return {"result": transform("ATCTTTTTCGGCTTTTTTTAGTATCCACAGAGGTTATCGACAACATTTTCACATTACCAACCCCTGTGGACAAGGTTTTT") }
     except Exception as e:
         return {"result": str(e)}
 
-#print(main("http://127.0.0.1:8000/bacillus_subtilis.fasta"))
+#print(main("http://127.0.0.1:8000/bacillus_subtilis.fasta;/tmp"))

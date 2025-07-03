@@ -17,6 +17,7 @@ function build_ni {
         --no-fallback \
         --enable-url-protocols=http \
         -cp libs/videoprocessing-1.0-all.jar \
+        --initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
         -Dcom.oracle.svm.graalvisor.polyglotengine.language=python \
         -Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
         -Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/python/main.py \

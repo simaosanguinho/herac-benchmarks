@@ -1,6 +1,7 @@
 const main = async function (url) {
     const output = new Map()
-    polyHostAccess.uploadBytes(url, polyHostAccess.downloadBytes(url));
-    output.set("result", url)
+    const res = polyHostAccess.downloadBytes(url);
+    polyHostAccess.uploadBytes(url, res);
+    output.set("result", res.length)
     return output
 }

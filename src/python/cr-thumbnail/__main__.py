@@ -2,7 +2,6 @@ import io
 import os
 import shutil
 import tempfile
-import time
 import urllib.request
 
 import requests
@@ -12,17 +11,14 @@ from PIL import Image
 WIDTH = 100
 HEIGHT = 100
 
-# Util methods.
-def current_milli_time():
-    return round(time.time() * 1000)
-
 # Workload.
 def thumbnail(img_url):
+    input_img_filename = "/tmp/input-img.png"
     with urllib.request.urlopen(img_url) as response:
-        with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+        with open(input_img_filename, 'wb') as tmp_file:
             shutil.copyfileobj(response, tmp_file)
 
-        img_filename = "img-{}.png".format(current_milli_time())
+        img_filename = "/tmp/thumbnail-img.png"
         with open(tmp_file.name, 'rb') as encoded_img:
             data = encoded_img.read()
             img = Image.open(io.BytesIO(data))

@@ -14,6 +14,7 @@ function build_ni {
 		--no-fallback \
 		-H:-AllowVMInternalThreads \
 		-cp libs/hello-world-1.0-all.jar \
+                --initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
 		-H:+ReportExceptionStackTraces \
 		$NI_BIN_OPTS \
 		-H:Name=libhelloworld
@@ -40,6 +41,9 @@ then
         echo "Please set JAVA_HOME first. It should be a GraalVM with native-image available."
         exit 1
 fi
+
+# Build graalvisor lib.
+bash $ARGO_HOME/graalvisor-lib/build.sh
 
 # Move into the script directory.
 cd $DIR &> /dev/null

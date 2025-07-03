@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
+import com.oracle.svm.graalvisor.utils.JsonUtils;
 
 import org.graalvm.word.UnsignedWord;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -45,7 +46,8 @@ public class VideoProcessing extends PolyglotHostAccess {
         PolyglotEngine engine = getEngine();
         String video = (String) args.get("video");
         String ffmpeg = (String) args.get("ffmpeg");
-        output.put("output", engine.invoke(language, source, entrypoint, String.format("%s;%s", ffmpeg, video)));
+        String tmpDir = (String) args.get("tmpDir");
+        output.put("output", engine.invoke(language, source, entrypoint, String.format("%s;%s;%s", ffmpeg, video, tmpDir)));
         return output;
     }
 
@@ -53,16 +55,22 @@ public class VideoProcessing extends PolyglotHostAccess {
         HashMap<String, Object> output = new HashMap<>();
         output.put("video", "http://127.0.0.1:8000/video.mp4");
         output.put("ffmpeg", "http://127.0.0.1:8000/ffmpeg");
+        output.put("tmpDir", "/tmp");
         output = main(output);
         System.out.println(output);
     }
 
     @CEntryPoint(name = "entrypoint")
     public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
-        HashMap<String, Object> output = new HashMap<>();
-        output.put("video", "http://127.0.0.1:8000/video.mp4");
-        output.put("ffmpeg", "http://127.0.0.1:8000/ffmpeg");
-        output = main(output);
-        CTypeConversion.toCString(output.toString(), fout, foutLen);
+        String input = CTypeConversion.toJavaString(fin);
+        Map<String, Object> map = JsonUtils.jsonToMap(input);
+        String output = main(map).toString();
+        if (foutLen.rawValue() > 0) {
+            if (output.length() > (int) foutLen.rawValue()) {
+                CTypeConversion.toCString(output.substring(0, (int) foutLen.rawValue() - 1), fout, foutLen);
+            } else {
+                CTypeConversion.toCString(output, fout, foutLen);
+            }
+        }
     }
 }

@@ -19,6 +19,7 @@ function build_ni {
         -H:-AllowVMInternalThreads \
         --enable-url-protocols=http \
         -cp libs/thumbnail-1.0-all.jar \
+        --initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
         --language:js \
         -Dcom.oracle.svm.graalvisor.polyglotengine.language=js \
         -Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \

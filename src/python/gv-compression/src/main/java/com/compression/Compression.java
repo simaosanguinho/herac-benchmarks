@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
+import com.oracle.svm.graalvisor.utils.JsonUtils;
 
 import org.graalvm.word.UnsignedWord;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -44,7 +45,9 @@ public class Compression extends PolyglotHostAccess {
     public static HashMap<String, Object> main(Map<String, Object> args) {
         HashMap<String, Object> output = new HashMap<>();
         PolyglotEngine engine = getEngine();
-        output.put("output", engine.invoke(language, source, entrypoint, (String) args.get("url")));
+        String url = (String) args.get("url");
+        String tmpDir = (String) args.get("tmpDir");
+        output.put("output", engine.invoke(language, source, entrypoint, String.format("%s;%s", url, tmpDir)));
         return output;
     }
 
@@ -52,6 +55,7 @@ public class Compression extends PolyglotHostAccess {
     public static void main(String[] args) {
         HashMap<String, Object> output = new HashMap<>();
         output.put("url", "http://127.0.0.1:8000/video.mp4");
+        output.put("tmpDir", "/tmp");
         output = main(output);
         System.out.println(output);
     }
@@ -60,8 +64,7 @@ public class Compression extends PolyglotHostAccess {
     @CEntryPoint(name = "entrypoint")
     public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
         String input = CTypeConversion.toJavaString(fin);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("url", "http://127.0.0.1:8000/snap.png"); // TODO - convert input into map.
+        Map<String, Object> map = JsonUtils.jsonToMap(input);
         String output = main(map).toString();
         if (foutLen.rawValue() > 0) {
             if (output.length() > (int) foutLen.rawValue()) {

@@ -17,8 +17,10 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 
+import com.oracle.svm.graalvisor.utils.JsonUtils;
+
 public class HttpRequest {
-    
+
     public static byte[] downloadBytes(String url) {
         try {
             return downloadBytesInternal(url);
@@ -46,6 +48,7 @@ public class HttpRequest {
     public static void main(String[] args) {
         HashMap<String, Object> output = new HashMap<>();
         output.put("url", "http://127.0.0.1:8000/snap.png");
+        output.put("tmpDir", "/tmp");
         output = main(output);
         System.out.println(output);
     }
@@ -54,8 +57,7 @@ public class HttpRequest {
     @CEntryPoint(name = "entrypoint")
     public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
         String input = CTypeConversion.toJavaString(fin);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("url", "http://127.0.0.1:8000/snap.png"); // TODO - receive arg.
+        Map<String, Object> map = JsonUtils.jsonToMap(input);
         String output = main(map).toString();
         if (foutLen.rawValue() > 0) {
             if (output.length() > (int) foutLen.rawValue()) {

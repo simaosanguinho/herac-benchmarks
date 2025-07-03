@@ -2,12 +2,14 @@ import urllib.request
 import requests
 
 def uploader(url):
+    res = len(requests.get(url).content)
     with urllib.request.urlopen(url) as response:
-        return requests.post(url, headers={'Content-Type': 'image/png'}, data=response.read())
+        requests.post(url, headers={'Content-Type': 'image/png'}, data=response.read())
+    return res
 
 def main(args):
     try:
-        return { "result": uploader(args['url']).status_code }
+        return { "result": uploader(args['url']) }
     except Exception as e:
         return {"result": str(e)}
 

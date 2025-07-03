@@ -4,7 +4,7 @@ const http = require('http');
 const url = require('url');
 
 function main(args) {
-    let iname = "img-" + (Math.random()).toString().substring(10) + ".png";
+    let iname = "img-thumbnail.png";
     const file = fs.createWriteStream(iname);
     let q = url.parse(args['url'], true);
     var options = {

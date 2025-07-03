@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
+import com.oracle.svm.graalvisor.utils.JsonUtils;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 
@@ -105,6 +106,7 @@ public class DynamicHTML extends PolyglotHostAccess {
         output.put("url", "http://127.0.0.1:8000/template.html");
         output.put("username", "rbruno");
         output.put("nsize", "10");
+        output.put("tmpDir", "/tmp");
         output = main(output);
         System.out.println(output);
     }
@@ -113,10 +115,7 @@ public class DynamicHTML extends PolyglotHostAccess {
     @CEntryPoint(name = "entrypoint")
     public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
         String input = CTypeConversion.toJavaString(fin);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("url", "http://127.0.0.1:8000/template.html"); // TODO - convert input into map.
-        map.put("username", "rbruno");
-        map.put("nsize", "10");
+        Map<String, Object> map = JsonUtils.jsonToMap(input);
         String output = main(map).toString();
         if (foutLen.rawValue() > 0) {
             if (output.length() > (int) foutLen.rawValue()) {

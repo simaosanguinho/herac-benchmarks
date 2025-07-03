@@ -18,6 +18,7 @@ function build_ni {
 		-H:-AllowVMInternalThreads \
 		--enable-url-protocols=http \
 		-cp libs/helloworld-1.0-all.jar:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-all.jar \
+                --initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.language=python \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.entrypoint=main \
 		-Dcom.oracle.svm.graalvisor.polyglotengine.source=$DIR/src/main/python/main.py \

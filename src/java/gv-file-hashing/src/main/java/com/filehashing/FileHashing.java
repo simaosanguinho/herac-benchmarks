@@ -16,6 +16,8 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 
+import com.oracle.svm.graalvisor.utils.JsonUtils;
+
 public class FileHashing {
 	
 	public static byte[] downloadBytes(String url) {
@@ -50,6 +52,7 @@ public class FileHashing {
     public static void main(String[] args) {
     	HashMap<String, Object> output = new HashMap<>();
     	output.put("url", "http://127.0.0.1:8000/snap.png");
+        output.put("tmpDir", "/tmp");
     	output = main(output);
     	System.out.println(output);
     }
@@ -58,8 +61,7 @@ public class FileHashing {
     @CEntryPoint(name = "entrypoint")
     public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
         String input = CTypeConversion.toJavaString(fin);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("url", "http://127.0.0.1:8000/snap.png"); // TODO - convert input into map.
+        Map<String, Object> map = JsonUtils.jsonToMap(input);
         String output = main(map).toString();
         if (foutLen.rawValue() > 0) {
             if (output.length() > (int) foutLen.rawValue()) {

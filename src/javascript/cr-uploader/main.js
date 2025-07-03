@@ -46,7 +46,7 @@ async function main(args) {
     try {
         let get_data = await get_request(args['url']);
         let post_data = await post_request(args['url'], get_data);
-        return { "result": post_data } 
+        return { "result": get_data.length }
     }
     catch(err) {
         return { "result": err } 

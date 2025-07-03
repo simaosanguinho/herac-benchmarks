@@ -2,8 +2,8 @@ import os
 import shutil
 import requests
 
-def compression(url):
-    dir_path = os.path.basename(url)
+def compression(url, tmp_dir):
+    dir_path = tmp_dir + "/pyco-" + os.path.basename(url)
     file_path = os.path.join(dir_path, os.path.basename(url))
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
@@ -14,8 +14,9 @@ def compression(url):
 
 def main(args):
     try:
-        return {"result": compression(args)}
+        url, tmp_dir = args.split(";")
+        return {"result": compression(url, tmp_dir)}
     except Exception as e:
         return {"result": str(e)}
 
-#print(main("http://194.210.228.197:8000/video.mp4"))
+#print(main("http://194.210.228.197:8000/video.mp4;/tmp"))

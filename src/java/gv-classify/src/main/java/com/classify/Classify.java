@@ -19,12 +19,14 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 
+import com.oracle.svm.graalvisor.utils.JsonUtils;
+
 import javax.imageio.ImageIO;
 
 public class Classify {
 
     public static InceptionImageClassifier classifier = null;
-    public static String TMP_IMG_PATH = String.format("/tmp/img-%d.jpg", ThreadLocalRandom.current().nextInt(0, 1024 + 1));
+    public static String IMG_FILENAME = String.format("img-%d.jpg", ThreadLocalRandom.current().nextInt(0, 1024 + 1));
 
     public static byte[] fromInputStream(InputStream is) throws Exception {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -64,21 +66,27 @@ public class Classify {
     }
     
     public static HashMap<String, Object> main(Map<String, Object> args) {
+        String tmpDir = (String) args.get("tmpDir");
+
+        String tmpImgPath = tmpDir + "/" + IMG_FILENAME;
+        String modelPath = tmpDir + "/tensorflow_inception_graph.pb";
+        String labelsPath = tmpDir + "/imagenet_comp_graph_label_strings.txt";
+
         HashMap<String, Object> output = new HashMap<>();
         try {
            	if (classifier == null) {
                 classifier = new InceptionImageClassifier();
-                downloadIfNecessary("/tmp/tensorflow_inception_graph.pb", (String)args.get("model_url"));
-                downloadIfNecessary("/tmp/imagenet_comp_graph_label_strings.txt", (String)args.get("labels_url"));
-    			classifier.load_model(new FileInputStream("/tmp/tensorflow_inception_graph.pb"));
-    			classifier.load_labels(new FileInputStream(("/tmp/imagenet_comp_graph_label_strings.txt")));
+                downloadIfNecessary(modelPath, (String)args.get("model_url"));
+                downloadIfNecessary(labelsPath, (String)args.get("labels_url"));
+                classifier.load_model(new FileInputStream(modelPath));
+                classifier.load_labels(new FileInputStream((labelsPath)));
             }
            	
-            try (FileOutputStream stream = new FileOutputStream(TMP_IMG_PATH)) {
+            try (FileOutputStream stream = new FileOutputStream(tmpImgPath)) {
                 stream.write(downloadBytes((String)args.get("image_url")));
             }
 
-			output.put("prediction", classifier.predict_image(ImageIO.read(new FileInputStream(TMP_IMG_PATH))));
+			output.put("prediction", classifier.predict_image(ImageIO.read(new FileInputStream(tmpImgPath))));
 		} catch (Throwable e) {
 			output.put("exception", e.getMessage());
 			e.printStackTrace();
@@ -92,6 +100,7 @@ public class Classify {
     	output.put("model_url", "http://127.0.0.1:8000/tensorflow_inception_graph.pb");
     	output.put("labels_url", "http://127.0.0.1:8000/imagenet_comp_graph_label_strings.txt");
     	output.put("image_url", "http://127.0.0.1:8000/eagle.jpg");
+        output.put("tmpDir", "/tmp");
         System.out.println(main(output));
     }
     
@@ -99,11 +108,7 @@ public class Classify {
     @CEntryPoint(name = "entrypoint")
     public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
         String input = CTypeConversion.toJavaString(fin);
-        HashMap<String, Object> map = new HashMap<>();
-        // TODO - get from input.
-        map.put("model_url", "http://127.0.0.1:8000/tensorflow_inception_graph.pb");
-    	map.put("labels_url", "http://127.0.0.1:8000/imagenet_comp_graph_label_strings.txt");
-    	map.put("image_url", "http://127.0.0.1:8000/eagle.jpg");
+        Map<String, Object> map = JsonUtils.jsonToMap(input);
         String output = main(map).toString();
         if (foutLen.rawValue() > 0) {
             if (output.length() > (int) foutLen.rawValue()) {

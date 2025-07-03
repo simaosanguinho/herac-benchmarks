@@ -3,8 +3,8 @@ import stat
 import subprocess
 import requests
 
-def call_ffmpeg(args):
-    ret = subprocess.run(["./ffmpeg", '-y'] + args,
+def call_ffmpeg(ffmpeg_path, args):
+    ret = subprocess.run([ffmpeg_path, '-y'] + args,
             stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE, 
             stderr=subprocess.STDOUT
@@ -15,9 +15,9 @@ def call_ffmpeg(args):
         print('Out: ', ret.stdout.decode('utf-8'))
         raise RuntimeError()
 
-def to_gif(video, duration):
-    output = 'processed-{}.gif'.format(os.path.basename(video))
-    call_ffmpeg(["-i", video,
+def to_gif(ffmpeg_path, video, duration, tmp_dir):
+    output = '{dir}/processed-{fname}.gif'.format(dir=tmp_dir, fname=os.path.basename(video))
+    call_ffmpeg(ffmpeg_path, ["-i", video,
         "-t",
         "{0}".format(duration),
         "-vf",
@@ -26,28 +26,31 @@ def to_gif(video, duration):
         output])
     return output
 
-def set_ffmpeg_executable():
+def set_ffmpeg_executable(ffmpeg_path):
     try:
-        os.chmod("ffmpeg", os.stat("ffmpeg").st_mode | stat.S_IEXEC)
+        os.chmod(ffmpeg_path, os.stat(ffmpeg_path).st_mode | stat.S_IEXEC)
     except OSError:
         pass
 
-def videoprocessing(ffmpeg_url, video_url):
-    if not os.path.exists("ffmpeg"):
-        with open("ffmpeg", 'wb') as ofile:
+def videoprocessing(ffmpeg_url, video_url, tmp_dir):
+    ffmpeg_path = tmp_dir + "/ffmpeg"
+    video_path = tmp_dir + "/video.mp4"
+
+    if not os.path.exists(ffmpeg_path):
+        with open(ffmpeg_path, 'wb') as ofile:
             response = requests.get(ffmpeg_url)
             ofile.write(response.content)
-        set_ffmpeg_executable()
+        set_ffmpeg_executable(ffmpeg_path)
 
-    with open("video.mp4", 'wb') as ofile:
+    with open(video_path, 'wb') as ofile:
         response = requests.get(video_url)
         ofile.write(response.content)
 
-    return to_gif("video.mp4", "1")
+    return to_gif(ffmpeg_path, video_path, "1", tmp_dir)
 
 def main(args):
     try:
-        ffmpeg_url, video_url = args.split(";")
-        return {"result": videoprocessing(ffmpeg_url, video_url)}
+        ffmpeg_url, video_url, tmp_dir = args.split(";")
+        return {"result": videoprocessing(ffmpeg_url, video_url, tmp_dir)}
     except Exception as e:
         return {"result": str(e)}

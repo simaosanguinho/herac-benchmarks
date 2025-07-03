@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
+import com.oracle.svm.graalvisor.utils.JsonUtils;
 
 import org.graalvm.word.UnsignedWord;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -50,6 +51,7 @@ public class PageRank extends PolyglotHostAccess {
     public static void main(String[] args) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("size", "100");
+        map.put("tmpDir", "/tmp");
         System.out.println(main(map).toString());
     }
 
@@ -57,8 +59,7 @@ public class PageRank extends PolyglotHostAccess {
     @CEntryPoint(name = "entrypoint")
     public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
         String input = CTypeConversion.toJavaString(fin);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("size", "100"); // TODO - convert input into size.
+        Map<String, Object> map = JsonUtils.jsonToMap(input);
         String output = main(map).toString();
         if (foutLen.rawValue() > 0) {
             if (output.length() > (int) foutLen.rawValue()) {

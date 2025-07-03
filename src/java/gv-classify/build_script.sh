@@ -18,6 +18,7 @@ function build_ni {
 		--enable-url-protocols=http \
 		-Djava.awt.headless=true \
 		-cp libs/classify-1.0-all.jar \
+		--initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
 		-H:ConfigurationFileDirectories=../config-dir \
 		-H:+ReportExceptionStackTraces \
 		$NI_BIN_OPTS \
@@ -45,6 +46,9 @@ then
         echo "Please set JAVA_HOME first. It should be a GraalVM with native-image available."
         exit 1
 fi
+
+# Build graalvisor lib.
+bash $ARGO_HOME/graalvisor-lib/build.sh
 
 # Move into the script directory.
 cd $DIR &> /dev/null

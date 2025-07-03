@@ -15,6 +15,10 @@ shadowJar() {
     from sourceSets.main.output
 }
 
+dependencies {
+    implementation files(System.getenv('ARGO_HOME') + '/graalvisor-lib/build/libs/graalvisor-lib-1.0-all.jar')
+}
+
 jar {
     manifest {
         attributes(

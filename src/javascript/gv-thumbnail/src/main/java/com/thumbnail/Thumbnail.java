@@ -7,6 +7,7 @@ import org.graalvm.polyglot.HostAccess;
 
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
+import com.oracle.svm.graalvisor.utils.JsonUtils;
 
 import org.graalvm.word.UnsignedWord;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -73,14 +74,17 @@ public class Thumbnail extends PolyglotHostAccess {
 
     public static HashMap<String, Object> main(Map<String, Object> args) {
         HashMap<String, Object> output = new HashMap<>();
+        String url = (String) args.get("url");
+        String tmpDir = (String) args.get("tmpDir");
         ThumbnailEngine engine = getEngine();
-        output.put("output", engine.invoke(language, source, entrypoint, (String) args.get("url")));
+        output.put("output", engine.invoke(language, source, entrypoint, String.format("%s;%s", url, tmpDir)));
         return output;
     }
 
     public static void main(String[] args) {
         HashMap<String, Object> output = new HashMap<>();
         output.put("url", "http://127.0.0.1:8000/snap.png");
+        output.put("tmpDir", "/tmp");
         output = main(output);
         System.out.println(output);
     }
@@ -88,9 +92,15 @@ public class Thumbnail extends PolyglotHostAccess {
     /* For c-API invocations. */
     @CEntryPoint(name = "entrypoint")
     public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("url", "http://127.0.0.1:8000/snap.png");
+        String input = CTypeConversion.toJavaString(fin);
+        Map<String, Object> map = JsonUtils.jsonToMap(input);
         String output = main(map).toString();
-        CTypeConversion.toCString(output, fout, foutLen);
+        if (foutLen.rawValue() > 0) {
+            if (output.length() > (int) foutLen.rawValue()) {
+                CTypeConversion.toCString(output.substring(0, (int) foutLen.rawValue() - 1), fout, foutLen);
+            } else {
+                CTypeConversion.toCString(output, fout, foutLen);
+            }
+        }
     }
 }

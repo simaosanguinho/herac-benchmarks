@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.oracle.svm.graalvisor.polyglot.PolyglotEngine;
 import com.oracle.svm.graalvisor.polyglot.PolyglotHostAccess;
+import com.oracle.svm.graalvisor.utils.JsonUtils;
 
 import org.graalvm.word.UnsignedWord;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -42,14 +43,17 @@ public class DNA extends PolyglotHostAccess {
 
     public static HashMap<String, Object> main(Map<String, Object> args) {
         HashMap<String, Object> output = new HashMap<>();
+        String fastaUrl = (String) args.get("fasta_url");
+        String tmpDir = (String) args.get("tmpDir");
         PolyglotEngine engine = getEngine();
-        output.put("output", engine.invoke(language, source, entrypoint, (String) args.get("fasta_url")));
+        output.put("output", engine.invoke(language, source, entrypoint, String.format("%s;%s", fastaUrl, tmpDir)));
         return output;
     }
 
     public static void main(String[] args) {
         HashMap<String, Object> output = new HashMap<>();
         output.put("fasta_url", "http://127.0.0.1:8000/bacillus_subtilis.fasta");
+        output.put("tmpDir", "/tmp");
         output = main(output);
         System.out.println(output);
     }
@@ -58,8 +62,7 @@ public class DNA extends PolyglotHostAccess {
     @CEntryPoint(name = "entrypoint")
     public static void main(IsolateThread thread, CCharPointer fin, CCharPointer fout, UnsignedWord foutLen) {
         String input = CTypeConversion.toJavaString(fin);
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("fasta_url", "http://127.0.0.1:8000/bacillus_subtilis.fasta"); // TODO - convert input into map.
+        Map<String, Object> map = JsonUtils.jsonToMap(input);
         String output = main(map).toString();
         if (foutLen.rawValue() > 0) {
             if (output.length() > (int) foutLen.rawValue()) {
