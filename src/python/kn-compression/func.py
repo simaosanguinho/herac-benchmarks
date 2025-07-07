@@ -3,9 +3,20 @@ from flask import Request
 import os
 import shutil
 import requests
+import threading
+
+
+def init_sandbox_dir():
+    tid = threading.get_ident()
+    sandbox_dir = f"/tmp/sandbox-{tid}"
+    os.makedirs(sandbox_dir, exist_ok=True)
+    return sandbox_dir
+
 
 def compression(url):
-    dir_path = os.path.basename(url)
+    tmp_dir = init_sandbox_dir()
+
+    dir_path = tmp_dir + "/pyco-" + os.path.basename(url)
     file_path = os.path.join(dir_path, os.path.basename(url))
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)

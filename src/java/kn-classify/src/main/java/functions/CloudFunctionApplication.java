@@ -14,6 +14,9 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,7 +27,7 @@ import org.springframework.messaging.Message;
 public class CloudFunctionApplication {
 
   public static InceptionImageClassifier classifier = null;
-  public static String TMP_IMG_PATH = String.format("/tmp/img-%d.jpg", ThreadLocalRandom.current().nextInt(0, 1024 + 1));
+  public static String IMG_FILENAME = String.format("img-%d.jpg", ThreadLocalRandom.current().nextInt(0, 1024 + 1));
 
   public static void main(String[] args) {
     SpringApplication.run(CloudFunctionApplication.class, args);
@@ -68,19 +71,27 @@ public class CloudFunctionApplication {
   }
 
   public static String process(String modelUrl, String labelsUrl, String imageUrl) throws Exception {
+    long threadId = Thread.currentThread().getId();
+    String tmpDir = "/tmp/sandbox-" + threadId;
+    initTmpDirectory(tmpDir);
+
+    String tmpImgPath = tmpDir + "/" + IMG_FILENAME;
+    String modelPath = tmpDir + "/tensorflow_inception_graph.pb";
+    String labelsPath = tmpDir + "/imagenet_comp_graph_label_strings.txt";
+
     if (classifier == null) {
       classifier = new InceptionImageClassifier();
-      downloadIfNecessary("/tmp/tensorflow_inception_graph.pb", modelUrl);
-      downloadIfNecessary("/tmp/imagenet_comp_graph_label_strings.txt", labelsUrl);
-    	classifier.load_model(new FileInputStream("/tmp/tensorflow_inception_graph.pb"));
-    	classifier.load_labels(new FileInputStream(("/tmp/imagenet_comp_graph_label_strings.txt")));
+      downloadIfNecessary(modelPath, modelUrl);
+      downloadIfNecessary(labelsPath, labelsUrl);
+      classifier.load_model(new FileInputStream(modelPath));
+      classifier.load_labels(new FileInputStream((labelsPath)));
     }
 
-    try (FileOutputStream stream = new FileOutputStream(TMP_IMG_PATH)) {
+    try (FileOutputStream stream = new FileOutputStream(tmpImgPath)) {
       stream.write(downloadBytes(imageUrl));
     }
 
-    return classifier.predict_image(ImageIO.read(new FileInputStream(TMP_IMG_PATH)));
+    return classifier.predict_image(ImageIO.read(new FileInputStream(tmpImgPath)));
   }
 
   @Bean
@@ -101,5 +112,16 @@ public class CloudFunctionApplication {
         return e.getMessage();
       }
     };
+  }
+
+  public static void initTmpDirectory(String directoryPath) {
+    Path path = Paths.get(directoryPath);
+    if (Files.notExists(path)) {
+      try {
+        Files.createDirectories(path);
+      } catch (IOException e) {
+        System.err.println(String.format("[thread %d] Error creating %s directory: %s", Thread.currentThread().getId(), directoryPath, e.getMessage()));
+      }
+    }
   }
 }

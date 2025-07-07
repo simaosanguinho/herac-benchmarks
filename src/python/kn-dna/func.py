@@ -4,15 +4,27 @@ from flask import Request
 import requests
 import datetime
 from squiggle import transform
+import threading
+import os
+
+
+def init_sandbox_dir():
+    tid = threading.get_ident()
+    sandbox_dir = f"/tmp/sandbox-{tid}"
+    os.makedirs(sandbox_dir, exist_ok=True)
+    return sandbox_dir
 
 
 def dna(fasta_url):
-    with open("/tmp/bacillus_subtilis.fasta", 'wb') as ofile:
+    tmp_dir = init_sandbox_dir()
+    fasta_path = tmp_dir + "/bacillus_subtilis.fasta"
+
+    with open(fasta_path, 'wb') as ofile:
         response = requests.get(fasta_url)
         ofile.write(response.content)
 
     process_begin = datetime.datetime.now()
-    result = transform(open("/tmp/bacillus_subtilis.fasta", "r").read())
+    result = transform(open(fasta_path, "r").read())
     process_end = datetime.datetime.now()
 
     return {
