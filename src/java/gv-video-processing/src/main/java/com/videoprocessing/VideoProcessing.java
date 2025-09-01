@@ -8,10 +8,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Map;
 
-import net.bramp.ffmpeg.FFmpeg;
-import net.bramp.ffmpeg.FFmpegExecutor;
-import net.bramp.ffmpeg.builder.FFmpegBuilder;
-
 import org.graalvm.word.UnsignedWord;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
 import org.graalvm.nativeimage.IsolateThread;
@@ -21,69 +17,86 @@ import org.graalvm.nativeimage.c.type.CTypeConversion;
 import com.oracle.svm.graalvisor.utils.JsonUtils;
 
 import java.util.HashMap;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.FileChannel;
+import java.nio.channels.Channels;
 
 public class VideoProcessing {
-    
-    public static byte[] downloadBytes(String url) {
+
+    public static void downloadURLIntoFile(String url, FileOutputStream fos) throws Exception {
+        ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(url).openStream());
+        FileChannel fileChannel = fos.getChannel();
+        fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+    }
+
+    public static void runFFmpegCommand(String[] command) {
         try {
-            URLConnection conn = new URL(url).openConnection();
-            InputStream is = conn.getInputStream();
-            byte[] bytes = is.readAllBytes();
-            is.close();
-            return bytes;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            System.out.println(String.format("running ffmpeg command: %s", java.lang.String.join(" ", command)));
+            ProcessBuilder builder = new ProcessBuilder(command);
+            builder.redirectErrorStream(true); // This merges the error stream with the standard output stream
+
+            // Start the process
+            Process process = builder.start();
+            // Wait for the process to complete
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                process.getErrorStream().transferTo(System.out);
+                System.out.println(String.format("FFMpeg exited with error code %s", exitCode));
+            }
+        } catch (IOException | InterruptedException e) {
+            System.out.println(String.format("Error running ffmpeg command %s", e));
         }
     }
 
     private static void ffmpeg(String ffmpegPath, String fileName) throws Exception{
-        FFmpegBuilder builder = new FFmpegBuilder()
-          .setInput(fileName) // Filename, or a FFmpegProbeResult
-          .overrideOutputFiles(true) // Override the output if it exists
-          .addOutput(fileName + ".out") // Filename for the destination
-          .setFormat("mp4") // Format is inferred from filename, or can be set
-          .setVideoResolution(640, 480) // at 640x480 resolution
-          .setStrict(FFmpegBuilder.Strict.EXPERIMENTAL) // Allow FFmpeg to use experimental specs
-          .done();
-        new FFmpegExecutor(new FFmpeg(ffmpegPath)).createJob(builder).run();
+        String[] ffmpegCommand = new String[]{
+            ffmpegPath,
+            "-y",
+            "-i", fileName,
+            "-s", "640x480",
+            "-c:a", "copy",
+            fileName + "-output.mp4"
+        };
+        runFFmpegCommand(ffmpegCommand);
     }
 
-    
+
     public static HashMap<String, Object> main(Map<String, Object> args) {
         String tmpDir = (String) args.get("tmpDir");
         HashMap<String, Object> output = new HashMap<>();
 
         String ffmpegPath = tmpDir + "/ffmpeg";
         String videoPath = tmpDir + "/video.mp4";
-        
+
         if (!new File(ffmpegPath).exists()) {
             File file = new File(ffmpegPath);
             try (FileOutputStream stream = new FileOutputStream(file)) {
-                stream.write(downloadBytes((String)args.get("ffmpeg")));
-                file.setWritable(false);
-                file.setReadable(true);
-                file.setExecutable(true);
+                downloadURLIntoFile((String)args.get("ffmpeg"), stream);
+                stream.flush();
             } catch (Exception e) {
                  output.put("output", e.getMessage());
                  e.printStackTrace();
-             } 
+            }
+            file.setWritable(false);
+            file.setReadable(true);
+            file.setExecutable(true);
         }
-        
+
         try (FileOutputStream stream = new FileOutputStream(videoPath)) {
-            stream.write(downloadBytes((String)args.get("video")));
+            downloadURLIntoFile((String)args.get("video"), stream);
+            stream.flush();
         } catch (Exception e) {
              output.put("output", e.getMessage());
              e.printStackTrace();
          }
-        
+
         try {
             ffmpeg(ffmpegPath, videoPath);
         } catch (Exception e) {
             output.put("output", e.getMessage());
             e.printStackTrace();
         }
-        
+
         output.put("output", videoPath);
         return output;
     }
