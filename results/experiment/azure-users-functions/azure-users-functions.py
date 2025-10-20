@@ -51,6 +51,8 @@ x = [elem - first for elem in x]
 # Convert from ms to sec
 x = [elem/1000 for elem in x]
 
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 matplotlib.rcParams.update({'font.size': 16})
 plt.rcParams["figure.figsize"] = (10, 4)
 plt.xlabel('Time (seconds)')

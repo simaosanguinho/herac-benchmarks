@@ -26,9 +26,11 @@ def plot_invocations(userfile, funcfile, outprefix):
     y_user = np.arange(len(avg_user_invocations)) / float(len(avg_user_invocations))
     y_func = np.arange(len(avg_func_invocations)) / float(len(avg_func_invocations))
   
+    matplotlib.rcParams['pdf.fonttype'] = 42
+    matplotlib.rcParams['ps.fonttype'] = 42
     matplotlib.rcParams.update({'font.size': 16})
     plt.rcParams["figure.figsize"] = (10, 4)
-    plt.plot(x_user, y_user, linestyle='--',   linewidth=3, label="User Invocations")
+    plt.plot(x_user, y_user, linestyle='--',   linewidth=3, label="Tenant Invocations")
     plt.plot(x_func, y_func, linestyle='-',  linewidth=3, label="Function Invocations")
     plt.grid()
     plt.xlabel('Invocations per Minute')
