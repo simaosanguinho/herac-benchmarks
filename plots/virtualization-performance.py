@@ -3,7 +3,7 @@
 import matplotlib
 from matplotlib import pyplot as plt
 
-#        Isolate, Fork, Snapshot, Graalvisor, CPython, V8,    JVM,   Firacracker, Docker, Qemu,   Function
+#        Isolate, Fork, Snapshot, Hydra, CPython, V8,    JVM,   Firacracker, Docker, Qemu,   Function
 x  =    [0.48,    5.0,  16.61,    14.74,      8.72,    36.56, 38.32, 63.54,       46.95,  118.54, 125] # Memory
 y  =    [0.25,    0.4,  01.94,    05.00,      13.1,    40.80, 26.90, 166.7,       257.1,  241.70, 750] # Latency
 

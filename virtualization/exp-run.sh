@@ -299,34 +299,34 @@ function cpython_rss_latency {
     done
 }
 
-function graalvisor_rss_latency {
-    rm $RESULTS_DIR/*-graalvisor.dat
+function hydra_rss_latency {
+    rm $RESULTS_DIR/*-hydra.dat
     for i in $(seq 1 $ITERS)
     do
         export lambda_timestamp="$(date +%s%N | cut -b1-13)"
-        $ARGO_HOME/graalvisor/build/native-image/polyglot-proxy &>> $RESULTS_DIR/latency-graalvisor.dat &
+        $ARGO_HOME/hydra/build/native-image/polyglot-proxy &>> $RESULTS_DIR/latency-hydra.dat &
         pid=$!
-        log_rss $! $RESULTS_DIR/rss-graalvisor.dat &> /dev/null &
+        log_rss $! $RESULTS_DIR/rss-hydra.dat &> /dev/null &
         sleep 5
         kill $pid
     done
 }
 
-function graalvisor_sandbox_rss_latency {
+function hydra_sandbox_rss_latency {
 
     function build_ni_so {
-        $JAVA_HOME/bin/native-image -cp $JAR:$ARGO_HOME/graalvisor-lib/build/libs/graalvisor-lib-1.0-guest.jar \
-                -DGraalVisorGuest=true \
-                -Dcom.oracle.svm.graalvisor.libraryPath=$ARGO_HOME/graalvisor-lib/build/resources/main/com.oracle.svm.graalvisor.headers \
-                --initialize-at-run-time=com.oracle.svm.graalvisor.utils.JsonUtils \
+        $JAVA_HOME/bin/native-image -cp $JAR:$ARGO_HOME/hydra-lib/build/libs/hydra-lib-1.0-guest.jar \
+                -DHydraGuest=true \
+                -Dcom.oracle.svm.hydra.libraryPath=$ARGO_HOME/hydra-lib/build/resources/main/com.oracle.svm.hydra.headers \
+                --initialize-at-run-time=com.oracle.svm.hydra.utils.JsonUtils \
                 -H:ConfigurationFileDirectories=../../src/main/resources/ni-agent-config \
                 --shared \
                 -H:Name=libapp
     }
 
     function measure_memory {
-        # Launch graalvisor
-        $ARGO_HOME/graalvisor/build/native-image/polyglot-proxy &> memory.log &
+        # Launch hydra
+        $ARGO_HOME/hydra/build/native-image/polyglot-proxy &> memory.log &
         pid=$!
 
         # Register application.
@@ -352,13 +352,13 @@ function graalvisor_sandbox_rss_latency {
             wait $curl_pid
         done
 
-        # Kill graalvisor
+        # Kill hydra
         kill $pid &> /dev/null
     }
 
     function measure_latency {
-        # Launch graalvisor
-        $ARGO_HOME/graalvisor/build/native-image/polyglot-proxy &> latency.log &
+        # Launch hydra
+        $ARGO_HOME/hydra/build/native-image/polyglot-proxy &> latency.log &
         pid=$!
 
         # Register application.
@@ -370,16 +370,16 @@ function graalvisor_sandbox_rss_latency {
             curl -s -X POST 127.0.0.1:8080 -H 'Content-Type: application/json' -d '{"name":"time","async":"false","cached":"false","arguments":"{\"stime\":\"0\"}"}' &>> latency-app.log
         done
 
-        # Kill graalvisor
+        # Kill hydra
         kill $pid &> /dev/null
     }
 
     sandbox=$1
 
     # Use a temporary directory.
-    rm -r $DIR/results/graalvisor-$sandbox &> /dev/null
-    mkdir $DIR/results/graalvisor-$sandbox &> /dev/null
-    cd $DIR/results/graalvisor-$sandbox
+    rm -r $DIR/results/hydra-$sandbox &> /dev/null
+    mkdir $DIR/results/hydra-$sandbox &> /dev/null
+    cd $DIR/results/hydra-$sandbox
 
     # Build application into a shared library.
     build_ni_so
@@ -398,9 +398,9 @@ vm_latency qemu
 firecracker_snapshot_rss_latency
 docker_rss_latency
 docker_scratch_rss_latency
-graalvisor_rss_latency
-graalvisor_sandbox_rss_latency process
-graalvisor_sandbox_rss_latency process
+hydra_rss_latency
+hydra_sandbox_rss_latency process
+hydra_sandbox_rss_latency process
 hotspot_rss_latency
 node_rss_latency
 cpython_rss_latency

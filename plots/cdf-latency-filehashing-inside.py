@@ -26,7 +26,7 @@ y_gv[-1] = 1
 
 fig = plt.figure()
 plt.plot(x_cr, y_cr, marker='o', label='OpenWisk JVM')
-plt.plot(x_gv, y_gv, marker='x', label='Graalvisor')
+plt.plot(x_gv, y_gv, marker='x', label='Hydra')
 plt.ylim(ymin=0, ymax=1)
 plt.xlim(xmin=0)
 plt.ylabel('Cumulative Distribution Function')

@@ -17,7 +17,7 @@ def read_request_latency(path):
 def read_backend_startup_latency(path):
     with open(results + '/' + path + '/lambda.log') as file:
         for line in file:
-            if 'Graalvisor boot time' in line:
+            if 'Hydra boot time' in line:
                 return float(line.split()[3]) * 1000
 
 # Backend restore latency.

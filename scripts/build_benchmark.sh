@@ -4,7 +4,7 @@
 # The path to the build script is specified as the first parameter.
 # The build mode (local or container) is specified as the second parameter.
 #
-# Example usage: build_benchmark.sh /path/to/gv-hello-world/build_script.sh
+# Example usage: build_benchmark.sh /path/to/hy-hello-world/build_script.sh
 #
 # The env varialble BENCHMARK_BUILD_MODE is used to decice if the build script
 # is called on the local environment or inside the argo build container. It can
@@ -33,7 +33,7 @@ BENCHMARK_BUILD_SCRIPT=$1
 if [ -z "$BENCHMARK_BUILD_SCRIPT" ]
 then
     echo "Path to the build script is not present."
-    echo "Example usage: build_benchmark.sh /path/to/gv-hello-world/build_script.sh"
+    echo "Example usage: build_benchmark.sh /path/to/hy-hello-world/build_script.sh"
     exit 1
 else
     BENCHMARK_BUILD_SCRIPT=$(realpath $BENCHMARK_BUILD_SCRIPT)
@@ -49,11 +49,11 @@ fi
 shift
 
 # Some benchmarks cannot still be compiled with GraalVM 23 (Java 17).
-if [[ $BENCHMARK_BUILD_SCRIPT == *"/java/gv-classify"* ]]; then
+if [[ $BENCHMARK_BUILD_SCRIPT == *"/java/hy-classify"* ]]; then
     if [[ $GRAALVM_VERSION == *"23.0.0"* ]]; then
         export JAVA_HOME=$JAVA11_HOME
     fi
-elif [[ $BENCHMARK_BUILD_SCRIPT == *"/javascript/gv-thumbnail"* ]]; then
+elif [[ $BENCHMARK_BUILD_SCRIPT == *"/javascript/hy-thumbnail"* ]]; then
     if [[ $GRAALVM_VERSION == *"23.0.0"* ]]; then
         export JAVA_HOME=$JAVA11_HOME
     fi
@@ -80,6 +80,6 @@ elif [ "$BENCHMARK_BUILD_MODE" == "local" ]; then
         bash $BENCHMARK_BUILD_SCRIPT $@
 else
     echo "Invalid build mode."
-    echo "Example usage: build_benchmark.sh /path/to/gv-hello-world/build_script.sh"
+    echo "Example usage: build_benchmark.sh /path/to/hy-hello-world/build_script.sh"
     exit 1
 fi

@@ -107,7 +107,7 @@ x = np.arange(len(benchmark_labels))
 width = 0.25
 
 fig, ax = plt.subplots()
-ax.bar(x - width/2, gv_benchmark_avg_latency.values(), width, hatch='//', label='Graalvisor', alpha=0.75 )
+ax.bar(x - width/2, gv_benchmark_avg_latency.values(), width, hatch='//', label='Hydra', alpha=0.75 )
 ax.bar(x + width/2, cr_benchmark_avg_latency.values(), width, hatch='..', label='OpenWisk', alpha=0.75)
 
 ax.set_ylabel('Time (ms)')

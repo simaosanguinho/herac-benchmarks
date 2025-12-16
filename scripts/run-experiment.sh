@@ -6,25 +6,25 @@ function DIR {
 
 source $(DIR)/benchmarks.sh
 
-function test_gv_benchmarks {
+function test_hy_benchmarks {
     TEST_SET=""
-    read -p "Test Graalvisor's Java benchmarks (y or Y, everything else as no)? " -n 1 -r
+    read -p "Test Hydra's Java benchmarks (y or Y, everything else as no)? " -n 1 -r
     echo    # move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
-        TEST_SET="$TEST_SET $JV_GV_BENCHMARKS"
+        TEST_SET="$TEST_SET $JV_HY_BENCHMARKS"
     fi
-    read -p "Test Graalvisor's Python benchmarks (y or Y, everything else as no)? " -n 1 -r
+    read -p "Test Hydra's Python benchmarks (y or Y, everything else as no)? " -n 1 -r
     echo    # move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
-        TEST_SET="$TEST_SET $PY_GV_BENCHMARKS"
+        TEST_SET="$TEST_SET $PY_HY_BENCHMARKS"
     fi
-    read -p "Test Graalvisor's JavaScript benchmarks (y or Y, everything else as no)? " -n 1 -r
+    read -p "Test Hydra's JavaScript benchmarks (y or Y, everything else as no)? " -n 1 -r
     echo    # move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
-        TEST_SET="$TEST_SET $JS_GV_BENCHMARKS"
+        TEST_SET="$TEST_SET $JS_HY_BENCHMARKS"
     fi
 
     for benchmark in $TEST_SET
@@ -32,15 +32,15 @@ function test_gv_benchmarks {
         for backend in "svm" #"container" "vm"
         do
             echo "$(tput bold)Benchmark: $benchmark in $backend $(tput sgr0)"
-            export SANDBOX="default"; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 1 | grep "Req output:"
-            export SANDBOX="process"; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 1 | grep "Req output:"
-            if [[ $benchmark == *"gv_java_classify"* || $benchmark == *"videoprocessing"* || $benchmark == *"javascript_thumbnail"* ]]; then
+            export SANDBOX="default"; $(DIR)/benchmark-hydra.sh $backend $benchmark test 1 | grep "Req output:"
+            export SANDBOX="process"; $(DIR)/benchmark-hydra.sh $backend $benchmark test 1 | grep "Req output:"
+            if [[ $benchmark == *"hy_java_classify"* || $benchmark == *"videoprocessing"* || $benchmark == *"javascript_thumbnail"* ]]; then
                 echo "Skipping $benchmark (not supported)"
                 continue
             fi
             export ITERATIONS=2 # One iteration for the checkpoint, another for the restore.
             export WARMUP=1
-            export SANDBOX=snapshot; $(DIR)/benchmark-graalvisor.sh $backend $benchmark test 0 | grep "Req output:"
+            export SANDBOX=snapshot; $(DIR)/benchmark-hydra.sh $backend $benchmark test 0 | grep "Req output:"
             unset WARMUP
             unset ITERATIONS
         done
@@ -119,7 +119,7 @@ function measure_benchmark_resources {
 
     for concurrency in 1 2 4 8;
     do
-        for benchmark in $GV_BENCHMARKS $CR_BENCHMARKS $KN_BENCHMARKS;
+        for benchmark in $HY_BENCHMARKS $CR_BENCHMARKS $KN_BENCHMARKS;
         do
             concurrency_table["$benchmark"]=$concurrency
             mem_table["$benchmark"]=${conc_mem_table["$concurrency"]}
@@ -132,38 +132,38 @@ function measure_benchmark_resources {
 function cold_start_latency {
     export EXPERIMENT="coldstart"
     cr_benchmark=cr_python_hw
-    gv_benchmark=gv_python_hw
+    hy_benchmark=hy_python_hw
     kn_benchmark=kn_python_hw
 
     function context_snapshot {
         export WARMUP=1
         export SANDBOX=snapshot
         rm -rf $ADIR/*.memsnap $ADIR/*.metasnap
-        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 0
+        $(DIR)/benchmark-hydra.sh svm $hy_benchmark test 0
         unset SANDBOX
         unset WARMUP
     }
 
     function process_snapshot {
-        export SNAPSHOT=$SDIR/$gv_benchmark
+        export SNAPSHOT=$SDIR/$hy_benchmark
         rm -rf $SNAPSHOT
-        $(DIR)/benchmark-graalvisor.sh svm $gv_benchmark test 1
+        $(DIR)/benchmark-hydra.sh svm $hy_benchmark test 1
         unset SNAPSHOT
     }
 
     function vm_snapshot {
-        export SNAPSHOT=$SDIR/$gv_benchmark
+        export SNAPSHOT=$SDIR/$hy_benchmark
         rm -rf $SNAPSHOT.{disk,mem,snap}
-        $(DIR)/benchmark-graalvisor.sh vm $gv_benchmark test 1
+        $(DIR)/benchmark-hydra.sh vm $hy_benchmark test 1
         unset SNAPSHOT
     }
 
     # TODO - use cgroups?
     $(DIR)/benchmark-cruntime.sh   container $cr_benchmark test 1
     $(DIR)/benchmark-cruntime.sh   vm        $cr_benchmark test 1
-    $(DIR)/benchmark-graalvisor.sh svm       $gv_benchmark test 1
-    $(DIR)/benchmark-graalvisor.sh container $gv_benchmark test 1
-    $(DIR)/benchmark-graalvisor.sh vm        $gv_benchmark test 1
+    $(DIR)/benchmark-hydra.sh svm       $hy_benchmark test 1
+    $(DIR)/benchmark-hydra.sh container $hy_benchmark test 1
+    $(DIR)/benchmark-hydra.sh vm        $hy_benchmark test 1
     $(DIR)/benchmark-knative.sh              $kn_benchmark test 1
     export ITERATIONS=2 # Note: one iteration to dump, another to restore.
     context_snapshot
@@ -175,128 +175,128 @@ function cold_start_latency {
 # Memory (fixed HW resources of 1 core and 2GB of memory, measure ops/s/mb)
 function efficiency {
 
-    # Graalvisor
-    function efficiency_gv {
-        function efficiency_gv_java {
-            for benchmark in $JV_GV_BENCHMARKS;
+    # Hydra
+    function efficiency_hy {
+        function efficiency_hy_java {
+            for benchmark in $JV_HY_BENCHMARKS;
             do
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-                $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}
+                $(DIR)/benchmark-hydra.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}
                 unset WMULTIPLIER
             done
         }
 
-        function efficiency_gv_javascript {
-            for benchmark in $JS_GV_BENCHMARKS;
+        function efficiency_hy_javascript {
+            for benchmark in $JS_HY_BENCHMARKS;
             do
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
                 if [ "$SANDBOX" = "snapshot" ]; then
                     export WARMUP=${concurrency_table["$benchmark"]}
                     rm -f $ADIR/*.memsnap  $ADIR/*.metasnap
-                    $(DIR)/benchmark-graalvisor.sh container $benchmark test ${concurrency_table["$benchmark"]}
+                    $(DIR)/benchmark-hydra.sh container $benchmark test ${concurrency_table["$benchmark"]}
                 fi
                 export KEEP_SNAPSHOTS=true
-                $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}
+                $(DIR)/benchmark-hydra.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}
                 unset KEEP_SNAPSHOTS
                 unset WARMUP
                 unset WMULTIPLIER
             done
         }
 
-        function efficiency_gv_python {
-            for benchmark in $PY_GV_BENCHMARKS;
+        function efficiency_hy_python {
+            for benchmark in $PY_HY_BENCHMARKS;
             do
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
                 if [ "$SANDBOX" = "snapshot" ]; then
                     export WARMUP=${concurrency_table["$benchmark"]}
                     rm -f $ADIR/*.memsnap $ADIR/*.metasnap
-                    $(DIR)/benchmark-graalvisor.sh container $benchmark test ${concurrency_table["$benchmark"]}
+                    $(DIR)/benchmark-hydra.sh container $benchmark test ${concurrency_table["$benchmark"]}
                 fi
                 export KEEP_SNAPSHOTS=true
-                $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}
+                $(DIR)/benchmark-hydra.sh container $benchmark benchmark ${concurrency_table["$benchmark"]}
                 unset KEEP_SNAPSHOTS
                 unset WARMUP
                 unset WMULTIPLIER
             done
         }
 
-        export SANDBOX=isolate; efficiency_gv_java
-        export SANDBOX=process; efficiency_gv_java
-        export SANDBOX=snapshot; efficiency_gv_javascript
-        export SANDBOX=snapshot; efficiency_gv_python
-        export SANDBOX=process; efficiency_gv_javascript
-        export SANDBOX=process; efficiency_gv_python
+        export SANDBOX=isolate; efficiency_hy_java
+        export SANDBOX=process; efficiency_hy_java
+        export SANDBOX=snapshot; efficiency_hy_javascript
+        export SANDBOX=snapshot; efficiency_hy_python
+        export SANDBOX=process; efficiency_hy_javascript
+        export SANDBOX=process; efficiency_hy_python
         unset WARMUP
         unset SANDBOX
     }
 
-    # Graalvisor with a single invocation at a time.
-    function efficiency_gv_single {
-        function efficiency_gv_java_single {
-            for benchmark in $JV_GV_BENCHMARKS;
+    # Hydra with a single invocation at a time.
+    function efficiency_hy_single {
+        function efficiency_hy_java_single {
+            for benchmark in $JV_HY_BENCHMARKS;
             do
                 export VM_MEM=${mem_table["$benchmark"]}
                 export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-                $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark 1
+                $(DIR)/benchmark-hydra.sh container $benchmark benchmark 1
                 unset WMULTIPLIER
                 unset CGROUP_CPU_QUOTA
                 unset VM_MEM
             done
         }
 
-        function efficiency_gv_javascript_single {
-            for benchmark in $JS_GV_BENCHMARKS;
+        function efficiency_hy_javascript_single {
+            for benchmark in $JS_HY_BENCHMARKS;
             do
                 export VM_MEM=${mem_table["$benchmark"]}
                 export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-                $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark 1
+                $(DIR)/benchmark-hydra.sh container $benchmark benchmark 1
                 unset CGROUP_CPU_QUOTA
                 unset VM_MEM
             done
         }
 
-        function efficiency_gv_python_single {
-            for benchmark in $PY_GV_BENCHMARKS;
+        function efficiency_hy_python_single {
+            for benchmark in $PY_HY_BENCHMARKS;
             do
                 export VM_MEM=${mem_table["$benchmark"]}
                 export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-                $(DIR)/benchmark-graalvisor.sh container $benchmark benchmark 1
+                $(DIR)/benchmark-hydra.sh container $benchmark benchmark 1
                 unset WMULTIPLIER
                 unset CGROUP_CPU_QUOTA
                 unset VM_MEM
             done
         }
 
-        export SANDBOX=isolate; efficiency_gv_java_single
-        export SANDBOX=context; efficiency_gv_javascript_single
-        export SANDBOX=context; efficiency_gv_python_single
+        export SANDBOX=isolate; efficiency_hy_java_single
+        export SANDBOX=context; efficiency_hy_javascript_single
+        export SANDBOX=context; efficiency_hy_python_single
         unset WARMUP
         unset SANDBOX
     }
 
-    # Graalvisor with vm snapshotting
-    function efficiency_gv_snapshot {
+    # Hydra with vm snapshotting
+    function efficiency_hy_snapshot {
         snapshots=$HOME/tmp/snapshots
         mkdir -p $snapshots
 
-        function efficiency_gv_java {
-            for benchmark in $JV_GV_BENCHMARKS;
+        function efficiency_hy_java {
+            for benchmark in $JV_HY_BENCHMARKS;
             do
                 export VM_MEM=${mem_table["$benchmark"]}
                 export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
                 export SNAPSHOT=$snapshots/$benchmark
-                if [ $benchmark = "gv_java_classify" ];
+                if [ $benchmark = "hy_java_classify" ];
                 then
                     # Tensorflow cannot be loaded two! We use test 0 because of that.
-                    bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm $benchmark test 0"
+                    bash -c "export ITERATIONS=1; $(DIR)/benchmark-hydra.sh vm $benchmark test 0"
                 else
-                    bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm $benchmark test 1"
+                    bash -c "export ITERATIONS=1; $(DIR)/benchmark-hydra.sh vm $benchmark test 1"
                 fi
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                $(DIR)/benchmark-hydra.sh vm $benchmark benchmark 1
                 rm $SNAPSHOT.{disk,mem,snap}  &> /dev/null
                 unset WMULTIPLIER
                 unset SNAPSHOT
@@ -305,14 +305,14 @@ function efficiency {
             done
         }
 
-        function efficiency_gv_javascript {
-            for benchmark in $JS_GV_BENCHMARKS;
+        function efficiency_hy_javascript {
+            for benchmark in $JS_HY_BENCHMARKS;
             do
                 export VM_MEM=${mem_table["$benchmark"]}
                 export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
                 export SNAPSHOT=$snapshots/$benchmark
-                bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm $benchmark test 100"
-                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                bash -c "export ITERATIONS=1; $(DIR)/benchmark-hydra.sh vm $benchmark test 100"
+                $(DIR)/benchmark-hydra.sh vm $benchmark benchmark 1
                 rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
                 unset SNAPSHOT
                 unset CGROUP_CPU_QUOTA
@@ -320,15 +320,15 @@ function efficiency {
             done
         }
 
-        function efficiency_gv_python {
-            for benchmark in $PY_GV_BENCHMARKS;
+        function efficiency_hy_python {
+            for benchmark in $PY_HY_BENCHMARKS;
             do
                 export VM_MEM=${mem_table["$benchmark"]}
                 export CGROUP_CPU_QUOTA=${cpu_table["$benchmark"]}
                 export SNAPSHOT=$snapshots/$benchmark
-                bash -c "export ITERATIONS=1; $(DIR)/benchmark-graalvisor.sh vm $benchmark test 100"
+                bash -c "export ITERATIONS=1; $(DIR)/benchmark-hydra.sh vm $benchmark test 100"
                 export WMULTIPLIER=${wmultiplier_table["$benchmark"]}
-                $(DIR)/benchmark-graalvisor.sh vm $benchmark benchmark 1
+                $(DIR)/benchmark-hydra.sh vm $benchmark benchmark 1
                 rm $SNAPSHOT.{disk,mem,snap} &> /dev/null
                 unset WMULTIPLIER
                 unset SNAPSHOT
@@ -337,9 +337,9 @@ function efficiency {
             done
         }
 
-        export SANDBOX="isolate"; efficiency_gv_java; unset SANDBOX
-        export SANDBOX="context"; efficiency_gv_javascript; unset SANDBOX
-        export SANDBOX="context"; efficiency_gv_python; unset SANDBOX
+        export SANDBOX="isolate"; efficiency_hy_java; unset SANDBOX
+        export SANDBOX="context"; efficiency_hy_javascript; unset SANDBOX
+        export SANDBOX="context"; efficiency_hy_python; unset SANDBOX
     }
 
     # Openwhisk runtimes
@@ -375,9 +375,9 @@ function efficiency {
     unset WARMUP
     unset SNAPSHOT
 
-    efficiency_gv
-    efficiency_gv_single
-    # efficiency_gv_snapshot
+    efficiency_hy
+    efficiency_hy_single
+    # efficiency_hy_snapshot
     efficiency_cr
     efficiency_kn
 
@@ -396,11 +396,11 @@ then
     efficiency
     exit 0
 fi
-read -p "Run basic graalvisor tests (y or Y, everything else as no)? " -n 1 -r
+read -p "Run basic hydra tests (y or Y, everything else as no)? " -n 1 -r
 echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    test_gv_benchmarks
+    test_hy_benchmarks
     exit 0
 fi
 

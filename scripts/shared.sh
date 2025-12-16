@@ -255,16 +255,16 @@ function start_vm {
     wait
 }
 
-function start_gv_vm {
+function start_hy_vm {
     create_tap
     if [ ! -z "$SNAPSHOT" ] && [ -f "$SNAPSHOT.snap" ]
     then
         restore_vm $SOCKET $SNAPSHOT.snap $SNAPSHOT.mem $SNAPSHOT.disk
     else
-        gvargs="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=$GRAALVISOR_PORT LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
+        hyargs="lambda_timestamp=$(date +%s%N | cut -b1-13) lambda_port=$HYDRA_PORT LD_LIBRARY_PATH=/lib:/lib64:/apps:/usr/local/lib JAVA_HOME=/jvm"
         # Kernel opts example: https://github.com/firecracker-microvm/firecracker-demo/blob/main/start-firecracker.sh
-        kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$IP::$GATEWAY:$MASK::eth0:none::: nomodule random.trust_cpu=on console=ttyS0 reboot=k panic=1 pci=off $gvargs"
-        start_vm $ARGO_HOME/images/graalvisor/graalvisor.img $RESOURCES_HOME/hello-vmlinux.bin $kopts
+        kopts="init=/init quiet rw tsc=reliable ipv6.disable=1 ip=$IP::$GATEWAY:$MASK::eth0:none::: nomodule random.trust_cpu=on console=ttyS0 reboot=k panic=1 pci=off $hyargs"
+        start_vm $ARGO_HOME/images/hydra/hydra.img $RESOURCES_HOME/hello-vmlinux.bin $kopts
     fi
 }
 
@@ -274,8 +274,8 @@ function start_ow_vm {
     start_vm $ARGO_HOME/images/$APP_LANG-openwhisk/$APP_LANG-openwhisk.img $RESOURCES_HOME/hello-vmlinux.bin $kopts
 }
 
-function start_gv_container {
-    docker run --privileged --rm --name=bcontainer --memory "${VM_MEM}m" --network host -v $ADIR:/tmp/apps -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="$GRAALVISOR_PORT" -e JAVA_HOME="/jvm" graalvisor:latest &> $TDIR/lambda.log
+function start_hy_container {
+    docker run --privileged --rm --name=bcontainer --memory "${VM_MEM}m" --network host -v $ADIR:/tmp/apps -e lambda_timestamp="$(date +%s%N | cut -b1-13)" -e lambda_port="$HYDRA_PORT" -e JAVA_HOME="/jvm" hydra:latest &> $TDIR/lambda.log
 }
 
 function start_ow_container {
@@ -287,7 +287,7 @@ function start_kn_container {
 }
 
 function start_svm {
-    cp $GRAALVISOR_HOME/build/native-image/polyglot-proxy $TDIR/graalvisor
+    cp $HYDRA_HOME/build/native-image/polyglot-proxy $TDIR/hydra
     cd $TDIR
     if [ ! -z "$SNAPSHOT" ] && [ -f "$SNAPSHOT/inventory.img" ]
     then
@@ -299,9 +299,9 @@ function start_svm {
         #echo "Restoring svm... done (took $lat_us us) !"
     else
         export lambda_timestamp="$(date +%s%N | cut -b1-13)"
-        export lambda_port="$GRAALVISOR_PORT"
+        export lambda_port="$HYDRA_PORT"
         export app_dir="$ADIR"
-        bash $GRAALVISOR_HOME/graalvisor $TDIR/lambda.pid &> $TDIR/lambda.log
+        bash $HYDRA_HOME/hydra $TDIR/lambda.pid &> $TDIR/lambda.log
     fi
 }
 

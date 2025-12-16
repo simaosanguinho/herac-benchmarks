@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "7.1.0"
+}
+
+group 'com.classify'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+shadowJar() {
+    configurations = [project.configurations.compileClasspath]
+    from sourceSets.main.output
+}
+
+dependencies {
+    implementation 'org.tensorflow:tensorflow:1.5.0'
+    implementation files(System.getenv('ARGO_HOME') + '/hydra-lib/build/libs/hydra-lib-1.0-all.jar')
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.classify.Classify',
+                'Class-Path': configurations.runtimeClasspath.files.collect { it.getName() }.join(' ')
+        )
+    }
+}

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+cp $DIR/build/hy-sleep.so $1/hy-jv-sleep.so

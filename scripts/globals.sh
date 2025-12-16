@@ -22,10 +22,10 @@ if [ -z "${WORK_DIR}" ]; then
 fi
 
 export BENCHMARKS_HOME=$(DIR)/..
-export GRAALVISOR_HOME=$ARGO_HOME/graalvisor
+export HYDRA_HOME=$ARGO_HOME/hydra
 export GRAALHOST_HOME=
 export RESOURCES_HOME=$ARGO_HOME/resources
-export GRAALVISOR_PORT=8081
+export HYDRA_PORT=8081
 export GRAALHOST_PORT=8100
 export OPENWHISK_PORT=8080
 export KNATIVE_PORT=8082

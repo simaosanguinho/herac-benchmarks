@@ -72,7 +72,7 @@ for idx, path in enumerate(isolate_benchmark_path):
 
 plt.rcParams.update({'font.size': 16})
 fig, ax = plt.subplots()
-ax.bar(x + 0*width,           isolate_eff_avg.values(),   yerr=isolate_eff_std.values(),   width=width, hatch='*', label='Graalvisor',  alpha=0.75)
+ax.bar(x + 0*width,           isolate_eff_avg.values(),   yerr=isolate_eff_std.values(),   width=width, hatch='*', label='Hydra',  alpha=0.75)
 ax.bar(x + 1*width,           process_eff_avg.values(),   yerr=process_eff_std.values(),   width=width, hatch='.', label='Forking',     alpha=0.75)
 ax.bar(x + 2*width,           photons_eff_avg.values(),   yerr=photons_eff_std.values(),   width=width, hatch='O', label='Photons',     alpha=0.75)
 ax.bar(snapshot_x  + 3*width, snapshot_eff_avg.values(),  yerr=snapshot_eff_std.values(),  width=width, hatch='/', label='VM Snapshot', alpha=0.75)
