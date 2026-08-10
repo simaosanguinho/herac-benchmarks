@@ -1,0 +1,2 @@
+[submodule "benchmarks"]
+	url = git@github.com:simaosanguinho/herac-benchmarks.git
