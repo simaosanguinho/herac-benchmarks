@@ -24,4 +24,3 @@ webserver/ffmpeg
 src/hyperlight-wasm/*/target
 *.wasm
 *.aot
-Cargo.lock
