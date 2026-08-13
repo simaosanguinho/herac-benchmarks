@@ -15,3 +15,7 @@ __pycache__
 /virtualization/**/*.log
 virtualenv
 /data/apps
+
+
+results/experiment/socc25/
+results/experiment/socc25-azure-replay

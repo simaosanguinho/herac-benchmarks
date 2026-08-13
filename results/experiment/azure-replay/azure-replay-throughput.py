@@ -3,6 +3,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 
 def numpy_ewma_vectorized(data, window):
 
@@ -22,19 +23,28 @@ def numpy_ewma_vectorized(data, window):
     out = offset + cumsums*scale_arr[::-1]
     return out
 
-gv      = numpy_ewma_vectorized(np.loadtxt("gv_dc_throughput.txt"),   10)
-gv_fork = numpy_ewma_vectorized(np.loadtxt("gv_fork_throughput.txt"), 10)
-gv_snap = numpy_ewma_vectorized(np.loadtxt("gv_snap_throughput.txt"), 10)
-cr      = numpy_ewma_vectorized(np.loadtxt("cr_throughput.txt"),      10)
-ph      = numpy_ewma_vectorized(np.loadtxt("ph_throughput.txt"),      10)
+
+def maybe_plot(series_name, label, **kwargs):
+    path = Path(series_name)
+    if path.exists():
+        plt.plot(numpy_ewma_vectorized(np.loadtxt(path), 10), label=label, **kwargs)
+
+
+def maybe_plot_with_fallback(preferred_name, legacy_name, label, **kwargs):
+    preferred_path = Path(preferred_name)
+    if preferred_path.exists():
+        plt.plot(numpy_ewma_vectorized(np.loadtxt(preferred_path), 10), label=label, **kwargs)
+        return
+    maybe_plot(legacy_name, label, **kwargs)
 
 matplotlib.rcParams.update({'font.size': 16})
 plt.rcParams["figure.figsize"] = (10, 4)
-plt.plot(gv,      linestyle = ":",                                               linewidth = 3, label = "Graalvisor")
-plt.plot(gv_fork, linestyle = "-",  marker = "|", markersize = 10, markevery=10, linewidth = 3, label = "Forking")
-plt.plot(ph,      linestyle = "--",                                              linewidth = 3, label = "Photons")
-plt.plot(gv_snap, linestyle = "-",                                               linewidth = 3, label = "VM Snapshot")
-plt.plot(cr,      linestyle = "-",  marker = "x", markersize = 10, markevery=10, linewidth = 3, label = "OpenWhisk")
+maybe_plot("he_throughput.txt", "Herac", linestyle="-.", linewidth=3)
+maybe_plot_with_fallback("hy_dc_throughput.txt", "gv_dc_throughput.txt", "Hydra DC", linestyle=":", linewidth=3)
+maybe_plot_with_fallback("hy_fork_throughput.txt", "gv_fork_throughput.txt", "Hydra Fork", linestyle="-", marker="|", markersize=10, markevery=10, linewidth=3)
+maybe_plot("ph_throughput.txt", "Photons", linestyle="--", linewidth=3)
+maybe_plot_with_fallback("hy_snap_throughput.txt", "gv_snap_throughput.txt", "Hydra Snapshot", linestyle="-", linewidth=3)
+maybe_plot("cr_throughput.txt", "OpenWhisk", linestyle="-", marker="x", markersize=10, markevery=10, linewidth=3)
 plt.xlabel("Time (s)")
 plt.ylabel("Throughput (ops/s)")
 plt.grid()

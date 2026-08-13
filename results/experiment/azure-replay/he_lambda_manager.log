@@ -1,0 +1,102 @@
+Timestamp (194) INFO Successfully uploaded lambda manager configuration! 
+Timestamp (10383) INFO Successfully uploaded function - jvfh! 
+Timestamp (10383) INFO Successfully uploaded function - jvfh! 
+Timestamp (10383) INFO Successfully uploaded function - jvfh! 
+Timestamp (10383) INFO Successfully uploaded function - jvcl! 
+Timestamp (10383) INFO Successfully uploaded function - jsth! 
+Timestamp (10383) INFO Successfully uploaded function - jsth! 
+Timestamp (10383) INFO Successfully uploaded function - pyco! 
+Timestamp (10383) INFO Successfully uploaded function - jsth! 
+Timestamp (10386) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (10387) INFO Starting new HERAC lambda. 
+Timestamp (10390) INFO PID -> 0 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartNativeHerac | Output -> lambda_logs/lambda_0_HERAC/output.log 
+Timestamp (10391) INFO 127.0.0.1:30100 not open. Waiting... 
+Timestamp (10436) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (10441) INFO 127.0.0.1:30100 open! 
+Timestamp (10442) INFO Added new lambda with mode HERAC. It took 55 ms. 
+Timestamp (10487) INFO Obtained a new lambda from the pool. 
+Timestamp (10487) INFO Found lambda 0 (cold start). 
+Timestamp (10665) FINE Function 58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth registration in lambda lambda_0_HERAC returned {"result":"Function 58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth registered!"} 
+Timestamp (10681) FINE Time (user=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30, function_name=jsth, mode=HERAC, id=0) req: 296377; infr: 280410	[us] 
+Timestamp (12026) FINE [function=33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5-jvfh, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (12027) INFO Starting new HERAC lambda. 
+Timestamp (12027) INFO PID -> 1 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartNativeHerac | Output -> lambda_logs/lambda_1_HERAC/output.log 
+Timestamp (12027) INFO 127.0.0.1:30101 not open. Waiting... 
+Timestamp (12077) FINE [function=33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5-jvfh, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (12077) INFO 127.0.0.1:30101 open! 
+Timestamp (12077) INFO Added new lambda with mode HERAC. It took 50 ms. 
+Timestamp (12127) INFO Obtained a new lambda from the pool. 
+Timestamp (12127) INFO Found lambda 1 (cold start). 
+Timestamp (12153) FINE Function 33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5-jvfh registration in lambda lambda_1_HERAC returned {"result":"Function 33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5-jvfh registered!"} 
+Timestamp (12160) FINE Time (user=33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5, function_name=jvfh, mode=HERAC, id=1) req: 133687; infr: 126847	[us] 
+Timestamp (13422) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (13422) INFO Starting new HERAC lambda. 
+Timestamp (13422) INFO PID -> 2 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartNativeHerac | Output -> lambda_logs/lambda_2_HERAC/output.log 
+Timestamp (13422) INFO 127.0.0.1:30102 not open. Waiting... 
+Timestamp (13472) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (13473) INFO 127.0.0.1:30102 open! 
+Timestamp (13473) INFO Added new lambda with mode HERAC. It took 51 ms. 
+Timestamp (13522) INFO Obtained a new lambda from the pool. 
+Timestamp (13522) INFO Found lambda 2 (cold start). 
+Timestamp (13545) FINE Function 42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh registration in lambda lambda_2_HERAC returned {"result":"Function 42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh registered!"} 
+Timestamp (13551) FINE Time (user=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c, function_name=jvfh, mode=HERAC, id=2) req: 129172; infr: 123109	[us] 
+Timestamp (18037) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-jsth, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (18037) INFO Starting new HERAC lambda. 
+Timestamp (18038) INFO PID -> 3 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartNativeHerac | Output -> lambda_logs/lambda_3_HERAC/output.log 
+Timestamp (18038) INFO 127.0.0.1:30103 not open. Waiting... 
+Timestamp (18087) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-jsth, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (18088) INFO 127.0.0.1:30103 open! 
+Timestamp (18088) INFO Added new lambda with mode HERAC. It took 51 ms. 
+Timestamp (18138) INFO Obtained a new lambda from the pool. 
+Timestamp (18138) INFO Found lambda 3 (cold start). 
+Timestamp (18256) FINE Function fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-jsth registration in lambda lambda_3_HERAC returned {"result":"Function fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-jsth registered!"} 
+Timestamp (18271) FINE Time (user=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab, function_name=jsth, mode=HERAC, id=3) req: 233726; infr: 218769	[us] 
+Timestamp (20084) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (20084) INFO Starting new HERAC lambda. 
+Timestamp (20084) INFO PID -> 4 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartNativeHerac | Output -> lambda_logs/lambda_4_HERAC/output.log 
+Timestamp (20084) INFO 127.0.0.1:30104 not open. Waiting... 
+Timestamp (20134) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (20135) INFO 127.0.0.1:30104 open! 
+Timestamp (20135) INFO Added new lambda with mode HERAC. It took 51 ms. 
+Timestamp (20184) INFO Obtained a new lambda from the pool. 
+Timestamp (20184) INFO Found lambda 4 (cold start). 
+Timestamp (20339) FINE Function 72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl registration in lambda lambda_4_HERAC returned {"result":"Function 72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl registered!"} 
+Timestamp (20529) WARNING Received HttpClientException in lambda 4. Message: Internal Server Error 
+Timestamp (20591) WARNING Received HttpClientException in lambda 4. Message: Internal Server Error 
+Timestamp (20719) WARNING Received HttpClientException in lambda 4. Message: Internal Server Error 
+Timestamp (20995) WARNING Received HttpClientException in lambda 4. Message: Internal Server Error 
+Timestamp (21477) WARNING Received HttpClientException in lambda 4. Message: Internal Server Error 
+Timestamp (22478) WARNING HTTP request timeout! 
+Timestamp (30389) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-pyco, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (30389) INFO Starting new HERAC lambda. 
+Timestamp (30390) INFO PID -> 5 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartNativeHerac | Output -> lambda_logs/lambda_5_HERAC/output.log 
+Timestamp (30390) INFO 127.0.0.1:30105 not open. Waiting... 
+Timestamp (30439) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-pyco, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (30440) INFO 127.0.0.1:30105 open! 
+Timestamp (30440) INFO Added new lambda with mode HERAC. It took 51 ms. 
+Timestamp (30490) INFO Obtained a new lambda from the pool. 
+Timestamp (30490) INFO Found lambda 5 (cold start). 
+Timestamp (30494) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (30494) INFO Starting new HERAC lambda. 
+Timestamp (30495) INFO PID -> 6 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartNativeHerac | Output -> lambda_logs/lambda_6_HERAC/output.log 
+Timestamp (30495) INFO 127.0.0.1:30106 not open. Waiting... 
+Timestamp (30544) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (30545) INFO 127.0.0.1:30106 open! 
+Timestamp (30545) INFO Added new lambda with mode HERAC. It took 51 ms. 
+Timestamp (30595) INFO Obtained a new lambda from the pool. 
+Timestamp (30595) INFO Found lambda 6 (cold start). 
+Timestamp (30613) FINE Function fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-pyco registration in lambda lambda_5_HERAC returned {"result":"Function fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-pyco registered!"} 
+Timestamp (30621) FINE Function f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh registration in lambda lambda_6_HERAC returned {"result":"Function f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh registered!"} 
+Timestamp (30625) FINE Time (user=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9, function_name=jvfh, mode=HERAC, id=6) req: 130659; infr: 127223	[us] 
+Timestamp (30656) FINE Time (user=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab, function_name=pyco, mode=HERAC, id=5) req: 267490; infr: 224597	[us] 
+Timestamp (38313) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (38313) INFO Starting new HERAC lambda. 
+Timestamp (38313) INFO PID -> 7 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartNativeHerac | Output -> lambda_logs/lambda_7_HERAC/output.log 
+Timestamp (38313) INFO 127.0.0.1:30107 not open. Waiting... 
+Timestamp (38363) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HERAC]: The lambda pool is currently empty, waiting. 
+Timestamp (38364) INFO 127.0.0.1:30107 open! 
+Timestamp (38364) INFO Added new lambda with mode HERAC. It took 51 ms. 
+Timestamp (38413) INFO Obtained a new lambda from the pool. 
+Timestamp (38413) INFO Found lambda 7 (cold start). 
+Timestamp (38529) FINE Function b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth registration in lambda lambda_7_HERAC returned {"result":"Function b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth registered!"} 
+Timestamp (38540) FINE Time (user=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c, function_name=jsth, mode=HERAC, id=7) req: 227601; infr: 216255	[us] 

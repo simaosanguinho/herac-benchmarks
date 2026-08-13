@@ -1,0 +1,311 @@
+Timestamp (166) INFO Successfully uploaded lambda manager configuration! 
+Timestamp (10359) INFO Successfully uploaded function - jvfh! 
+Timestamp (10360) INFO Successfully uploaded function - jsth! 
+Timestamp (10360) INFO Successfully uploaded function - jvfh! 
+Timestamp (10360) INFO Successfully uploaded function - jvfh! 
+Timestamp (10360) INFO Successfully uploaded function - jsth! 
+Timestamp (10360) INFO Successfully uploaded function - jsth! 
+Timestamp (10360) INFO Successfully uploaded function - jvcl! 
+Timestamp (10360) INFO Successfully uploaded function - pyco! 
+Timestamp (10362) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (10363) INFO Starting new HYDRA lambda. 
+Timestamp (10366) INFO PID -> 0 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartHydraContainer | Output -> lambda_logs/lambda_0_HYDRA/output.log 
+Timestamp (10367) INFO 127.0.0.1:30100 not open. Waiting... 
+Timestamp (10412) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (10418) INFO 127.0.0.1:30100 not open. Waiting... 
+Timestamp (10463) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (10468) INFO 127.0.0.1:30100 not open. Waiting... 
+Timestamp (10513) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (10563) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (10613) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (10664) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (10714) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (10764) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (10815) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (10865) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (10915) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (10966) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11016) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11066) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11117) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11167) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11217) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11267) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11317) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11368) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11418) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11468) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11518) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11519) INFO 127.0.0.1:30100 not open. Waiting... 
+Timestamp (11568) FINE [function=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (11569) INFO 127.0.0.1:30100 open! 
+Timestamp (11569) INFO Added new lambda with mode HYDRA. It took 1207 ms. 
+Timestamp (11619) INFO Obtained a new lambda from the pool. 
+Timestamp (11619) INFO Found lambda 0 (cold start). 
+Timestamp (11666) WARNING Received HttpClientException in lambda 0. Message: Bad Gateway 
+Timestamp (11733) WARNING Received HttpClientException in lambda 0. Message: Bad Gateway 
+Timestamp (11856) WARNING Received HttpClientException in lambda 0. Message: Bad Gateway 
+Timestamp (12002) FINE [function=33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (12002) INFO Starting new HYDRA lambda. 
+Timestamp (12002) INFO PID -> 1 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartHydraContainer | Output -> lambda_logs/lambda_1_HYDRA/output.log 
+Timestamp (12002) INFO 127.0.0.1:30101 not open. Waiting... 
+Timestamp (12052) FINE [function=33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (12053) INFO 127.0.0.1:30101 not open. Waiting... 
+Timestamp (12102) FINE [function=33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (12103) INFO 127.0.0.1:30101 not open. Waiting... 
+Timestamp (12124) WARNING Received HttpClientException in lambda 0. Message: Bad Gateway 
+Timestamp (12152) FINE [function=33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (12153) INFO 127.0.0.1:30101 not open. Waiting... 
+Timestamp (12202) FINE [function=33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (12204) INFO 127.0.0.1:30101 open! 
+Timestamp (12204) INFO Added new lambda with mode HYDRA. It took 202 ms. 
+Timestamp (12253) INFO Obtained a new lambda from the pool. 
+Timestamp (12253) INFO Found lambda 1 (cold start). 
+Timestamp (12260) WARNING Received HttpClientException in lambda 1. Message: Bad Gateway 
+Timestamp (12328) WARNING Received HttpClientException in lambda 1. Message: Bad Gateway 
+Timestamp (12502) WARNING Received HttpClientException in lambda 1. Message: Bad Gateway 
+Timestamp (12591) WARNING Received HttpClientException in lambda 0. Message: Bad Gateway 
+Timestamp (12773) WARNING Received HttpClientException in lambda 1. Message: Bad Gateway 
+Timestamp (13193) WARNING Received HttpClientException in lambda 1. Message: Bad Gateway 
+Timestamp (13397) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (13397) INFO Starting new HYDRA lambda. 
+Timestamp (13398) INFO PID -> 2 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartHydraContainer | Output -> lambda_logs/lambda_2_HYDRA/output.log 
+Timestamp (13398) INFO 127.0.0.1:30102 not open. Waiting... 
+Timestamp (13447) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (13448) INFO 127.0.0.1:30102 not open. Waiting... 
+Timestamp (13497) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (13498) INFO 127.0.0.1:30102 not open. Waiting... 
+Timestamp (13548) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (13598) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (13648) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (13674) WARNING HTTP request timeout! 
+Timestamp (13680) WARNING Received HttpClientException in lambda 0. Message: Bad Gateway 
+Timestamp (13698) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (13748) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (13753) WARNING Received HttpClientException in lambda 0. Message: Bad Gateway 
+Timestamp (13799) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (13849) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (13899) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (13912) WARNING Received HttpClientException in lambda 0. Message: Bad Gateway 
+Timestamp (13950) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14000) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14050) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14101) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14151) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14176) WARNING Received HttpClientException in lambda 0. Message: Bad Gateway 
+Timestamp (14201) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14251) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14301) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14352) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14402) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14452) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14503) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14545) WARNING HTTP request timeout! 
+Timestamp (14548) INFO 127.0.0.1:30102 not open. Waiting... 
+Timestamp (14553) FINE [function=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (14567) FINE Function 33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5-jvfh registration in lambda lambda_1_HYDRA returned Function 33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5-jvfh registered! 
+Timestamp (14579) FINE Time (user=33ae6f18f6169bd6be5105372a5827009a784147dd02815a50091d7f77217eb5, function_name=jvfh, mode=HYDRA, id=1) req: 2577568; infr: 2565703	[us] 
+Timestamp (14599) INFO 127.0.0.1:30102 open! 
+Timestamp (14599) INFO Added new lambda with mode HYDRA. It took 1202 ms. 
+Timestamp (14603) INFO Obtained a new lambda from the pool. 
+Timestamp (14603) INFO Found lambda 2 (cold start). 
+Timestamp (14610) WARNING Received HttpClientException in lambda 2. Message: Bad Gateway 
+Timestamp (14674) WARNING Received HttpClientException in lambda 2. Message: Bad Gateway 
+Timestamp (14804) WARNING Received HttpClientException in lambda 2. Message: Bad Gateway 
+Timestamp (14928) WARNING Received HttpClientException in lambda 0. Message: Bad Gateway 
+Timestamp (15087) WARNING Received HttpClientException in lambda 2. Message: Bad Gateway 
+Timestamp (15747) WARNING Received HttpClientException in lambda 2. Message: Bad Gateway 
+Timestamp (16292) WARNING HTTP request timeout! 
+Timestamp (16292) FINE Function 58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30-jsth registration in lambda lambda_0_HYDRA returned HTTP request timeout! 
+Timestamp (16298) FINE Time (user=58130cfa8a6431dd3fce29f793c101d8f72a8343413465b03b76c06ce220cc30, function_name=jsth, mode=HYDRA, id=0) req: 5937732; infr: 5932094	[us] 
+Timestamp (17048) WARNING HTTP request timeout! 
+Timestamp (17054) FINE Function 42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh registration in lambda lambda_2_HYDRA returned Function 42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c-jvfh registered! 
+Timestamp (17057) FINE Time (user=42fd29a600319112742e65b01f6a8aa774dc072236e1d5cc063fac272f76919c, function_name=jvfh, mode=HYDRA, id=2) req: 3660435; infr: 3656827	[us] 
+Timestamp (18012) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (18012) INFO Starting new HYDRA lambda. 
+Timestamp (18012) INFO PID -> 3 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartHydraContainer | Output -> lambda_logs/lambda_3_HYDRA/output.log 
+Timestamp (18012) INFO 127.0.0.1:30103 not open. Waiting... 
+Timestamp (18062) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (18062) INFO 127.0.0.1:30103 not open. Waiting... 
+Timestamp (18112) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (18113) INFO 127.0.0.1:30103 not open. Waiting... 
+Timestamp (18162) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (18163) INFO 127.0.0.1:30103 open! 
+Timestamp (18163) INFO Added new lambda with mode HYDRA. It took 151 ms. 
+Timestamp (18212) INFO Obtained a new lambda from the pool. 
+Timestamp (18212) INFO Found lambda 3 (cold start). 
+Timestamp (18216) WARNING Received HttpClientException in lambda 3. Message: Bad Gateway 
+Timestamp (18286) WARNING Received HttpClientException in lambda 3. Message: Bad Gateway 
+Timestamp (18397) WARNING Received HttpClientException in lambda 3. Message: Bad Gateway 
+Timestamp (18748) WARNING Received HttpClientException in lambda 3. Message: Bad Gateway 
+Timestamp (19303) WARNING Received HttpClientException in lambda 3. Message: Bad Gateway 
+Timestamp (20059) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20059) INFO Starting new HYDRA lambda. 
+Timestamp (20059) INFO PID -> 4 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartHydraContainer | Output -> lambda_logs/lambda_4_HYDRA/output.log 
+Timestamp (20059) INFO 127.0.0.1:30104 not open. Waiting... 
+Timestamp (20109) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20110) INFO 127.0.0.1:30104 not open. Waiting... 
+Timestamp (20159) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20160) INFO 127.0.0.1:30104 not open. Waiting... 
+Timestamp (20209) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20260) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20310) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20360) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20410) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20460) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20471) WARNING HTTP request timeout! 
+Timestamp (20473) WARNING Received HttpClientException in lambda 3. Message: Bad Gateway 
+Timestamp (20510) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20559) WARNING Received HttpClientException in lambda 3. Message: Bad Gateway 
+Timestamp (20561) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20611) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20661) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20711) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20759) WARNING Received HttpClientException in lambda 3. Message: Bad Gateway 
+Timestamp (20761) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20811) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20862) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20912) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20962) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (20971) WARNING Received HttpClientException in lambda 3. Message: Bad Gateway 
+Timestamp (21012) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (21063) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (21113) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (21163) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (21210) INFO 127.0.0.1:30104 not open. Waiting... 
+Timestamp (21213) FINE [function=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (21261) INFO 127.0.0.1:30104 open! 
+Timestamp (21261) INFO Added new lambda with mode HYDRA. It took 1202 ms. 
+Timestamp (21263) INFO Obtained a new lambda from the pool. 
+Timestamp (21263) INFO Found lambda 4 (cold start). 
+Timestamp (21266) WARNING Received HttpClientException in lambda 4. Message: Bad Gateway 
+Timestamp (21326) WARNING Received HttpClientException in lambda 4. Message: Bad Gateway 
+Timestamp (21434) WARNING Received HttpClientException in lambda 3. Message: Bad Gateway 
+Timestamp (21505) WARNING Received HttpClientException in lambda 4. Message: Bad Gateway 
+Timestamp (21710) WARNING Received HttpClientException in lambda 4. Message: Bad Gateway 
+Timestamp (22412) WARNING HTTP request timeout! 
+Timestamp (22412) FINE Function fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-jsth registration in lambda lambda_3_HYDRA returned HTTP request timeout! 
+Timestamp (22414) FINE Time (user=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab, function_name=jsth, mode=HYDRA, id=3) req: 4402602; infr: 4400824	[us] 
+Timestamp (22444) WARNING Received HttpClientException in lambda 4. Message: Bad Gateway 
+Timestamp (23407) WARNING HTTP request timeout! 
+Timestamp (23409) WARNING Received HttpClientException in lambda 4. Message: Bad Gateway 
+Timestamp (23490) WARNING Received HttpClientException in lambda 4. Message: Bad Gateway 
+Timestamp (23672) WARNING Received HttpClientException in lambda 4. Message: Bad Gateway 
+Timestamp (24015) WARNING Received HttpClientException in lambda 4. Message: Bad Gateway 
+Timestamp (24490) WARNING Received HttpClientException in lambda 4. Message: Bad Gateway 
+Timestamp (26070) WARNING HTTP request timeout! 
+Timestamp (26070) FINE Function 72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415-jvcl registration in lambda lambda_4_HYDRA returned HTTP request timeout! 
+Timestamp (26072) FINE Time (user=72ff69c04fdca7747edcb79a7e2130ef9fcda3be1facc371614e678053b44415, function_name=jvcl, mode=HYDRA, id=4) req: 6013335; infr: 6011315	[us] 
+Timestamp (30363) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-pyco, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30364) INFO Starting new HYDRA lambda. 
+Timestamp (30364) INFO PID -> 5 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartHydraContainer | Output -> lambda_logs/lambda_5_HYDRA/output.log 
+Timestamp (30364) INFO 127.0.0.1:30105 not open. Waiting... 
+Timestamp (30414) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-pyco, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30414) INFO 127.0.0.1:30105 not open. Waiting... 
+Timestamp (30464) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-pyco, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30465) INFO 127.0.0.1:30105 not open. Waiting... 
+Timestamp (30470) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30470) INFO Starting new HYDRA lambda. 
+Timestamp (30470) INFO PID -> 6 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartHydraContainer | Output -> lambda_logs/lambda_6_HYDRA/output.log 
+Timestamp (30470) INFO 127.0.0.1:30106 not open. Waiting... 
+Timestamp (30514) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-pyco, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30515) INFO 127.0.0.1:30105 not open. Waiting... 
+Timestamp (30520) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30521) INFO 127.0.0.1:30106 not open. Waiting... 
+Timestamp (30564) FINE [function=fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-pyco, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30566) INFO 127.0.0.1:30105 open! 
+Timestamp (30566) INFO Added new lambda with mode HYDRA. It took 203 ms. 
+Timestamp (30570) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30571) INFO 127.0.0.1:30106 not open. Waiting... 
+Timestamp (30614) INFO Obtained a new lambda from the pool. 
+Timestamp (30614) INFO Found lambda 5 (cold start). 
+Timestamp (30618) WARNING Received HttpClientException in lambda 5. Message: Bad Gateway 
+Timestamp (30620) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30671) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30680) WARNING Received HttpClientException in lambda 5. Message: Bad Gateway 
+Timestamp (30721) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30771) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30789) WARNING Received HttpClientException in lambda 5. Message: Bad Gateway 
+Timestamp (30822) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30872) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30922) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (30972) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31022) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31073) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31106) WARNING Received HttpClientException in lambda 5. Message: Bad Gateway 
+Timestamp (31123) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31173) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31223) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31273) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31323) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31374) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31424) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31474) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31524) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31527) WARNING Received HttpClientException in lambda 5. Message: Bad Gateway 
+Timestamp (31575) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31621) INFO 127.0.0.1:30106 not open. Waiting... 
+Timestamp (31625) FINE [function=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (31672) INFO 127.0.0.1:30106 open! 
+Timestamp (31672) INFO Added new lambda with mode HYDRA. It took 1202 ms. 
+Timestamp (31675) INFO Obtained a new lambda from the pool. 
+Timestamp (31675) INFO Found lambda 6 (cold start). 
+Timestamp (31678) WARNING Received HttpClientException in lambda 6. Message: Bad Gateway 
+Timestamp (31771) WARNING Received HttpClientException in lambda 6. Message: Bad Gateway 
+Timestamp (31938) WARNING Received HttpClientException in lambda 6. Message: Bad Gateway 
+Timestamp (32200) WARNING Received HttpClientException in lambda 6. Message: Bad Gateway 
+Timestamp (32609) WARNING HTTP request timeout! 
+Timestamp (32611) FINE Function fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-pyco registration in lambda lambda_5_HYDRA returned Function fd8a2430aa1d1b6fb9e059ff6268eabf8bbd77e68a6d5f38195a67820149b0ab-pyco registered! 
+Timestamp (32960) WARNING Received HttpClientException in lambda 6. Message: Bad Gateway 
+Timestamp (34511) WARNING HTTP request timeout! 
+Timestamp (34514) FINE Function f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh registration in lambda lambda_6_HYDRA returned Function f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9-jvfh registered! 
+Timestamp (34518) FINE Time (user=f0417cb85bd1c751561867f042b6623bc7885e27669a11bc7f9a64dd7d3e4eb9, function_name=jvfh, mode=HYDRA, id=6) req: 4048087; infr: 4044347	[us] 
+Timestamp (38288) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38288) INFO Starting new HYDRA lambda. 
+Timestamp (38288) INFO PID -> 7 | Type -> org.graalvm.argo.lambda_manager.processes.lambda.StartHydraContainer | Output -> lambda_logs/lambda_7_HYDRA/output.log 
+Timestamp (38288) INFO 127.0.0.1:30107 not open. Waiting... 
+Timestamp (38338) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38339) INFO 127.0.0.1:30107 not open. Waiting... 
+Timestamp (38388) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38389) INFO 127.0.0.1:30107 not open. Waiting... 
+Timestamp (38438) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38489) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38539) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38589) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38639) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38689) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38739) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38789) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38840) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38890) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38940) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (38990) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (39040) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (39090) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (39141) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (39191) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (39241) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (39291) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (39341) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (39391) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (39439) INFO 127.0.0.1:30107 not open. Waiting... 
+Timestamp (39441) FINE [function=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth, mode=HYDRA]: The lambda pool is currently empty, waiting. 
+Timestamp (39490) INFO 127.0.0.1:30107 open! 
+Timestamp (39490) INFO Added new lambda with mode HYDRA. It took 1202 ms. 
+Timestamp (39492) INFO Obtained a new lambda from the pool. 
+Timestamp (39492) INFO Found lambda 7 (cold start). 
+Timestamp (39495) WARNING Received HttpClientException in lambda 7. Message: Bad Gateway 
+Timestamp (39570) WARNING Received HttpClientException in lambda 7. Message: Bad Gateway 
+Timestamp (39764) WARNING Received HttpClientException in lambda 7. Message: Bad Gateway 
+Timestamp (40004) WARNING Received HttpClientException in lambda 7. Message: Bad Gateway 
+Timestamp (40724) WARNING Received HttpClientException in lambda 7. Message: Bad Gateway 
+Timestamp (42264) WARNING HTTP request timeout! 
+Timestamp (42266) WARNING Received HttpClientException in lambda 7. Message: Bad Gateway 
+Timestamp (42347) WARNING Received HttpClientException in lambda 7. Message: Bad Gateway 
+Timestamp (42535) WARNING Received HttpClientException in lambda 7. Message: Bad Gateway 
+Timestamp (42875) WARNING Received HttpClientException in lambda 7. Message: Bad Gateway 
+Timestamp (43473) WARNING Received HttpClientException in lambda 7. Message: Bad Gateway 
+Timestamp (44586) WARNING HTTP request timeout! 
+Timestamp (44586) FINE Function b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c-jsth registration in lambda lambda_7_HYDRA returned HTTP request timeout! 
+Timestamp (44587) FINE Time (user=b49be67ae44cd3488b771ae6ffc6e32409b66dc7171adbaa75dcf2a82fc6ac7c, function_name=jsth, mode=HYDRA, id=7) req: 6299555; infr: 6297826	[us] 
+Timestamp (62638) WARNING Received HttpClientException in lambda 5. Message: Read Timeout 
