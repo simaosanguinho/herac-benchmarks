@@ -19,3 +19,9 @@ virtualenv
 
 results/experiment/socc25/
 results/experiment/socc25-azure-replay
+
+webserver/ffmpeg
+src/hyperlight-wasm/*/target
+*.wasm
+*.aot
+Cargo.lock

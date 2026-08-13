@@ -1,0 +1,76 @@
+set shell := ["bash", "-uc"]
+
+apps_dir := justfile_directory() + "/../../data/apps"
+
+build_guests:
+    #!/usr/bin/env bash
+    build() { (cd "$1" && ./build.sh); }
+
+    build "bfs"
+    build "classify"
+    build "compression"
+    build "dna"
+    build "dynamic-html"
+    build "hashing"
+    build "hello-world"
+    build "mst"
+    build "pagerank"
+    build "thumbnailer"
+    build "uploader"
+    build "video-processing"
+
+build-bfs:
+    cd bfs && ./build.sh
+
+build-classify:
+    cd classify && ./build.sh
+
+build-compression:
+    cd compression && ./build.sh
+
+build-dna:
+    cd dna && ./build.sh
+
+build-dynamic-html:
+    cd dynamic-html && ./build.sh
+
+build-hashing:
+    cd hashing && ./build.sh
+
+build-hello-world:
+    cd hello-world && ./build.sh
+
+build-mst:
+    cd mst && ./build.sh
+
+build-pagerank:
+    cd pagerank && ./build.sh
+
+build-thumbnailer:
+    cd thumbnailer && ./build.sh
+
+build-uploader:
+    cd uploader && ./build.sh
+
+build-video-processing:
+    cd video-processing && ./build.sh
+
+copy-aots:
+    #!/usr/bin/env bash
+    mkdir -p "{{apps_dir}}"
+    cp x64/debug/bfs_guest.aot "{{apps_dir}}/"
+    cp x64/debug/classify_guest.aot "{{apps_dir}}/"
+    cp x64/debug/compression_guest.aot "{{apps_dir}}/"
+    cp x64/debug/dna_guest.aot "{{apps_dir}}/"
+    cp x64/debug/dynamic_html_guest.aot "{{apps_dir}}/"
+    cp x64/debug/hashing_guest.aot "{{apps_dir}}/"
+    cp x64/debug/hello_world_guest.aot "{{apps_dir}}/"
+    cp x64/debug/mst_guest.aot "{{apps_dir}}/"
+    cp x64/debug/pagerank_guest.aot "{{apps_dir}}/"
+    cp x64/debug/thumbnailer_guest.aot "{{apps_dir}}/"
+    cp x64/debug/uploader_guest.aot "{{apps_dir}}/"
+    cp x64/debug/video_processing_guest.aot "{{apps_dir}}/"
+
+build-and-copy-aots: build_guests copy-aots
+
+build: build_guests copy-aots
