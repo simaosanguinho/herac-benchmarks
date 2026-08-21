@@ -3,12 +3,29 @@ use petgraph::data::Element;
 use petgraph::graph::UnGraph;
 use rand::Rng;
 use serde::Deserialize;
+use std::ffi::CStr;
+
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum JsonUsize {
+    Number(usize),
+    String(String),
+}
+
+impl JsonUsize {
+    fn into_usize(self) -> Option<usize> {
+        match self {
+            JsonUsize::Number(value) => Some(value),
+            JsonUsize::String(value) => value.parse().ok(),
+        }
+    }
+}
 
 #[allow(dead_code)]
 #[derive(Deserialize)]
 struct MstInput {
-    size: Option<usize>,
-    m: Option<usize>,
+    size: Option<JsonUsize>,
+    m: Option<JsonUsize>,
 }
 
 
@@ -95,12 +112,21 @@ pub fn run_mst_impl(size: usize, m: usize) -> u32 {
 }
 
 #[no_mangle]
-pub extern "C" fn run() -> i32 {
-    let size = 100_000;
-    let m = 10;
-    let _expected_edges = size - 1;
+pub extern "C" fn run(input_json: *const i8) -> i32 {
+    let input_str = unsafe {
+        match CStr::from_ptr(input_json).to_str() {
+            Ok(s) => s,
+            Err(_) => return -1,
+        }
+    };
 
-    let edges_in_tree = run_mst_impl(size, m);
+    let input: MstInput = match serde_json::from_str(input_str) {
+        Ok(input) => input,
+        Err(_) => return -1,
+    };
 
-    edges_in_tree as i32
+    let size = input.size.and_then(JsonUsize::into_usize).unwrap_or(100_000);
+    let m = input.m.and_then(JsonUsize::into_usize).unwrap_or(10);
+
+    run_mst_impl(size, m) as i32
 }

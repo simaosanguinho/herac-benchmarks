@@ -1,4 +1,28 @@
 use rand::Rng;
+use serde::Deserialize;
+use std::ffi::CStr;
+
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum JsonUsize {
+    Number(usize),
+    String(String),
+}
+
+impl JsonUsize {
+    fn into_usize(self) -> Option<usize> {
+        match self {
+            JsonUsize::Number(value) => Some(value),
+            JsonUsize::String(value) => value.parse().ok(),
+        }
+    }
+}
+
+#[derive(Deserialize)]
+struct PagerankInput {
+    size: Option<JsonUsize>,
+    m: Option<JsonUsize>,
+}
 
 // =====================================================
 // PageRank Library Module
@@ -116,9 +140,21 @@ pub fn run_pagerank_impl(size: usize, m: usize, iterations: u32) -> i32 {
 }
 
 #[no_mangle]
-pub extern "C" fn run() -> i32 {
-    let size = 100_000;
-    let m = 10;
+pub extern "C" fn run(input_json: *const i8) -> i32 {
+    let input_str = unsafe {
+        match CStr::from_ptr(input_json).to_str() {
+            Ok(s) => s,
+            Err(_) => return -1,
+        }
+    };
+
+    let input: PagerankInput = match serde_json::from_str(input_str) {
+        Ok(input) => input,
+        Err(_) => return -1,
+    };
+
+    let size = input.size.and_then(JsonUsize::into_usize).unwrap_or(100_000);
+    let m = input.m.and_then(JsonUsize::into_usize).unwrap_or(10);
     let iterations = 20;
 
     run_pagerank_impl(size, m, iterations)

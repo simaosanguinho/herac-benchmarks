@@ -1,11 +1,32 @@
 use rand::Rng;
+use serde::Deserialize;
 use std::collections::VecDeque;
+use std::ffi::CStr;
+
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum JsonUsize {
+    Number(usize),
+    String(String),
+}
+
+impl JsonUsize {
+    fn into_usize(self) -> Option<usize> {
+        match self {
+            JsonUsize::Number(value) => Some(value),
+            JsonUsize::String(value) => value.parse().ok(),
+        }
+    }
+}
+
+#[derive(Deserialize)]
+struct BfsInput {
+    size: Option<JsonUsize>,
+    m: Option<JsonUsize>,
+}
 
 
-#[no_mangle]
-pub extern "C" fn run() -> i32 {
-    let size = 100000;
-    let m = 10;
+pub fn run_bfs_impl(size: usize, m: usize) -> i32 {
 
     // --- 1. Efficient Graph Storage ---
     // Total edges: size * m. Each edge is stored twice (undirected).
@@ -95,6 +116,26 @@ pub extern "C" fn run() -> i32 {
         }
         Err(_) => return -1,
     } */
-     let total_visited = bfs_order.len();
+    let total_visited = bfs_order.len();
     total_visited as i32
+}
+
+#[no_mangle]
+pub extern "C" fn run(input_json: *const i8) -> i32 {
+    let input_str = unsafe {
+        match CStr::from_ptr(input_json).to_str() {
+            Ok(s) => s,
+            Err(_) => return -1,
+        }
+    };
+
+    let input: BfsInput = match serde_json::from_str(input_str) {
+        Ok(input) => input,
+        Err(_) => return -1,
+    };
+
+    let size = input.size.and_then(JsonUsize::into_usize).unwrap_or(100_000);
+    let m = input.m.and_then(JsonUsize::into_usize).unwrap_or(10);
+
+    run_bfs_impl(size, m)
 }
