@@ -67,15 +67,46 @@ fi
 if [ "$BENCHMARK_BUILD_MODE" == "container" ]; then
     BENCHMARK_SCRIPT_BASENAME="$(basename -- $BENCHMARK_BUILD_SCRIPT)"
     BENCHMARK_HOME="$(dirname -- $BENCHMARK_BUILD_SCRIPT)"
-    docker run \
-        -it --rm \
-        -v $JAVA_HOME:/jvm \
-        -v $ARGO_HOME:/argo \
-        -v $BENCHMARK_HOME:/benchmark-home \
-        -w /benchmark-home \
-        argo-builder \
-        /benchmark-home/$BENCHMARK_SCRIPT_BASENAME $@
-    sudo chown -R $USER:$USER $BENCHMARK_HOME
+    CONTAINER_IMAGE="argo-builder"
+    DOCKER_TTY_ARGS=( -i )
+    if [ -t 1 ]; then
+        DOCKER_TTY_ARGS+=( -t )
+    fi
+    docker_args=(
+        run
+        "${DOCKER_TTY_ARGS[@]}"
+        --rm
+        --user "$(id -u):$(id -g)"
+        -e HOME=/tmp/build-home
+        -e ARGO_HOME=/argo
+        -e JAVA_HOME=/jvm
+        -e PYTHON_HOME=/usr/bin
+        -v "$JAVA_HOME:/jvm"
+        -v "$ARGO_HOME:/argo"
+        -v "$BENCHMARK_HOME:/benchmark-home"
+        -w /benchmark-home
+    )
+
+    if [[ $BENCHMARK_BUILD_SCRIPT == *"python/cr-"* ]]; then
+        CONTAINER_IMAGE="openwhisk/action-python-v3.9:latest"
+        docker_args=(
+            run
+            "${DOCKER_TTY_ARGS[@]}"
+            --rm
+            --entrypoint bash
+            --user "$(id -u):$(id -g)"
+            -e HOME=/tmp/build-home
+            -e ARGO_HOME=/argo
+            -e PYTHON_HOME=/usr/local/bin
+            -v "$ARGO_HOME:/argo"
+            -v "$BENCHMARK_HOME:/benchmark-home"
+            -w /benchmark-home
+        )
+    fi
+
+    docker "${docker_args[@]}" \
+        "$CONTAINER_IMAGE" \
+        "/benchmark-home/$BENCHMARK_SCRIPT_BASENAME" "$@"
 elif [ "$BENCHMARK_BUILD_MODE" == "local" ]; then
         bash $BENCHMARK_BUILD_SCRIPT $@
 else

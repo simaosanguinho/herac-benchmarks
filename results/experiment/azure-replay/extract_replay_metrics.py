@@ -20,7 +20,25 @@ def parse_args():
 
 def load_metrics(path):
     with open(path, "r", encoding="utf-8") as handle:
-        return json.load(handle)
+        content = handle.read()
+
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        pass
+
+    metrics = []
+    for raw_line in content.splitlines():
+        line = raw_line.strip()
+        if not line or line in {"[", "]"}:
+            continue
+        if line.endswith(","):
+            line = line[:-1]
+        try:
+            metrics.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+    return metrics
 
 
 def write_series(out_dir, prefix, metric_name, values):
@@ -28,6 +46,13 @@ def write_series(out_dir, prefix, metric_name, values):
     with open(output_path, "w", encoding="utf-8") as handle:
         for value in values:
             handle.write(f"{value}\n")
+
+
+def write_timestamped_series(out_dir, prefix, metric_name, timestamps_ms, values):
+    output_path = out_dir / f"{prefix}_{metric_name}.txt"
+    with open(output_path, "w", encoding="utf-8") as handle:
+        for timestamp_ms, value in zip(timestamps_ms, values):
+            handle.write(f"{timestamp_ms / 1000.0} {value}\n")
 
 
 def extract_latencies_ms(path):
@@ -52,7 +77,13 @@ def main():
 
     write_series(out_dir, args.prefix, "active_lambdas", [entry["active_lambdas"] for entry in metrics])
     write_series(out_dir, args.prefix, "active_users", [entry["active_users"] for entry in metrics])
-    write_series(out_dir, args.prefix, "open_requests", [entry["open_requests"] for entry in metrics])
+    write_timestamped_series(
+        out_dir,
+        args.prefix,
+        "open_requests",
+        [entry["timestamp"] for entry in metrics],
+        [entry["open_requests"] for entry in metrics],
+    )
     write_series(out_dir, args.prefix, "footprint", [entry["system_footprint"] for entry in metrics])
     write_series(out_dir, args.prefix, "throughput", [entry["throughput"] for entry in metrics])
 

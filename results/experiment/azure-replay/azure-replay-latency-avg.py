@@ -28,16 +28,22 @@ def maybe_plot_cdf_with_fallback(preferred_name, legacy_name, label, **kwargs):
 matplotlib.rcParams.update({'font.size': 16})
 plt.rcParams["figure.figsize"] = (10, 4)
 maybe_plot_cdf("he_avg_latency.txt", "Herac", linestyle="-.", linewidth=3)
-maybe_plot_cdf_with_fallback("hy_dc_avg_latency.txt", "gv_dc_avg_latency.txt", "Hydra DC", linestyle=":", linewidth=3)
+maybe_plot_cdf_with_fallback("hy_avg_latency.txt", "gv_dc_avg_latency.txt", "Hydra", linestyle=":", linewidth=3)
 maybe_plot_cdf_with_fallback("hy_fork_avg_latency.txt", "gv_fork_avg_latency.txt", "Hydra Fork", linestyle="-", marker="|", markersize=10, markevery=10, linewidth=3)
 maybe_plot_cdf("ph_avg_latency.txt", "Photons", linestyle="--", linewidth=3)
 maybe_plot_cdf_with_fallback("hy_snap_avg_latency.txt", "gv_snap_avg_latency.txt", "Hydra Snapshot", linestyle="-", linewidth=3)
-maybe_plot_cdf("cr_avg_latency.txt", "OpenWhisk", linestyle="-", marker="x", markersize=10, markevery=10, linewidth=3)
+maybe_plot_cdf_with_fallback("ow_avg_latency.txt", "cr_avg_latency.txt", "OpenWhisk", linestyle="-", marker="x", markersize=10, markevery=10, linewidth=3)
+
+# Set x-axis to a logarithmic scale (powers of 10)
+plt.xscale("log")
 plt.ylim(ymin=0, ymax=1)
-plt.xlim(xmin=0, xmax=80000)
+# Log scale cannot start at 0, so set xmin to a positive lower bound like 1
+plt.xlim(xmin=1, xmax=80000)
+
 plt.xlabel("User Request Latency (ms)")
 plt.ylabel("CDF")
-plt.grid()
+# Enable grid for both major and minor ticks on log scale
+plt.grid(True, which="both", ls="--")
 plt.legend(ncol=2, loc='lower right')
 plt.tight_layout()
 plt.savefig("azure-replay-latency-avg.pdf")
