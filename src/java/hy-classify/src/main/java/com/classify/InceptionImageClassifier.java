@@ -31,7 +31,7 @@ public class InceptionImageClassifier implements AutoCloseable {
         }
         return img;
     }
-    
+
     private static byte[] getBytes(InputStream is) throws IOException {
         ByteArrayOutputStream mem = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
@@ -72,7 +72,7 @@ public class InceptionImageClassifier implements AutoCloseable {
 
         try (Session sess = new Session(graph);
              Tensor<Float> result =
-                     sess.runner().feed("input", imageTensor)
+                      sess.runner().feed("input", imageTensor)
                              .fetch("output").run().get(0).expect(Float.class)) {
             final long[] rshape = result.shape();
             if (result.numDimensions() != 2 || rshape[0] != 1) {

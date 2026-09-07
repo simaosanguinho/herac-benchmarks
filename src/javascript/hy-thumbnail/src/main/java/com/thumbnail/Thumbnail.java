@@ -15,15 +15,17 @@ import org.graalvm.nativeimage.IsolateThread;
 import org.graalvm.nativeimage.c.type.CCharPointer;
 import org.graalvm.nativeimage.c.type.CTypeConversion;
 
-
-import com.criteo.vips.VipsImage;
-import com.criteo.vips.enums.VipsImageFormat;
-
-import java.awt.Dimension;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+
+import ar.com.hjg.pngj.ImageInfo;
+import ar.com.hjg.pngj.ImageLineInt;
+import ar.com.hjg.pngj.PngReader;
+import ar.com.hjg.pngj.PngWriter;
 
 public class Thumbnail extends PolyglotHostAccess {
 
@@ -45,16 +47,45 @@ public class Thumbnail extends PolyglotHostAccess {
     @HostAccess.Export
     public byte[] resize(byte[] bytes, float ratio) {
         try {
-            VipsImage image = new VipsImage(bytes, bytes.length);
-            int width = (int) (image.getWidth() * ratio);
-            int height =(int) (image.getHeight() * ratio);
-            image.thumbnailImage(new Dimension(width, height), true);
-            bytes = image.writeToArray(VipsImageFormat.PNG, false);
-            image.release();
-            return bytes;
+            PngReader reader = new PngReader(new ByteArrayInputStream(bytes));
+            try {
+                ImageInfo inputInfo = reader.imgInfo;
+                int width = Math.max(1, (int) (inputInfo.cols * ratio));
+                int height = Math.max(1, (int) (inputInfo.rows * ratio));
+                int[][] rows = new int[inputInfo.rows][];
+
+                for (int row = 0; row < inputInfo.rows; row++) {
+                    rows[row] = ((ImageLineInt) reader.readRow(row)).getScanline().clone();
+                }
+
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                ImageInfo outputInfo = new ImageInfo(width, height, inputInfo.bitDepth, inputInfo.alpha, inputInfo.greyscale, inputInfo.indexed);
+                PngWriter writer = new PngWriter(output, outputInfo);
+                try {
+                    for (int y = 0; y < height; y++) {
+                        int srcY = Math.min(inputInfo.rows - 1, y * inputInfo.rows / height);
+                        ImageLineInt outputRow = new ImageLineInt(outputInfo);
+                        int[] outputScanline = outputRow.getScanline();
+                        int[] inputScanline = rows[srcY];
+                        for (int x = 0; x < width; x++) {
+                            int srcX = Math.min(inputInfo.cols - 1, x * inputInfo.cols / width);
+                            int srcOffset = srcX * inputInfo.channels;
+                            int dstOffset = x * outputInfo.channels;
+                            System.arraycopy(inputScanline, srcOffset, outputScanline, dstOffset, inputInfo.channels);
+                        }
+                        writer.writeRow(outputRow, y);
+                    }
+                } finally {
+                    writer.end();
+                }
+
+                return output.toByteArray();
+            } finally {
+                reader.close();
+            }
         } catch (Throwable e) {
             e.printStackTrace();
-            return null;
+            throw new IllegalStateException("Thumbnail resize failed", e);
         }
     }
 

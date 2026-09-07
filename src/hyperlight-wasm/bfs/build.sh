@@ -43,7 +43,7 @@ export RUSTFLAGS="\
     -C link-arg=--export=run"
 
 # Invoke Cargo to handle the sha2 dependency
-cargo build --locked --target="${RUST_TARGET}" --release
+cargo build  --target="${RUST_TARGET}" --release
 
 # Extract the generated Wasm file from Cargo's output
 CARGO_WASM=$(find target/"${RUST_TARGET}"/release -maxdepth 1 -name "*.wasm" | head -n 1)

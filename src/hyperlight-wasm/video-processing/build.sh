@@ -32,7 +32,7 @@ export RUSTFLAGS="\
     -C link-arg=--strip-all \
     -C link-arg=--export=run"
 
-cargo build --locked --target="${RUST_TARGET}" --release
+cargo build  --target="${RUST_TARGET}" --release
 
 CARGO_WASM=$(find target/"${RUST_TARGET}"/release -maxdepth 1 -name "*.wasm" | head -n 1)
 cp "$CARGO_WASM" "$WASM_FILE"

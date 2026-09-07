@@ -81,7 +81,8 @@ public class Classify {
                 classifier.load_model(new FileInputStream(modelPath));
                 classifier.load_labels(new FileInputStream((labelsPath)));
             }
-           	
+
+	           
             try (FileOutputStream stream = new FileOutputStream(tmpImgPath)) {
                 stream.write(downloadBytes((String)args.get("image_url")));
             }

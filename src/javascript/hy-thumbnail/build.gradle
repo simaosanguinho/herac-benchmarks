@@ -18,6 +18,7 @@ shadowJar() {
 dependencies {
     implementation files(System.getenv('ARGO_HOME') + '/hydra-lib/build/libs/hydra-lib-1.0-all.jar')
     implementation(files('jvips/JVips.jar'))
+    implementation 'ar.com.hjg:pngj:2.1.0'
 }
 
 jar {

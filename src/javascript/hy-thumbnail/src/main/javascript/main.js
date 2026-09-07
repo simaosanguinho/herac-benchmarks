@@ -1,4 +1,4 @@
-const main = async function (args) {
+const main = function (args) {
     const args_split = args.split(";");
     let url = args_split[0];
     let tmpDir = args_split[1];

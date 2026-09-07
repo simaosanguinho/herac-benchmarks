@@ -5,6 +5,8 @@ import java.util.Map;
 import com.oracle.svm.hydra.polyglot.PolyglotEngine;
 import com.oracle.svm.hydra.polyglot.PolyglotHostAccess;
 import com.oracle.svm.hydra.utils.JsonUtils;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.HostAccess;
 
 import org.graalvm.word.UnsignedWord;
 import org.graalvm.nativeimage.c.function.CEntryPoint;
@@ -34,9 +36,26 @@ public class Uploader extends PolyglotHostAccess {
         }
     }
 
+    @HostAccess.Export
+    public byte[] downloadBytes(String url) {
+        return super.downloadBytes(url);
+    }
+
+    @HostAccess.Export
+    public void uploadBytes(String url, byte[] bytes) {
+        super.uploadBytes(url, bytes);
+    }
+
+    static class UploaderEngine extends PolyglotEngine {
+
+        public void addBindings(String language, Context context) {
+            context.getBindings(language).putMember("polyHostAccess", new Uploader());
+        }
+    }
+
     private static PolyglotEngine getEngine() {
         if (engine == null) {
-            engine = new PolyglotEngine();
+            engine = new UploaderEngine();
         }
         return engine;
     }
@@ -45,15 +64,17 @@ public class Uploader extends PolyglotHostAccess {
     public static HashMap<String, Object> main(Map<String, Object> args) {
         HashMap<String, Object> output = new HashMap<>();
         PolyglotEngine engine = getEngine();
-        output.put("output", engine.invoke(language, source, entrypoint, (String) args.get("url")));
+        String downloadUrl = (String) args.get("download_url");
+        String uploadUrl = (String) args.get("upload_url");
+        output.put("output", engine.invoke(language, source, entrypoint, String.format("%s;%s", downloadUrl, uploadUrl)));
         return output;
     }
 
     /* For standalone invocations. */
     public static void main(String[] args) {
         HashMap<String, Object> output = new HashMap<>();
-        output.put("url", "http://127.0.0.1:8000/snap.png");
-        output.put("tmpDir", "/tmp");
+        output.put("download_url", "http://127.0.0.1:8000/new.mp4");
+        output.put("upload_url", "http://127.0.0.1:9696/upload");
         output = main(output);
         System.out.println(output);
     }
