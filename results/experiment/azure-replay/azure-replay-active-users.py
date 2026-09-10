@@ -27,6 +27,7 @@ maybe_plot_with_fallback("hy_fork_active_users.txt", "gv_fork_active_users.txt",
 maybe_plot("ph_active_users.txt", "Photons", linestyle="--", linewidth=3)
 maybe_plot_with_fallback("hy_snap_active_users.txt", "gv_snap_active_users.txt", "Hydra Snapshot", linestyle="-", linewidth=3)
 maybe_plot_with_fallback("ow_active_users.txt", "cr_active_users.txt", "OpenWhisk", linestyle="-", marker="x", markersize=10, markevery=10, linewidth=3)
+maybe_plot_with_fallback("kn_active_users.txt", "knative_active_users.txt", "Knative", linestyle="-", marker="o", markersize=10, markevery=10, linewidth=3)
 plt.xlabel("Time (s)")
 plt.ylabel("Active Users")
 plt.grid()
