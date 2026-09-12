@@ -48,7 +48,7 @@ maybe_plot_cdf_with_fallback("hy_snap_avg_latency.txt", "gv_snap_avg_latency.txt
 plt.xscale("log")
 plt.ylim(ymin=0.9, ymax=1)
 # only show the 0.9 0.95 and 1 lines on the y-axis
-plt.yticks([0.9, 0.95, 1.0])
+#plt.yticks([0.9, 0.95, 1.0])
 # Log scale cannot start at 0, set xmin to 1
 plt.xlim(xmin=1, xmax=80000)
 

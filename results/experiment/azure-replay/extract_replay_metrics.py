@@ -60,15 +60,14 @@ def write_timestamped_series(out_dir, prefix, metric_name, timestamps_ms, values
             handle.write(f"{timestamp_ms / 1000.0} {value}\n")
 
 
-def extract_latencies_ms(path):
+def extract_latencies_ms(path, capture_group):
     latencies = []
     with open(path, "r", encoding="utf-8") as handle:
         for line in handle:
             match = LATENCY_RE.search(line)
             if match is None:
                 continue
-            request_us = int(match.group(1))
-            latencies.append(request_us / 1000.0)
+            latencies.append(int(match.group(capture_group)) / 1000.0)
     return latencies
 
 
@@ -133,8 +132,8 @@ def main():
         if sandboxes is not None:
             write_series(out_dir, args.prefix, "active_sandboxes", sandboxes)
 
-    latencies_ms = extract_latencies_ms(args.manager_log)
-    write_series(out_dir, args.prefix, "avg_latency", latencies_ms)
+    write_series(out_dir, args.prefix, "avg_latency", extract_latencies_ms(args.manager_log, 1))
+    write_series(out_dir, args.prefix, "infr_latency", extract_latencies_ms(args.manager_log, 2))
 
 
 if __name__ == "__main__":
